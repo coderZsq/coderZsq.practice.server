@@ -8,5 +8,5 @@ import com.resume.pojo.Profile;
  */
 public interface IPortalService {
 
-    ServerResponse<Profile> fetch_profile();
+    ServerResponse<Profile> fetchProfile();
 }

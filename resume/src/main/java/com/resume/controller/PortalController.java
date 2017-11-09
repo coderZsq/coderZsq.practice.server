@@ -20,7 +20,7 @@ public class PortalController {
 
     @RequestMapping("fetch_profile.do")
     @ResponseBody
-    public ServerResponse fetch_profile() {
-        return iPortalService.fetch_profile();
+    public ServerResponse fetchProfile() {
+        return iPortalService.fetchProfile();
     }
 }

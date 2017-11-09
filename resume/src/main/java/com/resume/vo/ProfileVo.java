@@ -25,7 +25,7 @@ public class ProfileVo {
 
     private String profileEducationTitle;
 
-    private List<String> getProfileEducationList;
+    private List<ProfileEducationVo> profileEducationList;
 
     public String getProfileImage() {
         return profileImage;
@@ -99,11 +99,11 @@ public class ProfileVo {
         this.profileEducationTitle = profileEducationTitle;
     }
 
-    public List<String> getGetProfileEducationList() {
-        return getProfileEducationList;
+    public List<ProfileEducationVo> getProfileEducationList() {
+        return profileEducationList;
     }
 
-    public void setGetProfileEducationList(List<String> getProfileEducationList) {
-        this.getProfileEducationList = getProfileEducationList;
+    public void setProfileEducationList(List<ProfileEducationVo> profileEducationList) {
+        this.profileEducationList = profileEducationList;
     }
 }
