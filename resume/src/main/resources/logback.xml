@@ -11,9 +11,9 @@
     </appender>
 
     <appender name="resume" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>/Users/zhushuangquan/Documents/code/java/mmall/logs/resume.log</File>
+        <File>/Users/zhushuangquan/Native\ Drive/GitHub/coderZsq.maven.java/resume/logs/resume.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/Users/zhushuangquan/Documents/code/java/resume/logs/mmall.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
+            <fileNamePattern>/Users/zhushuangquan/Native\ Drive/GitHub/coderZsq.maven.java/resume/logs/mmall.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
             <append>true</append>
             <maxHistory>10</maxHistory>
         </rollingPolicy>
@@ -24,9 +24,9 @@
 
 
     <appender name="error" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>/Users/zhushuangquan/Documents/code/java/resume/logs/error.log</File>
+        <File>/Users/zhushuangquan/Native\ Drive/GitHub/coderZsq.maven.java/resume/logs/error.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/Users/zhushuangquan/Documents/code/java/resume/logs/error.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
+            <fileNamePattern>/Users/zhushuangquan/Native\ Drive/GitHub/coderZsq.maven.java/resume/logs/error.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
             <append>true</append>
             <maxHistory>10</maxHistory>
         </rollingPolicy>
