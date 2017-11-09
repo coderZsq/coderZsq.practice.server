@@ -18,9 +18,9 @@ public class PortalController {
     @Autowired
     private IPortalService iPortalService;
 
-    @RequestMapping("fetch.do")
+    @RequestMapping("fetch_profile.do")
     @ResponseBody
-    public ServerResponse fetch() {
-        return iPortalService.fetch();
+    public ServerResponse fetch_profile() {
+        return iPortalService.fetch_profile();
     }
 }
