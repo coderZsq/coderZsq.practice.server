@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.resume.dao.ProfileMapper" >
+  <resultMap id="BaseResultMap" type="com.resume.pojo.Profile" >
+    <constructor >
+      <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="profile_image" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="profile_name" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="profile_career" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="profile_summary_title" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="profile_summary_description" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="profile_interest_title" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="profile_education_title" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="profile_location" jdbcType="VARCHAR" javaType="java.lang.String" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, profile_image, profile_name, profile_career, profile_summary_title, profile_summary_description, 
+    profile_interest_title, profile_education_title, profile_location
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from resume_profile
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from resume_profile
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.resume.pojo.Profile" >
+    insert into resume_profile (id, profile_image, profile_name, 
+      profile_career, profile_summary_title, profile_summary_description, 
+      profile_interest_title, profile_education_title, 
+      profile_location)
+    values (#{id,jdbcType=INTEGER}, #{profileImage,jdbcType=VARCHAR}, #{profileName,jdbcType=VARCHAR}, 
+      #{profileCareer,jdbcType=VARCHAR}, #{profileSummaryTitle,jdbcType=VARCHAR}, #{profileSummaryDescription,jdbcType=VARCHAR}, 
+      #{profileInterestTitle,jdbcType=VARCHAR}, #{profileEducationTitle,jdbcType=VARCHAR}, 
+      #{profileLocation,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.resume.pojo.Profile" >
+    insert into resume_profile
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="profileImage != null" >
+        profile_image,
+      </if>
+      <if test="profileName != null" >
+        profile_name,
+      </if>
+      <if test="profileCareer != null" >
+        profile_career,
+      </if>
+      <if test="profileSummaryTitle != null" >
+        profile_summary_title,
+      </if>
+      <if test="profileSummaryDescription != null" >
+        profile_summary_description,
+      </if>
+      <if test="profileInterestTitle != null" >
+        profile_interest_title,
+      </if>
+      <if test="profileEducationTitle != null" >
+        profile_education_title,
+      </if>
+      <if test="profileLocation != null" >
+        profile_location,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="profileImage != null" >
+        #{profileImage,jdbcType=VARCHAR},
+      </if>
+      <if test="profileName != null" >
+        #{profileName,jdbcType=VARCHAR},
+      </if>
+      <if test="profileCareer != null" >
+        #{profileCareer,jdbcType=VARCHAR},
+      </if>
+      <if test="profileSummaryTitle != null" >
+        #{profileSummaryTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="profileSummaryDescription != null" >
+        #{profileSummaryDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="profileInterestTitle != null" >
+        #{profileInterestTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="profileEducationTitle != null" >
+        #{profileEducationTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="profileLocation != null" >
+        #{profileLocation,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.resume.pojo.Profile" >
+    update resume_profile
+    <set >
+      <if test="profileImage != null" >
+        profile_image = #{profileImage,jdbcType=VARCHAR},
+      </if>
+      <if test="profileName != null" >
+        profile_name = #{profileName,jdbcType=VARCHAR},
+      </if>
+      <if test="profileCareer != null" >
+        profile_career = #{profileCareer,jdbcType=VARCHAR},
+      </if>
+      <if test="profileSummaryTitle != null" >
+        profile_summary_title = #{profileSummaryTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="profileSummaryDescription != null" >
+        profile_summary_description = #{profileSummaryDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="profileInterestTitle != null" >
+        profile_interest_title = #{profileInterestTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="profileEducationTitle != null" >
+        profile_education_title = #{profileEducationTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="profileLocation != null" >
+        profile_location = #{profileLocation,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.resume.pojo.Profile" >
+    update resume_profile
+    set profile_image = #{profileImage,jdbcType=VARCHAR},
+      profile_name = #{profileName,jdbcType=VARCHAR},
+      profile_career = #{profileCareer,jdbcType=VARCHAR},
+      profile_summary_title = #{profileSummaryTitle,jdbcType=VARCHAR},
+      profile_summary_description = #{profileSummaryDescription,jdbcType=VARCHAR},
+      profile_interest_title = #{profileInterestTitle,jdbcType=VARCHAR},
+      profile_education_title = #{profileEducationTitle,jdbcType=VARCHAR},
+      profile_location = #{profileLocation,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from resume_profile
+  </select>
+
+</mapper>
