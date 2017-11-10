@@ -15,6 +15,8 @@ public class ProfileVo {
 
     private String profileLocation;
 
+    private List<ProfileSocialVo> profileSocialList;
+
     private String profileSummaryTitle;
 
     private String profileSummaryDescription;
@@ -57,6 +59,14 @@ public class ProfileVo {
 
     public void setProfileLocation(String profileLocation) {
         this.profileLocation = profileLocation;
+    }
+
+    public List<ProfileSocialVo> getProfileSocialList() {
+        return profileSocialList;
+    }
+
+    public void setProfileSocialList(List<ProfileSocialVo> profileSocialList) {
+        this.profileSocialList = profileSocialList;
     }
 
     public String getProfileSummaryTitle() {

@@ -5,12 +5,15 @@ import com.resume.common.ServerResponse;
 import com.resume.dao.ProfileEducationMapper;
 import com.resume.dao.ProfileInterestMapper;
 import com.resume.dao.ProfileMapper;
+import com.resume.dao.ProfileSocialMapper;
 import com.resume.pojo.Profile;
 import com.resume.pojo.ProfileEducation;
 import com.resume.pojo.ProfileInterest;
+import com.resume.pojo.ProfileSocial;
 import com.resume.service.IPortalService;
 import com.resume.vo.ProfileEducationVo;
 import com.resume.vo.ProfileInterestVo;
+import com.resume.vo.ProfileSocialVo;
 import com.resume.vo.ProfileVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +31,9 @@ public class PortalServiceImpl implements IPortalService {
     private ProfileMapper profileMapper;
 
     @Autowired
+    private ProfileSocialMapper profileSocialMapper;
+
+    @Autowired
     private ProfileInterestMapper profileInterestMapper;
 
     @Autowired
@@ -36,10 +42,16 @@ public class PortalServiceImpl implements IPortalService {
     public ServerResponse fetchProfile() {
 
         ProfileVo profileVo = assembleProfileVo(profileMapper.selectAll());
+        List<ProfileSocial> profileSocialList = profileSocialMapper.selectAllSocial();
+        List<ProfileSocialVo> profileSocialVoList = Lists.newArrayList();
         List<ProfileInterest> profileInterestList = profileInterestMapper.selectAllInterest();
         List<ProfileInterestVo> profileInterestVoList = Lists.newArrayList();
         List<ProfileEducation> profileEducationList = profileEducationMapper.selectAllEducation();
         List<ProfileEducationVo> profileEducationVoList = Lists.newArrayList();
+        for (ProfileSocial profileSocial: profileSocialList) {
+            ProfileSocialVo profileSocialVo = assembleProfileSocialVo(profileSocial);
+            profileSocialVoList.add(profileSocialVo);
+        }
         for (ProfileInterest profileInterest: profileInterestList) {
             ProfileInterestVo profileInterestVo = assembleProfileInterestVo(profileInterest);
             profileInterestVoList.add(profileInterestVo);
@@ -48,6 +60,7 @@ public class PortalServiceImpl implements IPortalService {
             ProfileEducationVo profileEducationVo = assembleProfileEducationVo(profileEducation);
             profileEducationVoList.add(profileEducationVo);
         }
+        profileVo.setProfileSocialList(profileSocialVoList);
         profileVo.setProfileInterestList(profileInterestVoList);
         profileVo.setProfileEducationList(profileEducationVoList);
         return ServerResponse.createBySuccess(profileVo);
@@ -64,6 +77,13 @@ public class PortalServiceImpl implements IPortalService {
         profileVo.setProfileSummaryTitle(profile.getProfileSummaryTitle());
         profileVo.setProfileSummaryDescription(profile.getProfileSummaryDescription());
         return profileVo;
+    }
+
+    private ProfileSocialVo assembleProfileSocialVo(ProfileSocial profileSocial) {
+        ProfileSocialVo profileSocialVo = new ProfileSocialVo();
+        profileSocialVo.setSrc(profileSocial.getSrc());
+        profileSocialVo.setHref(profileSocial.getHref());
+        return profileSocialVo;
     }
 
     private ProfileInterestVo assembleProfileInterestVo(ProfileInterest profileInterest) {
