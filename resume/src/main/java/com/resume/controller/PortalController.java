@@ -41,4 +41,11 @@ public class PortalController {
         response.setHeader("Access-Control-Allow-Origin", "*");
         return iPortalService.fetchGitHub();
     }
+
+    @RequestMapping("fetch_articles.do")
+    @ResponseBody
+    public ServerResponse fetchArticles(HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        return iPortalService.fetchArticles();
+    }
 }

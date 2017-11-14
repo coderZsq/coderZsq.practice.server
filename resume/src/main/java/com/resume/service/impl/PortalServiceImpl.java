@@ -143,5 +143,41 @@ public class PortalServiceImpl implements IPortalService {
         return targetVo;
     }
 
+    @Autowired
+    private ColumnMapper columnMapper;
+
+    @Autowired
+    private ArticleMapper articleMapper;
+
+    public ServerResponse<ArticlesVo> fetchArticles() {
+        ArticlesVo articlesVo = new ArticlesVo();
+        List<Column> columnList = columnMapper.selectAllColumn();
+        List<ColumnVo> columnVoList = Lists.newArrayList();
+        for (Column column: columnList) {
+            ColumnVo columnVo = assembleColumnVo(column);
+            List<Article> articleList = articleMapper.selectByColumnId(column.getId());
+            List<ArticleVo> articleVoList = Lists.newArrayList();
+            for (Article article: articleList) {
+                articleVoList.add(assembleArticleVo(article));
+            }
+            columnVo.setArticles(articleVoList);
+            columnVoList.add(columnVo);
+        }
+        articlesVo.setColumnList(columnVoList);
+        return ServerResponse.createBySuccess(articlesVo);
+    }
+
+    private ColumnVo assembleColumnVo(Column column) {
+        ColumnVo columnVo = new ColumnVo();
+        columnVo.setName(column.getName());
+        return columnVo;
+    }
+
+    private ArticleVo assembleArticleVo(Article article) {
+        ArticleVo articleVo = new ArticleVo();
+        articleVo.setName(article.getName());
+        articleVo.setHref(article.getHref());
+        return articleVo;
+    }
 }
 
