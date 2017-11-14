@@ -2,19 +2,10 @@ package com.resume.service.impl;
 
 import com.google.common.collect.Lists;
 import com.resume.common.ServerResponse;
-import com.resume.dao.ProfileEducationMapper;
-import com.resume.dao.ProfileInterestMapper;
-import com.resume.dao.ProfileMapper;
-import com.resume.dao.ProfileSocialMapper;
-import com.resume.pojo.Profile;
-import com.resume.pojo.ProfileEducation;
-import com.resume.pojo.ProfileInterest;
-import com.resume.pojo.ProfileSocial;
+import com.resume.dao.*;
+import com.resume.pojo.*;
 import com.resume.service.IPortalService;
-import com.resume.vo.ProfileEducationVo;
-import com.resume.vo.ProfileInterestVo;
-import com.resume.vo.ProfileSocialVo;
-import com.resume.vo.ProfileVo;
+import com.resume.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +30,7 @@ public class PortalServiceImpl implements IPortalService {
     @Autowired
     private ProfileEducationMapper profileEducationMapper;
 
-    public ServerResponse fetchProfile() {
+    public ServerResponse<ProfileVo> fetchProfile() {
 
         ProfileVo profileVo = assembleProfileVo(profileMapper.selectAll());
         List<ProfileSocial> profileSocialList = profileSocialMapper.selectAllSocial();
@@ -99,5 +90,33 @@ public class PortalServiceImpl implements IPortalService {
         profileEducationVo.setYear(profileEducation.getYear());
         return profileEducationVo;
     }
+
+    @Autowired
+    private ProjectsMapper projectsMapper;
+
+    public ServerResponse<ProjectsVo> fetchProjects() {
+        ProjectsVo projectsVo = new ProjectsVo();
+        List<Projects> projectsList = projectsMapper.selectAllProjects();
+        List<ProjectVo> projectVoList = Lists.newArrayList();
+        for (Projects projects: projectsList) {
+            ProjectVo projectVo = assembleProjectsVo(projects);
+            projectVoList.add(projectVo);
+        }
+        projectsVo.setProjectList(projectVoList);
+        return ServerResponse.createBySuccess(projectsVo);
+    }
+
+    private ProjectVo assembleProjectsVo(Projects projects) {
+        ProjectVo projectVo = new ProjectVo();
+        projectVo.setHref(projects.getHref());
+        projectVo.setSrc(projects.getSrc());
+        projectVo.setDescription(projects.getDescription());
+        projectVo.setName(projects.getName());
+        projectVo.setText1(projects.getText1());
+        projectVo.setText2(projects.getText2());
+        projectVo.setText3(projects.getText3());
+        return projectVo;
+    }
+
 }
 

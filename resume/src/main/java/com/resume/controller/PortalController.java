@@ -26,4 +26,11 @@ public class PortalController {
         response.setHeader("Access-Control-Allow-Origin", "*");
         return iPortalService.fetchProfile();
     }
+
+    @RequestMapping("fetch_projects.do")
+    @ResponseBody
+    public ServerResponse fetchProjects(HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        return iPortalService.fetchProjects();
+    }
 }
