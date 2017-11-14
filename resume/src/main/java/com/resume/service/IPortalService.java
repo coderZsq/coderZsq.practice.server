@@ -1,6 +1,7 @@
 package com.resume.service;
 
 import com.resume.common.ServerResponse;
+import com.resume.vo.GitHubVo;
 import com.resume.vo.ProfileVo;
 import com.resume.vo.ProjectsVo;
 
@@ -12,4 +13,6 @@ public interface IPortalService {
     ServerResponse<ProfileVo> fetchProfile();
 
     ServerResponse<ProjectsVo> fetchProjects();
+
+    ServerResponse<GitHubVo>fetchGitHub();
 }

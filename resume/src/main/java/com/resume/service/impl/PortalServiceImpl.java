@@ -118,5 +118,30 @@ public class PortalServiceImpl implements IPortalService {
         return projectVo;
     }
 
+    @Autowired
+    private GitHubMapper gitHubMapper;
+
+    public ServerResponse<GitHubVo>fetchGitHub() {
+        GitHubVo gitHubVo = new GitHubVo();
+        List<GitHub> gitHubList = gitHubMapper.selectAllGitHub();
+        List<TargetVo> targetVoList = Lists.newArrayList();
+        for (GitHub gitHub: gitHubList) {
+            targetVoList.add(assembleTargetVo(gitHub));
+        }
+        gitHubVo.setTargetList(targetVoList);
+        return ServerResponse.createBySuccess(gitHubVo);
+    }
+
+    private TargetVo assembleTargetVo(GitHub gitHub) {
+        TargetVo targetVo = new TargetVo();
+        targetVo.setHref(gitHub.getHref());
+        targetVo.setName(gitHub.getName());
+        targetVo.setColor(gitHub.getColor());
+        targetVo.setDescription(gitHub.getDescription());
+        targetVo.setLanguage(gitHub.getLanguage());
+        targetVo.setStar(gitHub.getStar());
+        return targetVo;
+    }
+
 }
 
