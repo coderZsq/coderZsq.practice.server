@@ -179,5 +179,31 @@ public class PortalServiceImpl implements IPortalService {
         articleVo.setHref(article.getHref());
         return articleVo;
     }
+
+    @Autowired
+    private ExperienceMapper experienceMapper;
+
+    public ServerResponse<ExperienceVo> fetchExperience() {
+        ExperienceVo experienceVo = new ExperienceVo();
+        List<Experience> experienceList = experienceMapper.selectAllExperience();
+        List<CareerVo> careerVoList = Lists.newArrayList();
+        for (Experience experience: experienceList) {
+            careerVoList.add(assembleCareerVo(experience));
+        }
+        experienceVo.setCareerList(careerVoList);
+        return ServerResponse.createBySuccess(experienceVo);
+    }
+
+    private CareerVo assembleCareerVo(Experience experience) {
+        CareerVo careerVo = new CareerVo();
+        careerVo.setHref(experience.getHref());
+        careerVo.setCorp(experience.getCorp());
+        careerVo.setDesc1(experience.getDesc1());
+        careerVo.setDesc2(experience.getDesc2());
+        careerVo.setDesc3(experience.getDesc3());
+        careerVo.setJob(experience.getJob());
+        careerVo.setTime(experience.getTime());
+        return careerVo;
+    }
 }
 

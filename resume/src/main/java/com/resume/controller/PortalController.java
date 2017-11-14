@@ -48,4 +48,11 @@ public class PortalController {
         response.setHeader("Access-Control-Allow-Origin", "*");
         return iPortalService.fetchArticles();
     }
+
+    @RequestMapping("fetch_experience.do")
+    @ResponseBody
+    public ServerResponse fetchExperience(HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        return iPortalService.fetchExperience();
+    }
 }

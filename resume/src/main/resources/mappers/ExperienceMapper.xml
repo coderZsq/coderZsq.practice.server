@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.resume.dao.ExperienceMapper" >
+  <resultMap id="BaseResultMap" type="com.resume.pojo.Experience" >
+    <constructor >
+      <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="time" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="job" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="corp" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="href" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="desc1" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="desc2" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="desc3" jdbcType="VARCHAR" javaType="java.lang.String" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, time, job, corp, href, desc1, desc2, desc3
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from resume_experience
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from resume_experience
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.resume.pojo.Experience" >
+    insert into resume_experience (id, time, job, 
+      corp, href, desc1, 
+      desc2, desc3)
+    values (#{id,jdbcType=INTEGER}, #{time,jdbcType=VARCHAR}, #{job,jdbcType=VARCHAR}, 
+      #{corp,jdbcType=VARCHAR}, #{href,jdbcType=VARCHAR}, #{desc1,jdbcType=VARCHAR}, 
+      #{desc2,jdbcType=VARCHAR}, #{desc3,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.resume.pojo.Experience" >
+    insert into resume_experience
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="time != null" >
+        time,
+      </if>
+      <if test="job != null" >
+        job,
+      </if>
+      <if test="corp != null" >
+        corp,
+      </if>
+      <if test="href != null" >
+        href,
+      </if>
+      <if test="desc1 != null" >
+        desc1,
+      </if>
+      <if test="desc2 != null" >
+        desc2,
+      </if>
+      <if test="desc3 != null" >
+        desc3,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="time != null" >
+        #{time,jdbcType=VARCHAR},
+      </if>
+      <if test="job != null" >
+        #{job,jdbcType=VARCHAR},
+      </if>
+      <if test="corp != null" >
+        #{corp,jdbcType=VARCHAR},
+      </if>
+      <if test="href != null" >
+        #{href,jdbcType=VARCHAR},
+      </if>
+      <if test="desc1 != null" >
+        #{desc1,jdbcType=VARCHAR},
+      </if>
+      <if test="desc2 != null" >
+        #{desc2,jdbcType=VARCHAR},
+      </if>
+      <if test="desc3 != null" >
+        #{desc3,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.resume.pojo.Experience" >
+    update resume_experience
+    <set >
+      <if test="time != null" >
+        time = #{time,jdbcType=VARCHAR},
+      </if>
+      <if test="job != null" >
+        job = #{job,jdbcType=VARCHAR},
+      </if>
+      <if test="corp != null" >
+        corp = #{corp,jdbcType=VARCHAR},
+      </if>
+      <if test="href != null" >
+        href = #{href,jdbcType=VARCHAR},
+      </if>
+      <if test="desc1 != null" >
+        desc1 = #{desc1,jdbcType=VARCHAR},
+      </if>
+      <if test="desc2 != null" >
+        desc2 = #{desc2,jdbcType=VARCHAR},
+      </if>
+      <if test="desc3 != null" >
+        desc3 = #{desc3,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.resume.pojo.Experience" >
+    update resume_experience
+    set time = #{time,jdbcType=VARCHAR},
+      job = #{job,jdbcType=VARCHAR},
+      corp = #{corp,jdbcType=VARCHAR},
+      href = #{href,jdbcType=VARCHAR},
+      desc1 = #{desc1,jdbcType=VARCHAR},
+      desc2 = #{desc2,jdbcType=VARCHAR},
+      desc3 = #{desc3,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectAllExperience" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from resume_experience
+  </select>
+</mapper>
