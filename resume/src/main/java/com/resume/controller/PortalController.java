@@ -55,4 +55,11 @@ public class PortalController {
         response.setHeader("Access-Control-Allow-Origin", "*");
         return iPortalService.fetchExperience();
     }
+
+    @RequestMapping("fetch_contact.do")
+    @ResponseBody
+    public ServerResponse fetchContact(HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        return iPortalService.fetchContact();
+    }
 }

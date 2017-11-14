@@ -17,4 +17,6 @@ public interface IPortalService {
     ServerResponse<ArticlesVo> fetchArticles();
 
     ServerResponse<ExperienceVo> fetchExperience();
+
+    ServerResponse<ContactVo> fetchContact();
 }

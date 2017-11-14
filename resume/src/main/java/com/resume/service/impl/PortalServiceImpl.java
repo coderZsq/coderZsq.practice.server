@@ -205,5 +205,22 @@ public class PortalServiceImpl implements IPortalService {
         careerVo.setTime(experience.getTime());
         return careerVo;
     }
+
+    @Autowired
+    private ContactMapper contactMapper;
+
+    public ServerResponse<ContactVo> fetchContact() {
+        return ServerResponse.createBySuccess(assembleContactVo(contactMapper.selectByPrimaryKey(1)));
+    }
+
+    private ContactVo assembleContactVo(Contact contact) {
+        ContactVo contactVo = new ContactVo();
+        contactVo.setEmail(contact.getEmail());
+        contactVo.setMobile(contact.getMobile());
+        contactVo.setQq(contact.getQq());
+        contactVo.setWechat(contact.getWechat());
+        contactVo.setWechatUrl(contact.getWechatUrl());
+        return contactVo;
+    }
 }
 
