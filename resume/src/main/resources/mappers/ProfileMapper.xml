@@ -146,5 +146,35 @@
     <include refid="Base_Column_List" />
     from resume_profile
   </select>
+  <update id="updateProfile" parameterType="map">
+    update resume_profile
+    <set >
+      <if test="profileImage != null" >
+        profile_image = #{profileImage},
+      </if>
+      <if test="profileName != null" >
+        profile_name = #{profileName},
+      </if>
+      <if test="profileCareer != null" >
+        profile_career = #{profileCareer},
+      </if>
+      <if test="profileSummaryTitle != null" >
+        profile_summary_title = #{profileSummaryTitle},
+      </if>
+      <if test="profileSummaryDescription != null" >
+        profile_summary_description = #{profileSummaryDescription},
+      </if>
+      <if test="profileInterestTitle != null" >
+        profile_interest_title = #{profileInterestTitle},
+      </if>
+      <if test="profileEducationTitle != null" >
+        profile_education_title = #{profileEducationTitle},
+      </if>
+      <if test="profileLocation != null" >
+        profile_location = #{profileLocation},
+      </if>
+    </set>
+    where id = 1
+  </update>
 
 </mapper>
