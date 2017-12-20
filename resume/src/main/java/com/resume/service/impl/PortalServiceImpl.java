@@ -74,6 +74,7 @@ public class PortalServiceImpl implements IPortalService {
         ProfileSocialVo profileSocialVo = new ProfileSocialVo();
         profileSocialVo.setSrc(profileSocial.getSrc());
         profileSocialVo.setHref(profileSocial.getHref());
+        profileSocialVo.setId(profileSocial.getId());
         return profileSocialVo;
     }
 

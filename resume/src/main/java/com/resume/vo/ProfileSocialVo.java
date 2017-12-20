@@ -9,6 +9,8 @@ public class ProfileSocialVo {
 
     private String href;
 
+    private Integer id;
+
     public String getSrc() {
         return src;
     }
@@ -23,5 +25,13 @@ public class ProfileSocialVo {
 
     public void setHref(String href) {
         this.href = href;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 }

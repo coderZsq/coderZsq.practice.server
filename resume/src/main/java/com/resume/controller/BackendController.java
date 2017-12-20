@@ -25,4 +25,25 @@ public class BackendController {
         response.setHeader("Access-Control-Allow-Origin", "*");
         return iBackendService.updateProfile(profile_image, profile_name, profile_career, profile_location, profile_summary_title, profile_summary_description, profile_interest_title, profile_education_title);
     }
+
+    @RequestMapping("update_profile_social.do")
+    @ResponseBody
+    public ServerResponse updateProfileSocial(HttpServletResponse response, String src, String href, Integer id) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        return iBackendService.updateProfileSocial(src, href, id);
+    }
+
+    @RequestMapping("insert_profile_social.do")
+    @ResponseBody
+    public ServerResponse insertProfileSocial(HttpServletResponse response, String src, String href) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        return iBackendService.insertProfileSocial(src, href);
+    }
+
+    @RequestMapping("delete_profile_social.do")
+    @ResponseBody
+    public ServerResponse deleteProfileSocial(HttpServletResponse response, Integer id) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        return iBackendService.deleteProfileSocial(id);
+    }
 }

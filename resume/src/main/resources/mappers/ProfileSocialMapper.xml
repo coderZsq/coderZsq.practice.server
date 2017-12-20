@@ -75,4 +75,21 @@
     <include refid="Base_Column_List" />
     from resume_profile_social
   </select>
+  <update id="updateProfileSocial" parameterType="map">
+    update resume_profile_social
+    <set >
+      <if test="src != null" >
+        src = #{src},
+      </if>
+      <if test="href != null" >
+        href = #{href},
+      </if>
+    </set>
+    where id = #{id}
+  </update>
+  <insert id="insertProfileSocial">
+    insert into resume_profile_social (src, href)
+    values (#{src}, #{href})
+  </insert>
+
 </mapper>
