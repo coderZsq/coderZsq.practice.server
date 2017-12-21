@@ -87,4 +87,15 @@
     from resume_profile_education
     order by year desc
   </select>
+  <update id="updateProfileEducation" parameterType="map">
+    update resume_profile_education
+    set major = #{major},
+      school = #{school},
+      year = #{year}
+    where id = #{id}
+  </update>
+  <insert id="insertProfileEducation" parameterType="map">
+    insert into resume_profile_education (major, school, year)
+    values (#{major}, #{school},  #{year})
+  </insert>
 </mapper>

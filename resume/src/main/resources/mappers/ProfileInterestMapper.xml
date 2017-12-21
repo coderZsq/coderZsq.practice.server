@@ -63,4 +63,13 @@
     <include refid="Base_Column_List" />
     from resume_profile_interest
   </select>
+  <update id="updateProfileInterest" parameterType="map">
+    update resume_profile_interest
+    set interest = #{interest}
+    where id = #{id}
+  </update>
+  <insert id="insertProfileInterest" parameterType="string">
+    insert into resume_profile_interest (interest)
+    values (#{interest})
+  </insert>
 </mapper>

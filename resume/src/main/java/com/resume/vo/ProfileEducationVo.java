@@ -11,6 +11,8 @@ public class ProfileEducationVo {
 
     private String year;
 
+    private Integer id;
+
     public String getMajor() {
         return major;
     }
@@ -33,5 +35,13 @@ public class ProfileEducationVo {
 
     public void setYear(String year) {
         this.year = year;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 }

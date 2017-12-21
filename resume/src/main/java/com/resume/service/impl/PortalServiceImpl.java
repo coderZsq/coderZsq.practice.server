@@ -81,6 +81,7 @@ public class PortalServiceImpl implements IPortalService {
     private ProfileInterestVo assembleProfileInterestVo(ProfileInterest profileInterest) {
         ProfileInterestVo profileInterestVo = new ProfileInterestVo();
         profileInterestVo.setInterest(profileInterest.getInterest());
+        profileInterestVo.setId(profileInterest.getId());
         return profileInterestVo;
     }
 
@@ -89,6 +90,7 @@ public class PortalServiceImpl implements IPortalService {
         profileEducationVo.setMajor(profileEducation.getMajor());
         profileEducationVo.setSchool(profileEducation.getSchool());
         profileEducationVo.setYear(profileEducation.getYear());
+        profileEducationVo.setId(profileEducation.getId());
         return profileEducationVo;
     }
 

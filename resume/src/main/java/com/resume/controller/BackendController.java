@@ -46,4 +46,46 @@ public class BackendController {
         response.setHeader("Access-Control-Allow-Origin", "*");
         return iBackendService.deleteProfileSocial(id);
     }
+
+    @RequestMapping("update_profile_interest.do")
+    @ResponseBody
+    public ServerResponse updateProfileInterest(HttpServletResponse response, String interest, Integer id) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        return iBackendService.updateProfileInterest(interest, id);
+    }
+
+    @RequestMapping("insert_profile_interest.do")
+    @ResponseBody
+    public ServerResponse insertProfileInterest(HttpServletResponse response, String interest) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        return iBackendService.insertProfileInterest(interest);
+    }
+
+    @RequestMapping("delete_profile_interest.do")
+    @ResponseBody
+    public ServerResponse deleteProfileInterest(HttpServletResponse response, Integer id) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        return iBackendService.deleteProfileInterest(id);
+    }
+
+    @RequestMapping("update_profile_education.do")
+    @ResponseBody
+    public ServerResponse updateProfileEducation(HttpServletResponse response, String major, String school, String year, Integer id) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        return iBackendService.updateProfileEducation(major, school, year, id);
+    }
+
+    @RequestMapping("insert_profile_education.do")
+    @ResponseBody
+    public ServerResponse insertProfileEducation(HttpServletResponse response, String major, String school, String year) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        return iBackendService.insertProfileEducation(major, school, year);
+    }
+
+    @RequestMapping("delete_profile_education.do")
+    @ResponseBody
+    public ServerResponse deleteProfileEducation(HttpServletResponse response, Integer id) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        return iBackendService.deleteProfileEducation(id);
+    }
 }

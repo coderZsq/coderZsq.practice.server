@@ -13,4 +13,16 @@ public interface IBackendService {
     ServerResponse insertProfileSocial(String src, String href);
 
     ServerResponse deleteProfileSocial(Integer id);
+
+    ServerResponse updateProfileInterest(String interest, Integer id);
+
+    ServerResponse insertProfileInterest(String interest);
+
+    ServerResponse deleteProfileInterest(Integer id);
+
+    ServerResponse updateProfileEducation(String major, String school, String year, Integer id);
+
+    ServerResponse insertProfileEducation(String major, String school, String year);
+
+    ServerResponse deleteProfileEducation(Integer id);
 }
