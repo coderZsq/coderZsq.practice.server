@@ -5,7 +5,8 @@ package com.foundation;
  */
 public class Boxing {
 
-    static void run() {
+    public static void run() {
+        System.out.println("--- Boxing ---");
         System.out.println("new Integer(2) == 2 ? " + (new Integer(2) == 2));
         System.out.println("new Integer(2) == new Integer(2) ? " + (new Integer(2) == new Integer(2)));
         System.out.println("Integer.valueOf(2) == Integer.valueOf(2) ? " + (Integer.valueOf(2) == Integer.valueOf(2)));
