@@ -1,4 +1,4 @@
-package com.foundation;
+package com.codingskills;
 
 import java.util.ArrayList;
 import java.util.Arrays;

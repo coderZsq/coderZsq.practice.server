@@ -1,4 +1,4 @@
-package com.foundation;
+package com.codingskills;
 
 /**
  * Created by zhushuangquan on 16/01/2018.

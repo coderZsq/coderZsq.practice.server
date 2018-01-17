@@ -1,4 +1,4 @@
-package com.foundation;
+package com.codingskills;
 
 public class Main {
 
