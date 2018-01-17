@@ -20,6 +20,22 @@ public class LinkedList {
         Node.printLinkedList(reverseLinkedList(createLenkedList(Arrays.asList(1))));
         Node.printLinkedList(reverseLinkedList(createLenkedList(Arrays.asList(1, 2, 3, 4, 5))));
 
+        Node.printLinkedList(reverseLinkedList2(createLenkedList(new ArrayList<Integer>())));
+        Node.printLinkedList(reverseLinkedList2(createLenkedList(Arrays.asList(1))));
+        Node.printLinkedList(reverseLinkedList2(createLenkedList(Arrays.asList(1, 2, 3, 4, 5))));
+
+        //Node.printLinkedList(reverseLinkedList(createLargeLinkedList(1000000)));
+        //Node.printLinkedList(reverseLinkedList2(createLargeLinkedList(1000000)));
+
+        Node.printLinkedList(deleteIfEquals(createLenkedList(Arrays.asList(1, 2, 3, 2, 5)), 2));
+        Node.printLinkedList(deleteIfEquals(createLenkedList(Arrays.asList(1, 2, 3, 2, 2)), 2));
+        Node.printLinkedList(deleteIfEquals(createLenkedList(Arrays.asList(1, 2, 3, 2, 2)), 1));
+        Node.printLinkedList(deleteIfEquals(createLenkedList(Arrays.asList(2, 2, 3, 2, 2)), 2));
+        Node.printLinkedList(deleteIfEquals(createLenkedList(Arrays.asList(2, 2, 3, 2, 2)), 2));
+        Node.printLinkedList(deleteIfEquals(createLenkedList(Arrays.asList(2, 2, 2, 2, 2)), 2));
+        Node.printLinkedList(deleteIfEquals(createLenkedList(Arrays.asList(2)), 2));
+        Node.printLinkedList(deleteIfEquals(createLenkedList(Arrays.asList(2)), 1));
+        Node.printLinkedList(deleteIfEquals(createLenkedList(new ArrayList<Integer>()), 1));
     }
 
     /*
@@ -54,5 +70,64 @@ public class LinkedList {
         return newHead;
     }
 
+    /*
+    * 定义循环不变式, 并在循环体每次结束后保持循环不变式
+    * 先一般, 后特殊
+    * 每次必须向前推进循环不变式中涉及的变量值
+    * 每次推进的规模必须为1
+    * */
+    private static Node reverseLinkedList2(Node head) {
+        Node newHead = null;
+        Node curHead = head;
+        // Loop invariant
+        // newHead points to the linked list already reversed.
+        // curHead points to the linked list not yet reversed.
+        while (curHead != null) {          // curHead being last node
+            // Loop invarint holds.
+            Node next = curHead.getNext(); // next = null
+            curHead.setNext(newHead);      // curHead.next reversed
+            newHead = curHead;             // newHead points to last node
+            curHead = next;                // curHead = null
+            // Loop invarint holds.
+        }
+        // Loop invarint holds.
+        return newHead;
+    }
+
+    private static Node createLargeLinkedList(int size) {
+        Node prev = null;
+        Node head = null;
+        for (int i = 1; i <= size; i++) {
+            Node node = new Node(i);
+            if (prev != null) {
+                prev.setNext(node);
+            } else  {
+                head = node;
+            }
+            prev = node;
+        }
+        return head;
+    }
+
+    private static Node deleteIfEquals(Node head, int value) {
+        while (head != null && head.getValue() == value) {
+            head = head.getNext();
+        }
+        if (head == null) {
+            return null;
+        }
+        Node prev = head;
+        // Loop invariant: list nodes from head up to prev has been
+        // processed. (Nodes with values equals to value are deleted.)
+        while (prev.getNext() != null) {
+            if (prev.getNext().getValue() == value) {
+                // delete it
+                prev.setNext(prev.getNext().getNext());
+            } else {
+                prev = prev.getNext();
+            }
+        }
+        return head;
+    }
 }
 
