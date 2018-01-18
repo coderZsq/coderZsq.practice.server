@@ -1,4 +1,4 @@
-package com.datastructure;
+package com.codingskills;
 
 import org.omg.CORBA.PRIVATE_MEMBER;
 
@@ -15,7 +15,7 @@ public class Tree {
         System.out.println();
         postOrder(createSampleTree());
         System.out.println();
-        System.out.println("============");
+        System.out.println("======");
         postOrder(createTree("ABDEGCF", "DBGEACF")) ;
         System.out.println();
         postOrder(createTree("", "")) ;
@@ -24,7 +24,7 @@ public class Tree {
         System.out.println();
         postOrder(createTree("AB", "BA")) ;
         System.out.println();
-        System.out.println("============");
+        System.out.println("======");
         System.out.println(postOrder("ABDEGCF", "DBGEACF"));
         System.out.println(postOrder("", ""));
         System.out.println(postOrder("A", "A"));

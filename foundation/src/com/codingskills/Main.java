@@ -8,6 +8,7 @@ public class Main {
         LinkedList.run();
         Combinations.run();
         BinarySearch.run();
+        Tree.run();
     }
 }
 

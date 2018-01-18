@@ -1,4 +1,4 @@
-package com.datastructure;
+package com.codingskills;
 
 /**
  * Created by zhushuangquan on 17/01/2018.

@@ -11,11 +11,11 @@ public class BinarySearch {
         System.out.println(binarySerach(new int[]{1, 2 ,10 ,15, 100}, -2));
         System.out.println(binarySerach(new int[]{1, 2 ,10 ,15, 100}, 101));
         System.out.println(binarySerach(new int[]{1, 2 ,10 ,15, 100}, 13));
-        System.out.println("====================");
+        System.out.println("======");
         System.out.println(binarySerach(new int[]{}, 13));
         System.out.println(binarySerach(new int[]{12}, 13));
         System.out.println(binarySerach(new int[]{13}, 13));
-        System.out.println("====================");
+        System.out.println("======");
         System.out.println(binarySerach(new int[]{12, 13}, 13));
         System.out.println(binarySerach(new int[]{12, 13}, 12));
     }

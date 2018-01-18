@@ -15,17 +15,17 @@ public class LinkedList {
         Node.printLinkedList(createLenkedList(new ArrayList<Integer>()));
         Node.printLinkedList(createLenkedList(Arrays.asList(1)));
         Node.printLinkedList(createLenkedList(Arrays.asList(1, 2, 3, 4, 5)));
-        System.out.println("====================");
+        System.out.println("======");
 
         Node.printLinkedList(reverseLinkedList(createLenkedList(new ArrayList<Integer>())));
         Node.printLinkedList(reverseLinkedList(createLenkedList(Arrays.asList(1))));
         Node.printLinkedList(reverseLinkedList(createLenkedList(Arrays.asList(1, 2, 3, 4, 5))));
-        System.out.println("====================");
+        System.out.println("======");
 
         Node.printLinkedList(reverseLinkedList2(createLenkedList(new ArrayList<Integer>())));
         Node.printLinkedList(reverseLinkedList2(createLenkedList(Arrays.asList(1))));
         Node.printLinkedList(reverseLinkedList2(createLenkedList(Arrays.asList(1, 2, 3, 4, 5))));
-        System.out.println("====================");
+        System.out.println("======");
 
         //Node.printLinkedList(reverseLinkedList(createLargeLinkedList(1000000)));
         //Node.printLinkedList(reverseLinkedList2(createLargeLinkedList(1000000)));

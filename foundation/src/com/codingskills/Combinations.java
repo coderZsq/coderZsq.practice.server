@@ -12,15 +12,15 @@ public class Combinations {
     public static void run() {
         System.out.println("--- Combinations ---");
         combinations(new ArrayList<Integer>(), Arrays.asList(1, 2, 3, 4), 2);
-        System.out.println("====================");
+        System.out.println("======");
         combinations(new ArrayList<Integer>(), new ArrayList<Integer>(), 2);
-        System.out.println("====================");
+        System.out.println("======");
         combinations(new ArrayList<Integer>(), new ArrayList<Integer>(), 0);
-        System.out.println("====================");
+        System.out.println("======");
         combinations(new ArrayList<Integer>(), Arrays.asList(1, 2, 3, 4), 1);
-        System.out.println("====================");
+        System.out.println("======");
         combinations(new ArrayList<Integer>(), Arrays.asList(1, 2, 3, 4), 0);
-        System.out.println("====================");
+        System.out.println("======");
         combinations(new ArrayList<Integer>(), Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), 4);
     }
 
