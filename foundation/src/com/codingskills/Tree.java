@@ -29,6 +29,13 @@ public class Tree {
         System.out.println(postOrder("", ""));
         System.out.println(postOrder("A", "A"));
         System.out.println(postOrder("AB", "BA"));
+        System.out.println("======");
+        inOrderTraverse(createSampleTree());
+        inOrderTraverse(createTree("", ""));
+        inOrderTraverse(createTree("A", "A"));
+        inOrderTraverse(createTree("AB", "BA"));
+        inOrderTraverse(createTree("ABCD", "DCBA"));
+        inOrderTraverse(createTree("ABCD", "ABCD"));
     }
 
     private static TreeNode createSampleTree() {
@@ -85,5 +92,39 @@ public class Tree {
         int rootIndex = inOrder.indexOf(rootValue);
 
         return postOrder(preOrder.substring(1, 1 + rootIndex), inOrder.substring(0, rootIndex)) + postOrder(preOrder.substring(1 + rootIndex), inOrder.substring(1 + rootIndex)) + rootValue;
+    }
+
+    private static TreeNode inOrderNext(TreeNode node) {
+        if (node == null) {
+            return null;
+        }
+        if (node.getRight() != null) {
+            return inOrderFirst(node.getRight());
+        } else {
+            while (node.getParent() != null && node.getParent().getRight() == node) {
+                node = node.getParent();
+            }
+            // node.getParent() == null
+            // || node is left child of its parent
+            return node.getParent();
+        }
+    }
+
+    private static TreeNode inOrderFirst(TreeNode node) {
+        if (node == null) {
+            return null;
+        }
+        TreeNode curNode = node;
+        while (curNode.getLeft() != null) {
+            curNode = curNode.getLeft();
+        }
+        return curNode;
+    }
+
+    private static void inOrderTraverse(TreeNode root) {
+        for (TreeNode node = inOrderFirst(root); node!= null; node = inOrderNext(node)) {
+            System.out.print(node.getValue());
+        }
+        System.out.println();
     }
 }

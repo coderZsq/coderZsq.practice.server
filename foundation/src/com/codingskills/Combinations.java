@@ -1,5 +1,7 @@
 package com.codingskills;
 
+import com.sun.xml.internal.bind.v2.model.core.ID;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -44,8 +46,11 @@ public class Combinations {
         if (data.isEmpty()) {
             return;
         }
+        if (data.isEmpty()) {
+            return;
+        }
 
-        // se lect element 0
+        // select element 0
         selected.add(data.get(0));
         combinations(selected, data.subList(1, data.size()), n - 1);
         // un-select element 0
