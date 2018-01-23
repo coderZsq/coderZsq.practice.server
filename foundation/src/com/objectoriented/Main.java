@@ -37,5 +37,12 @@ public class Main {
         for (Integer value: list) {
             System.out.println(value);
         }
+
+        Employee manager = new Manager("Tony", 100000);
+        employees.add(manager);
+        for (Employee employee: employees) {
+            System.out.println(employee);
+        }
+
     }
 }
