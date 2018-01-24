@@ -10,10 +10,14 @@ import java.util.NoSuchElementException;
  */
 public class LinkedList implements Iterable<Integer> {
 
-    Node head;
-    Node tail;
+    private Node head;
+    private Node tail;
 
-    public LinkedList() {
+    public static LinkedList newEmptyList() {
+        return new LinkedList();
+    }
+
+    private LinkedList() {
         head = null;
         tail = null;
     }
@@ -28,8 +32,8 @@ public class LinkedList implements Iterable<Integer> {
         tail = node;
     }
 
-    class ListIterator implements Iterator<Integer> {
-        Node currentNode;
+    private class ListIterator implements Iterator<Integer> {
+        private Node currentNode;
 
         public ListIterator(Node head) {
             currentNode = head;

@@ -7,9 +7,9 @@ import java.util.List;
  */
 public class Employee {
 
-    static List<Employee> allEmployees;
-    String name;
-    int salary;
+    public static List<Employee> allEmployees;
+    private String name;
+    private int salary;
     public Employee(String name, int salary) {
         this.name = name;
         this.salary = salary;
@@ -17,10 +17,10 @@ public class Employee {
     public Employee(String name) {
         this(name, 0);
     }
-    void doWork() {
+    public void doWork() {
 
     }
-    void getPaid(BankEndPoint bank) {
+    public void getPaid(BankEndPoint bank) {
         bank.payment(name, salary);
     }
 
@@ -66,7 +66,25 @@ public class Employee {
                 '}';
     }
 
+    // Package private for logic in the package to control
+    // when employees are loaded.
     static void loadAllEmployees() {
         // Load all employees from database.
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getSalary() {
+        return salary;
+    }
+
+    public void setSalary(int salary) {
+        this.salary = salary;
     }
 }

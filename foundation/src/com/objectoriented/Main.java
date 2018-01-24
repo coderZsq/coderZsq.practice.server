@@ -11,7 +11,7 @@ public class Main {
         Employee employee1 = new Employee("John", 10000);
         Employee employee2 = new Employee("Mary", 20000);
         Employee employee3 = new Employee("John");
-        employee3.salary = 10000;
+        employee3.setSalary(10000);
 
         System.out.println("employee1 == employee3 ? " + (employee1 == employee3));
         System.out.println("employee1.equals(employee3) ? " + employee1.equals(employee3));
@@ -29,7 +29,7 @@ public class Main {
             System.out.println(employee);
         }
 
-        com.objectoriented.LinkedList list = new com.objectoriented.LinkedList();
+        com.objectoriented.LinkedList list = com.objectoriented.LinkedList.newEmptyList();
         for (int i = 0; i < 100; i++) {
             list.add(i);
         }

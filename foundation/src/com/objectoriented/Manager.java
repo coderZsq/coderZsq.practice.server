@@ -7,20 +7,20 @@ import java.util.List;
  */
 public class Manager extends Employee {
 
-    List<Employee> reporters;
+    private List<Employee> reporters;
 
     public Manager(String name, int salary) {
         super(name, salary);
     }
 
     @Override
-    void getPaid(BankEndPoint bank) {
+    public void getPaid(BankEndPoint bank) {
         super.getPaid(bank);
         getStocks();
     }
 
     @Override
-    void doWork() {
+    public void doWork() {
         Employee worker = selectReporter();
         worker.doWork();
     }
@@ -28,8 +28,8 @@ public class Manager extends Employee {
     @Override
     public String toString() {
         return "Manager{" +
-                "name='" + name + '\'' +
-                ", salary=" + salary +
+                "name='" + getName() + '\'' +
+                ", salary=" + getSalary() +
                 '}';
     }
 
