@@ -13,8 +13,7 @@
 
 - you need to excute SQL file.
 
-<img src="./resume/contents/img3.png" width="250">
-<img src="./resume/contents/img2.png" width="500">
+<img src="./resume/contents/img3.png" width="250"><img src="./resume/contents/img2.png" width="500">
 
 - you need to launch tomcat server.
 
