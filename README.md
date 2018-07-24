@@ -4,20 +4,18 @@
 >Practice building a server through java, and `interact` with the front-end.
 
 ##### Get Started
-- you need a [JVM](https://www.java.com/zh_CN/) server environment.
-- you need a [MySQL](https://www.mysql.com/downloads/) database.
-- you need config `nginx` & `maven` by yourself.
-- you need to start the MySQL server.
+- Step 1. you need a [JVM](https://www.java.com/zh_CN/) server environment.
+- Step 2. you need a [MySQL](https://www.mysql.com/downloads/) database.
+- Step 3. you need config `nginx` & `maven` by yourself.
+- Step 4. you need to start the `MySQL server`.
 
 <img src="./resume/contents/img1.png" width="600">
 
-- you need to excute SQL file.
+- Step 5. you need to excute SQL file.
 
 <img src="./resume/contents/img3.png" width="250"><img src="./resume/contents/img2.png" width="500">
 
-- you need to launch tomcat server.
-
-<img src="./resume/contents/img4.png">
+- Then need to launch `tomcat server` at `localhost:8080`.
 
 ##### Content
 
