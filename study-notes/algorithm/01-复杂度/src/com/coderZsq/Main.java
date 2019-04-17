@@ -28,19 +28,47 @@ public class Main {
         return second;
     }
 
+    public static int fib3(int n) {
+        if (n <= 1) return n;
+
+        int first = 0;
+        int second = 1;
+        while (n-- > 1) {
+            second += first;
+            first = second - first;
+        }
+        return second;
+    }
+
+    public static int fib4(int n) {
+        double c = Math.sqrt(5);
+        return (int)((Math.pow((1 + c) / 2, n) - Math.pow((1 - c) / 2, n)) / c);
+    }
 
     public static void main(String[] args) {
-        int n = 46;
+        int n = 1000000000;
 
-        TimeTool.check("fib1", new Task() {
-            public void execute() {
-                System.out.println(fib1(n));
-            }
-        });
+//        TimeTool.check("fib1", new Task() {
+//            public void execute() {
+//                System.out.println(fib1(n));
+//            }
+//        });
 
         TimeTool.check("fib2", new Task() {
             public void execute() {
                 System.out.println(fib2(n));
+            }
+        });
+
+//        TimeTool.check("fib3", new Task() {
+//            public void execute() {
+//                System.out.println(fib3(n));
+//            }
+//        });
+
+        TimeTool.check("fib4", new Task() {
+            public void execute() {
+                System.out.println(fib4(n));
             }
         });
     }

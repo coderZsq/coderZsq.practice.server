@@ -3,20 +3,36 @@ package com.coderZsq;
 public class Main {
 
     public static void main(String[] args) {
-        int array[] = new int[] {11, 22, 33};
+//        java.util.ArrayList
+        ArrayList<Object> persons = new ArrayList<>();
+        persons.add(new Person(10, "Jack"));
+        persons.add(null);
+        persons.add(new Person(15, "Rose"));
+        persons.add(null);
+        persons.add(new Person(12, "James"));
+        persons.add(null);
+        System.out.println(persons.indexOf(null));
+    }
 
-        ArrayList list = new ArrayList();
-        list.clear();
+    static void test() {
+        // int -> Integer
 
-        // 1
-        // size++;
-        list.add(99);
+        // 所有的类，最终都继承java.lang.Object
 
-        // 2
-        // size++
-        list.add(88);
+        // new是向堆空间申请内存
+        ArrayList<Person> persons = new ArrayList<>();
+        persons.add(new Person(10, "Jack"));
+        persons.add(new Person(12, "James"));
+        persons.add(new Person(15, "Rose"));
+        persons.clear();
+        persons.add(new Person(22, "abc"));
 
-        // list.get(2);
-        // list.set(2, element)
+        System.out.println(persons);
+        ArrayList<Integer> ints = new ArrayList<>();
+        ints.add(10);
+        ints.add(10);
+        ints.add(22);
+        ints.add(33);
+        System.out.println(ints);
     }
 }
