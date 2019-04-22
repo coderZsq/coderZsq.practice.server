@@ -1,7 +1,10 @@
 package com.coderZsq;
 
+/*
+* 动态缩容
+* */
 @SuppressWarnings("unchecked")
-public class ArrayList<E> extends AbstractList<E> {
+public class ArrayList2<E> extends AbstractList<E> {
     /**
      * 所有的元素
      */
@@ -9,12 +12,12 @@ public class ArrayList<E> extends AbstractList<E> {
 
     private static final int DEFAULT_CAPACITY = 10;
 
-    public ArrayList(int capaticy) {
+    public ArrayList2(int capaticy) {
         capaticy = (capaticy < DEFAULT_CAPACITY) ? DEFAULT_CAPACITY : capaticy;
         elements = (E[]) new Object[capaticy];
     }
 
-    public ArrayList() {
+    public ArrayList2() {
         this(DEFAULT_CAPACITY);
     }
 
@@ -24,6 +27,11 @@ public class ArrayList<E> extends AbstractList<E> {
             elements[i] = null;
         }
         size = 0;
+
+        // 仅供参考
+        if (elements != null && elements.length > DEFAULT_CAPACITY) {
+            elements = (E[]) new Object[DEFAULT_CAPACITY];
+        }
     }
 
     @Override
@@ -75,6 +83,9 @@ public class ArrayList<E> extends AbstractList<E> {
             elements[i - 1] = elements[i];
         }
         elements[--size] = null;
+
+        trim();
+
         return old;
     }
 
@@ -109,6 +120,21 @@ public class ArrayList<E> extends AbstractList<E> {
         elements = newElements;
 
         System.out.println(oldCapacity + "扩容为" + newCapacity);
+    }
+
+    private void trim() {
+        int oldCapacity = elements.length;
+        int newCapacity = oldCapacity >> 1;
+        if (size >= (newCapacity) || oldCapacity <= DEFAULT_CAPACITY) return;
+
+        // 剩余空间还很多
+        E[] newElements = (E[]) new Object[newCapacity];
+        for (int i = 0; i < size; i++) {
+            newElements[i] = elements[i];
+        }
+        elements = newElements;
+
+        System.out.println(oldCapacity + "缩容为" + newCapacity);
     }
 
     @Override
