@@ -1,5 +1,8 @@
 package com.coderZsq;
 
+import com.coderZsq.circle.CircleLinkedList;
+import com.coderZsq.circle.SingleCircleLinkedList;
+
 public class Main {
 
     static void testList(List<Integer> list) {
@@ -26,8 +29,33 @@ public class Main {
         System.out.println(list);
     }
 
+    static void josephus() {
+        CircleLinkedList<Integer> list = new CircleLinkedList<>();
+        for (int i = 1; i <= 8; i++) {
+            list.add(i);
+        }
+
+        // 指向头结点 (指向1)
+        list.reset();
+
+        while (!list.isEmpty()) {
+            list.next();
+            list.next();
+            System.out.println(list.remove());
+        }
+    }
+
     public static void main(String[] args) {
-        testList(new ArrayList<>());
-        testList(new LinkedList<>());
+        josephus();
+
+//        testList(new ArrayList<>());
+//        testList(new LinkedList<>());
+//        testList(new SingleCircleLinkedList<>());
+//        testList(new CircleLinkedList<>());
+
+        /*
+        * gc root对象
+        * 1> 被局部变量指向的对象
+        * */
     }
 }
