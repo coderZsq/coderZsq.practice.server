@@ -14,6 +14,10 @@ public class Deque<E> {
         return list.isEmpty();
     }
 
+    public void clear() {
+        list.clear();
+    }
+
     public void enQueueRear(E element) {
         list.add(element);
     }

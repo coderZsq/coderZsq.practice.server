@@ -19,6 +19,14 @@ public class CircleDeque<E> {
         return size == 0;
     }
 
+    public void clear() {
+        for (int i = 0; i < size; i++) {
+            elements[index(i)] = null;
+        }
+        size = 0;
+        front = 0;
+    }
+
     /**
      *  从尾部入队
      * @param element
