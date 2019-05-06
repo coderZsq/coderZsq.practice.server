@@ -2,9 +2,15 @@ package com.coderZsq;
 
 public class Person implements Comparable<Person> {
     private int age;
+    private String name;
 
     public Person(int age) {
         this.age = age;
+    }
+
+    public Person(int age, String name) {
+        this.age = age;
+        this.name = name;
     }
 
     public int getAge() {
@@ -25,6 +31,6 @@ public class Person implements Comparable<Person> {
 
     @Override
     public String toString() {
-        return "age=" + age;
+        return age + "_" + name;
     }
 }

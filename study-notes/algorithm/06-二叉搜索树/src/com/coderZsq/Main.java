@@ -1,5 +1,6 @@
 package com.coderZsq;
 
+import com.coderZsq.file.Files;
 import com.coderZsq.printer.BinaryTreeInfo;
 import com.coderZsq.printer.BinaryTrees;
 
@@ -68,10 +69,13 @@ public class Main {
             bst.add((int)(Math.random() * 100));
         }
 
-        BinaryTrees.println(bst);
+        String str = BinaryTrees.printString(bst);
+        str += "\n";
+        Files.writeToFile("/Users/zhushuangquan/Desktop/bst.txt", str, true);
+//        BinaryTrees.println(bst);
     }
 
-    public static void main(String[] args) {
+    static void test4() {
         BinaryTrees.println(new BinaryTreeInfo() {
             @Override
             public Object root() {
@@ -97,5 +101,58 @@ public class Main {
                 return node.toString() + "_";
             }
         });
+    }
+
+    static void test5() {
+        BinarySearchTree<Person> bst = new BinarySearchTree<>();
+        bst.add(new Person(10, "jack"));
+        bst.add(new Person(12, "rose"));
+        bst.add(new Person(6, "jim"));
+
+        bst.add(new Person(10, "michael"));
+
+        BinaryTrees.println(bst);
+    }
+
+    static void test6() {
+        Integer data[] = new Integer[] {
+                7, 4, 9, 2, 5
+        };
+
+        BinarySearchTree<Integer> bst = new BinarySearchTree<>();
+        for (int i = 0; i < data.length; i++) {
+            bst.add(data[i]);
+        }
+
+//        BinarySearchTree<Integer> bst = new BinarySearchTree<>();
+//        for (int i = 0; i < 40; i++) {
+//            bst.add((int)(Math.random() * 100));
+//        }
+
+        BinaryTrees.println(bst);
+//        bst.preorderTraversal();
+//        bst.inorderTraversal();
+//        bst.postorderTraversal();
+//        bst.levelOrderTraversal();
+//        bst.levelOrder(new BinarySearchTree.Visitor<Integer>() {
+//            @Override
+//            public void visit(Integer element) {
+//                System.out.print("_" + element + "_ ");
+//            }
+//        });
+
+//        bst.inorder(new BinarySearchTree.Visitor<Integer>() {
+//            @Override
+//            public void visit(Integer element) {
+//                System.out.print("_" + element + "_ ");
+//            }
+//        });
+
+//        System.out.println(bst.height());
+        System.out.println(bst.isComplete());
+    }
+
+    public static void main(String[] args) {
+        test6();
     }
 }
