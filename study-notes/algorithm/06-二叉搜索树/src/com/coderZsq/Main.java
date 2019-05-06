@@ -3,6 +3,8 @@ package com.coderZsq;
 import com.coderZsq.file.Files;
 import com.coderZsq.printer.BinaryTreeInfo;
 import com.coderZsq.printer.BinaryTrees;
+import com.coderZsq.tree.BST;
+import com.coderZsq.tree.BinarySearchTree;
 
 import java.util.Comparator;
 
@@ -152,7 +154,41 @@ public class Main {
         System.out.println(bst.isComplete());
     }
 
+    static void test7() {
+        Integer data[] = new Integer[] {
+                7, 4, 9, 2, 5, 8, 11, 3, 12, 1
+        };
+
+        BinarySearchTree<Integer> bst = new BinarySearchTree<>();
+        for (int i = 0; i < data.length; i++) {
+            bst.add(data[i]);
+        }
+
+        BinaryTrees.println(bst);
+
+        bst.remove(7);
+
+        BinaryTrees.println(bst);
+    }
+
+    static void test8() {
+        Integer data[] = new Integer[] {
+                7, 4, 9, 2, 5, 8, 11, 3, 12, 1
+        };
+
+        BST<Integer> bst = new BST<>();
+        for (int i = 0; i < data.length; i++) {
+            bst.add(data[i]);
+        }
+
+        BinaryTrees.println(bst);
+
+        bst.remove(7);
+
+        BinaryTrees.println(bst);
+    }
+
     public static void main(String[] args) {
-        test6();
+        test8();
     }
 }
