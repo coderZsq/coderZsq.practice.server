@@ -5,6 +5,7 @@ import com.coderZsq.printer.BinaryTreeInfo;
 import com.coderZsq.printer.BinaryTrees;
 import com.coderZsq.tree.BST;
 import com.coderZsq.tree.BinarySearchTree;
+import com.coderZsq.tree.BinaryTree;
 
 import java.util.Comparator;
 
@@ -173,7 +174,7 @@ public class Main {
 
     static void test8() {
         Integer data[] = new Integer[] {
-                7, 4, 9, 2, 5, 8, 11, 3, 12, 1
+                7, 4, 9, 2, 1
         };
 
         BST<Integer> bst = new BST<>();
@@ -182,13 +183,57 @@ public class Main {
         }
 
         BinaryTrees.println(bst);
+        System.out.println(bst.isComplete());
+    }
 
-        bst.remove(7);
+    static void test9() {
+        Integer data[] = new Integer[] {
+                7, 4, 9, 2, 1
+        };
 
+        BST<Integer> bst = new BST<>();
+        for (int i = 0; i < data.length; i++) {
+            bst.add(data[i]);
+        }
         BinaryTrees.println(bst);
+
+        bst.preorder(new BinaryTree.Visitor<Integer>() {
+            @Override
+            public boolean visit(Integer element) {
+                System.out.print(element + " ");
+                return element == 2 ? true : false;
+            }
+        });
+        System.out.println();
+
+        bst.inorder(new BinaryTree.Visitor<Integer>() {
+            @Override
+            public boolean visit(Integer element) {
+                System.out.print(element + " ");
+                return element == 4 ? true : false;
+            }
+        });
+        System.out.println();
+
+        bst.postorder(new BinaryTree.Visitor<Integer>() {
+            @Override
+            public boolean visit(Integer element) {
+                System.out.print(element + " ");
+                return element == 4 ? true : false;
+            }
+        });
+        System.out.println();
+
+        bst.levelOrder(new BinaryTree.Visitor<Integer>() {
+            @Override
+            public boolean visit(Integer element) {
+                System.out.print(element + " ");
+                return element == 9 ? true : false;
+            }
+        });
     }
 
     public static void main(String[] args) {
-        test8();
+        test9();
     }
 }

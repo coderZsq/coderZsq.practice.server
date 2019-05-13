@@ -28,12 +28,14 @@ public class BinaryTree<E> implements BinaryTreeInfo {
      * 前序遍历
      */
     public void preorder(Visitor<E> visitor) {
+        if (visitor == null) return;;
         preorder(root, visitor);
     }
 
     private void preorder(Node<E> node, Visitor<E> visitor) {
-        if (node == null || visitor == null) return;
-        visitor.visit(node.element);
+        if (node == null || visitor.stop) return;
+
+        visitor.stop = visitor.visit(node.element);
         preorder(node.left, visitor);
         preorder(node.right, visitor);
     }
@@ -42,13 +44,16 @@ public class BinaryTree<E> implements BinaryTreeInfo {
      * 中序遍历
      */
     public void inorder(Visitor<E> visitor) {
+        if (visitor == null) return;;
         inorder(root, visitor);
     }
 
     private void inorder(Node<E> node, Visitor<E> visitor) {
-        if (node == null || visitor == null) return;
+        if (node == null || visitor.stop) return;
+
         inorder(node.left, visitor);
-        visitor.visit(node.element);
+        if (visitor.stop) return;;
+        visitor.stop = visitor.visit(node.element);
         inorder(node.right, visitor);
     }
 
@@ -56,14 +61,17 @@ public class BinaryTree<E> implements BinaryTreeInfo {
      * 后序遍历
      */
     public void postorder(Visitor<E> visitor) {
+        if (visitor == null) return;;
         postorder(root, visitor);
     }
 
     private void postorder(Node<E> node, Visitor<E> visitor) {
-        if (node == null || visitor == null) return;
+        if (node == null || visitor.stop) return;
+
         postorder(node.left, visitor);
         postorder(node.right, visitor);
-        visitor.visit(node.element);
+        if (visitor.stop) return;;
+        visitor.stop = visitor.visit(node.element);
     }
 
     /**
@@ -77,7 +85,7 @@ public class BinaryTree<E> implements BinaryTreeInfo {
 
         while (!queue.isEmpty()) {
             Node<E> node = queue.poll();
-            visitor.visit(node.element);
+            if (visitor.visit(node.element)) return;
 
             if (node.left != null) {
                 queue.offer(node.left);
@@ -100,18 +108,48 @@ public class BinaryTree<E> implements BinaryTreeInfo {
             Node<E> node = queue.poll();
             if (leaf && !node.isLeaf()) return false;
 
-            if (node.hasTwoChildren()) {
+            if (node.left != null) {
                 queue.offer(node.left);
-                queue.offer(node.right);
-            } else if (node.left == null && node.right != null) {
+            } else if (node.right != null) { // node.left == null && node.right != null
                 return false;
-            } else { // 后面遍历的节点都必须是叶子节点
+            }
+
+            if (node.right != null) {
+                queue.offer(node.right);
+            } else { // node.right == null
                 leaf = true;
             }
         }
 
         return true;
     }
+
+//    public boolean isComplete() {
+//        if (root == null) return false;
+//
+//        Queue<Node<E>> queue = new LinkedList<>();
+//        queue.offer(root);
+//
+//        boolean leaf = false;
+//        while (!queue.isEmpty()) {
+//            Node<E> node = queue.poll();
+//            if (leaf && !node.isLeaf()) return false;
+//
+//            if (node.hasTwoChildren()) {
+//                queue.offer(node.left);
+//                queue.offer(node.right);
+//            } else if (node.left == null && node.right != null) {
+//                return false;
+//            } else { // 后面遍历的节点都必须是叶子节点
+//                leaf = true;
+//                if (node.left != null) {
+//                    queue.offer(node.left);
+//                }
+//            }
+//        }
+//
+//        return true;
+//    }
 
     public int height() {
         if (root == null) return 0;
@@ -197,8 +235,13 @@ public class BinaryTree<E> implements BinaryTreeInfo {
         return node.parent;
     }
 
-    public static interface Visitor<E> {
-        void visit(E element);
+    public static abstract class Visitor<E> {
+        boolean stop;
+        /**
+         * @param element
+         * @return 如果返回true 就代表停止遍历
+         * */
+        public abstract boolean visit(E element);
     }
 
     protected static class Node<E> {
