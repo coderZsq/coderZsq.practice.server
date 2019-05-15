@@ -47,18 +47,18 @@ public class Main {
     }
 
     static void test2() {
-        FileInfo fileInfo = Files.read("/Users/zhushuangquan/Native Drive/GitHub/coderZsq.project.ios/SQFitnessProgram", new String[]{});
+        FileInfo fileInfo = Files.read("/Users/zhushuangquan/Native Drive/GitHub/coderZsq.practice.server.java/study-notes/algorithm/09-集合/java/util", new String[]{"java"});
         System.out.println("文件数量" + fileInfo.getFiles());
         System.out.println("代码行数" + fileInfo.getLines());
         String[] words = fileInfo.words();
         System.out.println("单词数量" + words.length);
 
-        Times.test("ListSet", new Times.Task() {
-            @Override
-            public void execute() {
-                testSet(new ListSet<>(), words);
-            }
-        });
+//        Times.test("ListSet", new Times.Task() {
+//            @Override
+//            public void execute() {
+//                testSet(new ListSet<>(), words);
+//            }
+//        });
 
         Times.test("TreeSet", new Times.Task() {
             @Override
