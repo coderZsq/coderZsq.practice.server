@@ -194,6 +194,8 @@ public class TreeMap<K, V> implements Map<K, V> {
         }
 
         Node<K, V> parent = node.parent;
+        if (parent == null) return;
+
         // 删除的是黑色叶子节点[下溢]
         // 判断被删除的node是左还是右
         boolean left = parent.left == null || node.isLeftChild();
@@ -213,7 +215,7 @@ public class TreeMap<K, V> implements Map<K, V> {
                 boolean parentBlack = isBlack(parent);
                 black(parent);
                 red(sibling);
-                if (parentBlack) {
+                if (parentBlack/* && parent.parent != null*/) {
                     afterRemove(parent);
                 }
             } else { // 兄弟节点至少有1个红色子节点, 向兄弟节点借元素
