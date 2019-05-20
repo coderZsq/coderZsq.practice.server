@@ -1,6 +1,6 @@
-package com.coderZsq;
+package com.coderZsq.model;
 
-public class Person {
+public class Person implements Comparable<Person> {
     private int age;
     private float height;
     private String name;
@@ -18,8 +18,8 @@ public class Person {
     public boolean equals(Object obj) {
         // 内存地址
         if (this == obj) return true;
-//        if (obj == null || obj.getClass() != getClass()) return false;
-        if (obj == null || !(obj instanceof Person)) return false;
+        if (obj == null || obj.getClass() != getClass()) return false;
+//        if (obj == null || !(obj instanceof Person)) return false;
 
         // 比较成员变量
         Person person = (Person) obj;
@@ -34,5 +34,10 @@ public class Person {
         hashCode = hashCode * 31 + Float.hashCode(height);
         hashCode = hashCode * 31 + (name != null ? name.hashCode() : 0);
         return hashCode;
+    }
+
+    @Override
+    public int compareTo(Person o) {
+        return age - o.age;
     }
 }
