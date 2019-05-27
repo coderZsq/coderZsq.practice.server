@@ -4,6 +4,7 @@ import com.coderZsq.file.FileInfo;
 import com.coderZsq.file.Files;
 import com.coderZsq.map.HashMap;
 import com.coderZsq.map.Map;
+import com.coderZsq.map.TreeMap;
 import com.coderZsq.model.Key;
 import com.coderZsq.model.Person;
 import com.coderZsq.model.SubKey1;
@@ -112,6 +113,51 @@ public class Main {
 
     */
 
+    static void test1Map(Map<String, Integer> map, String[] words) {
+        Times.test(map.getClass().getName(), new Times.Task() {
+            @Override
+            public void execute() {
+                for (String word : words) {
+                    Integer count = map.get(word);
+                    count = count == null ? 0 : count;
+                    map.put(word, count + 1);
+                }
+                System.out.println(map.size()); // 17188
+
+                int count = 0;
+                for (String word : words) {
+                    Integer i = map.get(word);
+                    count += i == null ? 0 : i;
+                    map.remove(word);
+                }
+                Asserts.test(count == words.length);
+                Asserts.test(map.size() == 0);
+            }
+        });
+    }
+
+    static void test1() {
+        String filepath = "/Users/zhushuangquan/Native Drive/GitHub/coderZsq.practice.server.java/";
+        FileInfo fileInfo = Files.read(filepath, null);
+        String[] words = fileInfo.words();
+
+        System.out.println("总行数：" + fileInfo.getLines());
+        System.out.println("单词总数：" + words.length);
+        System.out.println("-------------------------------------");
+
+//		java.util.HashMap<String, Integer> map = new java.util.HashMap<>();
+//
+//		for (String word : words) {
+//			Integer count = map.get(word);
+//			count = count == null ? 0 : count;
+//			map.put(word, count + 1);
+//		}
+//		System.out.println(map.size()); // 17188
+
+        test1Map(new TreeMap<>(), words);
+        test1Map(new HashMap<>(), words);
+    }
+
     static void test2(HashMap<Object, Integer> map) {
         for (int i = 1; i <= 20; i++) {
             map.put(new Key(i), i);
@@ -184,54 +230,13 @@ public class Main {
         Asserts.test(map.size() == 20);
     }
 
-    static void test1() {
-        String filepath = "/Users/zhushuangquan/Native Drive/GitHub/coderZsq.practice.server.java/study-notes/algorithm/11-哈希表/src/com/coderZsq";
-        FileInfo fileInfo = Files.read(filepath, null);
-        String[] words = fileInfo.words();
-
-        System.out.println("总行数：" + fileInfo.getLines());
-        System.out.println("单词总数：" + words.length);
-        System.out.println("-------------------------------------");
-
-//		java.util.HashMap<String, Integer> map = new java.util.HashMap<>();
-//
-//		for (String word : words) {
-//			Integer count = map.get(word);
-//			count = count == null ? 0 : count;
-//			map.put(word, count + 1);
-//		}
-//		System.out.println(map.size()); // 17188
-
-        HashMap<String, Integer> map = new HashMap<>();
-        Times.test(map.getClass().getName(), new Times.Task() {
-            @Override
-            public void execute() {
-                for (String word : words) {
-                    Integer count = map.get(word);
-                    count = count == null ? 0 : count;
-                    map.put(word, count + 1);
-                }
-                System.out.println(map.size()); // 17188
-
-                int count = 0;
-                for (String word : words) {
-                    Integer i = map.get(word);
-                    count += i == null ? 0 : i;
-                    map.remove(word);
-                }
-                Asserts.test(count == words.length);
-                Asserts.test(map.size() == 0);
-            }
-        });
-    }
     public static void main(String[] args) {
-//        test5();
 
         test1();
-        test2(new HashMap<>());
-        test3(new HashMap<>());
-        test4(new HashMap<>());
-        test5(new HashMap<>());
+//        test2(new HashMap<>());
+//        test3(new HashMap<>());
+//        test4(new HashMap<>());
+//        test5(new HashMap<>());
 
 //        Person p1 = new Person(10, 1.7f, "jack");
 //        Person p2 = new Person(10, 1.8f, "rose");
