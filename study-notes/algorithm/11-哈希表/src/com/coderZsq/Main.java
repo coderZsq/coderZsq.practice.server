@@ -3,6 +3,7 @@ package com.coderZsq;
 import com.coderZsq.file.FileInfo;
 import com.coderZsq.file.Files;
 import com.coderZsq.map.HashMap;
+import com.coderZsq.map.LinkedHashMap;
 import com.coderZsq.map.Map;
 import com.coderZsq.map.TreeMap;
 import com.coderZsq.model.Key;
@@ -156,6 +157,7 @@ public class Main {
 
         test1Map(new TreeMap<>(), words);
         test1Map(new HashMap<>(), words);
+        test1Map(new LinkedHashMap<>(), words);
     }
 
     static void test2(HashMap<Object, Integer> map) {
@@ -199,6 +201,8 @@ public class Main {
         map.put("rose", 2);
         map.put("jim", 3);
         map.put("jake", 4);
+        map.remove("jack");
+        map.remove("jim");
         for (int i = 1; i <= 10; i++) {
             map.put("test" + i, i);
             map.put(new Key(i), i);
@@ -209,7 +213,7 @@ public class Main {
         for (int i = 1; i <= 3; i++) {
             map.put(new Key(i), i + 5);
         }
-        Asserts.test(map.size() == 21);
+        Asserts.test(map.size() == 19);
         Asserts.test(map.get(new Key(1)) == 6);
         Asserts.test(map.get(new Key(2)) == 7);
         Asserts.test(map.get(new Key(3)) == 8);
@@ -218,6 +222,13 @@ public class Main {
         Asserts.test(map.get(new Key(6)) == null);
         Asserts.test(map.get(new Key(7)) == null);
         Asserts.test(map.get(new Key(8)) == 8);
+        map.traversal(new Map.Visitor<Object, Integer>() {
+            @Override
+            public boolean visit(Object key, Integer value) {
+                System.out.println(key + "_" + value);
+                return false;
+            }
+        });
     }
 
     static void test5(HashMap<Object, Integer> map) {
@@ -232,11 +243,17 @@ public class Main {
 
     public static void main(String[] args) {
 
-        test1();
+//        test1();
 //        test2(new HashMap<>());
 //        test3(new HashMap<>());
 //        test4(new HashMap<>());
 //        test5(new HashMap<>());
+
+        test1();
+        test2(new LinkedHashMap<>());
+        test3(new LinkedHashMap<>());
+        test4(new LinkedHashMap<>());
+        test5(new LinkedHashMap<>());
 
 //        Person p1 = new Person(10, 1.7f, "jack");
 //        Person p2 = new Person(10, 1.8f, "rose");
