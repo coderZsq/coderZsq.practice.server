@@ -4,48 +4,48 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
 
-    <!--<filter>-->
-        <!--<filter-name>Filter1</filter-name>-->
-        <!--<filter-class>com.coderZsq.Filter1</filter-class>-->
-    <!--</filter>-->
-    <!--<filter>-->
-        <!--<filter-name>Filter2</filter-name>-->
-        <!--<filter-class>com.coderZsq.Filter2</filter-class>-->
-    <!--</filter>-->
-    <!--<filter>-->
-        <!--<filter-name>Filter3</filter-name>-->
-        <!--<filter-class>com.coderZsq.Filter3</filter-class>-->
-    <!--</filter>-->
+    <filter>
+        <filter-name>Filter1</filter-name>
+        <filter-class>com.coderZsq.filterchain.Filter1</filter-class>
+    </filter>
+    <filter>
+        <filter-name>Filter2</filter-name>
+        <filter-class>com.coderZsq.filterchain.Filter2</filter-class>
+    </filter>
+    <filter>
+        <filter-name>Filter3</filter-name>
+        <filter-class>com.coderZsq.filterchain.Filter3</filter-class>
+    </filter>
 
-    <!--<filter-mapping>-->
-        <!--<filter-name>Filter3</filter-name>-->
-        <!--<url-pattern>/*</url-pattern>-->
-    <!--&lt;!&ndash;</filter-mapping>&ndash;&gt;-->
-    <!--<filter-mapping>-->
-        <!--<filter-name>Filter1</filter-name>-->
-        <!--<url-pattern>/*</url-pattern>-->
-        <!--&lt;!&ndash;只对请求做拦截(默认)&ndash;&gt;-->
-        <!--<dispatcher>REQUEST</dispatcher>-->
-        <!--&lt;!&ndash;增加对请求转发做拦截&ndash;&gt;-->
-        <!--<dispatcher>FORWARD</dispatcher>-->
-        <!--&lt;!&ndash;增加请求包含做拦截&ndash;&gt;-->
-        <!--<dispatcher>INCLUDE</dispatcher>-->
-        <!--&lt;!&ndash;增加跳转到错误页面做拦截&ndash;&gt;-->
-        <!--<dispatcher>ERROR</dispatcher>-->
-    <!--</filter-mapping>-->
-    <!--<filter-mapping>-->
-        <!--<filter-name>Filter2</filter-name>-->
-        <!--<url-pattern>/*</url-pattern>-->
-    <!--</filter-mapping>-->
+    <filter-mapping>
+        <filter-name>Filter3</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>Filter1</filter-name>
+        <url-pattern>/*</url-pattern>
+        <!--只对请求做拦截(默认)-->
+        <dispatcher>REQUEST</dispatcher>
+        <!--增加对请求转发做拦截-->
+        <dispatcher>FORWARD</dispatcher>
+        <!--增加请求包含做拦截-->
+        <dispatcher>INCLUDE</dispatcher>
+        <!--增加跳转到错误页面做拦截-->
+        <dispatcher>ERROR</dispatcher>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>Filter2</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
-    <!--<error-page>-->
-        <!--<error-code>404</error-code>-->
-        <!--<location>/404.jsp</location>-->
-    <!--</error-page>-->
+    <error-page>
+        <error-code>404</error-code>
+        <location>/404.jsp</location>
+    </error-page>
 
     <filter>
         <filter-name>CharacterEncodingFilter</filter-name>
-        <filter-class>com.coderZsq.CharacterEncodingFilter</filter-class>
+        <filter-class>com.coderZsq.characterencoding.CharacterEncodingFilter</filter-class>
         <!--设置编码-->
         <init-param>
             <param-name>encoding</param-name>
@@ -58,6 +58,19 @@
     </filter>
     <filter-mapping>
         <filter-name>CharacterEncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>CheckLoginFilter</filter-name>
+        <filter-class>com.coderZsq.logincheck.CheckLoginFilter</filter-class>
+        <init-param>
+            <param-name>unCheckUris</param-name>
+            <param-value>uncheckuris.xml</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>CheckLoginFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 

@@ -1,4 +1,4 @@
-package com.coderZsq;
+package com.coderZsq.filterchain;
 
 import javax.servlet.*;
 import java.io.IOException;

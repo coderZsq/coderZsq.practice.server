@@ -12,8 +12,8 @@
 </head>
 <body>
 <form action="/login">
-    账号: <input type="text" name="username"><br>
-    密码: <input type="text" name="password"><br>
+    账号: <input type="text" name="username" required><br>
+    密码: <input type="text" name="password" required><br>
     <input type="submit" value="登录">
 </form>
 </body>
