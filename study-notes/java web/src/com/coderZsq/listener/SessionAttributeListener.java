@@ -1,4 +1,4 @@
-package com.coderZsq;
+package com.coderZsq.listener;
 
 import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpSessionAttributeListener;
