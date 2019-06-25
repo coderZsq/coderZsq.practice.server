@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+
+    <package name="configpkg" extends="struts-default" namespace="/config">
+
+        <!--全局的结果视图-->
+        <global-results>
+            <result name="success" type="dispatcher">
+                <param name="location">/views/config/global.jsp</param>
+            </result>
+        </global-results>
+
+        <!--<action name="index" class="com.opensymphony.xwork2.ActionSupport" method="execute">-->
+        <action name="abc" class="com.coderZsq.config.ConfigAction" method="execute">
+        <!--局部结果视图-->
+            <result name="success" type="dispatcher">
+                <!--<param name="location">/index.jsp</param>-->
+                <param name="location">/views/config/local.jsp</param>
+            </result>
+        </action>
+
+        <!--需求: 从/config命名空间下的other 重定向到 /crm下的hello Action-->
+        <action name="other">
+            <result type="redirectAction">
+                <!--<param name="namespace">/config</param>-->
+                <!--<param name="actionName">abc</param>-->
+
+                <param name="namespace">/crm</param>
+                <param name="actionName">hello</param>
+            </result>
+        </action>
+
+    </package>
+
+</struts>

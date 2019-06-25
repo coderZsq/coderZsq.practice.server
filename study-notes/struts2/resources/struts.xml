@@ -5,12 +5,12 @@
 
 <struts>
 
-    <package name="hellopkg" extends="struts-default" namespace="/crm">
-        <action name="hello" class="com.coderZsq.HelloAction" method="sayHello">
-            <result name="coderZsq" type="dispatcher">
-                <param name="location">/views/hello/welcome.jsp</param>
-            </result>
-        </action>
-    </package>
+    <!--配置action的拓展名-->
+    <constant name="struts.action.extension" value="action,coderzsq,,"/>
+    <constant name="struts.devMode" value="true"/>
+
+    <!--引入-->
+    <include file="/com/coderZsq/hello/struts-hello.xml"/>
+    <include file="/com/coderZsq/config/struts-config.xml"/>
 
 </struts>

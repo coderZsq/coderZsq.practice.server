@@ -1,4 +1,4 @@
-package com.coderZsq;
+package com.coderZsq.hello;
 
 public class HelloAction {
 
