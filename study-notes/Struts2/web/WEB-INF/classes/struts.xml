@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+
+    <package name="hellopkg" extends="struts-default" namespace="/crm">
+        <action name="hello" class="com.coderZsq.HelloAction" method="sayHello">
+            <result name="coderZsq" type="redirect">
+                <param name="location">/views/hello/welcome.jsp</param>
+            </result>
+        </action>
+    </package>
+
+</struts>
