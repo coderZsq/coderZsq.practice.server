@@ -4,6 +4,10 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
 
+    <listener>
+        <listener-class>com.coderZsq.ContextLoaderListener</listener-class>
+    </listener>
+
     <filter>
         <filter-name>Filter1</filter-name>
         <filter-class>com.coderZsq.filterchain.Filter1</filter-class>
@@ -61,17 +65,17 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-    <filter>
-        <filter-name>CheckLoginFilter</filter-name>
-        <filter-class>com.coderZsq.logincheck.CheckLoginFilter</filter-class>
-        <init-param>
-            <param-name>unCheckUris</param-name>
-            <param-value>uncheckuris.xml</param-value>
-        </init-param>
-    </filter>
-    <filter-mapping>
-        <filter-name>CheckLoginFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
+    <!--<filter>-->
+        <!--<filter-name>CheckLoginFilter</filter-name>-->
+        <!--<filter-class>com.coderZsq.logincheck.CheckLoginFilter</filter-class>-->
+        <!--<init-param>-->
+            <!--<param-name>unCheckUris</param-name>-->
+            <!--<param-value>uncheckuris.xml</param-value>-->
+        <!--</init-param>-->
+    <!--</filter>-->
+    <!--<filter-mapping>-->
+        <!--<filter-name>CheckLoginFilter</filter-name>-->
+        <!--<url-pattern>/*</url-pattern>-->
+    <!--</filter-mapping>-->
 
 </web-app>

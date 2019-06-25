@@ -12,5 +12,13 @@
   </head>
   <body>
     Index
+
+  <%
+    session.setAttribute("name", "唐陌");
+    session.setAttribute("age", "23");
+    session.removeAttribute("age");
+    session.setAttribute("name", "白若遥");
+  %>
+
   </body>
 </html>
