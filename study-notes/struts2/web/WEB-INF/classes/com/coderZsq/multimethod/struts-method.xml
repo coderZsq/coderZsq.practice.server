@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+
+    <!--开启方法的动态调用: 建议关闭-->
+    <constant name="struts.enable.DynamicMethodInvocation" value="true"/>
+    <package name="methodpkg" extends="struts-default" namespace="/method">
+        <!--<action name="employee_list" class="com.coderZsq.multimethod.EmpolyeeAction" method="list"/>-->
+        <!--<action name="employee_edit" class="com.coderZsq.multimethod.EmpolyeeAction" method="edit"/>-->
+        <!--<action name="employee_save" class="com.coderZsq.multimethod.EmpolyeeAction" method="save"/>-->
+        <!--<action name="employee_delete" class="com.coderZsq.multimethod.EmpolyeeAction" method="delete"/>-->
+
+        <!--<action name="employee" class="com.coderZsq.multimethod.EmpolyeeAction"/>-->
+
+        <!--此时*表示方法名称, 由调用者来决定-->
+        <!--employee_list: 此时通配符*表示list, 则表示调用list方法-->
+        <action name="employee_*" class="com.coderZsq.multimethod.EmpolyeeAction" method="{1}"/>
+    </package>
+
+</struts>

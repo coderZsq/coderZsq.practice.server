@@ -10,7 +10,8 @@
     <constant name="struts.devMode" value="true"/>
 
     <!--引入-->
-    <include file="/com/coderZsq/hello/struts-hello.xml"/>
-    <include file="/com/coderZsq/config/struts-config.xml"/>
+    <!--<include file="/com/coderZsq/hello/struts-hello.xml"/>-->
+    <!--<include file="/com/coderZsq/config/struts-config.xml"/>-->
+    <include file="/com/coderZsq/multimethod/struts-method.xml"/>
 
 </struts>
