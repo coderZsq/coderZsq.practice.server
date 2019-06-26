@@ -17,10 +17,18 @@
     密码: <input type="text" name="password"><br>
     <input type="submit" value="登录">
 </form>
+<hr>
 <h3>第二种: 创建独立Model对象, 页面通过ognl表达式封装(属性注入)</h3>
 <form action="/params/login2" method="post">
     账号: <input type="text" name="user.username"><br>
     密码: <input type="text" name="user.password"><br>
+    <input type="submit" value="登录">
+</form>
+<hr>
+<h3>第三种: 使用ModelDriven接口, 对请求数据进行封装 (模型驱动)</h3>
+<form action="/params/login3" method="post">
+    账号: <input type="text" name="username"><br>
+    密码: <input type="text" name="password"><br>
     <input type="submit" value="登录">
 </form>
 </body>
