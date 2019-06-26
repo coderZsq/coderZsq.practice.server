@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+
+    <package name="interceptorpkg" extends="struts-default" namespace="/interceptor">
+        <interceptors>
+            <!--注册拦截器-->
+            <interceptor name="checkLogin" class="com.coderZsq.interceptor.CheckLoginInterceptor"/>
+        </interceptors>
+
+        <!--全局的结果视图-->
+        <global-results>
+            <result name="login" type="redirect">/views/interceptor/login.jsp</result>
+        </global-results>
+
+        <action name="login" class="com.coderZsq.interceptor.LoginAction">
+            <result type="redirectAction">
+                <param name="actionName">main</param>
+            </result>
+        </action>
+
+        <action name="main">
+            <!--引用拦截器-->
+            <interceptor-ref name="checkLogin"/>
+            <result>/views/interceptor/welcome.jsp</result>
+        </action>
+    </package>
+
+</struts>
