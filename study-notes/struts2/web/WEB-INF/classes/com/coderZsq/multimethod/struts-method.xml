@@ -17,7 +17,10 @@
 
         <!--此时*表示方法名称, 由调用者来决定-->
         <!--employee_list: 此时通配符*表示list, 则表示调用list方法-->
-        <action name="employee_*" class="com.coderZsq.multimethod.EmpolyeeAction" method="{1}"/>
+        <!--<action name="employee_*" class="com.coderZsq.multimethod.EmpolyeeAction" method="{1}"/>-->
+
+        <!--*_*: Employee_save: 第一个*表示模型对象名, 第二个*表示方法名称-->
+        <action name="*_*" class="com.coderZsq.multimethod.{1}Action" method="{2}"/>
     </package>
 
 </struts>

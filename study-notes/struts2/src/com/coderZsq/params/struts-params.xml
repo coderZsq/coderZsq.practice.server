@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+
+    <!--开启方法的动态调用: 建议关闭-->
+    <constant name="struts.enable.DynamicMethodInvocation" value="true"/>
+    <package name="paramspkg" extends="struts-default" namespace="/params">
+        <action name="login1_*" class="com.coderZsq.params.LoginAction1" method="{1}">
+            <result name="input">/views/params/login.jsp</result>
+        </action>
+        <action name="login2_*" class="com.coderZsq.params.LoginAction2" method="{1}">
+            <result name="input">/views/params/login.jsp</result>
+        </action>
+    </package>
+
+</struts>

@@ -12,6 +12,8 @@
     <!--引入-->
     <!--<include file="/com/coderZsq/hello/struts-hello.xml"/>-->
     <!--<include file="/com/coderZsq/config/struts-config.xml"/>-->
-    <include file="/com/coderZsq/multimethod/struts-method.xml"/>
+    <!--<include file="/com/coderZsq/multimethod/struts-method.xml"/>-->
+    <!--<include file="/com/coderZsq/servletapi/struts-servletapi.xml"/>-->
+    <include file="/com/coderZsq/params/struts-params.xml"/>
 
 </struts>
