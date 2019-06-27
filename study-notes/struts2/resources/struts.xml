@@ -16,6 +16,8 @@
     <!--<include file="/com/coderZsq/servletapi/struts-servletapi.xml"/>-->
     <!--<include file="/com/coderZsq/params/struts-params.xml"/>-->
     <!--<include file="/com/coderZsq/interceptor/struts-interceptor.xml"/>-->
-    <include file="/com/coderZsq/i18n/struts-i18n.xml"/>
+    <!--<include file="/com/coderZsq/i18n/struts-i18n.xml"/>-->
+    <!--<include file="/com/coderZsq/valuestack/struts-vs.xml"/>-->
+    <include file="/com/coderZsq/validation/struts-validation.xml"/>
 
 </struts>
