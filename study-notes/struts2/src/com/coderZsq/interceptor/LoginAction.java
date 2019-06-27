@@ -19,7 +19,7 @@ public class LoginAction extends ActionSupport {
 
     @Override
     public String execute() throws Exception {
-        System.out.println("登录判断");
+        System.out.println("登录判断" + username);
         // 把登录信息存到session中
         ActionContext.getContext().getSession().put("USER_IN_SESSION", username);
         return SUCCESS;
