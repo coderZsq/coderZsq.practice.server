@@ -19,6 +19,8 @@
     <!--<include file="/com/coderZsq/i18n/struts-i18n.xml"/>-->
     <!--<include file="/com/coderZsq/valuestack/struts-vs.xml"/>-->
     <!--<include file="/com/coderZsq/validation/struts-validation.xml"/>-->
-    <include file="/com/coderZsq/upload/struts-upload.xml"/>
+    <!--<include file="/com/coderZsq/upload/struts-upload.xml"/>-->
+    <!--<include file="/com/coderZsq/download/struts-down.xml"/>-->
+    <include file="/com/coderZsq/tag/struts-tag.xml"/>
 
 </struts>

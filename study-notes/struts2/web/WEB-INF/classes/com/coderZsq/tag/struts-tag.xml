@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+
+    <package name="tagpkg" extends="struts-default" namespace="/tag">
+        <action name="list1" class="com.coderZsq.tag.ListAction1">
+            <result>/views/tag/list.jsp</result>
+        </action>
+        <action name="list2" class="com.coderZsq.tag.ListAction2">
+            <result>/views/tag/list2.jsp</result>
+        </action>
+    </package>
+
+</struts>

@@ -5,6 +5,9 @@
 
 <struts>
 
+    <!--国际化资源文件-->
+    <constant name="struts.custom.i18n.resources" value="uploadMsg"/>
+
     <package name="uploadpkg" extends="struts-default" namespace="/upload">
         <!--注册拦截器-->
         <interceptors>
@@ -12,7 +15,10 @@
             <interceptor-stack name="myStack">
                 <!--注册多个拦截器-->
                 <interceptor-ref name="fileUpload">
+                    <!--设置允许上传的文件拓展名-->
                     <param name="allowedExtension">png,jpeg,jpg,gif</param>
+                    <!--设置允许上传的单个文件大小-->
+                    <param name="maximumSize">1048576</param>
                 </interceptor-ref>
                 <interceptor-ref name="defaultStack"/>
             </interceptor-stack>
