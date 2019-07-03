@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+
+    <constant name="struts.ui.theme" value="simple"/>
+    <package name="default" extends="struts-default" namespace="/">
+        <action name="employee_*" class="com.coderZsq.example.web.action.EmployeeAction" method="{1}">
+            <result type="redirectAction">employee</result>
+            <result name="list">/WEB-INF/views/employee_list.jsp</result>
+            <result name="input">/WEB-INF/views/employee_input.jsp</result>
+        </action>
+    </package>
+
+</struts>

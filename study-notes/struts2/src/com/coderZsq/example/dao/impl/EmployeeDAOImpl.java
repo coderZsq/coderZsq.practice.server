@@ -2,6 +2,9 @@ package com.coderZsq.example.dao.impl;
 
 import com.coderZsq.example.dao.IEmployeeDAO;
 import com.coderZsq.example.domain.Employee;
+import com.coderZsq.example.query.EmployeeQueryObject;
+import com.coderZsq.example.util.BeanHandler;
+import com.coderZsq.example.util.BeanListHandler;
 import com.coderZsq.example.util.JdbcTemplate;
 
 import java.util.List;
@@ -24,11 +27,19 @@ public class EmployeeDAOImpl implements IEmployeeDAO {
 
     @Override
     public Employee get(Long id) {
-        return null;
+        return JdbcTemplate.query("SELECT * FROM t_employee WHERE id = ?", new BeanHandler<>(Employee.class), id);
     }
 
     @Override
     public List<Employee> listAll() {
-        return null;
+        return JdbcTemplate.query("SELECT * FROM t_employee", new BeanListHandler<>(Employee.class));
+    }
+
+    @Override
+    public List<Employee> query(EmployeeQueryObject queryObject) {
+        String sql = "SELECT * FROM t_employee" + queryObject.getQuery();
+        System.out.println("SQL = " + sql);
+        System.out.println("params = " + queryObject.getParameters());
+        return JdbcTemplate.query(sql, new BeanListHandler<>(Employee.class), queryObject.getParameters().toArray());
     }
 }

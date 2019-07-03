@@ -21,6 +21,7 @@
     <!--<include file="/com/coderZsq/validation/struts-validation.xml"/>-->
     <!--<include file="/com/coderZsq/upload/struts-upload.xml"/>-->
     <!--<include file="/com/coderZsq/download/struts-down.xml"/>-->
-    <include file="/com/coderZsq/tag/struts-tag.xml"/>
+    <!--<include file="/com/coderZsq/tag/struts-tag.xml"/>-->
+    <include file="/com/coderZsq/example/struts-example.xml"/>
 
 </struts>
