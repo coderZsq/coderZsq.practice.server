@@ -4,6 +4,7 @@ import com.coderZsq.example.dao.IEmployeeDAO;
 import com.coderZsq.example.dao.impl.EmployeeDAOImpl;
 import com.coderZsq.example.domain.Employee;
 import com.coderZsq.example.query.EmployeeQueryObject;
+import com.coderZsq.example.util.MD5;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import lombok.Getter;
@@ -23,8 +24,8 @@ public class EmployeeAction extends ActionSupport {
     @Override
     public String execute() throws Exception {
         System.out.println("EmployeeAction.execute");
-        // 把数据共享到context区域, JSP获取: #employees
-        ActionContext.getContext().put("employees", dao.query(queryObject));
+        // 把数据共享到context区域, JSP获取: #pageResult
+        ActionContext.getContext().put("pageResult", dao.query(queryObject));
         return LIST;
     }
 
@@ -40,6 +41,8 @@ public class EmployeeAction extends ActionSupport {
     public String saveOrUpdate() throws Exception {
         System.out.println("EmployeeAction.saveOrUpdate");
         if (employee.getId() == null) {
+            // 使用MD5加密
+            employee.setPassword(MD5.encode(employee.getPassword()));
             dao.save(employee);
         } else {
             dao.update(employee);

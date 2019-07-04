@@ -8,7 +8,10 @@
     <constant name="struts.ui.theme" value="simple"/>
     <package name="default" extends="struts-default" namespace="/">
         <action name="employee_*" class="com.coderZsq.example.web.action.EmployeeAction" method="{1}">
-            <result type="redirectAction">employee</result>
+            <result type="redirectAction">
+                <param name="actionName">employee</param>
+                <param name="queryObject.currentPage">${queryObject.currentPage}</param>
+            </result>
             <result name="list">/WEB-INF/views/employee_list.jsp</result>
             <result name="input">/WEB-INF/views/employee_input.jsp</result>
         </action>

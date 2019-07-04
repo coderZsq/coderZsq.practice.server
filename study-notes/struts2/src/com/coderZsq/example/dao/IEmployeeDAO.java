@@ -2,6 +2,7 @@ package com.coderZsq.example.dao;
 
 import com.coderZsq.example.domain.Employee;
 import com.coderZsq.example.query.EmployeeQueryObject;
+import com.coderZsq.example.query.PageResult;
 
 import java.util.List;
 
@@ -16,5 +17,7 @@ public interface IEmployeeDAO {
 
     List<Employee> listAll();
 
-    List<Employee> query(EmployeeQueryObject queryObject);
+    List<Employee> query1(EmployeeQueryObject queryObject);
+
+    PageResult query(EmployeeQueryObject queryObject);
 }

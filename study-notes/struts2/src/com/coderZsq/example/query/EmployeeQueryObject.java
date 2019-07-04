@@ -17,6 +17,11 @@ public class EmployeeQueryObject {
     @Getter @Setter
     private BigDecimal maxSalary; // 最高工资
 
+    @Getter @Setter
+    private int currentPage = 1;
+    @Getter @Setter
+    private int pageSize = 3;
+
     private List<String> conditions = new ArrayList<>(); // 条件查询
     private List<Object> params = new ArrayList<>(); // 占位符参数
 

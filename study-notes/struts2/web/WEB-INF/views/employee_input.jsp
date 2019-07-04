@@ -20,10 +20,12 @@
             <td>员工名称</td>
             <td><s:textfield name="employee.name"/></td>
         </tr>
-        <tr>
-            <td>员工密码</td>
-            <td><s:password name="employee.password" showPassword="true"/></td>
-        </tr>
+        <s:if test="">
+            <tr>
+                <td>员工密码</td>
+                <td><s:password name="employee.password" showPassword="true"/></td>
+            </tr>
+        </s:if>
         <tr>
             <td>员工工资</td>
             <td><s:textfield name="employee.salary"/></td>
