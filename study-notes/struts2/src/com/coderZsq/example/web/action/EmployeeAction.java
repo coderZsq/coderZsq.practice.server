@@ -7,9 +7,10 @@ import com.coderZsq.example.query.EmployeeQueryObject;
 import com.coderZsq.example.util.MD5;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
+import com.opensymphony.xwork2.Preparable;
 import lombok.Getter;
 
-public class EmployeeAction extends ActionSupport {
+public class EmployeeAction extends ActionSupport implements Preparable {
 
     private static final String LIST = "list";
 
@@ -56,5 +57,19 @@ public class EmployeeAction extends ActionSupport {
             dao.delete(employee);
         }
         return SUCCESS;
+    }
+
+    // 在所有Action方法之前预先执行
+    @Override
+    public void prepare() throws Exception {
+        
+    }
+
+    // 在saveOrUpdate方法之前预先执行
+    public void prepareSaveOrUpdate() throws Exception {
+        System.out.println("EmployeeAction.prepareSaveOrUpdate" + employee.getId());
+        if (employee.getId() != null) {
+            employee = dao.get(employee.getId());
+        }
     }
 }

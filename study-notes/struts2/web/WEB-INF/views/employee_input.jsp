@@ -15,12 +15,13 @@
 
 <s:form namespace="/" action="employee_saveOrUpdate" method="POST" theme="simple">
     <s:hidden name="employee.id"/>
+    <s:hidden name="employee.password"/>
     <table border="1" cellspacing="0" cellpadding="0">
         <tr>
             <td>员工名称</td>
             <td><s:textfield name="employee.name"/></td>
         </tr>
-        <s:if test="">
+        <s:if test="employee.id == null">
             <tr>
                 <td>员工密码</td>
                 <td><s:password name="employee.password" showPassword="true"/></td>

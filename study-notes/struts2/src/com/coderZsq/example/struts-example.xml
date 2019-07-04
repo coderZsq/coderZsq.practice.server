@@ -7,6 +7,8 @@
 
     <constant name="struts.ui.theme" value="simple"/>
     <package name="default" extends="struts-default" namespace="/">
+        <!-- 当前package默认的拦截器 -->
+        <default-interceptor-ref name="paramsPrepareParamsStack"/>
         <action name="employee_*" class="com.coderZsq.example.web.action.EmployeeAction" method="{1}">
             <result type="redirectAction">
                 <param name="actionName">employee</param>
