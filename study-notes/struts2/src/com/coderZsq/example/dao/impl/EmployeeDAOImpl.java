@@ -10,7 +10,6 @@ import com.coderZsq.example.util.IResultSetHandler;
 import com.coderZsq.example.util.JdbcTemplate;
 
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.List;
 
 public class EmployeeDAOImpl implements IEmployeeDAO {
@@ -70,5 +69,10 @@ public class EmployeeDAOImpl implements IEmployeeDAO {
         queryObject.getParameters().add(queryObject.getPageSize());
         List result = JdbcTemplate.query(resultSql, new BeanListHandler<>(Employee.class), queryObject.getParameters().toArray());
         return new PageResult(result, totalCount, queryObject.getCurrentPage(), queryObject.getPageSize());
+    }
+
+    @Override
+    public Employee getEmployeeByName(String username) {
+        return JdbcTemplate.query("SELECT * FROM t_employee WHERE name = ?", new BeanHandler<>(Employee.class), username);
     }
 }

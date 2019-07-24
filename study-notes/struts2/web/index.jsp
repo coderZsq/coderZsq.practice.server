@@ -14,6 +14,7 @@
   </head>
   <body>
       <h3>登录操作</h3>
+      <span style="color: crimson"><s:actionerror/></span>
       <s:form namespace="/" action="login">
           账号: <s:textfield name="username"/><br>
           密码: <s:password name="password"/><br>

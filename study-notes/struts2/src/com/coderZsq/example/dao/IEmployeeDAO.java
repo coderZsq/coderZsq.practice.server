@@ -20,4 +20,6 @@ public interface IEmployeeDAO {
     List<Employee> query1(EmployeeQueryObject queryObject);
 
     PageResult query(EmployeeQueryObject queryObject);
+
+    Employee getEmployeeByName(String username);
 }
