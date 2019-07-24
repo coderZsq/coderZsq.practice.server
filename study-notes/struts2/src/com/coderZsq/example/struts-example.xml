@@ -7,12 +7,27 @@
 
     <constant name="struts.ui.theme" value="simple"/>
     <package name="default" extends="struts-default" namespace="/">
+
+        <interceptors>
+            <interceptor name="checkLogin" class="com.coderZsq.example.web.interceptor.CheckLoginInterceptor"/>
+            <interceptor-stack name="myStack">
+                <interceptor-ref name="checkLogin"/>
+                <interceptor-ref name="paramsPrepareParamsStack"/>
+            </interceptor-stack>
+        </interceptors>
+
+
+
         <!-- 当前package默认的拦截器 -->
-        <default-interceptor-ref name="paramsPrepareParamsStack"/>
+        <default-interceptor-ref name="myStack"/>
+
+        <global-results>
+            <result name="login">/index.jsp</result>
+        </global-results>
 
         <action name="login" class="com.coderZsq.example.web.action.LoginAction">
+            <interceptor-ref name="paramsPrepareParamsStack"/>
             <result name="success" type="redirectAction">employee</result>
-            <result name="login">/index.jsp</result>
         </action>
 
         <action name="employee_*" class="com.coderZsq.example.web.action.EmployeeAction" method="{1}">

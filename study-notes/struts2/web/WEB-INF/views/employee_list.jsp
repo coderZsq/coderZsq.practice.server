@@ -21,6 +21,8 @@
     </script>
 </head>
 <body>
+<s:property value="#session.user_in_session"/>
+<hr>
 
 <s:form namespace="/" action="employee">
     名称: <s:textfield name="queryObject.name"/>
