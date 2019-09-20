@@ -1,16 +1,15 @@
 package 栈;
 
+import java.util.Stack;
+
 /**
  * https://leetcode-cn.com/problems/implement-queue-using-stacks/
  * @author zhushuangquan
  * */
-import java.util.Stack;
-
 public class _232_用栈实现队列 {
     private Stack<Integer> inStack;
     private Stack<Integer> outStack;
 
-    /** Initialize your data structure here. */
     public _232_用栈实现队列() {
         inStack = new Stack<>();
         outStack = new Stack<>();

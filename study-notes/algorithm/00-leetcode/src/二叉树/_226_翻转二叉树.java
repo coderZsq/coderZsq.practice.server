@@ -20,7 +20,7 @@ public class _226_翻转二叉树 {
         return root;
     }
 
-    public TreeNode invertTree(TreeNode root) {
+    public TreeNode invertTree1(TreeNode root) {
         if (root == null) return root;
 
         invertTree(root.left);
@@ -33,7 +33,7 @@ public class _226_翻转二叉树 {
         return root;
     }
 
-    public TreeNode invertTree(TreeNode root) {
+    public TreeNode invertTree2(TreeNode root) {
         if (root == null) return root;
 
         invertTree(root.left);
@@ -47,7 +47,7 @@ public class _226_翻转二叉树 {
         return root;
     }
 
-    public TreeNode invertTree(TreeNode root) {
+    public TreeNode invertTree3(TreeNode root) {
         if (root == null) return root;
 
         Queue<TreeNode> queue = new LinkedList<>();

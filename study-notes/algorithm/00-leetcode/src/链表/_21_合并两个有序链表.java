@@ -4,7 +4,6 @@ package 链表;
  * https://leetcode-cn.com/problems/merge-two-sorted-lists/
  * @author zhushuangquan
  */
-
 public class _21_合并两个有序链表 {
     // 只要是用到递归, 首先要搞清楚一个问题: 这个递归函数的功能是什么?
     // 递归基: 边界
@@ -21,7 +20,7 @@ public class _21_合并两个有序链表 {
         }
     }
 
-    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+    public ListNode mergeTwoLists2(ListNode l1, ListNode l2) {
         if (l1 == null) return l2;
         if (l2 == null) return l1;
 
@@ -46,7 +45,7 @@ public class _21_合并两个有序链表 {
         return head.next;
     }
 
-    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+    public ListNode mergeTwoLists1(ListNode l1, ListNode l2) {
         if (l1 == null) return l2;
         if (l2 == null) return l1;
 

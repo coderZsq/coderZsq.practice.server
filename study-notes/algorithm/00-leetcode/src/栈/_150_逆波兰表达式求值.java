@@ -24,57 +24,6 @@ public class _150_逆波兰表达式求值 {
     *   9 4 1 - 2 * +
     * */
 
-    private  boolean isOperator(String token) {
-        return "+-*/".contains(token);
-    }
-
-    private int calculate(Integer right, Integer left, String operator) {
-        switch (operator) {
-            case "+": return left + right;
-            case "-": return left - right;
-            case "*": return left * right;
-            default: return left / right;
-        }
-    }
-
-    public int evalRPN(String[] tokens) {
-        Stack<Integer> stack = new Stack<Integer>();
-        for (String token : tokens) {
-            if (isOperator(token)) {
-                Integer left = stack.pop();
-                Integer right = stack.pop();
-                stack.push(calculate(left, right, token));
-            } else {
-                stack.push(Integer.parseInt(token));
-            }
-        }
-        return stack.pop();
-    }
-
-    public int evalRPN(String[] tokens) {
-        Stack<Integer> stack = new Stack<Integer>();
-        for (String token : tokens) {
-            if (isOperator(token)) {
-                Integer right = stack.pop();
-                Integer left = stack.pop();
-                stack.push(calculate(left, right, token));
-            } else {
-                stack.push(Integer.parseInt(token));
-            }
-        }
-        return stack.pop();
-    }
-
-    public int evalRPN(String[] tokens) {
-        Stack<Integer> stack = new Stack<Integer>();
-        for (String token : tokens) {
-            stack.push(isOperator(token)
-                    ? calculate(stack.pop(), stack.pop(), token)
-                    : Integer.parseInt(token));
-        }
-        return stack.pop();
-    }
-
     public int evalRPN(String[] tokens) {
         Stack<Integer> stack = new Stack<Integer>();
         for (String token : tokens) {
@@ -95,6 +44,57 @@ public class _150_逆波兰表达式求值 {
                 default:
                     stack.push(Integer.parseInt(token));
                     break;
+            }
+        }
+        return stack.pop();
+    }
+
+    private  boolean isOperator(String token) {
+        return "+-*/".contains(token);
+    }
+
+    private int calculate(Integer right, Integer left, String operator) {
+        switch (operator) {
+            case "+": return left + right;
+            case "-": return left - right;
+            case "*": return left * right;
+            default: return left / right;
+        }
+    }
+
+    public int evalRPN1(String[] tokens) {
+        Stack<Integer> stack = new Stack<Integer>();
+        for (String token : tokens) {
+            stack.push(isOperator(token)
+                    ? calculate(stack.pop(), stack.pop(), token)
+                    : Integer.parseInt(token));
+        }
+        return stack.pop();
+    }
+
+    public int evalRPN2(String[] tokens) {
+        Stack<Integer> stack = new Stack<Integer>();
+        for (String token : tokens) {
+            if (isOperator(token)) {
+                Integer right = stack.pop();
+                Integer left = stack.pop();
+                stack.push(calculate(left, right, token));
+            } else {
+                stack.push(Integer.parseInt(token));
+            }
+        }
+        return stack.pop();
+    }
+
+    public int evalRPN3(String[] tokens) {
+        Stack<Integer> stack = new Stack<Integer>();
+        for (String token : tokens) {
+            if (isOperator(token)) {
+                Integer left = stack.pop();
+                Integer right = stack.pop();
+                stack.push(calculate(left, right, token));
+            } else {
+                stack.push(Integer.parseInt(token));
             }
         }
         return stack.pop();
