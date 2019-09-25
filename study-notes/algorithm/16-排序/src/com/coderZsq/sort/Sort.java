@@ -2,14 +2,14 @@ package com.coderZsq.sort;
 
 import java.text.DecimalFormat;
 
-public abstract class Sort implements Comparable<Sort> {
-	protected Integer[] array;
+public abstract class Sort<T extends Comparable<T>> implements Comparable<Sort<T>> {
+	protected T[] array;
 	private int cmpCount;
 	private int swapCount;
 	private long time;
 	private DecimalFormat fmt = new DecimalFormat("#.00");
 	
-	public void sort(Integer[] array) {
+	public void sort(T[] array) {
 		if (array == null || array.length < 2) return;
 		
 		this.array = array;
@@ -20,7 +20,7 @@ public abstract class Sort implements Comparable<Sort> {
 	}
 	
 	@Override
-	public int compareTo(Sort o) {
+	public int compareTo(Sort<T> o) {
 		int result = (int)(time - o.time);
 		if (result != 0) return result;
 		
@@ -39,17 +39,17 @@ public abstract class Sort implements Comparable<Sort> {
 	 */
 	protected int cmp(int i1, int i2) {
 		cmpCount++;
-		return array[i1] - array[i2];
+		return array[i1].compareTo(array[i2]);
 	}
 	
-	protected int cmpElements(Integer v1, Integer v2) {
+	protected int cmp(T v1, T v2) {
 		cmpCount++;
-		return v1 - v2;
+		return v1.compareTo(v2);
 	}
 	
 	protected void swap(int i1, int i2) {
 		swapCount++;
-		int tmp = array[i1];
+		T tmp = array[i1];
 		array[i1] = array[i2];
 		array[i2] = tmp;
 	}

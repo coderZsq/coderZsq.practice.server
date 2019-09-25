@@ -1,6 +1,6 @@
 package com.coderZsq.sort;
 
-public class BubbleSort2 extends Sort {
+public class BubbleSort2<T extends Comparable<T>> extends Sort<T> {
 
 	@Override
 	protected void sort() {

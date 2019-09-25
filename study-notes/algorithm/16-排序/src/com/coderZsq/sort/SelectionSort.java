@@ -1,6 +1,6 @@
 package com.coderZsq.sort;
 
-public class SelectionSort extends Sort {
+public class SelectionSort<T extends Comparable<T>> extends Sort<T> {
 
 	@Override
 	protected void sort() {
