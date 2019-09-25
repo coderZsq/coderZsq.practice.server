@@ -1,7 +1,10 @@
 package com.coderZsq.sort;
 
+import com.coderZsq.Student;
+
 import java.text.DecimalFormat;
 
+@SuppressWarnings("unchecked")
 public abstract class Sort<T extends Comparable<T>> implements Comparable<Sort<T>> {
 	protected T[] array;
 	private int cmpCount;
@@ -59,7 +62,9 @@ public abstract class Sort<T extends Comparable<T>> implements Comparable<Sort<T
 		String timeStr = "耗时：" + (time / 1000.0) + "s(" + time + "ms)";
 		String compareCountStr = "比较：" + numberString(cmpCount);
 		String swapCountStr = "交换：" + numberString(swapCount);
-		return "【" + getClass().getSimpleName() + "】\n" 
+		String stableStr = "稳定性: " + isStable();
+		return "【" + getClass().getSimpleName() + "】\n"
+				+ stableStr + " \t"
 				+ timeStr + " \t"
 				+ compareCountStr + "\t "
 				+ swapCountStr + "\n"
@@ -71,5 +76,19 @@ public abstract class Sort<T extends Comparable<T>> implements Comparable<Sort<T
 		
 		if (number < 100000000) return fmt.format(number / 10000.0) + "万";
 		return fmt.format(number / 100000000.0) + "亿";
+	}
+
+	private boolean isStable() {
+		Student[] students = new Student[20];
+		for (int i = 0; i < students.length; i++) {
+			students[i] = new Student(i * 10, 10);
+		}
+		sort((T[]) students);
+		for (int i = 1; i < students.length; i++) {
+			int score = students[i].score;
+			int prevScore = students[i - 1].score;
+			if (score != prevScore + 10) return false;
+		}
+		return true;
 	}
 }

@@ -1,10 +1,16 @@
 package com.coderZsq;
 
-public class Student {
-	private int score;
-	private String name;
-	public Student(int score, String name) {
+public class Student implements Comparable<Student> {
+	public int score;
+	public int age;
+
+	public Student(int score, int age) {
 		this.score = score;
-		this.name = name;
+		this.age = age;
+	}
+
+	@Override
+	public int compareTo(Student o) {
+		return age - o.age;
 	}
 }

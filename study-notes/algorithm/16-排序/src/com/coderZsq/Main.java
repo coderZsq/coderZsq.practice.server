@@ -2,12 +2,7 @@ package com.coderZsq;
 
 import java.util.Arrays;
 
-import com.coderZsq.sort.BubbleSort1;
-import com.coderZsq.sort.BubbleSort2;
-import com.coderZsq.sort.BubbleSort3;
-import com.coderZsq.sort.HeapSort;
-import com.coderZsq.sort.SelectionSort;
-import com.coderZsq.sort.Sort;
+import com.coderZsq.sort.*;
 import com.coderZsq.tools.Asserts;
 import com.coderZsq.tools.Integers;
 
@@ -22,6 +17,8 @@ public class Main {
                 new BubbleSort2(),
                 new BubbleSort3(),
                 new SelectionSort(),
+                new InsertionSort1(),
+                new InsertionSort2(),
                 new HeapSort());
     }
 
