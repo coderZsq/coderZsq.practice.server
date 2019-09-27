@@ -1,6 +1,9 @@
 package com.coderZsq;
 
 public class BinarySearch {
+    /**
+     * 查找v在有序数组array中的位置
+     * */
     public static int indexOf(int[] array, int v) {
         if (array == null || array.length == 0) return -1;
         int begin = 0;
@@ -16,5 +19,23 @@ public class BinarySearch {
             }
         }
         return -1;
+    }
+
+    /**
+     * 查找v在有序数组array中待插入位置
+     */
+    public static int search(int[] array, int v) {
+        if (array == null || array.length == 0) return -1;
+        int begin = 0;
+        int end = array.length;
+        while (begin < end) {
+            int mid = (end - begin) >> 1 + begin;
+            if (v < array[mid]) {
+                end = mid;
+            } else {
+                begin = mid + 1;
+            }
+        }
+        return begin;
     }
 }
