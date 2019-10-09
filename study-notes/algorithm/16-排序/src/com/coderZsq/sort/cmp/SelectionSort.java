@@ -1,4 +1,6 @@
-package com.coderZsq.sort;
+package com.coderZsq.sort.cmp;
+
+import com.coderZsq.sort.Sort;
 
 public class SelectionSort<T extends Comparable<T>> extends Sort<T> {
 

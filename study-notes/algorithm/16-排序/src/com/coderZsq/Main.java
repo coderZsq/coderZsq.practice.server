@@ -2,7 +2,10 @@ package com.coderZsq;
 
 import java.util.Arrays;
 
-import com.coderZsq.sort.*;
+import com.coderZsq.sort.CountingSort;
+import com.coderZsq.sort.RadixSort;
+import com.coderZsq.sort.Sort;
+import com.coderZsq.sort.cmp.*;
 import com.coderZsq.tools.Asserts;
 import com.coderZsq.tools.Integers;
 
@@ -10,19 +13,23 @@ import com.coderZsq.tools.Integers;
 public class Main {
 
     public static void main(String[] args) {
-        Integer[] array = Integers.random(50000, 1, 20000);
+        Integer[] array = Integers.random(10000, 1, 30000000);
 
         testSorts(array,
-//                new BubbleSort1(),
-//                new BubbleSort2(),
-//                new BubbleSort3(),
-//                new SelectionSort(),
-                new HeapSort(),
-//                new InsertionSort1(),
-//                new InsertionSort2(),
-//                new InsertionSort3(),
+                new BubbleSort1(),
+                new BubbleSort2(),
+                new BubbleSort3(),
+                new SelectionSort(),
+                new InsertionSort1(),
+                new InsertionSort2(),
+                new InsertionSort3(),
                 new MergeSort(),
-                new QuickSort());
+                new QuickSort(),
+                new ShellSort(),
+                new HeapSort(),
+                new CountingSort(),
+                new RadixSort()
+        );
     }
 
     static void testSorts(Integer[] array, Sort... sorts) {

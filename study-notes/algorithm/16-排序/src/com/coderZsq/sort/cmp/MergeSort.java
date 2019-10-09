@@ -1,4 +1,6 @@
-package com.coderZsq.sort;
+package com.coderZsq.sort.cmp;
+
+import com.coderZsq.sort.Sort;
 
 @SuppressWarnings("unchecked")
 public class MergeSort<T extends Comparable<T>> extends Sort<T> {
