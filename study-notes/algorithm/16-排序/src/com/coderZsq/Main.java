@@ -10,18 +10,19 @@ import com.coderZsq.tools.Integers;
 public class Main {
 
     public static void main(String[] args) {
-        Integer[] array = Integers.random(10000, 1, 20000);
+        Integer[] array = Integers.random(50000, 1, 20000);
 
         testSorts(array,
-                new BubbleSort1(),
-                new BubbleSort2(),
-                new BubbleSort3(),
-                new SelectionSort(),
-                new InsertionSort1(),
-                new InsertionSort2(),
-                new InsertionSort3(),
+//                new BubbleSort1(),
+//                new BubbleSort2(),
+//                new BubbleSort3(),
+//                new SelectionSort(),
+                new HeapSort(),
+//                new InsertionSort1(),
+//                new InsertionSort2(),
+//                new InsertionSort3(),
                 new MergeSort(),
-                new HeapSort());
+                new QuickSort());
     }
 
     static void testSorts(Integer[] array, Sort... sorts) {
