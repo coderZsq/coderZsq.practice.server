@@ -4,6 +4,7 @@ package com.coderZsq.union;
  * Quick Find
  */
 public class UnionFind_QF extends UnionFind {
+
     public UnionFind_QF(int capacity) {
         super(capacity);
     }

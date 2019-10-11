@@ -4,10 +4,10 @@ package com.coderZsq.union;
  * Quick Union
  */
 public class UnionFind_QU extends UnionFind {
+
     public UnionFind_QU(int capacity) {
         super(capacity);
     }
-
 
     /**
      * 通过parent链条不断地向上找, 直到找到根节点
