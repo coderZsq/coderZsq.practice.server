@@ -11,12 +11,18 @@ public class Main {
 
     static void testDfs() {
         Graph<Object, Double> graph = directedGraph(Data.DFS_02);
-        graph.dfs("c");
+        graph.dfs("a", (Object v) -> {
+            System.out.println(v);
+            return false;
+        });
     }
 
     static void testBfs() {
         Graph<Object, Double> graph = directedGraph(Data.BFS_02);
-        graph.bfs(5);
+        graph.bfs(0, (Object value) -> {
+            System.out.println(value);
+            return false;
+        });
     }
 
     static void test() {
@@ -45,7 +51,7 @@ public class Main {
         graph.addEdge("V3", "V4", 1);
         graph.addEdge("V0", "V4", 6);
 
-        graph.bfs("V1");
+//        graph.bfs("V1");
 
 ////        graph.removeEdge("V0", "V4");
 //        graph.removeVertex("V0");
