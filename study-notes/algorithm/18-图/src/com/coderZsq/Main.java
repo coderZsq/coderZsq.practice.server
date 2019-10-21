@@ -3,10 +3,18 @@ package com.coderZsq;
 import com.coderZsq.graph.Graph;
 import com.coderZsq.graph.ListGraph;
 
+import java.util.List;
+
 public class Main {
 
     public static void main(String[] args) {
-        testDfs();
+        testTopo();
+    }
+
+    static void testTopo() {
+        Graph<Object, Double> graph = directedGraph(Data.TOPO);
+        List<Object> list = graph.topologicalSort();
+        System.out.println(list);
     }
 
     static void testDfs() {
