@@ -2,12 +2,24 @@ package com.coderZsq;
 
 import com.coderZsq.graph.Graph;
 import com.coderZsq.graph.Graph.EdgeInfo;
+import com.coderZsq.graph.Graph.WeightManager;
 import com.coderZsq.graph.ListGraph;
 
 import java.util.List;
 import java.util.Set;
 
 public class Main {
+    static WeightManager<Double> weightManager = new WeightManager<Double>() {
+        @Override
+        public int compare(Double w1, Double w2) {
+            return w1.compareTo(w2);
+        }
+
+        @Override
+        public Double add(Double w1, Double w2) {
+            return w1 + w2;
+        }
+    };
 
     public static void main(String[] args) {
         testMst();
@@ -45,22 +57,22 @@ public class Main {
 
     static void test() {
         ListGraph<String, Integer> graph = new ListGraph<>();
-//        graph.addEdge("V0", "V1");
-//        graph.addEdge("V1", "V0");
-//
-//        graph.addEdge("V0", "V2");
-//        graph.addEdge("V2", "V0");
-//
-//        graph.addEdge("V0", "V3");
-//        graph.addEdge("V3", "V0");
-//
-//        graph.addEdge("V1", "V2");
-//        graph.addEdge("V2", "V1");
-//
-//        graph.addEdge("V2", "V3");
-//        graph.addEdge("V3", "V2");
-//
-//        graph.print();
+        graph.addEdge("V0", "V1");
+        graph.addEdge("V1", "V0");
+
+        graph.addEdge("V0", "V2");
+        graph.addEdge("V2", "V0");
+
+        graph.addEdge("V0", "V3");
+        graph.addEdge("V3", "V0");
+
+        graph.addEdge("V1", "V2");
+        graph.addEdge("V2", "V1");
+
+        graph.addEdge("V2", "V3");
+        graph.addEdge("V3", "V2");
+
+        graph.print();
 
         graph.addEdge("V1", "V0", 9);
         graph.addEdge("V1", "V2", 3);
@@ -81,7 +93,7 @@ public class Main {
      * 有向图
      */
     private static Graph<Object, Double> directedGraph(Object[][] data) {
-        Graph<Object, Double> graph = new ListGraph<>();
+        Graph<Object, Double> graph = new ListGraph<>(weightManager);
         for (Object[] edge : data) {
             if (edge.length == 1) {
                 graph.addVertex(edge[0]);
@@ -101,7 +113,7 @@ public class Main {
      * @return
      */
     private static Graph<Object, Double> undirectedGraph(Object[][] data) {
-        Graph<Object, Double> graph = new ListGraph<>();
+        Graph<Object, Double> graph = new ListGraph<>(weightManager);
         for (Object[] edge : data) {
             if (edge.length == 1) {
                 graph.addVertex(edge[0]);

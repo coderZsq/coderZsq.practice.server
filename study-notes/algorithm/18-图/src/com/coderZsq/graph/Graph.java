@@ -3,29 +3,42 @@ package com.coderZsq.graph;
 import java.util.List;
 import java.util.Set;
 
-public interface Graph<V, E> {
-    int edgesSize();
-    int verticesSize();
+public abstract class Graph<V, E> {
+    protected WeightManager<E> weightManager;
 
-    void addVertex(V v);
-    void addEdge(V from, V to);
-    void addEdge(V from, V to, E weight);
+    public Graph() {}
 
-    void removeVertex(V v);
-    void removeEdge(V from, V to);
+    public Graph(WeightManager<E> weightManager) {
+        this.weightManager = weightManager;
+    }
 
-    void bfs(V begin, VertexVisitor<V> visitor);
-    void dfs(V begin, VertexVisitor<V> visitor);
+    public abstract int edgesSize();
+    public abstract int verticesSize();
 
-    Set<EdgeInfo<V, E>> mst();
+    public abstract void addVertex(V v);
+    public abstract void addEdge(V from, V to);
+    public abstract void addEdge(V from, V to, E weight);
 
-    List<V> topologicalSort();
+    public abstract void removeVertex(V v);
+    public abstract void removeEdge(V from, V to);
 
-    interface VertexVisitor<V> {
+    public abstract void bfs(V begin, VertexVisitor<V> visitor);
+    public abstract void dfs(V begin, VertexVisitor<V> visitor);
+
+    public abstract Set<EdgeInfo<V, E>> mst();
+
+    public abstract List<V> topologicalSort();
+
+    public interface WeightManager<E> {
+        int compare(E w1, E w2);
+        E add(E w1, E w2);
+    }
+
+    public interface VertexVisitor<V> {
         boolean visit(V v);
     }
 
-    class EdgeInfo<V, E> {
+    public static class EdgeInfo<V, E> {
         private V from;
         private V to;
         private E weight;

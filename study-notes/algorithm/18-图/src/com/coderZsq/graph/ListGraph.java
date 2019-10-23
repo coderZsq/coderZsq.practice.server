@@ -1,11 +1,17 @@
 package com.coderZsq.graph;
 
 import com.coderZsq.MinHeap;
+import com.coderZsq.UnionFind;
 
 import java.util.*;
 
 @SuppressWarnings("unchecked")
-public class ListGraph<V, E> implements Graph<V, E> {
+public class ListGraph<V, E> extends Graph<V, E> {
+    public ListGraph() {}
+    public ListGraph(WeightManager<E> weightManager) {
+        super(weightManager);
+    }
+
     private static class Vertex<V, E> {
         V value;
         Set<Edge<V, E>> inEdges = new HashSet<>();
@@ -68,7 +74,7 @@ public class ListGraph<V, E> implements Graph<V, E> {
     private Map<V, Vertex<V, E>> vertices = new HashMap<>();
     private Set<Edge<V, E>> edges = new HashSet<>();
     private Comparator<Edge<V, E>> edgeComparator = (Edge<V, E> e1, Edge<V, E> e2) -> {
-        return 0;
+        return weightManager.compare(e1.weight, e2.weight);
     };
 
     public void print() {
@@ -259,7 +265,7 @@ public class ListGraph<V, E> implements Graph<V, E> {
 
     @Override
     public Set<EdgeInfo<V, E>> mst() {
-        return prim();
+        return kruskal();
     }
 
     private Set<EdgeInfo<V, E>> prim() {
@@ -273,8 +279,9 @@ public class ListGraph<V, E> implements Graph<V, E> {
         addedVertices.add(vertex);
         MinHeap<Edge<V, E>> heap = new MinHeap<>(vertex.outEdges, edgeComparator);
 
-        int edgeSize = vertices.size() - 1;
-        while (!heap.isEmpty() && edgeInfos.size() < edgeSize) {
+//        int edgeSize = vertices.size() - 1;
+        int verticesSize = vertices.size();
+        while (!heap.isEmpty() && addedVertices.size() < verticesSize) {
             Edge<V, E> edge = heap.remove();
             if (addedVertices.contains(edge.to)) continue;
 
@@ -287,7 +294,29 @@ public class ListGraph<V, E> implements Graph<V, E> {
     }
 
     private Set<EdgeInfo<V, E>> kruskal() {
-        return null;
+        int edgeSize = vertices.size() - 1;
+        if (edgeSize == -1) return null;
+
+        Set<EdgeInfo<V, E>> edgeInfos = new HashSet<>();
+
+        // O(E)
+        MinHeap<Edge<V, E>> heap = new MinHeap<>(edges, edgeComparator);
+        UnionFind<Vertex<V, E>> uf = new UnionFind<>();
+        // O(V)
+        vertices.forEach((V v, Vertex<V, E> vertex) -> {
+            uf.makeSet(vertex);
+        });
+
+        // O(ElogE)
+        while (!heap.isEmpty() && edgeInfos.size() < edgeSize) { // E
+            Edge<V, E> edge = heap.remove(); // O(logE)
+            if (uf.isSame(edge.from, edge.to)) continue;
+
+            edgeInfos.add(edge.info());
+            uf.union(edge.from, edge.to);
+        }
+
+        return edgeInfos;
     }
 
 //    @Override
