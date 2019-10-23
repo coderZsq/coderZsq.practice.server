@@ -1,5 +1,7 @@
 package com.coderZsq.graph;
 
+import com.coderZsq.MinHeap;
+
 import java.util.*;
 
 @SuppressWarnings("unchecked")
@@ -8,7 +10,7 @@ public class ListGraph<V, E> implements Graph<V, E> {
         V value;
         Set<Edge<V, E>> inEdges = new HashSet<>();
         Set<Edge<V, E>> outEdges = new HashSet<>();
-        public Vertex(V value) {
+        Vertex(V value) {
             this.value = value;
         }
 
@@ -33,9 +35,13 @@ public class ListGraph<V, E> implements Graph<V, E> {
         Vertex<V, E> to;
         E weight;
 
-        public Edge(Vertex<V, E> from, Vertex<V, E> to) {
+        Edge(Vertex<V, E> from, Vertex<V, E> to) {
             this.from = from;
             this.to = to;
+        }
+
+        EdgeInfo<V, E> info() {
+            return new EdgeInfo<>(from.value, to.value, weight);
         }
 
         @Override
@@ -61,6 +67,9 @@ public class ListGraph<V, E> implements Graph<V, E> {
 
     private Map<V, Vertex<V, E>> vertices = new HashMap<>();
     private Set<Edge<V, E>> edges = new HashSet<>();
+    private Comparator<Edge<V, E>> edgeComparator = (Edge<V, E> e1, Edge<V, E> e2) -> {
+        return 0;
+    };
 
     public void print() {
         System.out.println("[顶点]---------------");
@@ -250,6 +259,34 @@ public class ListGraph<V, E> implements Graph<V, E> {
 
     @Override
     public Set<EdgeInfo<V, E>> mst() {
+        return prim();
+    }
+
+    private Set<EdgeInfo<V, E>> prim() {
+        Iterator<Vertex<V, E>> it = vertices.values().iterator();
+        if (!it.hasNext()) return null;
+
+        Set<EdgeInfo<V, E>> edgeInfos = new HashSet<>();
+        Set<Vertex<V, E>> addedVertices = new HashSet<>();
+
+        Vertex<V, E> vertex = it.next();
+        addedVertices.add(vertex);
+        MinHeap<Edge<V, E>> heap = new MinHeap<>(vertex.outEdges, edgeComparator);
+
+        int edgeSize = vertices.size() - 1;
+        while (!heap.isEmpty() && edgeInfos.size() < edgeSize) {
+            Edge<V, E> edge = heap.remove();
+            if (addedVertices.contains(edge.to)) continue;
+
+            edgeInfos.add(edge.info());
+            addedVertices.add(edge.to);
+            heap.addAll(edge.to.outEdges);
+        }
+
+        return edgeInfos;
+    }
+
+    private Set<EdgeInfo<V, E>> kruskal() {
         return null;
     }
 

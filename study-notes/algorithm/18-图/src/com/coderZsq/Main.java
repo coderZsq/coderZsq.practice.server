@@ -1,14 +1,24 @@
 package com.coderZsq;
 
 import com.coderZsq.graph.Graph;
+import com.coderZsq.graph.Graph.EdgeInfo;
 import com.coderZsq.graph.ListGraph;
 
 import java.util.List;
+import java.util.Set;
 
 public class Main {
 
     public static void main(String[] args) {
-        testTopo();
+        testMst();
+    }
+
+    static void testMst() {
+        Graph<Object, Double> graph = undirectedGraph(Data.MST_01);
+        Set<EdgeInfo<Object, Double>> infos = graph.mst();
+        for (EdgeInfo<Object, Double> info : infos) {
+            System.out.println(info);
+        }
     }
 
     static void testTopo() {
