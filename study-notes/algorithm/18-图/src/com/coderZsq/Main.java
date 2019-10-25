@@ -6,6 +6,7 @@ import com.coderZsq.graph.Graph.WeightManager;
 import com.coderZsq.graph.ListGraph;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class Main {
@@ -22,7 +23,13 @@ public class Main {
     };
 
     public static void main(String[] args) {
-        testMst();
+        testSp();
+    }
+
+    static void testSp() {
+        Graph<Object, Double> graph = undirectedGraph(Data.SP);
+        Map<Object, Double> sp = graph.shortestPath("A");
+        System.out.println(sp);
     }
 
     static void testMst() {

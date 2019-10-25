@@ -4,6 +4,7 @@ import com.coderZsq.MinHeap;
 import com.coderZsq.UnionFind;
 
 import java.util.*;
+import java.util.Map.Entry;
 
 @SuppressWarnings("unchecked")
 public class ListGraph<V, E> extends Graph<V, E> {
@@ -265,7 +266,7 @@ public class ListGraph<V, E> extends Graph<V, E> {
 
     @Override
     public Set<EdgeInfo<V, E>> mst() {
-        return kruskal();
+        return Math.random() > 0.5 ? prim() : kruskal();
     }
 
     private Set<EdgeInfo<V, E>> prim() {
@@ -317,6 +318,71 @@ public class ListGraph<V, E> extends Graph<V, E> {
         }
 
         return edgeInfos;
+    }
+
+    @Override
+    public Map<V, E> shortestPath(V begin) {
+        Vertex<V, E> beginVertex = vertices.get(begin);
+        if (beginVertex == null) return null;
+
+        Map<V, E> selectedPaths = new HashMap<>();
+        Map<Vertex<V, E>, E> paths = new HashMap<>();
+        // 初始化paths
+        for (Edge<V, E> edge : beginVertex.outEdges) {
+            paths.put(edge.to, edge.weight);
+        }
+
+        while (!paths.isEmpty()) {
+            Entry<Vertex<V, E>, E> minEntry = getMinPath(paths);
+            // minVertex离开桌面
+            Vertex<V, E> minVertex = minEntry.getKey();
+            selectedPaths.put(minVertex.value, minEntry.getValue());
+            paths.remove(minVertex);
+            // 对它的minVertex的outEdges进行松弛操作
+            for (Edge<V, E> edge : minVertex.outEdges) {
+                // 如果edge.to已经离开桌面, 就没必要进行松弛操作
+                if (selectedPaths.containsKey(edge.to.value) || edge.to.equals(beginVertex)) continue;
+                // 新的可选择的最短路径: beginVertex到edge.from的最短路径 + edge.weight
+                E newWeight = weightManager.add(minEntry.getValue(), edge.weight);
+                // 以前的最短路径: beginVertex到edge.to的最短路径
+                E oldWeight = paths.get(edge.to);
+                if (oldWeight == null || weightManager.compare(newWeight, oldWeight) < 0) {
+                    paths.put(edge.to, newWeight);
+                }
+            }
+        }
+//        selectedPaths.remove(begin);
+        return selectedPaths;
+    }
+
+    private void relax() {
+
+    }
+
+    /**
+     * 从paths中挑一个最小路径出来
+     */
+    private Entry<Vertex<V, E>, E> getMinPath(Map<Vertex<V, E>, E> paths) {
+        Iterator<Entry<Vertex<V, E>, E>> it = paths.entrySet().iterator();
+        Entry<Vertex<V, E>, E> minEntry = it.next();
+        while (it.hasNext()) {
+            Entry<Vertex<V, E>, E> entry = it.next();
+            if (weightManager.compare(entry.getValue(), minEntry.getValue()) < 0) {
+                minEntry = entry;
+            }
+        }
+        return minEntry;
+
+//        Vertex<V, E> minVertex = null;
+//        E minWeight = null;
+//        for (Entry<Vertex<V, E>, E> entry : paths.entrySet()) {
+//            E weight = entry.getValue();
+//            if (minWeight == null || weightManager.compare(weight, minWeight) < 0) {
+//                minVertex = entry.getKey();
+//                minWeight = weight;
+//            }
+//        }
+//        return minVertex;
     }
 
 //    @Override
