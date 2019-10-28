@@ -2,6 +2,7 @@ package com.coderZsq;
 
 import com.coderZsq.graph.Graph;
 import com.coderZsq.graph.Graph.EdgeInfo;
+import com.coderZsq.graph.Graph.PathInfo;
 import com.coderZsq.graph.Graph.WeightManager;
 import com.coderZsq.graph.ListGraph;
 
@@ -28,8 +29,10 @@ public class Main {
 
     static void testSp() {
         Graph<Object, Double> graph = undirectedGraph(Data.SP);
-        Map<Object, Double> sp = graph.shortestPath("A");
-        System.out.println(sp);
+        Map<Object, PathInfo<Object, Double>> sp = graph.shortestPath("A");
+        sp.forEach((Object v, PathInfo<Object, Double> path) -> {
+            System.out.println(v + " - " + path);
+        });
     }
 
     static void testMst() {
