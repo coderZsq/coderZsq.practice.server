@@ -21,6 +21,11 @@ public class Main {
         public Double add(Double w1, Double w2) {
             return w1 + w2;
         }
+
+        @Override
+        public Double zero() {
+            return 0.0;
+        }
     };
 
     public static void main(String[] args) {
@@ -28,8 +33,9 @@ public class Main {
     }
 
     static void testSp() {
-        Graph<Object, Double> graph = undirectedGraph(Data.SP);
-        Map<Object, PathInfo<Object, Double>> sp = graph.shortestPath("A");
+        Graph<Object, Double> graph = directedGraph(Data.NEGATIVE_WEIGHT2);
+        Map<Object, PathInfo<Object, Double>> sp = graph.shortestPath(0);
+        if (sp == null) return;
         sp.forEach((Object v, PathInfo<Object, Double> path) -> {
             System.out.println(v + " - " + path);
         });
