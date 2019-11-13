@@ -3,7 +3,18 @@ package com.coderZsq;
 public class CoinChange {
 
     public static void main(String[] args) {
-        System.out.println(coins5(41, new int[] {1, 5, 20, 25}));
+        System.out.println(coins5(41, new int[] {1, 5, 25, 20}));
+        // fib(40)
+
+        // dp(i) 第i项斐波那契数
+        // dp(i) = dp(i - 1) + dp(i - 2)
+
+        // dp(41) = 凑够41需要的最少硬币数量 = min { dp(40), dp(36), dp(16), dp(21) } + 1
+        // dp(41 - 1) = dp(40) = 凑够40需要的最少硬币数量
+        // dp(41 - 5) = dp(36) = 凑够36需要的最少硬币数量
+        // dp(41 - 25) = dp(16) = 凑够16需要的最少硬币数量
+        // dp(41  - 20) = dp(21) = 凑够21需要的最少硬币数量
+        // min { dp(40), dp(36), dp(16), dp(21) } + 1
     }
 
     static int coins5(int n, int[] faces) {
@@ -13,9 +24,15 @@ public class CoinChange {
             int min = Integer.MAX_VALUE;
             for (int face : faces) {
                 if (i < face) continue;
-                min = Math.min(dp[i - face], min);
+                int v = dp[i - face];
+                if (v < 0 || v >= min) continue;
+                min = v;
             }
-            dp[i] = min + 1;
+            if (min == Integer.MAX_VALUE) {
+                dp[i] = -1;
+            } else {
+                dp[i] = min + 1;
+            }
         }
         return dp[n];
     }
