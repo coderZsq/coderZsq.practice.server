@@ -19,6 +19,32 @@ public class LCSubstring {
         int[] dp = new int[colsChars.length + 1];
         int max = 0;
         for (int row = 1; row <= rowsChars.length; row++) {
+            for (int col = colsChars.length; col >= 1; col--) {
+                if (chars1[row - 1] != chars2[col - 1]) {
+                    dp[col] = 0;
+                } else {
+                    dp[col] = dp[col - 1] + 1;
+                    max = Math.max(dp[col], max);
+                }
+            }
+        }
+        return max;
+    }
+
+    static int lcs2(String str1, String str2) {
+        if (str1 == null || str2 == null) return 0;
+        char[] chars1 = str1.toCharArray();
+        if (chars1.length == 0) return 0;
+        char[] chars2 = str2.toCharArray();
+        if (chars2.length == 0) return 0;
+        char[] rowsChars = chars1, colsChars = chars2;
+        if (chars1.length < chars2.length) {
+            colsChars = chars1;
+            rowsChars = chars2;
+        }
+        int[] dp = new int[colsChars.length + 1];
+        int max = 0;
+        for (int row = 1; row <= rowsChars.length; row++) {
             int cur = 0;
             for (int col = 1; col <= colsChars.length; col++) {
                 int leftTop = cur;
