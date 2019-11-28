@@ -66,7 +66,7 @@ public class BloomFilter<T> {
     }
 
     /**
-     * 判断一个元素是否村早
+     * 判断一个元素是否存在
      * @param value
      * @return
      */
