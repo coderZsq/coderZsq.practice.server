@@ -42,13 +42,14 @@ public class BloomFilter<T> {
      * 添加元素
      * @param value
      */
-    public void put(T value) {
+    public boolean put(T value) {
         nullCheck(value);
 
         // 利用value生成2个整数
         int hash1 = value.hashCode();
         int hash2 = hash1 >>> 16;
 
+        boolean result = false;
         for (int i = 0; i < hashSize; i++) {
             int combinedHash = hash1 + (i * hash2);
             if (combinedHash < 0) {
@@ -57,12 +58,13 @@ public class BloomFilter<T> {
             // 生成一个二进制位的索引
             int index = combinedHash % bitSize;
             // 设置index位置的二进制位为1
-            set(index);
+            if (set(index)) result = true;
 
             //   101010101010010101
             // | 000000000000000100   1 << index
             //   101010101010010101
         }
+        return result;
     }
 
     /**
@@ -92,8 +94,20 @@ public class BloomFilter<T> {
     /**
      * 设置index位置的二进制位为1
      */
-    private void set(int index) {
+    private boolean set(int index) {
+        // 对应的long值
+        long value = bits[index / Long.SIZE];
+        int bitValue = 1 << (index % Long.SIZE);
+        bits[index / Long.SIZE] = value | bitValue;
+        return (value & bitValue) == 0;
+        /*
+         *  100000
+         * |000100  1 << 2
+         * -------
+         *  100100
+         */
 
+        // n | (1 << k)
     }
 
     /**
@@ -101,7 +115,14 @@ public class BloomFilter<T> {
      * @return true代表1, false代表0
      */
     private boolean get(int index) {
-        return false;
+        long value = bits[index / Long.SIZE];
+        return (value & (1 << (index % Long.SIZE))) != 0;
+        /*
+         *  101010111
+         * &000001000
+         * ----------
+         *  000000000
+         */
     }
 
     private void nullCheck(T value) {
