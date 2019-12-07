@@ -11,7 +11,7 @@ public class SkipList<K, V> {
     /**
      * 有效层数
      */
-    private int level = 4;
+    private int level;
     /**
      * 不存放任何 K - V
      */
@@ -34,7 +34,7 @@ public class SkipList<K, V> {
         return size == 0;
     }
 
-    public V get(K key, V value) {
+    public V get(K key) {
         keyCheck(key);
 
         // first.nexts[3] == 21节点
@@ -42,10 +42,14 @@ public class SkipList<K, V> {
         // first.nexts[1] == 6节点
         // first.nexts[0] == 3节点
 
+        // key = 30
+        // level = 4
+
         Node<K, V> node = first;
         for (int i = level - 1; i >= 0; i--) {
             int cmp = -1;
-            while (node.nexts[i] != null && (cmp = compare(key, first.nexts[i].key)) > 0) {
+            while (node.nexts[i] != null
+                    && (cmp = compare(key, node.nexts[i].key)) > 0) {
                 node = node.nexts[i];
             }
             // node.nexts[i].key >= key
@@ -94,9 +98,39 @@ public class SkipList<K, V> {
         return null;
     }
 
-    public V remove(K key, V value) {
+    public V remove(K key) {
         keyCheck(key);
-        return null;
+        Node<K, V> node = first;
+        Node<K, V>[] prevs = new Node[level];
+        boolean exist = false;
+        for (int i = level - 1; i >= 0; i--) {
+            int cmp = -1;
+            while (node.nexts[i] != null && (cmp = compare(key, first.nexts[i].key)) > 0) {
+                node = node.nexts[i];
+            }
+            prevs[i] = node;
+            if (cmp == 0) exist = true;
+        }
+        if (!exist) return null;
+
+        // 需要被删除的节点
+        Node<K, V> removedNode = node.nexts[0];
+
+        // 数量减少
+        size--;
+
+        // 设置后继
+        for (int i = 0; i < removedNode.nexts.length; i++) {
+            prevs[i].nexts[i] = removedNode.nexts[i];
+        }
+
+        // 更新跳表的层数
+        int newLevel = level;
+        while (--newLevel >= 0 && first.nexts[newLevel] == null) {
+            level = newLevel;
+        }
+
+        return removedNode.value;
     }
 
     private int randomLevel() {
@@ -123,10 +157,34 @@ public class SkipList<K, V> {
         K key;
         V value;
         Node<K, V>[] nexts;
+//		Node<K, V> right;
+//		Node<K, V> down;
+//		Node<K, V> top;
+//		Node<K, V> left;
         public Node(K key, V value, int level) {
             this.key = key;
             this.value = value;
             nexts = new Node[level];
         }
+        @Override
+        public String toString() {
+            return key + ":" + value + "_" + nexts.length;
+        }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("一共" + level + "层").append("\n");
+        for (int i = level - 1; i >= 0; i--) {
+            Node<K, V> node = first;
+            while (node.nexts[i] != null) {
+                sb.append(node.nexts[i]);
+                sb.append(" ");
+                node = node.nexts[i];
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
     }
 }
