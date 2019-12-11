@@ -372,30 +372,30 @@ public class Main {
         }
 
         /*
-        * 命名建议
-        *
-        * 变量名、方法名:小驼峰，比如 myNameAndAge
-        * 类名:大驼峰，比如 MyNameAndAge
-        * 常量:比如 MY_NAME_AND_AGE
-        * */
+         * 命名建议
+         *
+         * 变量名、方法名:小驼峰，比如 myNameAndAge
+         * 类名:大驼峰，比如 MyNameAndAge
+         * 常量:比如 MY_NAME_AND_AGE
+         * */
 
         /*
-        * Java 语言规范
-        * https://docs.oracle.com/javase/specs/index.html
-        * https://docs.oracle.com/javase/specs/jls/se13/html/index.html
-        * https://docs.oracle.com/javase/specs/jls/se8/html/index.html
-        *
-        * Java 虚拟机规范
-        * https://docs.oracle.com/javase/specs/jvms/se13/html/index.html
-        * https://docs.oracle.com/javase/specs/jvms/se8/html/index.html
-        *
-        * Java 教程
-        * https://docs.oracle.com/javase/tutorial/java/index.html
-        *
-        * Java API 文档
-        * https://docs.oracle.com/en/java/javase/13/docs/api/index.html
-        * https://docs.oracle.com/javase/8/docs/api/
-        * */
+         * Java 语言规范
+         * https://docs.oracle.com/javase/specs/index.html
+         * https://docs.oracle.com/javase/specs/jls/se13/html/index.html
+         * https://docs.oracle.com/javase/specs/jls/se8/html/index.html
+         *
+         * Java 虚拟机规范
+         * https://docs.oracle.com/javase/specs/jvms/se13/html/index.html
+         * https://docs.oracle.com/javase/specs/jvms/se8/html/index.html
+         *
+         * Java 教程
+         * https://docs.oracle.com/javase/tutorial/java/index.html
+         *
+         * Java API 文档
+         * https://docs.oracle.com/en/java/javase/13/docs/api/index.html
+         * https://docs.oracle.com/javase/8/docs/api/
+         * */
     }
 
 }
