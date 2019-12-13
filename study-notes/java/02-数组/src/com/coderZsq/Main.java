@@ -10,6 +10,9 @@ public class Main {
          * 在Java中, 字符数组 != 字符串
          * 字符数组: char[]
          * 字符串: String
+         *
+         * 推荐使用 char[] arr 格式定义数组
+         * 不推荐使用 char arr[] 格式定义数组
          * */
         {
             int[] arr1;
