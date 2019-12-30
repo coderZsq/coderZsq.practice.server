@@ -22,92 +22,93 @@ public class Main {
          * 运行时错误
          * 在程序运行过程中产生的意外，会导致程序终止运行
          * 在 Java 中也叫做异常
-         * */
-
-        /*
-         * 异常(Exception)
          *
-         * Java 中所有的异常最终都继承自 java.lang.Throwable
+         * 程序产生了异常, 一般称之为: 抛出了异常
+         * 如果没有主动去处理它, 会导致程序终止运行
          *
-         * 检查型异常(Checked Exception)
-         * 这类异常一般难以避免，编译器会进行检查
-         * 如果开发者没有处理这类异常，编译器将会报错
-         * 哪些异常是检查型异常?
-         * 除 Error、RuntimeException 以外的异常
-         *
-         * 非检查型异常(Unchecked Exception)
-         * 这类异常一般可以避免，编译器不会进行检查
-         * 如果开发者没有处理这类异常，编译器将不会报错 哪些异常是非检查型异常?
-         * Error、RuntimeException
-         * */
-
-        /*
-         * 常见的检查型异常
+         * 如果【代码2】抛出了异常, 并且没有主动去处理它
+         * 程序就会退出, 【代码3】将没有机会执行
          * */
         {
-            // java.io.FileNotFoundException, 文件不存在
-            FileOutputStream fos = new FileOutputStream("/Users/zhushuangquan/Native Drive/GitHub/coderZsq.practice.server.java/study-notes/java/13-异常");
-        }
-
-        {
-            SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
-            // java.text.ParseException, 字符串格式不对
-            Date date = fmt.parse("2066/06/06");
-        }
-
-        {
-            // java.lang.InterruptedException
-            Thread.sleep(1000);
-        }
-
-        {
-            // java.lang.ClassNotFoundException, 不存在这个类
-            Class cls = Class.forName("Dog");
-            // java.lang.InstantiationException, 没有无参构造方法
-            // java.lang.IllegalAccessException, 没有权限访问构造方法
-            Dog dog = (Dog) cls.newInstance();
+            代码1;
+            代码2;
+            代码3;
         }
 
         /*
-         * 常见的非检查型异常 - Error
+         * 思考: 下面代码的打印结果是什么?
          * */
         {
-            for (int i = 0; i < 200; i++) {
-                // java.lang.OutOfMemoryError, 内存不够用
-                long[] a = new long[1000000000];
+            System.out.println(1);
+            Integer i1 = new Integer("123");
+            System.out.println(2);
+            Integer i2 = new Integer("abc");
+            System.out.println(3);
+
+            // 由于"abc"无法转换成整数， new Integer("abc")会抛出一个异常
+            // 异常类型: java.lang.NumberFormatException
+            // 由于没有主动去处理这个异常，所以导致程序终止运行
+            // 打印结果是:1、2
+        }
+
+        {
+            System.out.println(1);
+            Integer i = new Integer("1234");
+            Object obj = "12.34";
+            Double d = (Double) obj;
+            System.out.println(2);
+
+            // 由于"12.34"无法强转成Double类型，(Double) obj会抛出一个异常
+            // 异常类型: java.lang.ClassCastExceptiointn
+            // 由于没有主动去处理这个异常，所以导致程序终止运行
+            // 打印结果:1
+        }
+
+        {
+            Integer[] nums = {11, null, 22};
+            for (int num : nums) {
+                System.out.println(num);
+            }
+
+            // Integer在自动拆箱为int时，会调用Integer对象的intValue() 方法
+            // 由于 num[1]为null, 使用null调用方法会抛出一个异常
+            // 异常类型: java.lang.NullPointerException
+            // 由于没有主动去处理这个异常，所以导致程序终止运行
+            // 打印结果:11
+
+            Integer[] nums = {11, null, 22};
+            // 建议的写法
+            for (Integer num : nums) {
+                System.out.println(num);
+            }
+            // 打印结果: 11, null, 22
+        }
+
+        /*
+         * 打印的细节
+         * */
+        {
+            Dog dog1 = new Dog();
+            // Dog - 666
+            System.out.println(dog1);
+
+            Dog dog2 = null;
+            // null
+            System.out.println(dog2);
+
+            public void println(Object x) {
+                String s = String.valueOf(x);
+                synchronized (this) {
+                   print(s);
+                   newLine();
+                }
+            }
+
+            public static String valueOf(Object obj) {
+                return (obj == null) ? "null" : obj.toString();
             }
         }
 
-        {
-            // java.lang.StackOverflowError, 栈内存溢出
-            test();
-        }
-
-        /*
-         * 常见的非检查型异常 - RuntimeException
-         * */
-        {
-            // java.lang.NullPointerException, 使用了空指针
-            StringBuilder s = null;
-            s.append("abc");
-        }
-
-        {
-            // java.lang.NumberFormatException, 数字的格式不对
-            Integer i = new Integer("abc");
-        }
-
-        {
-            int[] array = {11, 22, 33};
-            // java.lang.ArrayIndexOutOfBoundsException, 数组的索引越界
-            array[4] = 44;
-        }
-
-        {
-            Object obj = "123.4";
-            // java.lang.ClassCastException, 类型不匹配
-            Double d = (Double) obj;
-        }
 
         /*
          * 异常的处理
@@ -218,6 +219,91 @@ public class Main {
             System.out.println(5);
 
             // 打印结果是: 1, 2, 4, 5
+        }
+
+        /*
+         * 异常(Exception)
+         *
+         * Java 中所有的异常最终都继承自 java.lang.Throwable
+         *
+         * 检查型异常(Checked Exception)
+         * 这类异常一般难以避免，编译器会进行检查
+         * 如果开发者没有处理这类异常，编译器将会报错
+         * 哪些异常是检查型异常?
+         * 除 Error、RuntimeException 以外的异常
+         *
+         * 非检查型异常(Unchecked Exception)
+         * 这类异常一般可以避免，编译器不会进行检查
+         * 如果开发者没有处理这类异常，编译器将不会报错 哪些异常是非检查型异常?
+         * Error、RuntimeException
+         * */
+
+        /*
+         * 常见的检查型异常
+         * */
+        {
+            // java.io.FileNotFoundException, 文件不存在
+            FileOutputStream fos = new FileOutputStream("/Users/zhushuangquan/Native Drive/GitHub/coderZsq.practice.server.java/study-notes/java/13-异常");
+        }
+
+        {
+            SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
+            // java.text.ParseException, 字符串格式不对
+            Date date = fmt.parse("2066/06/06");
+        }
+
+        {
+            // java.lang.InterruptedException
+            Thread.sleep(1000);
+        }
+
+        {
+            // java.lang.ClassNotFoundException, 不存在这个类
+            Class cls = Class.forName("Dog");
+            // java.lang.InstantiationException, 没有无参构造方法
+            // java.lang.IllegalAccessException, 没有权限访问构造方法
+            Dog dog = (Dog) cls.newInstance();
+        }
+
+        /*
+         * 常见的非检查型异常 - Error
+         * */
+        {
+            for (int i = 0; i < 200; i++) {
+                // java.lang.OutOfMemoryError, 内存不够用
+                long[] a = new long[1000000000];
+            }
+        }
+
+        {
+            // java.lang.StackOverflowError, 栈内存溢出
+            test();
+        }
+
+        /*
+         * 常见的非检查型异常 - RuntimeException
+         * */
+        {
+            // java.lang.NullPointerException, 使用了空指针
+            StringBuilder s = null;
+            s.append("abc");
+        }
+
+        {
+            // java.lang.NumberFormatException, 数字的格式不对
+            Integer i = new Integer("abc");
+        }
+
+        {
+            int[] array = {11, 22, 33};
+            // java.lang.ArrayIndexOutOfBoundsException, 数组的索引越界
+            array[4] = 44;
+        }
+
+        {
+            Object obj = "123.4";
+            // java.lang.ClassCastException, 类型不匹配
+            Double d = (Double) obj;
         }
     }
 
