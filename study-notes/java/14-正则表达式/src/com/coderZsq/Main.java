@@ -281,8 +281,474 @@ public class Main {
         }
 
         /*
+         * Pattern、Matcher
+         *
+         * String 的 matches 方法底层用到了 Pattern、Matcher 两个类
+         * */
+        // java.lang.String
+        // public boolean matches(String regex) {
+        //     return Pattern.matches(regex, this);
+        // }
+
+        // java.util.regex.Pattern
+        // public static boolean matches(String regex, CharSequence input) {
+        //     Pattern p = Pattern.compile(regex);
+        //     Matcher m = p.matcher(input);
+        //     return m.matches();
+        // }
+
+        /*
+         * Matcher常用方法
+         * */
+        // 如果整个input与regex匹配, 就返回true
+        // public boolean matches();
+
+        // 如果从input中找到了与regex匹配的子序列, 就返回true
+        // 如果匹配成功, 可以通过start, end, group方法获取更多信息
+        // 每次的查找范围会先删除此前已经查找过的范围
+        // public boolean find();
+
+        // 返回上一次匹配成功的开始索引
+        // public int start();
+
+        // 返回上一次匹配成功的结束索引
+        // public int end();
+
+        // 返回上一次匹配成功的input子序列
+        // public String group();
+
+
+        /*
          * Matcher - 示例
          * */
+        {
+            String regex = "123";
+            findAll(regex, "123");
+//            "123", [0, 3)
+
+            findAll(regex, "6_123_123_123_7");
+//            "123", [2, 5)
+//            "123", [6, 9)
+//            "123", [10, 13)
+        }
+
+        {
+            String regex = "[abc]{3}";
+            findAll(regex, "abccabaaaccbbbc");
+//            "abc", [0, 3)
+//            "cab", [3, 6)
+//            "aaa", [6, 9)
+//            "ccb", [9, 12)
+//            "bbc", [12, 15)
+        }
+
+        {
+            String regex = "\\d{2}";
+            findAll(regex, "0_12_345_67_8");
+//            "12", [2, 4)
+//            "34", [5, 7)
+//            "67", [9, 11)
+        }
+
+        {
+            String input = "";
+            findAll("a?", input);
+//            "", [0, 0)
+
+            findAll("a*", input);
+//            "", [0, 0)
+
+            findAll("a+", input);
+//            No match.
+        }
+
+        {
+            String input = "a";
+            findAll("a?", input);
+//            "a", [0, 1)
+//            "", [1, 1)
+
+            findAll("a*", input);
+//            "a", [0, 1)
+//            "", [1, 1)
+
+            findAll("a+", input);
+//            "a", [0, 1)
+        }
+
+        {
+            String input = "abbaaa";
+            findAll("a?", input);
+//            "a", [0, 1)
+//            "", [1, 1)
+//            "", [2, 2)
+//            "a", [3, 4)
+//            "a", [4, 5)
+//            "a", [5, 6)
+//            "", [6, 6)
+
+            findAll("a*", input);
+//            "a", [0, 1)
+//            "", [1, 1)
+//            "", [2, 2)
+//            "aaa", [3, 6)
+//            "", [6, 6)
+
+            findAll("a+", input);
+//            "a", [0, 1)
+//            "aaa", [3, 6)
+        }
+
+        /*
+         * Matcher – 贪婪、勉强、独占的区别
+         *
+         * 贪婪
+         * 先吞掉整个 input 进行匹配
+         * 若匹配失败，则吐出最后一个字符
+         * 然后再次尝试匹配，重复此过程，直到匹配成功
+         *
+         * 勉强
+         * 先吞掉 input 的第一个字符进行匹配
+         * 若匹配失败，则再吞掉下一个字符
+         * 然后再次尝试匹配，重复此过程，直到匹配成功
+         *
+         * 独占
+         * 吞掉整个 input 进行唯一的一次匹配
+         * */
+        {
+            String input = "afooaaaaaafooa";
+            findAll(".*foo", input);
+//            "afooaaaaaafoo", [0, 13)
+
+            findAll(".*?foo", input);
+//            "afoo", [0, 4)
+//            "aaaaaafoo", [4, 13)
+
+            findAll(".*+foo", input);
+//            No match.
+        }
+
+        /*
+         * 捕获组(Capturing Group)
+         * */
+        {
+            String regex1 = "dog{3}";
+            "doggg".matches(regex1);
+
+            String regex2 = "[dog]{3}";
+            "ddd".matches(regex2); // true
+            "ooo".matches(regex2); // true
+            "ggg".matches(regex2); // true
+            "dog".matches(regex2); // true
+            "gog".matches(regex2); // true
+            "gdo".matches(regex2); // true
+
+            String regex3 = "(dog){3}";
+            "dogdogdog".matches(regex3); // true
+        }
+
+        /*
+         * 捕获组 – 反向引用(Backreference)
+         *
+         * 反向引用(Backreference)
+         * 可以使用反斜杠(\)+ 组编号(从 1 开始)来引用组的内容
+         *
+         * ((A)(B(C))) 一共有 4 个组
+         * 编号1:((A)(B(C)))
+         * 编号2:(A)
+         * 编号3:(B(C))
+         * 编号4:(C)
+         * */
+        {
+            String regex = "(\\d\\d)\\1";
+            "1212".matches(regex); // true
+            "1234".matches(regex); // false
+        }
+
+        {
+            String regex = "([a-z]{2})([A-Z]{2})\\2\\1";
+            "coderZsqPKPKcoderZsq".matches(regex); // true
+            "coderZsqPKcoderZsqPK".matches(regex); // false
+        }
+
+        {
+            String regex = "((I)( Love( You)))\\3{2}";
+            "I Love You Love You Love You".matches(regex);
+        }
+
+        /*
+         * 边界匹配符( Boundary Matcher)
+         *
+         * 语法 含义
+         * \b 单词边界
+         * \B 非单词边界
+         * ^ 一行的开头
+         * $ 一行的结尾
+         * \A 输入的开头
+         * \z 输入的结尾
+         * \Z 输入的结尾(结尾可以有终止符)
+         * \G 上一次匹配的结尾
+         * */
+
+        /*
+         * 一些概念
+         *
+         * 终止符(Final Terminator、Line Terminator)
+         * \r(回车符)、\n(换行符)、\r\n(回车换行符)
+         *
+         * 输入:整个字符串
+         *
+         * 一行:以终止符(或整个输入的结尾)结束的字符串片段
+         * 如果输入是
+         * 那么 3 个 dog 都是一行
+         * */
+
+        /*
+         * 边界匹配符 - 单词边界
+         * */
+        {
+            String regex = "\\bdog\\b";
+            findAll(regex, "This is a dog.");
+//            "dog", [10, 13)
+
+            findAll(regex, "This is a doggie.");
+//            No match.
+
+            findAll(regex, "dog is cute");
+//            "dog", [0, 3)
+
+            findAll(regex, "I love cat,dog,pig.");
+//            "dog", [11, 14)
+        }
+
+        {
+            String regex = "\\bdog\\B";
+            findAll(regex, "This is a dog.");
+//            No match.
+
+            findAll(regex, "This is a doggie.");
+//            "dog", [10, 13)
+
+            findAll(regex, "dog is cute");
+//            No match.
+
+            findAll(regex, "I love cat,dog,pig.");
+//            No match.
+        }
+
+        /*
+         * 边界匹配符 - 示例
+         * */
+        {
+            String regex = "^dog$";
+            findAll(regex, "dog");
+//            "dog", [0, 3)
+
+            findAll(regex, "      dog");
+//            No match.
+        }
+
+        {
+            findAll("\\s*dog$", "      dog");
+//            "      dog", [0, 9)
+
+            findAll("^dog\\w*", "dogblahblah");
+//            "dogblahblah", [0, 11)
+        }
+
+        {
+            String regex = "\\Gdog";
+            findAll(regex, "dog");
+//            "dog", [0, 3)
+
+            findAll(regex, "dog dog");
+//            "dog", [0, 3)
+
+            findAll(regex, "dogdog");
+//            "dog", [0, 3)
+//            "dog", [3, 6)
+        }
+
+        /*
+         * 常用模式
+         * 模式              含义                                  等价的正则写法
+         * DOTALL           单行模式(.可以匹配任意字符，包括终止符)     (?s)
+         * MULTILINE        多行模式(^、$ 才能真正匹配一行的开头和结尾) (?m)
+         * CASE_INSENSITIVE 不区分大小写                            (?i)
+         * */
+
+        /*
+         * 常用模式 - CASE_INSENSITIVE
+         * */
+        {
+            String regex = "dog";
+            String input = "Dog_dog_DOG";
+            findAll(regex, input);
+//            "dog", [4, 7)
+
+            findAll(regex, input, Pattern.CASE_INSENSITIVE);
+//            "Dog", [0, 3)
+//            "dog", [4, 7)
+//            "DOG", [8, 11)
+
+            findAll("(?i)dog", input);
+//            "Dog", [0, 3)
+//            "dog", [4, 7)
+//            "DOG", [8, 11)
+        }
+
+        /*
+         * 常用模式 - DOTALL, MULTILINE
+         * */
+        {
+            String regex = "^dog$";
+            String input = "dog\ndog\rdog";
+
+            findAll(regex, input);
+//            No match.
+
+            findAll(regex, input, Pattern.DOTALL);
+//            No match.
+
+            findAll(regex, input, Pattern.MULTILINE);
+//            "dog", [0, 3)
+//            "dog", [4, 7)
+//            "dog", [8, 11)
+
+            findAll(regex, input, Pattern.DOTALL | Pattern.MULTILINE);
+//            "dog", [0, 3)
+//            "dog", [4, 7)
+//            "dog", [8, 11)
+        }
+
+        /*
+         * 边界匹配符 - \A, \z
+         * */
+        {
+            String regex = "\\Adog\\z";
+
+            findAll(regex, "dog");
+//            "dog", [0, 3)
+
+            findAll(regex, "dog\n");
+//            No match.
+
+            findAll(regex, "dog\ndog\rdog");
+//            No match.
+
+            findAll(regex, "dog\ndog\rdog", Pattern.MULTILINE);
+//            No match.
+        }
+
+        /*
+         * 边界匹配符 - \A, \Z
+         * */
+        {
+            String regex = "\\Adog\\Z";
+
+            findAll(regex, "dog");
+//            "dog", [0, 3)
+
+            findAll(regex, "dog\n");
+//            "dog", [0, 3)
+
+            findAll(regex, "dog\ndog\rdog");
+//            No match.
+
+            findAll(regex, "dog\ndog\rdog", Pattern.MULTILINE);
+//            No match.
+        }
+
+        /*
+         * 常用正则表达式
+         *
+         * 正则表达式在线测试
+         * https://c.runoob.com/front-end/854
+         *
+         * 需求           正则表达式
+         * 18 位身份证号码 \d{17}[\dXx]
+         * 中文字符       [\u4e00-\u9fa5]
+         *
+         * */
+
+        /*
+         * String 类与正则表达式
+         *
+         * String 类中接收正则表达式作为参数的常用方法有
+         * */
+
+        // public String replaceAll(String regex, String replacement)
+
+        // public String replaceFirst(String regex, String replacement)
+
+        // public String[] split(String regex)
+
+        /*
+         * 练习 – 替换字符串中的单词
+         *
+         * 将单词 row 换成单词 line
+         * */
+        {
+            String s1 = "The row we are looking for is row 8.";
+            // The line we are looking for is line 8.
+            String s2 = s1.replace("row", "line");
+            // The line we are looking for is line 8.
+            String s3 = s1.replaceAll("\\brow\\b", "line");
+        }
+
+        {
+            String s1 = "Tomorrow I will wear in brown standing in row 10.";
+            // Tomorline I will wear in brown standing in line 10.
+            String s2 = s1.replace("row", "line");
+            // Tomorrow I will wear in brown standing in line 10.
+            String s3 = s1.replaceAll("\\brow\\b", "line");
+        }
+
+        /*
+         * 练习 – 替换字符串的数字
+         * 将所有连续的数字替换为 **
+         * */
+        {
+            String s1 = "ab12c3d456efg7h89i1011jk12lmn";
+            // ab**c**d**efg**h**i**jk**lmn
+            String s2 = s1.replaceAll("\\d+", "**");
+        }
+
+        /*
+         * 练习 – 利用数字分隔字符串
+         * */
+        {
+            String s1 = "ab12c3d456efg7h89i1011jk12lmn";
+            // [ab, c, d, efg, h, i, jk, lmn]
+            String[] strs = s1.split("\\d+");
+        }
+
+        /*
+         * 练习 – 提取重叠的字母、数字
+         * */
+        {
+            String input = "aa11+bb23-coderZsq33*dd44/5566%ff77";
+            String regex = "([a-z])\\1(\\d)\\2";
+            Pattern p = Pattern.compile(regex);
+            Matcher m = p.matcher(input);
+            while (m.find()) {
+                // a d f
+                System.out.println(m.group(1));
+                // 1 4 7
+                System.out.println(m.group(2));
+            }
+        }
+
+        {
+            String input = "aa12+bb34-coderZsq56*dd78/9900";
+            String regex = "[a-z]{2}\\d(\\d)";
+            Pattern p = Pattern.compile(regex);
+            Matcher m = p.matcher(input);
+            while (m.find()) {
+                // 2 4 6 8
+                System.out.println(m.group(1));
+            }
+        }
     }
 
     public static boolean validate(String email) {
@@ -318,43 +784,6 @@ public class Main {
     }
 
     /*
-     * Pattern、Matcher
-     *
-     * String 的 matches 方法底层用到了 Pattern、Matcher 两个类
-     * */
-    // java.lang.String
-    // public boolean matches(String regex) {
-    //     return Pattern.matches(regex, this);
-    // }
-
-    // java.util.regex.Pattern
-    // public static boolean matches(String regex, CharSequence input) {
-    //     Pattern p = Pattern.compile(regex);
-    //     Matcher m = p.matcher(input);
-    //     return m.matches();
-    // }
-
-    /*
-     * Matcher常用方法
-     * */
-    // 如果整个input与regex匹配, 就返回true
-    // public boolean matches();
-
-    // 如果从input中找到了与regex匹配的子序列, 就返回true
-    // 如果匹配成功, 可以通过start, end, group方法获取更多信息
-    // 每次的查找范围会先删除此前已经查找过的范围
-    // public boolean find();
-
-    // 返回上一次匹配成功的开始索引
-    // public int start();
-
-    // 返回上一次匹配成功的结束索引
-    // public int end();
-
-    // 返回上一次匹配成功的input子序列
-    // public String group();
-
-    /*
      * 找出所有匹配的子序列
      * */
     public static void findAll(String regex, String input) {
@@ -368,7 +797,7 @@ public class Main {
         boolean found = false;
         while (m.find()) {
             found = true;
-            System.out.format("\"%s\", [%d, %d]%n", m.group(), m.start(), m.end());
+            System.out.format("\"%s\", [%d, %d)%n", m.group(), m.start(), m.end());
         }
         if (!found) {
             System.out.println("No match.");
