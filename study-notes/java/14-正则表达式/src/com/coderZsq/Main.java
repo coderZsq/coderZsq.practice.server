@@ -1,5 +1,8 @@
 package com.coderZsq;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -215,6 +218,71 @@ public class Main {
             "6".matches(regex); // false
             "+".matches(regex); // true
         }
+
+        /*
+         * 量词(Quantifier)
+         *
+         * 贪婪(Greedy) 勉强(Reluctant) 独占(Possessive) 含义
+         * X{n}         X{n}?          X{n}+           X出现n次
+         * X{n,m}       X{n,m}?        X{n,m}+         X出现n到m次
+         * X{n,}        X{n,}?         X{n,}+          X出现至少n次
+         * X?           X??            X?+             X{0,1}(X 出现 0 次或者 1 次)
+         * X*           X*?            X*+             X{0,}(X 出现任意次)
+         * X+           X+?            X++             X{1,}(X 至少出现 1 次)
+         * */
+
+        /*
+         * 量词 - 示例
+         * */
+        {
+            String regex = "6{3}";
+            "66".matches(regex); // false
+            "666".matches(regex); // true
+            "6666".matches(regex); // false
+        }
+
+        {
+            String regex = "6{2,4}";
+            "6".matches(regex); // false
+            "66".matches(regex); // true
+            "666".matches(regex); // true
+            "6666".matches(regex); // true
+            "66666".matches(regex); // false
+        }
+
+        {
+            String regex = "6{2,}";
+            "6".matches(regex); // false
+            "66".matches(regex); // true
+            "666".matches(regex); // true
+            "6666".matches(regex); // true
+            "66666".matches(regex); // true
+        }
+
+        {
+            String regex = "6?";
+            "".matches(regex); // true
+            "6".matches(regex); // true
+            "66".matches(regex); // false
+        }
+
+        {
+            String regex = "6*";
+            "".matches(regex); // true
+            "6".matches(regex); // true
+            "66".matches(regex); // true
+        }
+
+        {
+            String regex = "6+";
+            "".matches(regex); // false
+            "6".matches(regex); // true
+            "66".matches(regex); // true
+        }
+
+        /*
+         * Matcher - 示例
+         * */
     }
 
     public static boolean validate(String email) {
@@ -247,5 +315,63 @@ public class Main {
 
     private static boolean isDigit(char c) {
         return c >= '0' && c <= '9';
+    }
+
+    /*
+     * Pattern、Matcher
+     *
+     * String 的 matches 方法底层用到了 Pattern、Matcher 两个类
+     * */
+    // java.lang.String
+    // public boolean matches(String regex) {
+    //     return Pattern.matches(regex, this);
+    // }
+
+    // java.util.regex.Pattern
+    // public static boolean matches(String regex, CharSequence input) {
+    //     Pattern p = Pattern.compile(regex);
+    //     Matcher m = p.matcher(input);
+    //     return m.matches();
+    // }
+
+    /*
+     * Matcher常用方法
+     * */
+    // 如果整个input与regex匹配, 就返回true
+    // public boolean matches();
+
+    // 如果从input中找到了与regex匹配的子序列, 就返回true
+    // 如果匹配成功, 可以通过start, end, group方法获取更多信息
+    // 每次的查找范围会先删除此前已经查找过的范围
+    // public boolean find();
+
+    // 返回上一次匹配成功的开始索引
+    // public int start();
+
+    // 返回上一次匹配成功的结束索引
+    // public int end();
+
+    // 返回上一次匹配成功的input子序列
+    // public String group();
+
+    /*
+     * 找出所有匹配的子序列
+     * */
+    public static void findAll(String regex, String input) {
+        findAll(regex, input, 0);
+    }
+
+    public static void findAll(String regex, String input, int flags) {
+        if (regex == null || input == null) return;
+        Pattern p = Pattern.compile(regex, flags);
+        Matcher m = p.matcher(input);
+        boolean found = false;
+        while (m.find()) {
+            found = true;
+            System.out.format("\"%s\", [%d, %d]%n", m.group(), m.start(), m.end());
+        }
+        if (!found) {
+            System.out.println("No match.");
+        }
     }
 }
