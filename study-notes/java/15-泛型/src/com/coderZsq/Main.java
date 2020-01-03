@@ -103,5 +103,28 @@ public class Main {
             li = ml2;
             li = ml3;
         }
+
+        /*
+         * 原始类型(Raw Type)
+         *
+         * 什么是原始类型?
+         * 没有传递具体的类型给泛型的类型参数
+         *
+         * 当使用了原始类型时，编译器会给出 警告(可以用@SuppressWarnings 消除)
+         * 将非原始类型赋值给原始类型时，编译器没有任何警告和错误
+         * 将原始类型赋值给非原始类型时，编译器会给出 警告(可以用@SuppressWarnings 消除)
+         * Box 是原始类型，Box<Object> 是非原始类型
+         * */
+        {
+            // Box称为是Box<E>的原始类型 (Raw Type)
+            Box rawBox = new Box(); // warning: rawtypes
+            Box<String> strBox = new Box<>();
+            Box<Object> objBox = new Box<>();
+
+            rawBox = strBox; // ok
+            rawBox = objBox; // ok
+            strBox = rawBox; // warning: unchecked
+            objBox = rawBox; // warning: unchecked
+        }
     }
 }
