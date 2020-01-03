@@ -164,11 +164,21 @@ public class Main {
             System.out.println(dog instanceof Runnable); // true
             System.out.println(dog instanceof String);  // false
         }
+
         /*
-         * instanceof
+         * 对象数组的注意点
          * */
         {
+            Object obj1 = 11;
+            Integer obj2 = (Integer) obj1;
+            System.out.println(obj2);
 
+//            Object[] objs1 = new Object[] {11, 22, 33};
+            Object[] objs1 = {11, 22, 33};
+//            java.lang.ClassCastException
+//            [Ljava.lang.Object; cannot be cast to [Ljava.lang.Integer
+            Integer[] objs2 = (Integer[]) objs1;
+            System.out.println(objs2);
         }
     }
 
