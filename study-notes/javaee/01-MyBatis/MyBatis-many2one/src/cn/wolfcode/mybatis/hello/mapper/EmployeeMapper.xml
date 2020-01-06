@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wolfcode.mybatis.hello.mapper.EmployeeMapper">
+	
+	<resultMap id="BaseResultMap" type="Employee">
+		<id column="id" property="id"/>
+		<result column="name" property="name"/>
+		<!-- 处理关联对象 -->
+		<association property="dept" javaType="Department" columnPrefix="d_">
+			<id column="id" property="id"/>
+			<result column="name" property="name"/>
+		</association>
+	</resultMap>
+	
+	
+	<select id="listAll" resultMap="BaseResultMap">
+		SELECT e.id,e.name,
+			   d.id AS d_id,d.name AS d_name 
+		FROM employee e JOIN department d ON e.dept_id = d.id 
+	</select>
+	
+	<select id="get" resultMap="BaseResultMap">
+		SELECT e.id,e.name,
+			   d.id AS d_id,d.name AS d_name 
+		FROM employee e JOIN department d ON e.dept_id = d.id  WHERE e.id = #{id}
+	</select>
+	
+	<insert id="save" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO employee (name,dept_id) VALUES (#{name},#{dept.id})	
+	</insert>
+</mapper>

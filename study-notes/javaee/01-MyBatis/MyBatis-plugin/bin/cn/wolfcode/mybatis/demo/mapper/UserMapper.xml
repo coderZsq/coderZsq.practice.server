@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wolfcode.mybatis.demo.mapper.UserMapper">
+	<select id="listMap" resultType="map">
+		select id AS u_id, name AS u_name, sn AS u_sn from `user`
+	</select>
+</mapper>

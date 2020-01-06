@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="resources"/>
+	<classpathentry kind="lib" path="lib/spring-beans-5.0.2.RELEASE.jar" sourcepath="C:/Users/Administrator/Desktop/Spring帝国/库/spring-framework-5.0.2.RELEASE/libs/spring-beans-5.0.2.RELEASE-sources.jar"/>
+	<classpathentry kind="lib" path="lib/spring-core-5.0.2.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/com.springsource.org.apache.commons.logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/spring-test-5.0.2.RELEASE.jar" sourcepath="C:/Users/Administrator/Desktop/Spring帝国/库/spring-framework-5.0.2.RELEASE/libs/spring-test-5.0.2.RELEASE-sources.jar"/>
+	<classpathentry kind="lib" path="lib/spring-context-5.0.2.RELEASE.jar" sourcepath="C:/Users/Administrator/Desktop/Spring帝国/库/spring-framework-5.0.2.RELEASE/libs/spring-context-5.0.2.RELEASE-sources.jar"/>
+	<classpathentry kind="lib" path="lib/spring-aop-5.0.2.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring-expression-5.0.2.RELEASE.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

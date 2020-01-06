@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 不同的mapper文件的namespace是不一样的. -->
+<mapper namespace="cn.wolfcode.mybatis.hello.UserMapper">
+	<!-- 保存操作
+		insert元素:
+			useGeneratedKeys属性:是否需要返回自动生成的主键
+			keyProperty:把自动生成的主键值设置到对象的哪一个属性上(OID)
+	 -->
+	<insert id="save"	useGeneratedKeys="true" keyProperty="id"
+		parameterType="cn.wolfcode.mybatis.hello.User">
+		INSERT INTO t_user (name,salary) VALUES(#{name},#{salary})
+	</insert>
+
+
+
+
+	<!-- 更改操作 -->
+	<update id="update" parameterType="cn.wolfcode.mybatis.hello.User">
+		UPDATE t_user SET name= #{name} ,salary = #{salary} WHERE id = #{id}
+	</update>
+
+	<!-- 删除操作 -->
+	<delete id="delete" parameterType="java.lang.Long">
+		DELETE FROM t_user WHERE id = #{id}
+	</delete>
+
+
+
+
+
+
+	<!-- select元素:专门用来做写查询的SQL. -id属性:唯一标识,用来表示某一条SQL语句 id属性和mapper的namespace唯一的表示了应用中的某一条SQL语句 -parameterType属性:表示执行该SQL语句需要的参数的类型,建议不写,MyBatis可以自行推断出来. 
+		-resultType属性:把结果集中的每一行数据封装成什么类型的对象 -->
+	<select id="get" parameterType="java.lang.Long" resultType="cn.wolfcode.mybatis.hello.User">
+		SELECT id,name,salary FROM t_user WHERE id = #{id}
+	</select>
+
+	<select id="listAll" resultType="cn.wolfcode.mybatis.hello.User">
+		SELECT id,name,salary FROM t_user
+	</select>
+</mapper>

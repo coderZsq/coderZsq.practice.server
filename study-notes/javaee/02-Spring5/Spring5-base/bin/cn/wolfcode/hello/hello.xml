@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!--通过配置,告诉Spring的IoC容器,你需要帮我管理哪一个类的对象 -->
+	<bean id="helloWorld" class="cn.wolfcode.hello.HelloWorld" >
+		<property name="username" value="Will"/>
+		<property name="age" value="17"/>
+	</bean>
+	
+	
+</beans>

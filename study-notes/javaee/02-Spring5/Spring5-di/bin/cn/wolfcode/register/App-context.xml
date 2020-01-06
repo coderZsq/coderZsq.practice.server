@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+
+	<!-- 从classpath的根路径去加载db.properties文件 -->
+	<context:property-placeholder location="classpath:db.properties" system-properties-mode="NEVER" />
+
+	<!-- 配置一个druid的连接池 -->
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driverClassName}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<property name="initialSize" value="${jdbc.initialSize}" />
+	</bean>
+
+	<!-- 配置DAO -->
+	<bean id="userDAO" class="cn.wolfcode.register.dao.impl.UserDAOImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- 配置Service -->
+	<bean id="userService" class="cn.wolfcode.register.service.impl.UserServiceImpl">
+		<property name="dao" ref="userDAO" />
+	</bean>
+
+	<!-- 配置
+		如果使Struts2的Action: 此时bean的作用域应该是多例:scope="prototype"
+		如果使用SpringMVC的Controller 此时bean的作用域依然还是使用单例:
+	-->
+	<bean id="userAction" class="cn.wolfcode.register.action.UserAction">
+		<property name="service" ref="userService"/>
+	</bean>
+	
+</beans>

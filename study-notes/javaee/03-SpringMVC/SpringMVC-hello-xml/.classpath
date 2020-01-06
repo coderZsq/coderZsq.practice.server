@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_45"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="resources"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/com.springsource.org.apache.commons.logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/spring-beans-5.0.2.RELEASE.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/spring-context-5.0.2.RELEASE.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/spring-core-5.0.2.RELEASE.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/spring-expression-5.0.2.RELEASE.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/spring-web-5.0.2.RELEASE.jar" sourcepath="C:/Users/Administrator/Desktop/SpringMVC/库/spring-framework-5.0.2.RELEASE/libs/spring-web-5.0.2.RELEASE-sources.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/spring-webmvc-5.0.2.RELEASE.jar" sourcepath="C:/Users/Administrator/Desktop/SpringMVC/库/spring-framework-5.0.2.RELEASE/libs/spring-webmvc-5.0.2.RELEASE-sources.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/servlet-api.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/spring-aop-5.0.2.RELEASE.jar"/>
+	<classpathentry kind="output" path="webapp/WEB-INF/classes"/>
+</classpath>
