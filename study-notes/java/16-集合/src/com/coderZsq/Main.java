@@ -1,10 +1,7 @@
 package com.coderZsq;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class Main {
 
@@ -304,6 +301,73 @@ public class Main {
                 // 0
                 System.out.println(list.size());
             }
+        }
+
+        /*
+         * ListIterator
+         *
+         * ListIterator 继承自 Iterator，在 Iterator 的基础上增加了一些功能
+         * */
+        {
+            // boolean hasNext();
+            // E next;
+            // boolean hasPrevious();
+            // E previous();
+            // int nextIndex();
+            // int previousIndex();
+            // void remove();
+            // void set(E e);
+            // void add(E e);
+        }
+
+        {
+            List<Integer> list = new ArrayList<>();
+            list.add(11);
+            list.add(22);
+            list.add(33);
+
+            ListIterator<Integer> it = list.listIterator();
+            while (it.hasNext()) {
+                System.out.println(it.next());
+            } // 11 22 33
+
+            while (it.hasPrevious()) {
+                System.out.println(it.previous());
+            } // 33 22 11
+        }
+
+        /*
+         * ListIterator - 示例
+         * */
+        {
+            List<Integer> list = new ArrayList<>();
+            list.add(11);
+            list.add(22);
+            list.add(33);
+
+            ListIterator<Integer> it = list.listIterator();
+            while (it.hasNext()) {
+                it.set(it.next() + 55);
+            }
+
+            System.out.println(list); // [66, 77, 88]
+        }
+
+        {
+            List<Integer> list = new ArrayList<>();
+            list.add(11);
+            list.add(22);
+            list.add(33);
+
+            ListIterator<Integer> it = list.listIterator();
+            while (it.hasNext()) {
+                it.add(66);
+                System.out.println(it.next());
+                it.add(77);
+            } // 11 22 33
+
+            // [66, 11, 77, 66, 22, 77, 66, 33, 77]
+            System.out.println(list);
         }
     }
 }
