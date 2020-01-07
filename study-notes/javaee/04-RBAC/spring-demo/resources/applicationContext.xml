@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop 
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/tx 
+        http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!--方式二: 基于注解的方式, 需要配置扫描的包-->
+    <context:component-scan base-package="com.hesj.demo.web"/>
+    <!-- DI依赖注入-->
+    <context:annotation-config/>
+
+    <!-- 方式一:基于xml的配置-->
+    <bean id="department" class="com.hesj.demo.domain.Department">
+        <property name="id" value="1"></property>
+        <property name="name" value="信息部"></property>
+        <property name="sn" value="007"></property>
+    </bean>
+
+</beans>
