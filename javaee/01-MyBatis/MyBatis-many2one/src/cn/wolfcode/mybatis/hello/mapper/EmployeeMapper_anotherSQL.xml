@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wolfcode.mybatis.hello.mapper.EmployeeMapper">
+	
+	
+	<!-- 当结果集中的列名和对象的属性名称不匹配-处理结果集 -->
+	<resultMap id="BaseResultMap" type="Employee">
+		<id column="id" property="id"/>
+		<result column="name" property="name"/>
+		
+		<!-- 额外SQL的配置方式 
+			association元素: 配置单一元素的关联关系
+				select属性: 发送的额外SQL
+				column属性: 讲指定列的值传递给额外SQL
+		-->
+		<association property="dept" javaType="Department"
+			select="cn.wolfcode.mybatis.hello.mapper.DepartmentMapper.get"
+			column="dept_id"
+			/>
+		
+	</resultMap>
+	
+	
+	<select id="listAll" resultMap="BaseResultMap">
+		SELECT id,name,dept_id FROM employee 
+	</select>
+	
+	<select id="get" resultMap="BaseResultMap">
+		SELECT id,name,dept_id FROM employee WHERE id = #{id}
+	</select>
+	
+	<insert id="save" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO employee (name,dept_id) VALUES (#{name},#{dept.id})	
+	</insert>
+</mapper>

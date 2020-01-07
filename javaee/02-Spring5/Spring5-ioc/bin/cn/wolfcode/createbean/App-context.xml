@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+	<!-- ①.构造器实例化（无参数构造器），最标准，使用最多。 -->
+	<bean id="cat1" class="cn.wolfcode.createbean._01_constructor.Cat1" />
+	<!-- ②.静态工厂方法实例化：解决系统遗留问题 -->
+	<bean id="cat2" class="cn.wolfcode.createbean._02_static_factory.Cat2Factory" factory-method="createInstance" />
+	<!-- ③.实例工厂方法实例化：解决系统遗留问题 -->
+	<bean id="cat3Factory" class="cn.wolfcode.createbean._03_instance_factory.Cat3Factory"/>
+	<bean id="cat3" factory-bean="cat3Factory" factory-method="createInstance"/>
+	<!-- ④.实现FactoryBean接口实例化：实例工厂变种，如集成MyBatis框架使用 -->
+	<bean id="cat4" class="cn.wolfcode.createbean._04_factory_bean.Cat4Factory">
+		<property name="username" value="你好"/>
+	</bean>
+</beans>

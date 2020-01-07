@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- 从classpath的根路径加载属性文件 -->
+	<properties resource="db.properties" />
+
+	<settings>
+		<!-- 日志技术 -->
+		<setting name="logImpl" value="LOG4J" />
+		<!-- 开启延迟加载功能 -->
+		<setting name="lazyLoadingEnabled" value="true" />
+		<!-- 设置不要积极地去查询关联对象 -->
+		<setting name="aggressiveLazyLoading" value="false" />
+		<!-- 延迟加载触发的方法 -->
+		<setting name="lazyLoadTriggerMethods" value="clone" />
+	</settings>
+
+	<!-- 类型别名 -->
+	<typeAliases>
+		<!-- <typeAlias type="cn.wolfcode.mybatis.hello.User" alias="User"/> -->
+
+		<!-- 一般写到domain包就可以了,自动为该包中的类起别名,默认的别名就是简单类名首字母小写(不区分大小写) -->
+		<package name="cn.wolfcode.mybatis.hello" />
+	</typeAliases>
+
+	<!-- 1:配置数据库的环境 -->
+	<environments default="dev">
+		<!-- 开发环境:在以后事务管理器和连接池都是交给Spring框架来管理的 -->
+		<environment id="dev">
+			<!-- ①:事务管理器 -->
+			<transactionManager type="JDBC" />
+			<!-- ②:连接池 -->
+			<dataSource type="POOLED">
+				<property name="driver" value="${jdbc.driver}" />
+				<property name="url" value="${jdbc.url}" />
+				<property name="username" value="${jdbc.username}" />
+				<property name="password" value="${jdbc.password}" />
+			</dataSource>
+		</environment>
+	</environments>
+	<!-- 2:关联Mapper文件/Mapper接口 -->
+	<mappers>
+		<mapper resource="cn/wolfcode/mybatis/hello/mapper/TeacherMapper.xml" />
+		<mapper resource="cn/wolfcode/mybatis/hello/mapper/StudentMapper.xml" />
+	</mappers>
+</configuration>

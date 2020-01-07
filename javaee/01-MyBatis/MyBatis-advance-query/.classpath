@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_45"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/lombok"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="resources"/>
+	<classpathentry kind="lib" path="lib/mybatis-3.4.5.jar" sourcepath="C:/Users/Administrator/Desktop/MyBatis框架/库/mybatis-3.4.5-src.zip"/>
+	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.40.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="lib/jsqlparser-0.9.5.jar"/>
+	<classpathentry kind="lib" path="lib/pagehelper-5.1.2.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

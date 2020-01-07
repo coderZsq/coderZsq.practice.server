@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wolfcode.mybatis.hello.mapper.UserMapper">
+
+	<!-- 保存操作 -->
+	<insert id="save" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO t_user (name,salary)
+		VALUES(#{name},#{salary})
+	</insert>
+
+
+	<!-- 更改操作 -->
+	<update id="update">
+		UPDATE t_user SET name= #{name} ,salary = #{salary} WHERE id = #{id}
+	</update>
+
+	<!-- 删除操作 -->
+	<delete id="delete">
+		DELETE FROM t_user WHERE id = #{id}
+	</delete>
+
+
+	<!-- 查询单个 -->
+	<select id="get" resultType="User">
+		SELECT id,name,salary FROM t_user WHERE id = #{id}
+	</select>
+
+	<!-- 查询所有 -->
+	<select id="listAll" resultType="User">
+		SELECT id,name,salary FROM t_user
+	</select>
+	
+</mapper>

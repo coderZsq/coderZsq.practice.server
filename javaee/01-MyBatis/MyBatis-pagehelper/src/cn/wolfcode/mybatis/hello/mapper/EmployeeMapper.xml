@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wolfcode.mybatis.hello.mapper.EmployeeMapper">
+
+
+
+	<!-- 查询结果集 -->
+	<select id="queryForList" resultType="Employee">
+		SELECT id,name,sn,salary,deptId FROM employee
+		<where>
+			<if test="keyword!=null">
+				AND (name LIKE concat('%',#{keyword},'%') OR sn LIKE concat('%',#{keyword},'%'))
+			</if>
+			<if test="minSalary!=null">
+				AND salary >= #{minSalary}
+			</if>
+			<if test="maxSalary!=null">
+				AND salary &lt;= #{maxSalary}
+			</if>
+			<if test="deptId>0">
+				AND deptId = #{deptId}
+			</if>
+		</where>
+	</select>
+
+
+
+	<select id="listAll" resultType="Employee">
+		SELECT id,name,sn,salary,deptId FROM employee
+	</select>
+</mapper>

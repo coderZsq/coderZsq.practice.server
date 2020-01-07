@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop.xsd
+		">
+
+	<bean id="employeeDAO" class="cn.wolfcode.dao.impl.EmployeeDAOImpl" />
+
+	<bean id="employeeService" class="cn.wolfcode.service.impl.EmployeeServiceImpl">
+		<property name="dao" ref="employeeDAO" />
+	</bean>
+
+	<!-- AOP配置:  在什么地点 + 什么时机 + 做什么 -->
+	<!--1:WHAT,做什么增强  -->
+	<bean id="txManager" class="cn.wolfcode.tx.TransactionManager" />
+	<aop:config proxy-target-class="false">
+		<!-- 配置AOP切面 -->
+		<aop:aspect ref="txManager"><!-- 关联WHAT -->
+			<!--2:WHERE:在哪些包中的哪些类中的哪些方法上做增强  -->
+			<aop:pointcut id="txPoint" 
+				expression="execution(* cn.wolfcode.service.*Service.*(..))" />
+				
+			<!--3:WHEN:在方法执行的什么时机做增强  -->
+			<!-- <aop:before method="begin" pointcut-ref="txPoint"/>
+			<aop:after-returning method="commit" pointcut-ref="txPoint"/>
+			<aop:after-throwing method="rollback" pointcut-ref="txPoint" throwing="ex"/>
+			<aop:after method="close" pointcut-ref="txPoint"/> -->
+			<aop:around method="aroundMethod" pointcut-ref="txPoint"/>
+		</aop:aspect>
+	</aop:config>
+</beans>

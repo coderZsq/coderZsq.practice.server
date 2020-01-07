@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wolfcode.mybatis.hello.mapper.DepartmentMapper">
+	
+	
+	<resultMap id="BaseResultMap" type="Department">
+		<id column="id" property="id"/>
+		<result column="name" property="name"/>
+		
+		<!-- 
+			ofType:表示集合中泛型的类型
+		 -->
+		<collection property="emps" ofType="Employee">
+			<id column="e_id" property="id"/>
+			<result column="e_name" property="name"/>
+		</collection>
+	</resultMap>
+	
+	
+	<select id="get" resultMap="BaseResultMap" >
+		SELECT d.id,d.name,
+			   e.id AS e_id ,e.name AS e_name 
+		FROM department d JOIN employee e ON d.id = e.dept_id
+		WHERE d.id = #{id}
+	</select>
+</mapper>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wolfcode.mybatis.hello.mapper.EmployeeMapper">
+
+	
+	<insert id="batchSave">
+		INSERT INTO employee (name,sn,salary) VALUES 
+        <foreach collection="emps" separator="," item="e">
+        	(#{e.name},#{e.sn},#{e.salary})
+        </foreach>
+	</insert>
+	
+	
+	
+	<delete id="batchDelete">
+		DELETE FROM  employee WHERE id IN 
+		<!-- 
+			foreach元素:
+				collection属性:表示对哪一个集合或数组做迭代
+							如果参数是数组类型,此时Map的key为array,
+							如果参数是List类型,此时Map的key为list,
+							我们可以在参数上使用Param注解,规定死Map中key是什么.
+				open属性:在迭代集合之前,拼接什么符号.
+				close属性:在迭代集合之后,拼接什么符号.
+				separator属性:在迭代元素时,每一个元素之间使用什么符号分割开来.
+				item属性:被迭代的每一个元素的变量
+				index属性:迭代的索引
+		 -->
+		<foreach collection="ids" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+	</delete>
+
+
+
+
+
+
+
+
+	<!-- java代码: Employee e = new Employee(); e.setName("XX"); e.setSalary(..); e.setDeptId(10L); 唯独没有设置密码. e.getPassword()获取输出的是null, 
+		此时的修改操作,会把密码弄丢失. -->
+
+
+	<update id="update">
+		update employee
+		<set>
+			<if test="name!=null">
+				name = #{name},
+			</if>
+			<if test="password!=null">
+				password =#{password},
+			</if>
+		</set>
+		where id = #{id}
+	</update>
+
+
+
+	<select id="query" resultType="Employee">
+		SELECT id,name,sn,salary,deptId FROM employee
+		<where>
+			<if test="minSalary!=null">
+				AND salary >= #{minSalary}
+			</if>
+			<if test="maxSalary!=null">
+				AND salary &lt;= #{maxSalary}
+			</if>
+
+			<choose>
+				<when test="deptId >0">AND deptId = #{deptId}</when>
+				<otherwise>AND deptId IS NOT NULL</otherwise>
+			</choose>
+		</where>
+
+	</select>
+</mapper>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+
+	<bean id="employeeDAO" class="cn.wolfcode.dao.impl.EmployeeDAOImpl" />
+
+
+	<bean id="employeeService" class="cn.wolfcode.service.impl.EmployeeServiceImpl">
+		<property name="dao" ref="employeeDAO" />
+	</bean>
+
+	<bean id="logUtil" class="cn.wolfcode.log.LogUtil" />
+
+
+	<!-- 配置一个事务增强的类 -->
+	<bean id="logAdvice" class="cn.wolfcode.log.LogAdvice">
+		<property name="target" ref="employeeService" />
+		<property name="logUtil" ref="logUtil" />
+	</bean>
+</beans>

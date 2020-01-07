@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wolfcode.mybatis.hello.UserMapper">
+
+	<!-- 
+		亟待解决的问题: 结果集(表)中的列名和对象中的属性名称不匹配.
+		解决方案:使用resultMap元素
+		resultMap元素:结果集合对象的映射
+			id属性:		当前Mapper文件中的resultMap的唯一名称
+			type属性:	把结果集中的每一行数据封装成什么类型的对象
+			
+			子元素:
+			id元素:功能和result一模一样,如果是主键建议使用id元素,提升性能
+			result元素: 匹配对象中的哪一个属性对应表中的哪一个列
+	 -->
+	<resultMap id="BaseResultMap" type="User">
+		<id column="u_id" property="id"/>
+		<result column="u_name"  property="name"/>
+		<result column="u_salary"  property="salary"/>
+	</resultMap>
+
+
+
+	<!-- 查询单个 -->
+	<select id="get" resultMap="BaseResultMap" >
+		SELECT u_id,u_name,u_salary FROM t_user WHERE u_id = #{id}
+	</select>
+
+	<!-- 查询所有 -->
+	<select id="listAll" resultMap="BaseResultMap" >
+		SELECT u_id,u_name,u_salary FROM t_user
+	</select>
+</mapper>
