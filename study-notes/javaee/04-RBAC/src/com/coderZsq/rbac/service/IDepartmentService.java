@@ -12,4 +12,6 @@ public interface IDepartmentService {
     public void insert(Department department);
 
     PageInfo query(QueryObject queryObject);
+
+    void delete(Long id);
 }

@@ -34,4 +34,9 @@ public class DepartmentServiceImpl implements IDepartmentService {
         List<Department> departments = departmentMapper.query(queryObject); // 通过拦截器进行分页查询
         return new PageInfo<Department>(departments);
     }
+
+    @Override
+    public void delete(Long id) {
+        departmentMapper.delete(id);
+    }
 }

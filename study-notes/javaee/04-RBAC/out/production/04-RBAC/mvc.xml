@@ -11,4 +11,10 @@
         <import resource="applicationContext.xml"/>
 
         <mvc:annotation-driven/>
+
+        <!-- 处理默认的静态资源-->
+        <mvc:default-servlet-handler/>
+        <mvc:cors>
+                <mvc:mapping path="/**"/>
+        </mvc:cors>
 </beans>

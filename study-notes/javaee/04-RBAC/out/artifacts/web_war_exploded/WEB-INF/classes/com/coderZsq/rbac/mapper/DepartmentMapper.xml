@@ -9,6 +9,9 @@
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         insert department(name, sn) values (#{name}, #{sn})
     </insert>
+    <delete id="delete">
+        delete from department where id=#{id}
+    </delete>
     <select id="selectAll" resultType="com.coderZsq.rbac.domain.Department">
         select id, name, sn from department
     </select>

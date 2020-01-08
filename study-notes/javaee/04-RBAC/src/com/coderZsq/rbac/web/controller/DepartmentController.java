@@ -29,4 +29,10 @@ public class DepartmentController {
         PageInfo<Department> page = departmentService.query(queryObject);
         return PageResult.success(page);
     }
+
+    @RequestMapping("delete")
+    public PageResult<Boolean> delete(Long id) {
+        departmentService.delete(id);
+        return PageResult.success(true);
+    }
 }
