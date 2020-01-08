@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>部门管理</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="/js/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/js/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/js/Ionicons/css/ionicons.min.css">
+    <link rel="stylesheet" href="/js/adminlte/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="/js/adminlte/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="/js/adminlte/css/fonts.googleapis.com.css">
+    <script src="/js/jquery/jquery.min.js"></script>
+    <script src="/js/bootstrap/js/bootstrap.js"></script>
+    <script src="/js/adminlte/js/adminlte.min.js"></script>
+    <script src="/js/plugins/twbsPagination/jquery.twbsPagination.min.js"></script>
+    <script src="/js/plugins/messager/jquery.bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/plugins/jquery-validation/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="/js/plugins/jquery-validation/message/messages_cn.js"></script>
+    <script type="text/javascript" src="/js/plugins/jquery-form/jquery.form.js"></script>
+    <script src="/js/system/commonAll.js"></script>
+    <script>
+        // 部门列表的模板
+        var template = "<tr>\n" +
+            "            <td>{{id}}</td>\n" +
+            "            <td >{{name}}</td>\n" +
+            "            <td>{{sn}}</td>\n" +
+            '            <td>\n' +
+            '                 <a class="btn btn-info btn-xs" onclick="editData(this);" href="javascript:; "\n' +
+            '                   data-url="/department/input.do?id=3" data-json=\'{{json}}\'>\n' +
+            '                    <span class="glyphicon glyphicon-pencil"></span>编辑 \n' +
+            '                  </a>\n' +
+            '                  <a href="JavaScript:;" class="btn btn-danger btn-xs" onclick="deleteData(this); " data-url="/department/delete.do?id={{id}}">\n' +
+            '                      <span class="glyphicon glyphicon-trash"></span> 删除\n' +
+            '                  </a>\n' +
+            '            </td>' +
+            "        </tr>"
+    </script>
+
+    <script>
+        //添加数据
+        $(function () {
+            $(".inputBtn").click(function () {
+                //弹出模态框
+                $("#editModal").modal("show");
+                //数据复原
+                $("#editForm")[0].reset();
+                //修改模态框标题
+                $(".modal-title").html("部门添加");
+            });
+        });
+    </script>
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+    <header class="main-header">
+        <a href="" class="logo">
+            <span class="logo-mini">CRM</span>
+            <span class="logo-lg"><b>叩丁狼客户管理系统</b></span>
+        </a>
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top">
+            <!-- Sidebar toggle button-->
+            <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </a>
+
+            <div class="navbar-custom-menu">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown user user-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <img src="/js/adminlte/img/user2-160x160.jpg" class="user-image" alt="User Image">
+                            <span class="hidden-xs">叩丁狼</span>
+                        </a>
+                        <ul class="dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close"
+                            style="min-width: 100px;">
+                            <li>
+                                <a href="#">
+                                    <i class="fa fa-cog"></i>
+                                    个人设置
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="profile.html">
+                                    <i class=" fa fa-user"></i>
+                                    个人信息
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="#">
+                                    <i class="fa fa-power-off"></i>
+                                    注销
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>    <!--菜单回显-->
+    <aside class="main-sidebar">
+        <section class="sidebar">
+            <ul class="sidebar-menu" data-widget="tree">
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-dashboard"></i> <span>系统管理</span>
+                        <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li name="department"><a href="/views/department/list.html"><i class="fa fa-circle-o"></i> 部门管理</a>
+                        </li>
+                        <li name="employee"><a href="/views/employee/list.html"><i class="fa fa-circle-o"></i> 员工管理</a>
+                        </li>
+                        <li name="permission"><a href="/views/permission/list.html"><i class="fa fa-circle-o"></i> 权限管理</a>
+                        </li>
+                        <li name="role"><a href="/views/role/list.html"><i class="fa fa-circle-o"></i> 角色管理</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+    </aside>
+    <script>
+        //编辑数据
+        function editData(node) {
+            //弹出模态框
+            $("#editModal").modal("show");
+            //数据复原
+            $("#editForm")[0].reset();
+            //部门回显数据
+            var data = $(node).data("json");
+            if (data) {
+                $(".modal-title").html("部门编辑");
+                $("input[name='id']").val(data.id);
+                $("input[name='name']").val(data.name);
+                $("input[name='sn']").val(data.sn);
+            }
+        }
+
+        $(function () {
+            //菜单初始
+            $('.sidebar-menu').tree();
+            //菜单激活
+            var cuLi = $(".treeview-menu li[name='department']");
+            cuLi.addClass("active");
+            cuLi.closest(".treeview").addClass("active")
+            /*新增部门数据 加载页面数据*/
+            $.ajax({
+                url: baseUrl + "/department/query",
+                method: "get",
+                xhrFields: {withCredentials: true},
+                success: function (data) {
+                    if (data.success) {
+                        render("#deptList", data.data.list)
+                        $("#pagination").twbsPagination({
+                            totalPages: data.data.pages || 1,
+                            startPage: data.data.pageNum || 1,
+                            visiblePages: 5,
+                            first: "首页",
+                            prev: "上页",
+                            next: "下页",
+                            last: "尾页",
+                            initiateStartPageClick: false,
+                            onPageClick: function (event, page) {
+                                $("#currentPage").val(page);
+                                $.ajax({
+                                    url: baseUrl + $("#searchForm").attr("action"),
+                                    method: "get",
+                                    data: $("#searchForm").serialize(),
+                                    xhrFields: {withCredentials: true},
+                                    success: function (data) {
+                                        if (data.success) {
+                                            $("#deptList").empty();
+                                            render("#deptList", data.data.list)
+                                        } else {
+                                            $.messager.alert("温馨提示", data.message)
+                                        }
+                                    }
+                                })
+                            }
+                        });
+                    } else {
+                        $.messager.alert(data.msg)
+                    }
+                },
+                error: function (data) {
+                    $.messager.confirm("提示", data.responseText, function () {
+                        window.location.href = "/index.html";
+                    });
+                }
+            })
+        })
+    </script>
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h1>部门管理</h1>
+        </section>
+        <section class="content">
+            <div class="box">
+                <!--高级查询--->
+                <form class="form-inline" id="searchForm" action="/department/query.do" method="post">
+                    <input type="hidden" name="currentPage" id="currentPage" value="1">
+                    <a href="JavaScript:;" class="btn btn-success inputBtn" style="margin: 10px">
+                        <span class="glyphicon glyphicon-plus"></span> 添加
+                    </a>
+                </form>
+                <!--编写内容-->
+                <div class="box-body table-responsive no-padding ">
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                        <tr>
+                            <th>编号</th>
+                            <th>部门名称</th>
+                            <th>部门编号</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody id="deptList">
+
+                        </tbody>
+                    </table>
+                    <!--分页-->
+                    <div style="text-align: center;">
+                        <ul id="pagination" class="pagination"></ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <footer class="main-footer">
+        <div class="pull-right hidden-xs">
+            <b>Version</b> 1.0.0
+        </div>
+        <strong>Copyright &copy; 2016-2019 <a href="http://www.wolfcode.cn">叩丁狼</a>.</strong> All rights
+        reserved.
+    </footer>
+</div>
+<div class="modal fade" id="editModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">部门编辑</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" action="/department/saveOrUpdate.do" method="post" id="editForm">
+                    <input type="hidden" value="" name="id">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">部门名称：</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" name="name" value="" placeholder="请输入部门名称">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">部门编号：</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" name="sn" value="" placeholder="请输入部门编号">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary submitBtn">保存</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

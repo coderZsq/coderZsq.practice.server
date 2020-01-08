@@ -1,0 +1,336 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>角色管理</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="/js/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/js/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/js/Ionicons/css/ionicons.min.css">
+    <link rel="stylesheet" href="/js/adminlte/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="/js/adminlte/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="/js/adminlte/css/fonts.googleapis.com.css">
+
+    <script src="/js/jquery/jquery.min.js"></script>
+    <script src="/js/bootstrap/js/bootstrap.js"></script>
+    <script src="/js/adminlte/js/adminlte.min.js"></script>
+    <script src="/js/plugins/twbsPagination/jquery.twbsPagination.min.js"></script>
+    <script src="/js/plugins/messager/jquery.bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/plugins/jquery-validation/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="/js/plugins/jquery-validation/message/messages_cn.js"></script>
+    <script type="text/javascript" src="/js/plugins/jquery-form/jquery.form.js"></script>
+    <script src="/js/system/commonAll.js"></script>
+
+    <script>
+        //提交表单数据
+        $(function () {
+            $("#submitBtn").click(function () {
+                $(".selfPermissions option").prop("selected", true);
+                $.ajax({
+                    url: baseUrl + $("#editForm").attr("action"),
+                    method: "get",
+                    data: $("#editForm").serialize(),
+                    xhrFields: {withCredentials: true},
+                    success: function (data) {
+                        if(data.success){
+                            window.location.href="list.html";
+                        }else{
+                            $.messager.alert("温馨提示", data.msg)
+                        }
+                    }
+                })
+            })
+        })
+    </script>
+
+    <script>
+        var selfPermissionIds=[];
+        /*加载拥有的权限列表*/
+        $(function () {
+            var roleId = getQueryString("id");
+            if(roleId){
+                $.ajax({
+                    url:baseUrl+"/permission/queryByRoleId",
+                    data:{roleId:roleId},
+                    method:"get",
+                    xhrFields: {withCredentials: true},
+                    success:function (data) {
+                        if(data.success){
+                            var selfPermissionList = data.data
+                            for(var i=0;i<selfPermissionList.length;i++){
+                                selfPermissionIds.push(selfPermissionList[i].id)
+                                $(".selfPermissions").append("<option value=\""+selfPermissionList[i].id+"\">"+selfPermissionList[i].name+"</option>")
+                            }
+                        }
+                    }
+                })
+            }
+        })
+
+        /*加载所有的权限列表信息*/
+        $(function () {
+            $.ajax({
+                url:baseUrl+"/permission/queryAll",
+                method:"get",
+                xhrFields: {withCredentials: true},
+                success:function (data) {
+                    if(data.success){
+                        var permissionList = data.data
+                        for(var i=0;i<permissionList.length;i++){
+                            if(selfPermissionIds.indexOf(permissionList[i].id)==-1
+                            ){
+                                $(".allPermissions").append("<option value=\""+permissionList[i].id+"\">"+permissionList[i].name+"</option>")
+                            }
+                        }
+                    }
+                }
+            })
+        })
+
+    </script>
+    <script>
+        $(function () {
+            $.ajax({
+                url:baseUrl+"/department/queryAll",
+                method:"get",
+                xhrFields: {withCredentials: true},
+                success:function (data) {
+                    if(data.success){
+                        var deptList = data.data
+                        for(var i=0;i<deptList.length;i++){
+                            $("#dept").append("<option value=\""+deptList[i].id+"\">"+deptList[i].name+"</option>")
+                        }
+                    }
+                }
+            })
+            var roleId = getQueryString("id");
+            if(roleId){
+                /*新增员工数据 加载页面数据*/
+                $.ajax({
+                    url: baseUrl+"/role/get",
+                    data:{id:roleId},
+                    method: "get",
+                    xhrFields: {withCredentials: true},
+                    success: function (data) {
+                        if (data.success) {
+                            var role= data.data
+                            $("#id").val(role.id);
+                            $("#name").val(role.name);
+                            $("#sn").val(role.sn);
+                        } else {
+                            $.messager.alert(data.msg)
+                        }
+                    },
+                    error: function (data) {
+                        $.messager.alert(data)
+                    }
+                })
+            }
+        })
+    </script>
+
+    <script>
+        $(function () {
+            //拍重
+            var ids = $.map($(".selfPermissions option"), function (item) {
+                return item.value;
+            })
+            $.each($(".allPermissions option"), function (index, item) {
+                if ($.inArray(item.value, ids) >= 0) {
+                    $(item).remove();
+                    $(item).remove();
+                }
+            });
+        })
+
+        //移动选中
+        function moveSelected(srcCls, targetCls) {
+            $("." + srcCls + " option:selected").appendTo($("." + targetCls));
+        }
+        //移动全部
+        function moveAll(srcCls, targetCls) {
+            $("." + srcCls + " option").appendTo($("." + targetCls))
+        }
+    </script>
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+    <header class="main-header">
+        <a href="../../index2.html" class="logo">
+            <span class="logo-mini">CRM</span>
+            <span class="logo-lg"><b>叩丁狼客户管理系统</b></span>
+        </a>
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top">
+            <!-- Sidebar toggle button-->
+            <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </a>
+
+            <div class="navbar-custom-menu">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown user user-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <img src="/js/adminlte/img/user2-160x160.jpg" class="user-image" alt="User Image">
+                            <span class="hidden-xs">叩丁狼</span>
+                        </a>
+                        <ul class="dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close" style="min-width: 100px;">
+                            <li>
+                                <a href="#">
+                                    <i class="fa fa-cog" ></i>
+                                    个人设置
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="profile.html">
+                                    <i class=" fa fa-user"></i>
+                                    个人信息
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="#">
+                                    <i class="fa fa-power-off"></i>
+                                    注销
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </div>
+        </nav>
+    </header>    <!--菜单回显-->
+    <aside class="main-sidebar">
+        <section class="sidebar">
+            <!-- search form -->
+            <form action="#" method="get" class="sidebar-form">
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" placeholder="Search...">
+                    <span class="input-group-btn">
+                <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
+                </button>
+              </span>
+                </div>
+            </form>
+            <ul class="sidebar-menu" data-widget="tree">
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-dashboard"></i> <span>系统管理</span>
+                        <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li name="department"><a href="/views/department/list.html"><i class="fa fa-circle-o"></i> 部门管理</a></li>
+                        <li name="employee"><a href="/views/employee/list.html"><i class="fa fa-circle-o"></i> 员工管理</a></li>
+                        <li name="permission"><a href="/views/permission/list.html"><i class="fa fa-circle-o"></i> 权限管理</a></li>
+                        <li name="role"><a href="/views/role/list.html"><i class="fa fa-circle-o"></i> 角色管理</a></li>
+                    </ul>
+                </li>
+
+            </ul>
+        </section>
+    </aside>
+
+    <script>
+        $(function () {
+            //菜单初始
+            $('.sidebar-menu').tree();
+            //菜单激活
+            var cuLi = $(".treeview-menu li[name='role']");
+            cuLi.addClass("active");
+            cuLi.closest(".treeview").addClass("active")
+        })
+    </script>    <div class="content-wrapper">
+    <section class="content-header">
+        <h1>角色编辑</h1>
+    </section>
+    <section class="content">
+        <div class="box">
+            <form class="form-horizontal" action="/role/saveOrUpdate" method="post" id="editForm">
+
+                <input type="hidden" value="" name="id" id="id">
+                <div class="form-group"  style="margin-top: 10px;">
+                    <label for="name" class="col-sm-2 control-label">角色名称：</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="name" name="name" value="" placeholder="请输入角色名称">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="sn" class="col-sm-2 control-label">角色编号：</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="sn" name="sn" value="" placeholder="请输入角色编号">
+                    </div>
+                </div>
+                <div class="form-group " id="role">
+                    <label for="role" class="col-sm-2 control-label">分配权限：</label><br/>
+                    <div class="row" style="margin-top: 10px">
+                        <div class="col-sm-2 col-sm-offset-2">
+                            <select multiple class="form-control allPermissions" size="15">
+                            </select>
+                        </div>
+
+                        <div class="col-sm-1" style="margin-top: 60px;" align="center">
+                            <div>
+
+                                <a type="button" class="btn btn-primary" style="margin-top: 10px" title="右移动"
+                                   onclick="moveSelected('allPermissions', 'selfPermissions')">
+                                    <span class="glyphicon glyphicon-menu-right"></span>
+                                </a>
+                            </div>
+                            <div>
+                                <a type="button" class="btn btn-primary " style="margin-top: 10px" title="左移动"
+                                   onclick="moveSelected('selfPermissions', 'allPermissions')">
+                                    <span class="glyphicon glyphicon-menu-left"></span>
+                                </a>
+                            </div>
+                            <div>
+                                <a type="button" class="btn btn-primary " style="margin-top: 10px" title="全右移动"
+                                   onclick="moveAll('allPermissions', 'selfPermissions')">
+                                    <span class="glyphicon glyphicon-forward"></span>
+                                </a>
+                            </div>
+                            <div>
+                                <a type="button" class="btn btn-primary " style="margin-top: 10px" title="全左移动"
+                                   onclick="moveAll('selfPermissions', 'allPermissions')">
+                                    <span class="glyphicon glyphicon-backward"></span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <select multiple class="form-control selfPermissions" size="15"  name="ids">
+                            </select>
+                        </div>
+
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-1 col-sm-6">
+                        <button id="submitBtn" type="button" class="btn btn-primary">保存</button>
+                        <button type="reset" class="btn btn-danger">重置</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </section>
+</div>
+    <footer class="main-footer">
+        <div class="pull-right hidden-xs">
+            <b>Version</b> 1.0.0
+        </div>
+        <strong>Copyright &copy; 2016-2019 <a href="http://www.wolfcode.cn">叩丁狼</a>.</strong> All rights
+        reserved.
+    </footer>
+</div>
+</body>
+</html>
