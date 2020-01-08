@@ -2,6 +2,10 @@ package com.coderZsq;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class Main {
 
@@ -134,11 +138,281 @@ public class Main {
         {
             Testable3 t1 = v -> new int[v];
             // 3
-            System.out.println(((int []) t1.test(3)).length);
+            System.out.println(((int[]) t1.test(3)).length);
 
             Testable3 t2 = int[]::new;
             // 3
-            System.out.println(((int []) t2.test(3)).length);
+            System.out.println(((int[]) t2.test(3)).length);
+        }
+
+        /*
+         * 常用函数式接口
+         *
+         * java.util.function 包中提供了很多常用的函数式接口
+         * Supplier
+         * Consumer
+         * Predicate
+         * Function
+         * ......
+         * */
+
+        /*
+         * Supplier
+         * */
+        {
+            // @FunctionalInterface
+            // public interface Supplier<T> {
+            //   T get();
+            // }
+        }
+
+        /*
+         * Supplier 应用
+         *
+         * 有时使用 Supplier 传参，可以避免代码的浪费执行(有必要的时候再执行)
+         * */
+        {
+            String s1 = "A";
+            String s2 = "B";
+            String s3 = "C";
+            // A
+            getFirstNotEmptyString(s1, () -> s1 + s2 + s3);
+        }
+
+        /*
+         * Consumer
+         * */
+        {
+            // @FunctionalInterface
+            // public interface Consumer<T> {
+            //   void accept(T t);
+            //
+            //   default Consumer<T> andThen(Consumer<? super T> after);
+            // }
+        }
+
+        /*
+         * Consumer 应用
+         * */
+        {
+            int[] nums = {11, 33, 44, 88, 77, 66};
+            forEach(nums, (n) -> {
+                String result = ((n & 1) == 0) ? "偶数" : "奇数";
+                System.out.println(n + "是" + result);
+            });
+        }
+
+        /*
+         * Consumer - andThen
+         * */
+        {
+            int[] nums = {11, 33, 44, 88, 77, 66};
+            forEach(nums, (n) -> {
+                String result = ((n & 1) == 0) ? "偶数" : "奇数";
+                System.out.println(n + "是" + result);
+            }, (n) -> {
+                String result = ((n % 3) == 0) ? "能" : "不能";
+                System.out.println(n + result + "被3整除");
+            });
+        }
+
+        /*
+         * Predicate
+         * */
+        {
+            // @FunctionalInterface
+            // public interface Predicate<T> {
+            //   boolean test(T t);
+            //
+            //   default Predicate<T> and(Predicate<? super T> other);
+            //   default Predicate<T> negate();
+            //   default Predicate<T> or(Predicate<? super T> other);
+            //
+            //   static <T> Predicate<T> isEqual(Object targetRef);
+            // }
+        }
+
+        /*
+         * Predicate 应用
+         * */
+        {
+            int[] nums = {11, 33, 44, 88, 77, 66};
+            String str = join(nums, (n) -> (n & 1) == 0);
+            // 44_88_66
+            System.out.println(str);
+        }
+
+        /*
+         * Predicate - and
+         * */
+        {
+            int[] nums = {11, 33, 44, 88, 77, 66};
+            String str = join(nums, (n) -> (n & 1) == 0, (n) -> (n % 3) == 0);
+            // 66
+            System.out.println(str);
+        }
+
+        /*
+         * Predicate - or
+         * */
+        {
+            int[] nums = {11, 33, 44, 88, 77, 66};
+            String str = join2(nums, (n) -> (n & 1) == 0, (n) -> (n % 3) == 0);
+            // 33_44_88_66
+            System.out.println(str);
+        }
+
+        /*
+         * Predicate - negate
+         * */
+        {
+            int[] nums = {11, 33, 44, 88, 77, 66};
+            String str = join3(nums, (n) -> (n & 1) == 0);
+            // 11_33_77
+            System.out.println(str);
+        }
+
+        /*
+         * Function
+         * */
+        {
+            // @FunctionalInterface
+            // public interface Function<T, R> {
+            //   R apply(T t);
+            //
+            //   default <V> Function<V, R> compose(Function<? super V, ? extends T> before);
+            //   default <V> Function<T, V> andThen(Function<? super R, ? extends V> after);
+            //
+            //   static <T> Function<T, T> identity();
+            // }
+        }
+
+        /*
+         * Function 应用
+         * */
+        {
+            String[] strs = {"12", "567", "666"};
+            int result = sum(strs, Integer::valueOf);
+            System.out.println(result);
+        }
+
+        /*
+         * Function - andThen
+         * */
+        {
+            String[] strs = {"12", "567", "666"};
+            int result = sum(strs, Integer::valueOf, (i) -> i % 10);
+            // 15
+            System.out.println(result);
+        }
+
+        /*
+         * Function - compose
+         * */
+        {
+            String[] strs = {"12", "567", "666"};
+            int result = sum(strs, Integer::valueOf, (i) -> i % 10);
+            // 15
+            System.out.println(result);
         }
     }
+
+    static String getFirstNotEmptyString(String s1, Supplier<String> s2) {
+        if (s1 != null && s1.length() != 0) return s1;
+        if (s2 == null) return null;
+        String str = s2.get();
+        return (str != null && str.length() != 0) ? str : null;
+    }
+
+    static void forEach(int[] nums, Consumer<Integer> c) {
+        if (nums == null || c == null) return;
+        for (int n : nums) {
+            c.accept(n);
+        }
+    }
+
+    static void forEach(int[] nums, Consumer<Integer> c1, Consumer<Integer> c2) {
+        if (nums == null || c1 == null || c2 == null) return;
+        for (int n : nums) {
+            c1.andThen(c2).accept(n);
+        }
+    }
+
+    static String join(int[] nums, Predicate<Integer> p) {
+        if (nums == null || p == null) return null;
+        StringBuilder sb = new StringBuilder();
+        for (int n : nums) {
+            if (p.test(n)) {
+                sb.append(n).append("_");
+            }
+        }
+        sb.deleteCharAt(sb.length() - 1);
+        return sb.toString();
+    }
+
+    static String join(int[] nums, Predicate<Integer> p1, Predicate<Integer> p2) {
+        if (nums == null || p1 == null || p2 == null) return null;
+        StringBuilder sb = new StringBuilder();
+        for (int n : nums) {
+            if (p1.and(p2).test(n)) {
+                sb.append(n).append("_");
+            }
+        }
+        sb.deleteCharAt(sb.length() - 1);
+        return sb.toString();
+    }
+
+    static String join2(int[] nums, Predicate<Integer> p1, Predicate<Integer> p2) {
+        if (nums == null || p1 == null || p2 == null) return null;
+        StringBuilder sb = new StringBuilder();
+        for (int n : nums) {
+            if (p1.or(p2).test(n)) {
+                sb.append(n).append("_");
+            }
+        }
+        sb.deleteCharAt(sb.length() - 1);
+        return sb.toString();
+    }
+
+    static String join3(int[] nums, Predicate<Integer> p) {
+        if (nums == null || p == null) return null;
+        StringBuilder sb = new StringBuilder();
+        for (int n : nums) {
+            if (p.negate().test(n)) {
+                sb.append(n).append("_");
+            }
+        }
+        sb.deleteCharAt(sb.length() - 1);
+        return sb.toString();
+    }
+
+    static int sum(String[] strs, Function<String, Integer> f) {
+        if (strs == null || f == null) return 0;
+        int result = 0;
+        for (String str : strs) {
+            result += f.apply(str);
+        }
+        return result;
+    }
+
+    // 将所有数字的个位数加起来
+    static int sum(String[] strs, Function<String, Integer> f1, Function<Integer, Integer> f2) {
+        if (strs == null || f1 == null || f2 == null) return 0;
+        int result = 0;
+        for (String str : strs) {
+            result += f1.andThen(f2).apply(str);
+        }
+        return result;
+    }
+
+    // 将所有数字的个位数加起来
+    static int sum2(String[] strs, Function<String, Integer> f1, Function<Integer, Integer> f2) {
+        if (strs == null || f1 == null || f2 == null) return 0;
+        int result = 0;
+        for (String str : strs) {
+            result += f2.compose(f1).apply(str);
+        }
+        return result;
+    }
+
 }
