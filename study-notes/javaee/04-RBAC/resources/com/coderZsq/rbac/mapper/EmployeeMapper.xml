@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.coderZsq.rbac.mapper.EmployeeMapper">
+    <resultMap id="BaseResultMap" type="com.coderZsq.rbac.domain.Employee">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="password" property="password"/>
+        <result column="email" property="email"/>
+        <result column="age" property="age"/>
+        <result column="admin" property="admin"/>
+        <association property="department" javaType="com.coderZsq.rbac.domain.Department" columnPrefix="d_">
+            <id column="id" property="id"/>
+            <result column="name" property="name"/>
+            <result column="sn" property="sn"/>
+        </association>
+    </resultMap>
+    <delete id="deleteByPrimaryKey">
+        delete
+        from employee
+        where id = #{id}
+    </delete>
+    <delete id="deleteRelation">
+        delete from employee_role where employee_id=#{empId}
+    </delete>
+
+    <delete id="batchDelete">
+      delete from employee where id in
+      <foreach collection="array" item="id" open="(" separator="," close=")">
+          #{id}
+      </foreach>
+    </delete>
+
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into employee (name, password, email, age, admin, dept_id)
+        values (#{name}, #{password}, #{email}, #{age}, #{admin}, #{department.id})
+    </insert>
+
+    <insert id="insertRelation">
+        insert into employee_role(employee_id, role_id) values (#{empId},#{roleId})
+    </insert>
+
+    <update id="updateByPrimaryKey">
+        update employee
+        set name     = #{name},
+            password = #{password},
+            email    = #{email},
+            age      = #{age},
+            admin    = #{admin},
+            dept_id  = #{department.id}
+        where id = #{id}
+    </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+        select e.id, e.name, e.password, e.email, e.age, e.admin, e.dept_id,d.id d_id,d.`name` d_name, d.sn d_sn
+        from employee e LEFT JOIN  department d on e.dept_id=d.id
+        where e.id = #{id}
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select id, name, password, email, age, admin, dept_id
+        from employee
+    </select>
+
+    <select id="query" resultMap="BaseResultMap">
+        select e.id, e.name, e.password, e.email, e.age, e.admin, e.dept_id,d.id d_id,d.`name` d_name, d.sn d_sn
+        from employee e LEFT JOIN  department d on e.dept_id=d.id
+        <where>
+            <if test="keyword!=null">
+                and (e.name like concat('%',#{keyword},'%') or e.email like concat('%',#{keyword},'%'))
+            </if>
+            <if test="deptId > 0">
+                and e.dept_id=#{deptId}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectByUsernameAndPassword" resultMap="BaseResultMap">
+        select *
+        from employee
+        where name=#{username} and password=#{password}
+    </select>
+</mapper>

@@ -13,4 +13,6 @@ public interface DepartmentMapper {
     List<Department> query(QueryObject queryObject);
 
     void delete(Long id);
+
+    void update(Department department);
 }

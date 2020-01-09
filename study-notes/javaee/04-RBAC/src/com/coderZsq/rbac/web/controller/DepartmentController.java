@@ -1,7 +1,7 @@
 package com.coderZsq.rbac.web.controller;
 
 import com.coderZsq.rbac.domain.Department;
-import com.coderZsq.rbac.query.PageResult;
+import com.coderZsq.rbac.utils.PageResult;
 import com.coderZsq.rbac.query.QueryObject;
 import com.coderZsq.rbac.service.IDepartmentService;
 import com.github.pagehelper.PageInfo;
@@ -18,9 +18,9 @@ public class DepartmentController {
     @Autowired
     private IDepartmentService departmentService;
 
-    @RequestMapping("selectAll") // /department/selectAll
-    public List<Department> selectAll() {
-        return departmentService.selectAll();
+    @RequestMapping("queryAll") // /department/queryAll
+    public PageResult<List<Department>> queryAll() {
+        return PageResult.success(departmentService.selectAll());
     }
 
     @RequestMapping("query")
@@ -33,6 +33,18 @@ public class DepartmentController {
     @RequestMapping("delete")
     public PageResult<Boolean> delete(Long id) {
         departmentService.delete(id);
+        return PageResult.success(true);
+    }
+
+    @RequestMapping("saveOrUpdate")
+    public PageResult<Boolean> saveOrUpdate(Department department) {
+        // 是否存在Id
+        Long id = department.getId();
+        if (id == null) { // 新增操作
+            departmentService.insert(department);
+        } else {
+            departmentService.update(department);
+        }
         return PageResult.success(true);
     }
 }

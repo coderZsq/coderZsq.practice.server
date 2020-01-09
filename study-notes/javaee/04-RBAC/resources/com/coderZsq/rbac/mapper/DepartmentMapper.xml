@@ -9,6 +9,9 @@
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         insert department(name, sn) values (#{name}, #{sn})
     </insert>
+    <update id="update">
+        update department set name=#{name}, sn=#{sn}  where id=#{id}
+    </update>
     <delete id="delete">
         delete from department where id=#{id}
     </delete>

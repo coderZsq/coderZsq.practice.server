@@ -39,4 +39,9 @@ public class DepartmentServiceImpl implements IDepartmentService {
     public void delete(Long id) {
         departmentMapper.delete(id);
     }
+
+    @Override
+    public void update(Department department) {
+        departmentMapper.update(department);
+    }
 }
