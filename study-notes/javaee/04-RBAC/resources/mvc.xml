@@ -10,11 +10,36 @@
 
         <import resource="applicationContext.xml"/>
 
+        <!--MVC的注解驱动-->
         <mvc:annotation-driven/>
-
-        <!-- 处理默认的静态资源-->
         <mvc:default-servlet-handler/>
+        <mvc:interceptors>
+                <mvc:interceptor>
+                        <mvc:mapping path="/**"/>
+                        <mvc:exclude-mapping path="/css/**"/>
+                        <mvc:exclude-mapping path="/js/**"/>
+                        <mvc:exclude-mapping path="/views/**"/>
+                        <mvc:exclude-mapping path="/index.html"/>
+                        <mvc:exclude-mapping path="/login"/>
+                        <bean class="com.coderZsq.rbac.web.interceptor.LoginInterceptor"/>
+                </mvc:interceptor>
+                <mvc:interceptor>
+                        <mvc:mapping path="/**"/>
+                        <mvc:exclude-mapping path="/css/**"/>
+                        <mvc:exclude-mapping path="/js/**"/>
+                        <mvc:exclude-mapping path="/views/**"/>
+                        <mvc:exclude-mapping path="/index.html"/>
+                        <mvc:exclude-mapping path="/login"/>
+                        <bean class="com.coderZsq.rbac.web.interceptor.PermissionInterceptor"/>
+                </mvc:interceptor>
+        </mvc:interceptors>
+        <!--配置跨域问题解决-->
         <mvc:cors>
-                <mvc:mapping path="/**"/>
+                <mvc:mapping path="/**"
+                             allowed-origins="*"
+                             allowed-methods="GET,POST,PUT,DELETE,OPTIONS"
+                             allowed-headers="Content-Type,token"
+                             allow-credentials="true"
+                             max-age="3600" />
         </mvc:cors>
 </beans>
