@@ -1,5 +1,6 @@
 package com.coderZsq;
 
+
 // 继承Thread, 重写run方法
 public class MyThread extends Thread {
     @Override

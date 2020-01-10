@@ -2,7 +2,7 @@ package com.coderZsq;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         /*
          * 进程(Process)
          *
@@ -165,11 +165,153 @@ public class Main {
         /*
          * sleep、interrupt
          *
-         * 可以通过 Thread.sleep 方法暂停当前线程，进入WAITING状态
+         * 可以通过 Thread.sleep 方法暂停当前线程，进入 WAITING 状态
          * 在暂停期间，若调用线程对象的 interrupt 方法中断线程，会抛出 java.lang.InterruptedException 异常
          * */
         {
-            
+            Thread thread = new Thread(() -> {
+                System.out.println("begin");
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    System.out.println("interrupt");
+                }
+                System.out.println("end");
+            });
+            thread.start();
+            Thread.sleep(1000);
+            thread.interrupt();
+            // begin
+            // interrupt
+            // end
+        }
+
+        /*
+         * join、isAlive
+         *
+         * A.join 方法:等线程 A 执行完毕后，当前线程再继续执行任务。可以传参指定最长等待时间
+         *
+         * A.isAlive 方法:查看线程 A 是否还活着
+         * */
+        {
+            Thread t1 = new Thread(() -> {
+                System.out.println("t1 - begin");
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("t1 - end");
+            });
+            t1.start();
+
+            Thread t2 = new Thread(() -> {
+                System.out.println("t2 - begin");
+                System.out.println("t1.isAlive - " + t1.isAlive());
+                try {
+                    t1.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("t1.state - " + t1.getState());
+                System.out.println("t1.isAlive - " + t1.isAlive());
+                System.out.println("t2 - end");
+            });
+            // t2.start();
+            // t1 - begin
+            // t2 - begin
+            // t1.isAlive - true
+            // t1 - end
+            // t1.state - TERMINATED
+            // t1.isAlive - false
+            // t2 - end
+        }
+
+        /*
+         * 线程安全问题
+         *
+         * 多个线程可能会共享(访问)同一个资源
+         * 比如访问同一个对象、同一个变量、同一个文件
+         *
+         * 当多个线程访问同一块资源时，很容易引发数据错乱和数据安全问题，称为线程安全问题
+         *
+         * 什么情况下会出现线程安全问题?
+         * 多个线程共享同一个资源
+         * 且至少有一个线程正在进行写的操作
+         * */
+
+        /*
+         * 线程安全问题 - 示例
+         * */
+        {
+            Station station = new Station();
+            for (int i = 1; i <= 4; i++) {
+                Thread thread = new Thread(station);
+                thread.setName("" + i);
+                thread.start();
+            }
+        }
+
+        /*
+         * 几个常用类的细节
+         *
+         * 动态数组
+         * ArrayList:非线程安全
+         * Vector:线程安全
+         *
+         * 动态字符串
+         * StringBuilder:非线程安全
+         * StringBuffer:线程安全
+         *
+         * 映射(字典)
+         * HashMap:非线程安全
+         * Hashtable:线程安全
+         * */
+
+        /*
+         * 死锁(Deadlock)
+         *
+         * 什么是死锁?
+         * 两个或者多个线程永远阻塞，相互等待对方的锁
+         * */
+        {
+            new Thread(() -> {
+                synchronized ("1") {
+                    System.out.println("1 - 1");
+                    try {
+                        Thread.sleep(100);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                synchronized ("2") {
+                    System.out.println("1 - 2");
+                }
+            }).start();
+
+            new Thread(() -> {
+                synchronized ("2") {
+                    System.out.println("2 - 1");
+                    try {
+                        Thread.sleep(100);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                synchronized ("1") {
+                    System.out.println("2 - 2");
+                }
+            }).start();
+        }
+
+        /*
+         * 死锁 - 示例
+         * */
+        if (false){
+            Person jack = new Person("Jack");
+            Person rose = new Person("Rose");
+            new Thread(() -> {jack.hello(rose);}).start();
+            new Thread(() -> {rose.hello(jack);}).start();
         }
     }
 }
