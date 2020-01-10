@@ -3,14 +3,13 @@ package com.coderZsq._03_introspector;
 import com.coderZsq._02_javabean.Person;
 
 import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.util.HashMap;
 import java.util.Map;
 
 // JavaBean的工具类
-public class BeanUtils {
+public class BeanUtil {
 
     public static void main(String[] args) throws Exception {
         Person p = new Person();
