@@ -14,7 +14,7 @@ import (
 // 目标难度值
 const targetBit = 16
 
-// 工作量证明的结构
+// ProofOfWork 工作量证明的结构
 type ProofOfWork struct {
 	// 需要共识验证的区块
 	Block *Block
@@ -22,7 +22,7 @@ type ProofOfWork struct {
 	target *big.Int
 }
 
-// 创建一个POW对象
+// NewProofOfWork 创建一个POW对象
 func NewProofOfWork(block *Block) *ProofOfWork {
 	target := big.NewInt(1)
 	// 数据长度为8位
@@ -35,7 +35,7 @@ func NewProofOfWork(block *Block) *ProofOfWork {
 	return &ProofOfWork{block, target}
 }
 
-// 执行pow, 比较哈希
+// Run 执行pow, 比较哈希
 // 返回哈希值, 以及碰撞次数
 func (proofOfWork *ProofOfWork) Run() ([]byte, int) {
 	// 碰撞次数
@@ -59,17 +59,17 @@ func (proofOfWork *ProofOfWork) Run() ([]byte, int) {
 	return hash[:], nonce
 }
 
-// 生成准备数据
-func (pow *ProofOfWork) prepareData(nonce int64) []byte {
-	var data [] byte
+// prepareData 生成准备数据
+func (proofOfWork *ProofOfWork) prepareData(nonce int64) []byte {
+	var data []byte
 	// 拼接区块属性, 进行哈希计算
-	timeStampBytes := IntToHex(pow.Block.TimeStamp)
-	heightBytes := IntToHex(pow.Block.Height)
+	timeStampBytes := IntToHex(proofOfWork.Block.TimeStamp)
+	heightBytes := IntToHex(proofOfWork.Block.Height)
 	data = bytes.Join([][]byte{
 		heightBytes,
 		timeStampBytes,
-		pow.Block.PrevBlockHash,
-		pow.Block.Data,
+		proofOfWork.Block.PrevBlockHash,
+		proofOfWork.Block.Data,
 		IntToHex(nonce),
 		IntToHex(targetBit),
 	}, []byte{})

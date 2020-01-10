@@ -7,10 +7,10 @@ type BlockChain struct {
 	Blocks []*Block // 区块的切片
 }
 
-// 初始化区块链
+// CreateBlockChainWithGenesisBlock 初始化区块链
 func CreateBlockChainWithGenesisBlock() *BlockChain {
 	// 生成创世区块
-	block := CreateGenesisBlock([] byte("init blockchain"))
+	block := CreateGenesisBlock([]byte("init blockchain"))
 	return &BlockChain{[]*Block{block}}
 }
 
