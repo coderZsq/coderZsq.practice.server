@@ -3,6 +3,8 @@ package blc
 import (
 	"bytes"
 	"crypto/sha256"
+	"encoding/gob"
+	"log"
 	"time"
 )
 
@@ -41,22 +43,45 @@ func NewBlock(height int64, prevBlockHash []byte, data []byte) *Block {
 }
 
 // SetHash 计算区块哈希
-func (b *Block) SetHash() {
+func (block *Block) SetHash() {
 	// 调用sha256实现哈希生成
 	// 实现int64 -> hash
-	timeStampBytes := IntToHex(b.TimeStamp)
-	heightBytes := IntToHex(b.Height)
+	timeStampBytes := IntToHex(block.TimeStamp)
+	heightBytes := IntToHex(block.Height)
 	blockBytes := bytes.Join([][]byte{
 		heightBytes,
 		timeStampBytes,
-		b.PrevBlockHash,
-		b.Data,
+		block.PrevBlockHash,
+		block.Data,
 	}, []byte{})
 	hash := sha256.Sum256(blockBytes)
-	b.Hash = hash[:]
+	block.Hash = hash[:]
 }
 
 // CreateGenesisBlock 生成创世区块
 func CreateGenesisBlock(data []byte) *Block {
 	return NewBlock(1, nil, data)
+}
+
+// Serialize 区块结构序列化
+func (block *Block) Serialize() []byte {
+	var buffer bytes.Buffer
+	// 新建编码对象
+	encoder := gob.NewEncoder(&buffer)
+	// 编码(序列化)
+	if err := encoder.Encode(block); nil != err {
+		log.Panicf("serialize the block to []bytes failed! %v\n", err)
+	}
+	return nil
+}
+
+// Deserialize 区块数据反序列化
+func Deserialize(blockBytes []byte) *Block {
+	var block Block
+	// 新建 decoder对象
+	decoder := gob.NewDecoder(bytes.NewReader(blockBytes))
+	if err := decoder.Decode(&block); nil != err {
+		log.Printf("deserialize the []byte to block failed! %v\n", err)
+	}
+	return &block
 }

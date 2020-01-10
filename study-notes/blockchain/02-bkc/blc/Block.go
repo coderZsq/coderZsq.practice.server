@@ -11,7 +11,7 @@ import (
 // Block 实现一个最基本的区块结构
 type Block struct {
 	TimeStamp     int64  // 区块时间戳, 代表区块时间
-	Hash          []byte //当前区块哈希
+	Hash          []byte // 当前区块哈希
 	PrevBlockHash []byte // 前区块哈希
 	Height        int64  // 区块高度
 	Data          []byte // 交易数据
