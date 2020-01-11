@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"math/big"
+	"os"
 
 	"github.com/boltdb/bolt"
 )
@@ -23,9 +24,21 @@ type BlockChain struct {
 }
 
 // 判断数据库文件是否存在
+func dbExist() bool {
+	if _, err := os.Stat(dbName); os.IsNotExist(err) {
+		// 数据库文件不存在
+		return false
+	}
+	return true
+}
 
 // CreateBlockChainWithGenesisBlock 初始化区块链
 func CreateBlockChainWithGenesisBlock() *BlockChain {
+	if dbExist() {
+		// 文件已存在, 说明创世区块已存在
+		fmt.Println("创世区块已存在...")
+		os.Exit(1)
+	}
 	// 保存最新区块的哈希值
 	var blockHash []byte
 	// 1. 创建或者打开一个数据库
