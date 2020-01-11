@@ -72,7 +72,7 @@ func (bc *BlockChain) AddBlock(data []byte) {
 			// 2. 获取最后插入的区块
 			blockBytes := b.Get(bc.Tip)
 			// 3. 区块数据反序列化
-			latestBlock := Deserialize(blockBytes)
+			latestBlock := DeserializeBlock(blockBytes)
 			// 4. 新建区块
 			// height int64, prevBlockHash []byte, data []byte
 			newBlock := NewBlock(latestBlock.Height+1, latestBlock.Hash, data)
@@ -101,25 +101,17 @@ func (bc *BlockChain) PrintChain() {
 	// 读取数据库
 	fmt.Println("区块链完整信息...")
 	var curBlock *Block
-	var currentHash = bc.Tip
+	bcit := bc.Iterator() // 获取迭代器对象
 	// 循环读取
 	for {
 		fmt.Println("-----------------------------------------------------------------------------------------------")
-		bc.DB.View(func(tx *bolt.Tx) error {
-			b := tx.Bucket([]byte(blockTableName))
-			if nil != b {
-				blockBytes := b.Get(currentHash)
-				curBlock = Deserialize(blockBytes)
-				// 输出区块详情
-				fmt.Printf("\tHash: %x\n", curBlock.Hash)
-				fmt.Printf("\tPrevBlockHash: %x\n", curBlock.PrevBlockHash)
-				fmt.Printf("\tTimeStamp: %v\n", curBlock.TimeStamp)
-				fmt.Printf("\tData: %v\n", curBlock.Data)
-				fmt.Printf("\tHeight: %d\n", curBlock.Height)
-				fmt.Printf("\tNonce: %d\n", curBlock.Nonce)
-			}
-			return nil
-		})
+		curBlock = bcit.Next()
+		fmt.Printf("\tHash: %x\n", curBlock.Hash)
+		fmt.Printf("\tPrevBlockHash: %x\n", curBlock.PrevBlockHash)
+		fmt.Printf("\tTimeStamp: %v\n", curBlock.TimeStamp)
+		fmt.Printf("\tData: %v\n", curBlock.Data)
+		fmt.Printf("\tHeight: %d\n", curBlock.Height)
+		fmt.Printf("\tNonce: %d\n", curBlock.Nonce)
 		// 退出条件
 		// 转换为big.int
 		var hashInt big.Int
@@ -129,8 +121,5 @@ func (bc *BlockChain) PrintChain() {
 			// 遍历到创世区块
 			break
 		}
-
-		// 更新当前要获取的区块哈希值
-		currentHash = curBlock.PrevBlockHash
 	}
 }
