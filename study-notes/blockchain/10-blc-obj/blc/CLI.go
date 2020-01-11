@@ -11,7 +11,7 @@ import (
 
 // CLI client对象
 type CLI struct {
-	BC *BlockChain // blockchain对象
+	//BC *BlockChain // blockchain对象
 }
 
 // PrintUsage 用法提示
@@ -32,13 +32,24 @@ func (cli *CLI) createBlockchain() {
 
 // 添加区块
 func (cli *CLI) addBlock(data string) {
+	// 判断数据库是否存在
+	if !dbExist() {
+		fmt.Println("数据库不存在...")
+		os.Exit(1)
+	}
+	blockchain := BlockchainObject()
 	// 获取到blockchain的对象实例
-	cli.BC.AddBlock([]byte(data))
+	blockchain.AddBlock([]byte(data))
 }
 
 // 打印完整区块链信息
 func (cli *CLI) printchain() {
-	cli.BC.PrintChain()
+	if !dbExist() {
+		fmt.Println("数据库不存在...")
+		os.Exit(1)
+	}
+	blockchain := BlockchainObject()
+	blockchain.PrintChain()
 }
 
 // IsValidArgs 参数数量检测函数
