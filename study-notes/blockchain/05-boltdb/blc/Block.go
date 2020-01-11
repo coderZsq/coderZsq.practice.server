@@ -72,7 +72,7 @@ func (block *Block) Serialize() []byte {
 	if err := encoder.Encode(block); nil != err {
 		log.Panicf("serialize the block to []bytes failed! %v\n", err)
 	}
-	return nil
+	return buffer.Bytes()
 }
 
 // Deserialize 区块数据反序列化
