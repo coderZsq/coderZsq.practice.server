@@ -1,4 +1,4 @@
-package com.coderZsq._01_junit.asserted;
+package com.coderZsq._07_junit.asserted;
 
 /**
  * 数学运算功能

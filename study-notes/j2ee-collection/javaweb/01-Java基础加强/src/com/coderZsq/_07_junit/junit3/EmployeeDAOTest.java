@@ -1,11 +1,10 @@
-package com.coderZsq._01_junit.junit3;
+package com.coderZsq._07_junit.junit3;
 
 
 import junit.framework.TestCase;
 
 // EmployeeDAO组件的测试类
 public class EmployeeDAOTest extends TestCase {
-
     // 初始化操作
     @Override
     public void setUp() throws Exception {

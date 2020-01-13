@@ -1,6 +1,6 @@
-package com.coderZsq._01_junit.asserted.impl;
+package com.coderZsq._07_junit.asserted.impl;
 
-import com.coderZsq._01_junit.asserted.IMath;
+import com.coderZsq._07_junit.asserted.IMath;
 
 public class MathImpl implements IMath {
     @Override

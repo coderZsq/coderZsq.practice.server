@@ -1,6 +1,6 @@
-package com.coderZsq._01_junit.asserted;
+package com.coderZsq._07_junit.asserted;
 
-import com.coderZsq._01_junit.asserted.impl.MathImpl;
+import com.coderZsq._07_junit.asserted.impl.MathImpl;
 import org.junit.Assert;
 import org.junit.Test;
 

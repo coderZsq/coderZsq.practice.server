@@ -1,4 +1,4 @@
-package com.coderZsq._01_junit.junit4;
+package com.coderZsq._07_junit.junit4;
 
 import org.junit.*;
 
