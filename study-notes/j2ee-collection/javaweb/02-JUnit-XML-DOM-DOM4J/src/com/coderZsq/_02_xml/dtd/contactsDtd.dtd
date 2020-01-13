@@ -1,0 +1,6 @@
+<!ELEMENT contacts (linkman+)>
+<!ELEMENT linkman (name, email, address, group)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT email (#PCDATA)>
+<!ELEMENT address (#PCDATA)>
+<!ELEMENT group (#PCDATA)>

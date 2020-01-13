@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE contacts SYSTEM "contactsDtd.dtd">
+<contacts>
+    <linkman>
+        <name>coderZsq</name>
+        <email>a13701777868@yahoo.com</email>
+        <address>coderZsq.github.io</address>
+        <group>CR</group>
+    </linkman>
+    <linkman>
+        <name>Castie!</name>
+        <email>a13701777868@gmail.com</email>
+        <address>github.com/coderZsq</address>
+        <group>CR</group>
+    </linkman>
+</contacts>

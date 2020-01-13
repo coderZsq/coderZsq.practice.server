@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<contacts xmlns="http://coderZsq.com"
+          xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+          xs:schemaLocation="http://coderZsq.com contactsSchema.xsd">
+    <linkman id="1">
+        <name>coderZsq</name>
+        <email>a13701777868@yahoo.com</email>
+        <address>coderZsq.github.io</address>
+        <group>CR</group>
+    </linkman>
+    <linkman id="2">
+        <name>Castie!</name>
+        <email>a13701777868@gmail.com</email>
+        <address>github.com/coderZsq</address>
+        <group>CR</group>
+    </linkman>
+</contacts>
