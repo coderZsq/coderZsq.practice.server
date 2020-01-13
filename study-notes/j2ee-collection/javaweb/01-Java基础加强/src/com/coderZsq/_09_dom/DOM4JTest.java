@@ -11,7 +11,7 @@ import java.io.FileWriter;
 import java.util.List;
 
 public class DOM4JTest {
-    private File f = new File("/Users/zhushuangquan/Native Drive/GitHub/coderZsq.practice.server.java/study-notes/j2ee-collection/javaweb/02-JUnit-XML-DOM-DOM4J/src/com/coderZsq/_03_dom/contacts.xml");
+    private File f = new File("/Users/zhushuangquan/Native Drive/GitHub/coderZsq.practice.server.java/study-notes/j2ee-collection/javaweb/01-Java基础加强/src/com/coderZsq/_03_dom/contacts.xml");
 
     // 查询所有的联系人
     @Test

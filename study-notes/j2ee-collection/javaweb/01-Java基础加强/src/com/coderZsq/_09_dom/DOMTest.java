@@ -18,7 +18,7 @@ import java.io.File;
 // DOM操作测试类
 public class DOMTest {
     // 被操作的XML文件
-    private File f = new File("/Users/zhushuangquan/Native Drive/GitHub/coderZsq.practice.server.java/study-notes/j2ee-collection/javaweb/02-JUnit-XML-DOM-DOM4J/src/com/coderZsq/_03_dom/contacts.xml");
+    private File f = new File("/Users/zhushuangquan/Native Drive/GitHub/coderZsq.practice.server.java/study-notes/j2ee-collection/javaweb/01-Java基础加强/src/com/coderZsq/_03_dom/contacts.xml");
 
     // 如何获取Document文档对象
     @Test
