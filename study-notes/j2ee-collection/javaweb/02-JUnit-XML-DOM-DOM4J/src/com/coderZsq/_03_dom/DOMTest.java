@@ -179,4 +179,44 @@ public class DOMTest {
     }
 
     // 需求6: 在内存中创建一个Document对象
+    @Test
+    public void test6() throws Exception {
+        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        Document doc = null;
+        // 如果XML文件存在, 则解析, 否则, 创建新的
+        if (f.exists()) { // 文件存在
+            doc = builder.parse(f);
+        } else { // 文件不存在
+            doc = builder.newDocument(); // 在内存中创建Document对象
+            // 创建根元素, 并且把根元素作为文档的子元素
+            doc.appendChild(doc.createElement("contacts"));
+        }
+        // =============================================================
+        // 保存一个联系人
+        Element root = doc.getDocumentElement();
+        // * 3.1): 创建linkman, name, email, address, group元素
+        Element linkmanEl = doc.createElement("linkman");
+        Element nameEl = doc.createElement("name");
+        Element emailEl = doc.createElement("email");
+        Element addressEl = doc.createElement("address");
+        Element groupEl = doc.createElement("group");
+        // * 3.2): 给name, email, address, group元素设置文本内容
+        nameEl.setTextContent("Lisa");
+        emailEl.setTextContent("lisa@gmail.com");
+        addressEl.setTextContent("github.com/lisa-microwave");
+        groupEl.setTextContent("FOSUM");
+        // * 3.3): 把name, email, address, group元素作为linkman元素的子元素
+        linkmanEl.appendChild(nameEl);
+        linkmanEl.appendChild(emailEl);
+        linkmanEl.appendChild(addressEl);
+        linkmanEl.appendChild(groupEl);
+        // * 3.4): 把linkman元素作为根元素的子元素
+        root.appendChild(linkmanEl);
+        // * 4): 同步操作: 把内存中的数据同步更新到磁盘的XML中
+        TransformerFactory factory = TransformerFactory.newInstance();
+        Transformer trans = factory.newTransformer();
+        Source xmlSource = new DOMSource(doc); // 源: 内存中的Document对象
+        Result outputTarget = new StreamResult(f); // 目标: 磁盘中的XML文件(contacts.xml)
+        trans.transform(xmlSource, outputTarget); // 同步操作
+    }
 }
