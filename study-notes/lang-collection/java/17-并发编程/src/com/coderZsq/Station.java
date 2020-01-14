@@ -1,5 +1,8 @@
 package com.coderZsq;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 public class Station implements Runnable {
     private int tickets = 100;
 
@@ -62,12 +65,29 @@ public class Station implements Runnable {
      * 虽然解决了线程安全问题，但是降低了程序的执行效率
      * 所以在真正有必要的时候，才使用线程同步技术
      * */
-    public synchronized boolean saleTicket() {
+    public synchronized boolean saleTicket2() {
         if (tickets < 1) return false;
         tickets--;
         String name = Thread.currentThread().getName();
         System.out.println(name + "卖了1张, 剩" + tickets + "张");
         return tickets > 0;
+    }
+
+    /*
+     * ReentrantLock 在卖票示例中的使用
+     * */
+    private Lock lock = new ReentrantLock();
+    public boolean saleTicket() {
+        try {
+            lock.lock();
+            if (tickets < 1) return false;
+            tickets--;
+            String name = Thread.currentThread().getName();
+            System.out.println(name + "卖了1张, 剩" + tickets + "张");
+            return tickets > 0;
+        } finally {
+            lock.unlock();
+        }
     }
 
     @Override

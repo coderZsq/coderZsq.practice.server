@@ -1,5 +1,10 @@
 package com.coderZsq;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 public class Main {
 
     public static void main(String[] args) throws Exception {
@@ -217,7 +222,7 @@ public class Main {
                 System.out.println("t1.isAlive - " + t1.isAlive());
                 System.out.println("t2 - end");
             });
-            // t2.start();
+            t2.start();
             // t1 - begin
             // t2 - begin
             // t1.isAlive - true
@@ -307,11 +312,136 @@ public class Main {
         /*
          * 死锁 - 示例
          * */
-        if (false){
+        if (false) {
             Person jack = new Person("Jack");
             Person rose = new Person("Rose");
-            new Thread(() -> {jack.hello(rose);}).start();
-            new Thread(() -> {rose.hello(jack);}).start();
+            new Thread(() -> {
+                jack.hello(rose);
+            }).start();
+            new Thread(() -> {
+                rose.hello(jack);
+            }).start();
+        }
+
+        /*
+         * 线程间通信
+         *
+         * 可以使用 Object.wait、Object.notify、Object.notifyAll 方法实现线程之间的通信
+         * 若想在线程 A 中成功调用 obj.wait、obj.notify、obj.notifyAll 方法
+         * 线程 A 必须要持有 obj 的内部锁
+         * obj.wait :释放 obj 的内部锁，当前线程进入 WAITING 或 TIMED_WAITING 状态
+         * obj.notifyAll :唤醒所有因为 obj.wait 进入 WAITING 或 TIMED_WAITING 状态的线程
+         * obj.notify :随机唤醒 1 个因为 obj.wait 进入 WAITING 或 TIMED_WAITING 状态的线程
+         * */
+        {
+            Drop drop = new Drop();
+            new Thread(new Consumer(drop)).start();
+            new Thread(new Producer(drop)).start();
+        }
+
+        /*
+         * ReentrantLock(可重入锁)
+         *
+         * ReentrantLock ，译为“可重入锁”
+         * 类的全名是:java.util.concurrent.locks.ReentrantLock
+         * 具有跟同步语句、同步方法一样的一些基本功能，但功能更加强大
+         *
+         * 什么是可重入?
+         * 同一个线程可以重复获取同一个锁
+         * 其实synchronized 也是可重入的
+         * */
+
+        /*
+         * ReentrantLock – lock、tryLock
+         *
+         * ReentrantLock.lock :获取此锁
+         * 如果此锁没有被另一个线程持有，则将锁的持有计数设为 1，并且此方法立即返回
+         * 如果当前线程已经持有此锁，则将锁的持有计数加 1，并且此方法立即返回
+         * 如果此锁被另一个线程持有，并且在获得锁之前，此线程将一直处于休眠状态，此时锁的持有计数被设为 1
+         *
+         * ReentrantLock.tryLock :仅在调用时锁未被其他线程持有的情况下，才获取此锁
+         * 如果此锁没有被另一个线程持有，则将锁的持有计数设为 1，并且此方法立即返回 true
+         * 如果当前线程已经持有此锁，则将锁的持有计数加 1，并且此方法立即返回 true。
+         * 如果锁被另一个线程持有，则此方法立即返回 false
+         * */
+
+        /*
+         * ReentrantLock – unlock、isLocked
+         *
+         * ReentrantLock.unlock :尝试释放此锁
+         * 如果当前线程持有此锁，则将持有计数减 1
+         * 如果持有计数现在为 0，则释放此锁
+         * 如果当前线程没有持有此锁，则抛出 java.lang.IllegalMonitorStateException
+         *
+         * ReentrantLock.isLocked :查看此锁是否被任意线程持有
+         * */
+
+        /*
+         * ReentrantLock – tryLock使用注意
+         * */
+        {
+            Lock lock = new ReentrantLock();
+            new Thread(() -> {
+                try {
+                    lock.lock();
+                    System.out.println("1");
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    lock.unlock();
+                }
+            }).start();
+            new Thread(() -> {
+                boolean locked = false;
+                try {
+                    locked = lock.tryLock();
+                    System.out.println("2");
+                } finally {
+                    if (locked) {
+                        lock.unlock();
+                    }
+                }
+            }).start();
+        }
+
+        /*
+         * 线程池(Thread Pool)
+         *
+         * 线程对象占用大量内存，在大型应用程序中，频繁地创建和销毁线程对象会产生大量内存管理开销
+         *
+         * 使用线程池可以最大程度地减少线程创建、销毁所带来的开销
+         *
+         * 线程池由工作线程(Worker Thread)组成
+         * 普通线程:执行完一个任务后，生命周期就结束了
+         * 工作线程:可以执行多个任务(任务没来就一直等，任务来了就干活)
+         * 先将任务添加到队列(Queue)中，再从队列中取出任务提交到池中
+         *
+         * 常用的线程池类型是固定线程池(Fixed Thread Pool)
+         * 具有固定数量的正在运行的线程
+         * */
+
+        /*
+         * 线程池 - 基本使用
+         * */
+        {
+            // 创建拥有5条工作线程的固定线程池
+            ExecutorService pool = Executors.newFixedThreadPool(5);
+            // 执行任务
+            pool.execute(() -> {
+                // 11_pool-1-thread-1
+                System.out.println(11 + "_" + Thread.currentThread().getName());
+            });
+            pool.execute(() -> {
+                // 22_pool-1-thread-2
+                System.out.println(22 + "_" + Thread.currentThread().getName());
+            });
+            pool.execute(() -> {
+                // 33_pool-1-thread-3
+                System.out.println(33 + "_" + Thread.currentThread().getName());
+            });
+            // 关闭线程池
+            pool.shutdown();
         }
     }
 }
