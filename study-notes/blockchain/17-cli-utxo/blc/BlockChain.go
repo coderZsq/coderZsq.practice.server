@@ -225,3 +225,9 @@ func (bc *BlockChain) MineNewBlock(from, to, amount []string) {
 		return nil
 	})
 }
+
+// UnUTXOS 查找指定地址的UTXO
+func (bc *BlockChain) UnUTXOS(address string) []*TxOutput {
+	fmt.Printf("exec the UnUTXOS function\n")
+	return nil
+}

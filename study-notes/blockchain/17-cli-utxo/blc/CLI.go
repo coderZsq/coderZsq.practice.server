@@ -32,7 +32,7 @@ func PrintUsage() {
 	// 查询余额
 	fmt.Printf("\tgetbalance -address FROM -- 查询指定地址的余额\n")
 	fmt.Println("\t查询余额参数说明")
-	fmt.Printf("\t\t-address -- 查询余额的地址")
+	fmt.Printf("\t\t-address -- 查询余额的地址\n")
 }
 
 // IsValidArgs 参数数量检测函数
@@ -47,6 +47,9 @@ func IsValidArgs() {
 // 查询余额
 func (cli *CLI) getBalance(from string) {
 	// 查找该地址UTXO
+	// 获取区块链对象
+	blockchain := BlockchainObject()
+	blockchain.UnUTXOS(from)
 }
 
 // 发起交易
@@ -103,7 +106,6 @@ func (cli *CLI) Run() {
 	sendCmd := flag.NewFlagSet("send", flag.ExitOnError)
 	// 查询余额命令
 	getBalanceCmd := flag.NewFlagSet("getbalance", flag.ExitOnError)
-
 	// 数据参数处理
 	// 添加区块参数
 	flagAddBlockArg := addBlockCmd.String("data", "sent 100 btc to player", "添加区块数据")
@@ -118,7 +120,7 @@ func (cli *CLI) Run() {
 	// 判断命令
 	switch os.Args[1] {
 	case "getbalance":
-		if err := sendCmd.Parse(os.Args[2:]); nil != err {
+		if err := getBalanceCmd.Parse(os.Args[2:]); nil != err {
 			log.Panicf("parse cmd get balance failed! %v\n", err)
 		}
 	case "send":
