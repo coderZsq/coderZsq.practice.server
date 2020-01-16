@@ -29,8 +29,10 @@ func IntToHex(data int64) []byte {
 
 // JSONToSlice 标准JSON格式转切片
 // mac下需要添加引号
-// $ ./bc send -from "[\"a\"]" -to "[\"b\"]" -amount "[\"20\"]"
-// $ ./bc send -from "[\"coderZsq\", \"Bob\"]" -to "[\"Alice\", \"coderZsq\"]" -amount "[\"1\", \"2\"]"
+// $ ./bc send -from "[\"coderZsq\"]" -to "[\"Alice\"]" -amount "[\"5\"]"
+// $ ./bc send -from "[\"coderZsq\", \"Alice\"]" -to "[\"Alice\", \"coderZsq\"]" -amount "[\"5\", \"2\"]"
+// coderZsq -> alice 5 --> alice 5, coderZsq 5
+// alice -> coderZsq 2 --> alice 3, coderZsq 7
 func JSONToSlice(jsonString string) []string {
 	var strSlice []string
 	// json
