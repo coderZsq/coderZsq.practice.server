@@ -1,8 +1,17 @@
 package com.coderZsq;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         /*
          * 互联网(internet)
          *
@@ -59,5 +68,58 @@ public class Main {
          * 2 数据链路层   23452  2 数据链路层   23452    2 数据链路层
          * 1 物理层     123452  1 物理层      123452    1 物理层
          * */
+
+        /*
+         * TCP vs UDP
+         * 在运输层，有 2 种常用协议
+         * TCP:Transmission Control Protocol
+         * UDP:User Datagram Protocol
+         *                TCP                     UDP
+         * 连接性        面向连接                   无连接
+         * 通信数量 每一个连接只能是一对一通信 支持一对一、一对多、多对一、多对多通信
+         * 可靠性     可靠传输，不丢包       不可靠传输，尽最大努力交付，可能丢包
+         * 首部占用空间     大                       小
+         * 传输速率        慢                       快
+         * 资源消耗        大                       小
+         * 常见协议 FTP、HTTP、HTTPS、DNS         DNS、DHCP
+         * 应用场景 浏览器、文件传输、邮件发送     音视频通话、直播
+         * */
+
+        /*
+         * UDP 数据
+         * 在 Java 中，使用 java.net.DatagramSocket 可以实现 UDP 请求
+         * */
+
+        /*
+         * Java 实现网络爬虫
+         *
+         * 有个叫做 jsoup 的 Java 第三方库，可以用来编写基本的网络爬虫程序 https://jsoup.org/
+         * 需要有一定的 CSS 知识
+         * */
+        {
+            Document doc = Jsoup.connect("https://ext.se.360.cn/webstore/category").get();
+            Elements apps = doc.select(".appwrap");
+            apps.forEach((app) -> {
+                String img = app.selectFirst("img").attr("src");
+                String name = app.selectFirst("h3").text();
+                String intro = app.selectFirst(".intro").text();
+                System.out.println(name + "_" + intro + "_" + img);
+                try {
+                    HttpURLConnection conn = (HttpURLConnection) new URL(img).openConnection();
+                    conn.setRequestMethod("GET");
+                    try (
+                            InputStream is = conn.getInputStream();
+                            FileOutputStream fos = new FileOutputStream("./" + name + ".jpg")) {
+                        byte[] buffer = new byte[8192];
+                        int len;
+                        while ((len = is.read(buffer)) != -1) {
+                            fos.write(buffer, 0, len);
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        }
     }
 }
