@@ -3,7 +3,15 @@ package com.coderZsq;
 import java.io.*;
 import java.util.function.Consumer;
 
+/**
+ * 一个非常好用的文件工具类, 能完成基础的文件增删改查操作
+ *
+ * @author zhushuangquan
+ */
 public class Files {
+    /**
+     * End Of File
+     */
     private static final int EOF = -1;
 
     /*
@@ -23,6 +31,11 @@ public class Files {
     /*
      * 练习 - 删除
      * */
+
+    /**
+     * 可以删除一个文件或者文件夹
+     * @param file 需要删除的文件/文件夹
+     */
     public static void delete(File file) {
         if (file == null || !file.exists()) return;
         clean(file);
@@ -100,6 +113,12 @@ public class Files {
     /*
      * 练习 - 用缓冲流修改 read
      * */
+
+    /**
+     * 读取文件的二进制数据
+     * @param file 需要读取的文件
+     * @return 文件的二进制数据
+     */
     public static byte[] read(File file) {
         if (file == null || !file.exists()) return null;
         if (file.isDirectory()) return null;
@@ -175,6 +194,12 @@ public class Files {
     /*
      * 练习 - 用缓冲流修改copy
      * */
+
+    /**
+     * 从 src 拷贝到 dest
+     * @param src 来源
+     * @param dest 目标
+     */
     public static void copy(File src, File dest) {
         if (src == null || dest == null || !src.exists() || dest.exists()) return;
         if (src.isDirectory()) return;
@@ -188,7 +213,10 @@ public class Files {
             while ((len = is.read(buffer)) != EOF) {
                 os.write(buffer, 0, len);
             }
-        } catch (FileNotFoundException e) { e.printStackTrace(); }
-        catch (IOException e) { e.printStackTrace(); }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
