@@ -1,6 +1,7 @@
 package com.coderZsq;
 
 import java.io.*;
+import java.util.Scanner;
 
 public class Main {
 
@@ -222,7 +223,7 @@ public class Main {
         /*
          * FileInputStream
          * */
-        {
+        if (false) {
             InputStream is = new FileInputStream("./2.txt");
             // 读取第1个字节
             int byte1 = is.read();
@@ -231,7 +232,7 @@ public class Main {
             is.close();
         }
 
-        {
+        if (false) {
             InputStream is = new FileInputStream("./2.txt");
             byte[] bytes = new byte[1024];
             // read返回实际读取的字节数
@@ -293,7 +294,7 @@ public class Main {
         /*
          * FileWriter
          * */
-        {
+        if (false) {
             Writer writer = new FileWriter("./2.txt");
             writer.write("S");
             writer.write("Q");
@@ -302,7 +303,7 @@ public class Main {
             writer.close();
         }
 
-        {
+        if (false) {
             Writer writer = new FileWriter("./2.txt");
             writer.write("SQ");
             writer.write("双泉".toCharArray());
@@ -312,7 +313,7 @@ public class Main {
         /*
          * FileReader
          * */
-        {
+        if (false) {
             Reader reader = new FileReader("./2.txt");
             // 读取第1个字符
             int c1 = reader.read();
@@ -321,7 +322,7 @@ public class Main {
             reader.close();
         }
 
-        {
+        if (false) {
             Reader reader = new FileReader("./2.txt");
             char[] chars = new char[1024];
             // read方法返回实际读取的字符数
@@ -332,7 +333,7 @@ public class Main {
         /*
          * 练习 - 将文本文件的内容逐个字符打印出来
          * */
-        {
+        if (false) {
             File file = new File("./2.txt");
             try (
                     Reader reader = new FileReader(file)
@@ -374,14 +375,14 @@ public class Main {
          * 缓冲流的常见使用方式:将无缓冲流传递给缓冲流的构造方法(将无缓冲流包装成缓冲流)
          * 如果把无缓冲流比作是一个无装备的士兵，那么缓冲流就是一个有强力装备的士兵
          * */
-        {
+        if (false) {
             File file = new File("./2.txt");
             InputStream is = new FileInputStream(file);
             BufferedInputStream bis = new BufferedInputStream(is, 16384);
             bis.close();
         }
 
-        {
+        if (false) {
             File file = new File("./2.txt");
             BufferedWriter writer = new BufferedWriter(new FileWriter(file));
             writer.write("111");
@@ -402,7 +403,7 @@ public class Main {
         /*
          * 练习 - 用缓冲流逐行打印字符串
          * */
-        {
+        if (false) {
             File file = new File("./1.txt");
             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                 String line;
@@ -422,7 +423,7 @@ public class Main {
         /*
          * 练习 - 转换文本文件编码
          * */
-        {
+        if (false) {
             try (
                     BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("./gbk.txt"), "GBK"));
                     BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("./utf-8.txt"), "UTF-8"));
@@ -456,5 +457,230 @@ public class Main {
             }
             reader.close();
         }
+
+        /*
+         * Scanner
+         *
+         * java.util.Scanner 是一个可以使用正则表达式来解析基本类型和字符串的简单文本扫描器
+         * 它默认利用空白(空格\制表符\行终止符)作为分隔符将输入分隔成多个 token
+         * */
+        {
+            // Scanner(InputStream source)
+            // Scanner(Readable source)
+            // Scanner(File source)
+            // Scanner(String source)
+        }
+
+        {
+            Scanner s = new Scanner("jack rose kate");
+            while (s.hasNext()) {
+                System.out.println(s.next());
+            }
+            // jack
+            // rose
+            // kate
+            s.close();
+        }
+
+        if (false) {
+            Scanner s = new Scanner(new File("./1.txt"));
+        }
+
+        /*
+         * Scanner - next
+         * */
+        {
+            Scanner s = new Scanner("jack 666 888 ak47");
+            System.out.println(s.next()); // jack
+            System.out.println(s.nextInt()); // 666
+            System.out.println(s.nextDouble()); // 888
+            System.out.println(s.next("[a-z]{2}\\d{2}")); // ak47
+            s.close();
+        }
+
+        /*
+         * Scanner – useDelimiter
+         *
+         * Scanner.useDelimiter 方法可以自定义分隔符
+         * */
+        {
+            Scanner s = new Scanner("aa 1 bb 22 cc33dd");
+            s.useDelimiter("\\s*\\d+\\s*");
+            while (s.hasNext()) {
+                System.out.println(s.next());
+            }
+            // aa bb cc dd
+            s.close();
+        }
+
+        {
+            Scanner s = new Scanner("aa11bb22cc");
+            s.useDelimiter("");
+            while (s.hasNext()) {
+                System.out.println(s.next());
+            } // a a 1 1 b b 2 2 c c
+            s.close();
+        }
+
+        /*
+         * Scanner - 标准输入流
+         * */
+        if (false) {
+            Scanner s = new Scanner(System.in);
+            System.out.print("请输入第1个整数: ");
+            int n1 = s.nextInt();
+            System.out.print("请输入第2个整数: ");
+            int n2 = s.nextInt();
+            System.out.format("%d + %d = %d\n", n1, n2, n1 + n2);
+            s.close();
+            /*
+             请输入第1个整数: 6
+             请输入第2个整数: 8
+             6 + 8 = 14
+             */
+        }
+
+        /*
+         * Scanner – “价值几百万”的 AI 代码
+         * */
+        if (false) {
+            Scanner s = new Scanner(System.in);
+            while (s.hasNextLine()) {
+                String str = s.nextLine();
+                str = str.replace("你", "朕");
+                str = str.replace("吗", "");
+                str = str.replace("么", "");
+                str = str.replace("?", "!");
+                str = str.replace("? ", "!");
+                System.out.println("\t" + str);
+            }
+            s.close();
+        }
+
+        /*
+         * 格式化输出
+         *
+         * 有 2 个类可以实现格式化输出
+         * PrintStream、PrintWriter
+         *
+         * 它们有 3 个常用方法:print、println、format
+         *
+         * print、write 的区别
+         * write(97) 写入的是字符 'a'
+         * print(97) 写入的是字符 "97"
+         *
+         * AutoCloseable
+         * Closeable
+         * OutputStream
+         * FilterOutputStream
+         * PrintStream
+         * Flushable
+         * Appendable
+         *
+         * AutoCloseable
+         * Closeable
+         * Writer
+         * PrintWriter
+         * Appendable
+         * Flushable
+         * */
+
+        /*
+         * PrintStream
+         *
+         * System.out、System.err 是 PrintStream 类型的实例
+         * 属于标准输出流(Standard Ouput Stream)
+         * 比如输出到屏幕、控制台(Console)
+         *
+         * PrintStream 是字节流，但它内部利用字符流对象来模拟字符流的许多功能
+         * */
+
+        /*
+         * PrintWriter
+         *
+         * 平时若要创建格式化的输出流，一般使用 PrintWriter，它是字符流
+         *
+         * 可以通过构造方法设置 PrintWriter.autoflush 为
+         * 那么 println、printf、format 方法内部就会自动调用 flush 方法
+         * */
+        if (false) {
+            String name = "Jack";
+            int age = 20;
+
+            PrintWriter writer = new PrintWriter("./2.txt");
+            writer.format("My name is %s, age is %d", name, age);
+            writer.close();
+        }
+
+        if (false) {
+            PrintWriter writer = new PrintWriter(new FileOutputStream(new File("./2.txt")), true);
+        }
+
+        /*
+         * 数据流
+         *
+         * 有 2 个数据流:DataInputStream、DataOutputStream，支持基本类型、字符串类型的 I / O 操作
+         * */
+        {
+            int age = 20;
+            int money = 3000;
+            double height = 1.75;
+            String name = "Jack";
+            DataOutputStream dos = new DataOutputStream(new FileOutputStream("./2.txt"));
+            dos.writeInt(age);
+            dos.writeInt(money);
+            dos.writeDouble(height);
+            dos.writeUTF(name);
+            dos.close();
+            // 文件内容: 0000 0014 0000 0bb8 3ffc 0000 0000 0000 0004 4a61 636b
+        }
+
+        {
+            DataInputStream dis = new DataInputStream(new FileInputStream("./2.txt"));
+            System.out.println(dis.readInt()); // 20
+            System.out.println(dis.readInt()); // 3000
+            System.out.println(dis.readDouble()); // 1.75
+            System.out.println(dis.readUTF()); // Jack
+            dis.close();
+        }
+
+        /*
+         * 数据流、对象流结构预览
+         *
+         *                                AutoCloseable
+         *                                  Closeable
+         *              OutputStream                         InputStream
+         * FilterOutputStream ObjectOutputStream ObjectInputStream FilterInputStream
+         * DataOutputStream   ObjectOutput       ObjectInput       DataInputStream
+         * DataOutput                  ObjectStreamConstants       DataInput
+         *               Flushable
+         * */
+
+        /*
+         * 对象流
+         *
+         * 有 2 个对象流:ObjectInputStream、ObjectOutputStream，支持引用类型的 I / O 操作
+         *
+         * 只有实现了 java.io.Serializable 接口的类才能使用对象流进行 I / O 操作
+         * 否则会抛出 java.io.NotSerializableException 异常
+         *
+         * Serializable 是一个标记接口(Maker Interface)，不要求实现任何方法
+         * */
+
+        /*
+         * 对象的序列化和反序列化
+         *
+         * 序列化(Serialization)
+         * 将对象转换为可以存储或传输的数据
+         * 利用 ObjectOutputStream 可以实现对象的序列化
+         *
+         * 反序列化(Deserialization )
+         * 从序列化后的数据中恢复出对象
+         * 利用 ObjectInputStream 可以实现对象的反序列化
+         *
+         * 若将对象比作是一座冰雕
+         * 序列化:将冰雕融化成水
+         * 反序列化:将融化后的水恢复成冰雕
+         * */
     }
 }
