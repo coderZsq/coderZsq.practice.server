@@ -682,5 +682,76 @@ public class Main {
          * 序列化:将冰雕融化成水
          * 反序列化:将融化后的水恢复成冰雕
          * */
+
+        /*
+         * ObjectOutputStream – 序列化
+         * */
+        {
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("./2.txt"));
+
+            Person p = new Person(20, "Jack");
+            p.setCar(new Car(305.6, "Bently"));
+            p.getBooks().add(new Book(19.9, "Java"));
+            p.getBooks().add(new Book(38.8, "C++"));
+            oos.writeObject(p);
+
+            Car c = new Car(107.8, "BMW");
+            oos.writeObject(c);
+
+            oos.close();
+        }
+
+        /*
+         * ObjectInputStream – 反序列化
+         * */
+        {
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream("./2.txt"));
+            Person p = (Person) ois.readObject();
+            System.out.println(p);
+            /*
+             Person{
+                age=20,
+                name='Jack',
+                car=Car{price=305.6,band='Bently'},
+                books=[
+                    Book{price=19.9,name='Java'},
+                    Book{price=38.8,name='C++'}
+                ]
+             }
+             */
+            Car c = (Car) ois.readObject();
+            System.out.println(c); // Car{price=107.8, band='BMW'}
+            ois.close();
+        }
+
+        /*
+         * transient
+         * transient:英[ˈtrænziənt]
+         * 被 transient 修饰的实例变量不会被序列化
+         * */
+        {
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("./2.txt"));
+            oos.writeObject(new Dog(5, "Larry"));
+            oos.close();
+
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream("./2.txt"));
+            System.out.println(ois.readObject()); // Dog{age=0, name='Larry'}
+            ois.close();
+        }
+
+        /*
+         * serialVersionUID
+         * 每一个可序列化类都有一个serialVersionUID，相当于类的版本号
+         * 默认情况下会根据类的详细信息计算出serialVersionUID的值，根据编译器实现的不同可能千差万别
+         * 一旦类的信息发生修改，serialVersionUID的值就会发生变化
+         *
+         *
+         * 如果序列化、反序列时的serialVersionUID不一致
+         * 会认定为序列化、反序列时的类不兼容，会抛出 java.io.InvalidClassException 异常
+         * 强烈建议每一个可序列化类都自定义serialVersionUID，不要使用它的默认值
+         * 必须是 static final long
+         * 建议声明为 private
+         * 如果没有自定义serialVersionUID，编译器会发出"serial"警告
+         * */
     }
 }
