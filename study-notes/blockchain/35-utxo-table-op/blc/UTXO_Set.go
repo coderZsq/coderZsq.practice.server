@@ -1,6 +1,8 @@
 package blc
 
 import (
+	"encoding/hex"
+	"fmt"
 	"log"
 
 	"github.com/boltdb/bolt"
@@ -39,7 +41,17 @@ func (utxoSet *UTXOSet) ResetUTXOSet() {
 		}
 		if nil != bucket {
 			// 查找当前所有UTXO
-			// txOutputMap := utxoSet.BlockChain.FindUTXOMap()
+			txOutputMap := utxoSet.BlockChain.FindUTXOMap()
+			for keyHash, outputs := range txOutputMap {
+				// 将所有UTXO存入
+				txHash, _ := hex.DecodeString(keyHash)
+				fmt.Printf("txHash: %x\n", txHash)
+				// 存入utxo table
+				err := bucket.Put(txHash, outputs.Serialize())
+				if nil != err {
+					log.Panicf("put the utxo into table failed! %v\n", err)
+				}
+			}
 		}
 		return nil
 	})

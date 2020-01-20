@@ -513,9 +513,83 @@ func (blockchain *BlockChain) VerifyTransaction(tx *Transaction) bool {
 	return tx.Verify(prevTxs)
 }
 
+// 退出条件
+func isBreakLoop(prevBlockHash []byte) bool {
+	var hashInt big.Int
+	hashInt.SetBytes(prevBlockHash)
+	if hashInt.Cmp(big.NewInt(0)) == 0 {
+		return true
+	}
+	return false
+}
+
+// FindAllSpentOutputs 查找整条区块链所有已花费输出
+func (blockchain *BlockChain) FindAllSpentOutputs() map[string][]*TxInput {
+	bcit := blockchain.Iterator()
+	// 存储已花费输出
+	spentTXOutputs := make(map[string][]*TxInput)
+	for {
+		block := bcit.Next()
+		for _, tx := range block.Txs {
+			if !tx.IsCoinbaseTransaction() {
+				for _, txInput := range tx.Vins {
+					txHash := hex.EncodeToString(txInput.TxHash)
+					spentTXOutputs[txHash] = append(spentTXOutputs[txHash], txInput)
+				}
+			}
+		}
+		if isBreakLoop(block.PrevBlockHash) {
+			break
+		}
+	}
+	return spentTXOutputs
+}
+
 // FindUTXOMap 查找整条区块链中所有地址的UTXO
-func (blockchain *BlockChain) FindUTXOMap() map[string]*TxOutput {
+func (blockchain *BlockChain) FindUTXOMap() map[string]*TxOutputs {
+	// 遍历区块链
+	bcit := blockchain.Iterator()
 	// 输出集合
-	utxoMaps := make(map[string]*TxOutput)
+	utxoMaps := make(map[string]*TxOutputs)
+	// 查找已花费输出
+	spentTXOutputs := blockchain.FindAllSpentOutputs()
+	for {
+		block := bcit.Next()
+		txOutputs := &TxOutputs{[]*TxOutput{}}
+		for _, tx := range block.Txs {
+			txHash := hex.EncodeToString(tx.TxHash)
+			// 获取每笔交易的vouts
+		WorkOutLoop:
+			for index, vout := range tx.Vouts {
+				// 获取指定交易的输入
+				txInputs := spentTXOutputs[txHash]
+				if len(txInputs) > 0 {
+					isSpent := false
+					for _, in := range txInputs {
+						// 查找指定输出的所有者
+						outPubkey := vout.Ripemd160Hash
+						inPubkey := in.PublicKey
+						if bytes.Compare(outPubkey, Ripemd160Hash(inPubkey)) == 0 {
+							if index == in.Vout {
+								isSpent = true
+								continue WorkOutLoop
+							}
+						}
+					}
+					if isSpent == false {
+						// 当前输出没有被包含到txInputs中
+						txOutputs.TxOutputs = append(txOutputs.TxOutputs, vout)
+					}
+				} else {
+					// 没有input引用该交易的输出, 则代表当前交易中所有的输出都是UTXO输出
+					txOutputs.TxOutputs = append(txOutputs.TxOutputs, vout)
+				}
+			}
+			utxoMaps[txHash] = txOutputs
+		}
+		if isBreakLoop(block.PrevBlockHash) {
+			break
+		}
+	}
 	return utxoMaps
 }
