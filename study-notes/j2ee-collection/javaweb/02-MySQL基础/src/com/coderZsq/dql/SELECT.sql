@@ -104,3 +104,53 @@ SELECT * FROM product WHERE productName LIKE '%罗技M9%'
 # 需求: 查询id, 货品名称, 分类编号, 零售价大于等于80并且货品名称匹配'%罗技M1__'
 SELECT id, productName, dir_id, salePrice FROM product
 WHERE salePrice >= 80 AND productName LIKE '%罗技M1__'
+# 需求: 选择id, 货品名称, 分类编号, 零售价并且按零售价降序排序
+SELECT id, productName, dir_id, salePrice FROM product ORDER BY salePrice ASC
+SELECT id, productName, dir_id, salePrice FROM product ORDER BY salePrice
+SELECT id, productName, dir_id, salePrice FROM product ORDER BY salePrice DESC
+# 需求: 选择id, 货品名称, 分类编号, 零售价先按分类编号排序, 再按零售价排序
+SELECT id, productName, dir_id, salePrice FROM product ORDER BY dir_id ASC, salePrice DESC
+# 需求: 查询M系列并按照批发价排序(加上别名)
+SELECT productName, salePrice * cutoff
+FROM product
+WHERE productName LIKE '%M%'
+ORDER BY salePrice * cutoff ASC
+SELECT productName, salePrice * cutoff pf
+FROM product
+WHERE productName LIKE '%M%'
+ORDER BY pf ASC
+# 需求: 查询分类为2并按照批发价排序(加上别名)
+SELECT productName, dir_id, salePrice * cutoff pf
+FROM product
+WHERE dir_id = 2
+ORDER BY pf ASC
+# 注意: 如果列的别名使用了引号, 则按照该别名排序无效
+# -----------------------------------------------
+# 每页最多5条数据
+# 第一页:
+SELECT * FROM product LIMIT 0, 5
+# 第三页:
+SELECT * FROM product LIMIT 10, 5
+# 第五页:
+SELECT * FROM product LIMIT 20, 5
+# -----------------------------------------------
+# 什么是聚集函数/统计函数/分组函数:
+# 聚集函数作用域一组数据, 并对一组数据返回一个值
+# -----------------------------------------------
+# COUNT: 统计结果记录数, 一共多少条数据
+# MAX: 统计计算最大值
+# MIN: 统计计算最小值
+# SUM: 统计计算求和
+# AVG: 统计计算平均值
+# -----------------------------------------------
+# 需求: 查询所有商品平均零售价
+SELECT AVG(salePrice) FROM product
+# 需求: 查询商品总记录数(注意在Java中必须使用long接收)
+SELECT COUNT(*) FROM product
+SELECT COUNT(id) FROM product
+# 需求: 查询分类为2的商品总数
+SELECT COUNT(id) FROM product WHERE dir_id = 2
+# 需求: 查询商品的最小零售价, 最高零售价, 以及所有商品零售价总和
+SELECT MIN(salePrice), MAX(salePrice), SUM(salePrice) FROM product
+# 按照零售价升序排列, 设置每页显示5条数据
+SELECT id, productName, salePrice FROM product ORDER BY salePrice ASC LIMIT 0, 5
