@@ -154,3 +154,23 @@ SELECT COUNT(id) FROM product WHERE dir_id = 2
 SELECT MIN(salePrice), MAX(salePrice), SUM(salePrice) FROM product
 # 按照零售价升序排列, 设置每页显示5条数据
 SELECT id, productName, salePrice FROM product ORDER BY salePrice ASC LIMIT 0, 5
+# 需求: 查询货品id, 货品名称, 货品所属分类名称
+SELECT p.id, p.productName, pd.dirName
+FROM product p, productdir pd
+WHERE p.dir_id = pd.id
+# 需求: 查询零售价大于200的无限鼠标(使用表的别名)
+SELECT * FROM product p, productdir pd
+WHERE p.dir_id = pd.id AND p.salePrice >= 200 AND pd.dirName = '无线鼠标'
+# 需求: 查询每个货品对应的分类以及对应的库存
+SELECT p.productName, pd.dirName, ps.storeNum
+FROM product p, productdir pd, productstock ps
+WHERE p.dir_id = pd.id AND ps.product_id = p.id
+# 需求: 如果库存货品都销售完成, 按照利润从高到低查询货品名称, 零售价, 货品分类(三张表)
+SELECT p.productName, p.salePrice, pd.dirName, (p.salePrice - p.costPrice) * ps.storeNum lirun
+FROM product p, productdir pd, productstock ps
+WHERE p.dir_id = pd.id AND ps.product_id = p.id
+ORDER BY lirun DESC
+# 需求: 查询每个商品分类的名称和父分类名称
+SELECT child.id, child.dirName, parent.dirName
+FROM productdir child, productdir parent
+WHERE child.parent_id = parent.id
