@@ -2,15 +2,18 @@ package com.coderZsq._05_smis.dao.impl;
 
 import com.coderZsq._05_smis.dao.IStudentDAO;
 import com.coderZsq._05_smis.domain.Student;
+import com.coderZsq._05_smis.util.JdbcUtil;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 public class StudentDAOImpl implements IStudentDAO {
+    public StudentDAOImpl() {
+    }
+
     @Override
     public void save(Student stu) {
         StringBuilder sb = new StringBuilder(80);
@@ -24,9 +27,8 @@ public class StudentDAOImpl implements IStudentDAO {
         Statement st = null;
         try {
             // 1: 加载注册驱动
-            Class.forName("com.mysql.jdbc.Driver");
             // 2: 获取连接对象
-            conn = DriverManager.getConnection("jdbc:mysql:///jdbc", "root", "root");
+            conn = JdbcUtil.getConn();
             // 3: 创建语句对象
             st = conn.createStatement();
             // 4: 执行SQL
@@ -37,21 +39,7 @@ public class StudentDAOImpl implements IStudentDAO {
             e.printStackTrace();
         } finally {
             // 5: 释放资源
-            try {
-                if (st != null) {
-                    st.close();
-                }
-            } catch (Exception e) {
-
-            } finally {
-                try {
-                    if (conn != null) {
-                        conn.close();
-                    }
-                } catch (Exception e) {
-
-                }
-            }
+            JdbcUtil.close(conn, st, null);
         }
     }
 
@@ -64,9 +52,8 @@ public class StudentDAOImpl implements IStudentDAO {
         Statement st = null;
         try {
             // 1: 加载注册驱动
-            Class.forName("com.mysql.jdbc.Driver");
             // 2: 获取连接对象
-            conn = DriverManager.getConnection("jdbc:mysql:///jdbc", "root", "root");
+            conn = JdbcUtil.getConn();
             // 3: 创建语句对象
             st = conn.createStatement();
             // 4: 执行SQL
@@ -77,21 +64,7 @@ public class StudentDAOImpl implements IStudentDAO {
             e.printStackTrace();
         } finally {
             // 5: 释放资源
-            try {
-                if (st != null) {
-                    st.close();
-                }
-            } catch (Exception e) {
-
-            } finally {
-                try {
-                    if (conn != null) {
-                        conn.close();
-                    }
-                } catch (Exception e) {
-
-                }
-            }
+            JdbcUtil.close(conn, st, null);
         }
     }
 
@@ -106,9 +79,8 @@ public class StudentDAOImpl implements IStudentDAO {
         Statement st = null;
         try {
             // 1: 加载注册驱动
-            Class.forName("com.mysql.jdbc.Driver");
             // 2: 获取连接对象
-            conn = DriverManager.getConnection("jdbc:mysql:///jdbc", "root", "root");
+            conn = JdbcUtil.getConn();
             // 3: 创建语句对象
             st = conn.createStatement();
             // 4: 执行SQL
@@ -119,21 +91,7 @@ public class StudentDAOImpl implements IStudentDAO {
             e.printStackTrace();
         } finally {
             // 5: 释放资源
-            try {
-                if (st != null) {
-                    st.close();
-                }
-            } catch (Exception e) {
-
-            } finally {
-                try {
-                    if (conn != null) {
-                        conn.close();
-                    }
-                } catch (Exception e) {
-
-                }
-            }
+            JdbcUtil.close(conn, st, null);
         }
     }
 
@@ -146,9 +104,8 @@ public class StudentDAOImpl implements IStudentDAO {
         ResultSet rs = null;
         try {
             // 1: 加载注册驱动
-            Class.forName("com.mysql.jdbc.Driver");
             // 2: 获取连接对象
-            conn = DriverManager.getConnection("jdbc:mysql:///jdbc", "root", "root");
+            conn = JdbcUtil.getConn();
             // 3: 创建语句对象
             st = conn.createStatement();
             // 4: 执行SQL
@@ -168,29 +125,7 @@ public class StudentDAOImpl implements IStudentDAO {
             e.printStackTrace();
         } finally {
             // 5: 释放资源
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-            } catch (Exception e) {
-
-            } finally {
-                try {
-                    if (st != null) {
-                        st.close();
-                    }
-                } catch (Exception e) {
-
-                } finally {
-                    try {
-                        if (conn != null) {
-                            conn.close();
-                        }
-                    } catch (Exception e) {
-
-                    }
-                }
-            }
+            JdbcUtil.close(conn, st, rs);
         }
         return null;
     }
@@ -205,9 +140,8 @@ public class StudentDAOImpl implements IStudentDAO {
         ResultSet rs = null;
         try {
             // 1: 加载注册驱动
-            Class.forName("com.mysql.jdbc.Driver");
             // 2: 获取连接对象
-            conn = DriverManager.getConnection("jdbc:mysql:///jdbc", "root", "root");
+            conn = JdbcUtil.getConn();
             // 3: 创建语句对象
             st = conn.createStatement();
             // 4: 执行SQL
@@ -227,29 +161,7 @@ public class StudentDAOImpl implements IStudentDAO {
             e.printStackTrace();
         } finally {
             // 5: 释放资源
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-            } catch (Exception e) {
-
-            } finally {
-                try {
-                    if (st != null) {
-                        st.close();
-                    }
-                } catch (Exception e) {
-
-                } finally {
-                    try {
-                        if (conn != null) {
-                            conn.close();
-                        }
-                    } catch (Exception e) {
-
-                    }
-                }
-            }
+            JdbcUtil.close(conn, st, rs);
         }
         return list;
     }
