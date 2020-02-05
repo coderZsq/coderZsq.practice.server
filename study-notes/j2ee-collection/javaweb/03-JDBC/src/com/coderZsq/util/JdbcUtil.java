@@ -1,4 +1,4 @@
-package com.coderZsq._05_smis.util;
+package com.coderZsq.util;
 
 import java.io.InputStream;
 import java.sql.Connection;

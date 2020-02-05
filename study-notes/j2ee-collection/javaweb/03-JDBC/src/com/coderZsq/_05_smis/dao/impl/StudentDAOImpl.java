@@ -2,7 +2,7 @@ package com.coderZsq._05_smis.dao.impl;
 
 import com.coderZsq._05_smis.dao.IStudentDAO;
 import com.coderZsq._05_smis.domain.Student;
-import com.coderZsq._05_smis.util.JdbcUtil;
+import com.coderZsq.util.JdbcUtil;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
