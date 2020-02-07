@@ -11,6 +11,12 @@ abstract class MyGenericServlet implements Serializable, Servlet, ServletConfig 
     @Override
     public void init(ServletConfig servletConfig) throws ServletException {
         this.config = servletConfig;
+        init();
+    }
+
+    // 专门暴露给子类, 让子类编写自身的初始化代码
+    public void init() {
+        // NO OP
     }
 
     @Override

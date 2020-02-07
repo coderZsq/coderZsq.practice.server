@@ -7,18 +7,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class Servlet2 extends MyGenericServlet {
-
-    @Override
-    public void init() {
-        System.out.println("子类的初始化操作");
-    }
-
+public class MyHttpServlet extends MyGenericServlet {
     // 只能处理一般请求
     @Override
     public void service(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
-        String encoding = super.getInitParameter("encoding");
-        System.out.println(encoding);
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         service(request, response); // 调用处理http请求的方法
