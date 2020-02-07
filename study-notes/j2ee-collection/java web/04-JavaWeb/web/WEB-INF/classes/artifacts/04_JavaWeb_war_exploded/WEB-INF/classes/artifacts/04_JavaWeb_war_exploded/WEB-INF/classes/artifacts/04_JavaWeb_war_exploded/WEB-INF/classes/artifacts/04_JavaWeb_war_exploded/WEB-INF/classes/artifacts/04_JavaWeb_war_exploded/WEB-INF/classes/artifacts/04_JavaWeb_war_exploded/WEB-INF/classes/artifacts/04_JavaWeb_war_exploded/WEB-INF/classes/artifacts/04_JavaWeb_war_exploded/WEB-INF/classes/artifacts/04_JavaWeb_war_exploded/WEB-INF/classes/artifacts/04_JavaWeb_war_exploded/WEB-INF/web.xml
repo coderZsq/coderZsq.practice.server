@@ -48,12 +48,4 @@
         <url-pattern>/s1</url-pattern>
     </servlet-mapping>
 
-    <servlet>
-        <servlet-name>EmployeeServlet</servlet-name>
-        <servlet-class>com.coderZsq._03_extends.EmployeeServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>EmployeeServlet</servlet-name>
-        <url-pattern>/emp</url-pattern>
-    </servlet-mapping>
 </web-app>
