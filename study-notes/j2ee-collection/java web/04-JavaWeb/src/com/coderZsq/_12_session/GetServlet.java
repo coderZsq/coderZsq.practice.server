@@ -1,17 +1,16 @@
-package com.coderZsq._11_cookie;
+package com.coderZsq._12_session;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URLDecoder;
 
 // 输出收件箱界面
-@WebServlet("/cookie/get")
+@WebServlet("/session/get")
 public class GetServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -20,19 +19,15 @@ public class GetServlet extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
         resp.setContentType("text/html;charset=utf-8");
         PrintWriter out = resp.getWriter();
-        String username = "";
+        // String username = "";
         // ===================================
-        // 获取多个Cookie
-        Cookie[] cs = req.getCookies();
-        for (Cookie cookie : cs) {
-            String name = cookie.getName();
-            String value = cookie.getValue();
-            if ("currentName".equals(name)) {
-                username = URLDecoder.decode(value, "UTF-8");
-            }
-        }
+        // 获取Session对象
+        HttpSession session = req.getSession();
+        // 获取Session中存储的数据
+        // username = (String) session.getAttribute("currentName");
+        User user = (User) session.getAttribute("USER_IN_SESSION");
         // ===================================
-        out.println("欢迎: " + username + "<br>");
+        out.println("欢迎: " + user.getUsername() + "<br>");
         out.println("泉哥, 我也要请你吃饭!");
     }
 }

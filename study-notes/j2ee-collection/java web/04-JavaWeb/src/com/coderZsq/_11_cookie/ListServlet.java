@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLDecoder;
 
 // 输出收件箱界面
 @WebServlet("/cookie/list")
@@ -23,11 +24,13 @@ public class ListServlet extends HttpServlet {
         // ===================================
         // 获取多个Cookie
         Cookie[] cs = req.getCookies();
-        for (Cookie cookie : cs) {
-            String name = cookie.getName();
-            String value = cookie.getValue();
-            if ("currentName".equals(name)) {
-                username = value;
+        if (cs != null) {
+            for (Cookie cookie : cs) {
+                String name = cookie.getName();
+                String value = cookie.getValue();
+                if ("currentName".equals(name)) {
+                    username = URLDecoder.decode(value, "UTF-8");
+                }
             }
         }
         // ===================================

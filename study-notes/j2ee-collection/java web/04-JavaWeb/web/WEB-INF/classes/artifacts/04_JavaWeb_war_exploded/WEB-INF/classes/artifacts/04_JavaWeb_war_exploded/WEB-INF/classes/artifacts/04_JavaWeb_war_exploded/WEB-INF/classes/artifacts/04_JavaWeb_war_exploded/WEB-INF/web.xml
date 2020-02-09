@@ -89,8 +89,4 @@
     <welcome-file-list>
         <welcome-file>hello.html</welcome-file>
     </welcome-file-list>
-
-    <session-config>
-        <session-timeout>15</session-timeout>
-    </session-config>
 </web-app>
