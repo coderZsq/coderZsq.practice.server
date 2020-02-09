@@ -3,7 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 		  http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
-         version="3.0">
+         version="3.0" metadata-complete="false">
     <!--web的配置-->
     <!--在告诉Tomcat来管理Servlet类-->
     <servlet>
@@ -56,4 +56,37 @@
         <servlet-name>EmployeeServlet</servlet-name>
         <url-pattern>/emp</url-pattern>
     </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>MappingServlet</servlet-name>
+        <servlet-class>com.coderZsq._09_mapping.MappingServlet</servlet-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>name</param-name>
+            <param-value>coderZsq</param-value>
+        </init-param>
+        <!-- 在启动服务器的时候, 就加载, 值越小越优先加载-->
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MappingServlet</servlet-name>
+        <url-pattern>/mapping</url-pattern>
+        <url-pattern>/m1</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>MappingServlet</servlet-name>
+        <url-pattern>/m2</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>MappingServlet</servlet-name>
+        <!-- <url-pattern>/*</url-pattern>-->
+        <url-pattern>/system/*</url-pattern>
+        <url-pattern>*.do</url-pattern>
+    </servlet-mapping>
+    <welcome-file-list>
+        <welcome-file>hello.html</welcome-file>
+    </welcome-file-list>
 </web-app>
