@@ -56,7 +56,7 @@
         <servlet-name>EmployeeServlet</servlet-name>
         <url-pattern>/emp</url-pattern>
     </servlet-mapping>
-    
+
     <servlet>
         <servlet-name>MappingServlet</servlet-name>
         <servlet-class>com.coderZsq._09_mapping.MappingServlet</servlet-class>
@@ -86,11 +86,28 @@
         <url-pattern>/system/*</url-pattern>
         <url-pattern>*.do</url-pattern>
     </servlet-mapping>
-    <welcome-file-list>
-        <welcome-file>hello.html</welcome-file>
-    </welcome-file-list>
+    <!-- <welcome-file-list>-->
+    <!--     <welcome-file>hello.html</welcome-file>-->
+    <!-- </welcome-file-list>-->
 
     <session-config>
         <session-timeout>15</session-timeout>
     </session-config>
+
+    <!-- 全局初始化参数-->
+    <context-param>
+        <param-name>encoding</param-name>
+        <param-value>UTF-8</param-value>
+    </context-param>
+
+    <!-- 全局的错误页面-->
+    <error-page>
+        <!-- <exception-type>java.lang.NullPointerException</exception-type>-->
+        <error-code>404</error-code>
+        <location>/404.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/500.jsp</location>
+    </error-page>
 </web-app>
