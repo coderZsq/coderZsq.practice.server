@@ -14,7 +14,7 @@
     <title>Title</title>
 </head>
 <body>
-<a href="/student/edit">添加学生</a>
+<a href="/student?cmd=edit">添加学生</a>
 <table border="1" width="70%" cellpadding="0" cellspacing="0">
     <tr style="background-color: orange">
         <th>编号</th>
@@ -28,8 +28,8 @@
             <td>${s.name}</td>
             <td>${s.age}</td>
             <td>
-                <a href="/student/delete?id=${s.id}">删除</a> |
-                <a href="/student/edit?id=${s.id}">编辑</a>
+                <a href="/student?cmd=delete&id=${s.id}">删除</a> |
+                <a href="/student?cmd=edit&id=${s.id}">编辑</a>
             </td>
         </tr>
     </c:forEach>

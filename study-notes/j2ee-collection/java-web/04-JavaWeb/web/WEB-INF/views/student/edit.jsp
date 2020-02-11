@@ -12,7 +12,7 @@
 </head>
 <body>
 
-<form action="/student/save" method="post">
+<form action="${pageContext.request.contextPath}/student?cmd=save" method="post">
     <input type="hidden" name="id" value="${student.id}">
     姓名: <input type="text" name="name" required value="${student. name}"><br>
     年龄: <input type="number" name="age" required value="${student.age}"><br><br>
