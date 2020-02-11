@@ -29,7 +29,7 @@
             <td>${s.age}</td>
             <td>
                 <a href="/student/delete?id=${s.id}">删除</a> |
-                <a href="#">编辑</a>
+                <a href="/student/edit?id=${s.id}">编辑</a>
             </td>
         </tr>
     </c:forEach>

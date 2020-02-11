@@ -13,9 +13,10 @@
 <body>
 
 <form action="/student/save" method="post">
-    姓名: <input type="text" name="name" required><br>
-    年龄: <input type="number" name="age" required><br><br>
-    <input type="submit" value="保存学生信息">
+    <input type="hidden" name="id" value="${student.id}">
+    姓名: <input type="text" name="name" required value="${student. name}"><br>
+    年龄: <input type="number" name="age" required value="${student.age}"><br><br>
+    <input type="submit" value='${student == null ? "保存学生信息" : "更新学生信息"}'>
 </form>
 
 </body>

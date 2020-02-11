@@ -30,8 +30,19 @@ public class SaveStudentServlet extends HttpServlet {
         String age = req.getParameter("age");
         Student stu = new Student(name, Integer.valueOf(age));
         // 2. 调用业务方法处理请求
-        dao.save(stu);
+        String id = req.getParameter("id");
+        if (hasLength(id)) { // 更新
+            Long sid = Long.valueOf(id);
+            stu.setId(sid);
+            dao.update(sid, stu);
+        } else {
+            dao.save(stu);
+        }
         // 3. 控制界面跳转
         resp.sendRedirect("/student/list");
+    }
+
+    private boolean hasLength(String str) {
+        return str != null && !"".equals(str.trim());
     }
 }
