@@ -1,8 +1,8 @@
-package com.coderZsq._17_smis.web.servlet;
+package com.coderZsq._19_smis.web.servlet;
 
-import com.coderZsq._17_smis.dao.IStudentDAO;
-import com.coderZsq._17_smis.dao.impl.StudentDAOImpl;
-import com.coderZsq._17_smis.domain.Student;
+import com.coderZsq._19_smis.dao.IStudentDAO;
+import com.coderZsq._19_smis.dao.impl.StudentDAOImpl;
+import com.coderZsq._19_smis.domain.Student;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.List;
 
 // 处理学生列表的请求
-// @WebServlet("/student/list")
+@WebServlet("/student/list")
 public class ListStudentServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private IStudentDAO dao;
@@ -32,6 +32,6 @@ public class ListStudentServlet extends HttpServlet {
         // 共享数据
         req.setAttribute("students", list);
         // 跳转(如果要共享请求中的数据, 只能使用请求转发)
-        req.getRequestDispatcher("/WEB-INF/views/student/student_list.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/views/student/list.jsp").forward(req, resp);
     }
 }
