@@ -5,6 +5,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.FilenameUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @WebServlet("/upload")
 public class UploadServlet extends HttpServlet {
@@ -44,8 +46,11 @@ public class UploadServlet extends HttpServlet {
                     System.out.println(fieldName + "-" + value);
                 } else {
                     // 表单上传控件
+                    System.out.println("上传文件的名称: " + FilenameUtils.getName(item.getName()));
                     System.out.println(fieldName + "-" + item.getName());
-                    item.write(new File("/Users/zhushuangquan/Desktop/", item.getName()));
+                    String fileName = UUID.randomUUID().toString() + "." + FilenameUtils.getExtension(item.getName());
+                    String dir = super.getServletContext().getRealPath("/upload");
+                    item.write(new File(dir, fileName)); // 把二进制数据写到哪一个文件中
                 }
             }
         } catch (Exception e) {
