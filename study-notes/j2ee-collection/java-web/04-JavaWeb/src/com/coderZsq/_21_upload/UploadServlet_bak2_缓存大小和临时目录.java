@@ -2,7 +2,6 @@ package com.coderZsq._21_upload;
 
 
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
@@ -14,16 +13,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-@WebServlet("/upload")
-public class UploadServlet extends HttpServlet {
+// @WebServlet("/upload")
+public class UploadServlet_bak2_缓存大小和临时目录 extends HttpServlet {
     private static final long serialVersionUID = 1L;
-
-    // 允许接受的图片类型
-    private static final String ALLOWED_IMAGE_TYPE = "png;gif;jpg;jpeg";
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -36,7 +31,12 @@ public class UploadServlet extends HttpServlet {
             // 1. 创建FileItemFactory
             // FileItemFactory是用来创建FileItem对象的
             // FileItem对象: form表单中的表单控件的封装
-            FileItemFactory factory = new DiskFileItemFactory();
+            // FileItemFactory factory = new DiskFileItemFactory();
+            DiskFileItemFactory factory = new DiskFileItemFactory();
+            // 设置缓存大小
+            factory.setSizeThreshold(20 * 1024); // 20KB
+            // 设置临时目录
+            // factory.setRepository();
             // 2. 创建文件上传处理器
             ServletFileUpload upload = new ServletFileUpload(factory);
             // 3. 解析请求
@@ -49,27 +49,15 @@ public class UploadServlet extends HttpServlet {
                     String value = item.getString("UTF-8"); // 获取当前普通表单控件的参数值
                     System.out.println(fieldName + "-" + value);
                 } else {
-                    // 当前上传文件的MIME类型
-                    String mineType = super.getServletContext().getMimeType(item.getName());
-                    System.out.println(mineType);
-                    // ---------------------------
-                    // 上传文件的拓展名
-                    String ext = FilenameUtils.getExtension(item.getName());
-                    String[] allowedImageType = ALLOWED_IMAGE_TYPE.split(";");
-
-                    // 当前上传文件的类型不在图片允许的格式之内
-                    if (!Arrays.asList(allowedImageType).contains(ext)) {
-                        req.setAttribute("errorMsg", "亲, 请上传图片文件");
-                        req.getRequestDispatcher("/input.jsp").forward(req, resp);
-                        return; // 结束方法
-                    }
-                    // ---------------------------
                     // 表单上传控件
                     System.out.println("上传文件的名称: " + FilenameUtils.getName(item.getName()));
                     System.out.println(fieldName + "-" + item.getName());
                     String fileName = UUID.randomUUID().toString() + "." + FilenameUtils.getExtension(item.getName());
                     String dir = super.getServletContext().getRealPath("/upload");
                     item.write(new File(dir, fileName)); // 把二进制数据写到哪一个文件中
+
+                    // 是否存储在内存之中
+                    System.out.println(item.isInMemory());
                 }
             }
         } catch (Exception e) {

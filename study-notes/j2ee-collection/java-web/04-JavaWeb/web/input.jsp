@@ -11,7 +11,8 @@
     <title>Title</title>
 </head>
 <body>
-<h3>文件上传</h3>
+<h3>注册页面</h3>
+<span style="color: red">${errorMsg}</span>
 <form action="/upload" method="post" enctype="multipart/form-data">
     账号: <input type="text" name="username"><br>
     邮箱: <input type="text" name="email"><br>

@@ -14,16 +14,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-@WebServlet("/upload")
-public class UploadServlet extends HttpServlet {
+// @WebServlet("/upload")
+public class UploadServlet_bak1_上传文件名称处理 extends HttpServlet {
     private static final long serialVersionUID = 1L;
-
-    // 允许接受的图片类型
-    private static final String ALLOWED_IMAGE_TYPE = "png;gif;jpg;jpeg";
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -49,21 +45,6 @@ public class UploadServlet extends HttpServlet {
                     String value = item.getString("UTF-8"); // 获取当前普通表单控件的参数值
                     System.out.println(fieldName + "-" + value);
                 } else {
-                    // 当前上传文件的MIME类型
-                    String mineType = super.getServletContext().getMimeType(item.getName());
-                    System.out.println(mineType);
-                    // ---------------------------
-                    // 上传文件的拓展名
-                    String ext = FilenameUtils.getExtension(item.getName());
-                    String[] allowedImageType = ALLOWED_IMAGE_TYPE.split(";");
-
-                    // 当前上传文件的类型不在图片允许的格式之内
-                    if (!Arrays.asList(allowedImageType).contains(ext)) {
-                        req.setAttribute("errorMsg", "亲, 请上传图片文件");
-                        req.getRequestDispatcher("/input.jsp").forward(req, resp);
-                        return; // 结束方法
-                    }
-                    // ---------------------------
                     // 表单上传控件
                     System.out.println("上传文件的名称: " + FilenameUtils.getName(item.getName()));
                     System.out.println(fieldName + "-" + item.getName());
