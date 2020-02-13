@@ -10,13 +10,14 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class FileUtil {
     // 允许接受的图片类型
     private static final String ALLOWED_IMAGE_TYPE = "png;gif;jpg;jpeg;bmp";
 
-    public static void upload(HttpServletRequest req) {
+    public static void upload(HttpServletRequest req, Map<String, String> fieldMap) {
         // 解析和检查请求: 请求方式是否是POST, 请求编码是否是multipart/form-data
         boolean isMultipart = ServletFileUpload.isMultipartContent(req);
         if (!isMultipart) {
@@ -42,6 +43,7 @@ public class FileUtil {
                 if (item.isFormField()) {
                     // 普通表单控件
                     String value = item.getString("UTF-8"); // 获取当前普通表单控件的参数值
+                    fieldMap.put(fieldName, value);
                     System.out.println(fieldName + "-" + value);
                 } else {
                     // 当前上传文件的MIME类型
