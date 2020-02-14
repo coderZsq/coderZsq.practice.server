@@ -17,7 +17,7 @@ public class FileUtil {
     // 允许接受的图片类型
     private static final String ALLOWED_IMAGE_TYPE = "png;gif;jpg;jpeg;bmp";
 
-    public static void upload(HttpServletRequest req, Map<String, String> fieldMap) {
+    public static void upload(HttpServletRequest req, Map<String, String> fieldMap, Map<String, CFile> binaryMap) {
         // 解析和检查请求: 请求方式是否是POST, 请求编码是否是multipart/form-data
         boolean isMultipart = ServletFileUpload.isMultipartContent(req);
         if (!isMultipart) {
@@ -65,6 +65,11 @@ public class FileUtil {
                     String fileName = UUID.randomUUID().toString() + "." + FilenameUtils.getExtension(item.getName());
                     String dir = req.getServletContext().getRealPath("/upload");
                     item.write(new File(dir, fileName)); // 把二进制数据写到哪一个文件中
+
+                    CFile cFile = new CFile();
+                    cFile.setImageName(FilenameUtils.getName(item.getName()));
+                    cFile.setImageUrl("/upload/" + fileName);
+                    binaryMap.put(fieldName, cFile);
                 }
             }
         } catch (FileUploadBase.FileSizeLimitExceededException e) {
