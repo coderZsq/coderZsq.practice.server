@@ -1,10 +1,10 @@
-package com.coderZsq._20_product.web.servlet;
+package com.coderZsq._24_shopping.servlet;
 
-import com.coderZsq._20_product.dao.IProductDAO;
-import com.coderZsq._20_product.dao.IProductDirDAO;
-import com.coderZsq._20_product.dao.impl.ProductDAOImpl;
-import com.coderZsq._20_product.dao.impl.ProductDirDAOImpl;
-import com.coderZsq._20_product.domain.Product;
+import com.coderZsq._24_shopping.dao.IProductDAO;
+import com.coderZsq._24_shopping.dao.IProductDirDAO;
+import com.coderZsq._24_shopping.dao.impl.ProductDAOImpl;
+import com.coderZsq._24_shopping.dao.impl.ProductDirDAOImpl;
+import com.coderZsq._24_shopping.domain.Product;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 // 处理所有student相关的请求操作
-// @WebServlet("/product")
+@WebServlet("/product")
 public class ProductServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private IProductDAO dao;
