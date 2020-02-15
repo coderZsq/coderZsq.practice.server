@@ -1,4 +1,4 @@
-package com.coderZsq._24_shopping.servlet;
+package com.coderZsq._24_shopping.web.servlet;
 
 import com.coderZsq._24_shopping.dao.IProductDAO;
 import com.coderZsq._24_shopping.dao.IProductDirDAO;
