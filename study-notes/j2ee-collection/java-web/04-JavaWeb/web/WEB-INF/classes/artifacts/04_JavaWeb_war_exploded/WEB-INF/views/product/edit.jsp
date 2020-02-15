@@ -13,7 +13,10 @@
     <title>货品编辑界面</title>
 </head>
 <body>
-
+<div align="center">
+    当前登录用户: [${sessionScope.USER_IN_SESSION.username}]
+</div>
+<hr>
 <form action="${pageContext.request.contextPath}/product?cmd=save" method="post">
     <input type="hidden" name="id" value="${product.id}">
     <table border="1" cellspacing="0" cellpadding="0">

@@ -11,6 +11,10 @@
     <title>Title</title>
 </head>
 <body>
+<%
+    // 销毁session
+    session.invalidate();
+%>
 <h3>用户登录</h3>
 <span style="color: red">${errorMsg}</span>
 <form action="/login" method="post">

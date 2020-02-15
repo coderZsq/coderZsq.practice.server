@@ -42,6 +42,8 @@ public class LoginServlet extends HttpServlet {
             req.getRequestDispatcher("/login.jsp").forward(req, resp);
             return;
         }
+        // 把当前登录用户存储到Session中
+        req.getSession().setAttribute("USER_IN_SESSION", user);
         resp.sendRedirect("/product");
     }
 }

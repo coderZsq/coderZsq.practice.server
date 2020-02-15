@@ -36,6 +36,15 @@ public class ProductServlet extends HttpServlet {
     // http://localhost/product
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // ----------------------------------------
+        // 检查用户是否已经登录, 判断session中是否存在USER_IN_SESSION
+        Object user = req.getSession().getAttribute("USER_IN_SESSION");
+        if (user == null) {
+            // 回到登录页面
+            resp.sendRedirect("/login.jsp");
+            return;
+        }
+        // ----------------------------------------
         req.setCharacterEncoding("UTF-8"); // 对POST有效, 必须放在获取第一个参数之前
         String cmd = req.getParameter("cmd");
         if ("save".equals(cmd)) {
