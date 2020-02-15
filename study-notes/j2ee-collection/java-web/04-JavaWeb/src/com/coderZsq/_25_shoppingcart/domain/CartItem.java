@@ -11,4 +11,14 @@ public class CartItem {
     private String name; // 商品名称
     private BigDecimal price; // 商品单价
     private Integer num; // 购买数量
+
+    public CartItem() {
+    }
+
+    public CartItem(String id, String name, BigDecimal price, Integer num) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.num = num;
+    }
 }

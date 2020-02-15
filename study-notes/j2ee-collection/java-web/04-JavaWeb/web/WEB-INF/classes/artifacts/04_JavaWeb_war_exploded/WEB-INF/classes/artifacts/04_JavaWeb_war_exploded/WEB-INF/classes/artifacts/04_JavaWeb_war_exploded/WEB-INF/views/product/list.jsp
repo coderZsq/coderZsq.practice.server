@@ -16,7 +16,7 @@
 <div align="center">
     当前登录用户: [${sessionScope.USER_IN_SESSION.username}]
 <%--    <a href="/logout">注销登录</a>--%>
-    <a href="/login">注销登录</a>
+    <a href="/login.jsp">注销登录</a>
 </div>
 <hr>
 <a href="${pageContext.request.contextPath}/product?cmd=edit">添加货品</a>
