@@ -134,6 +134,12 @@
         <url-pattern>/*</url-pattern>
         <!-- 只对请求做拦截(默认)-->
         <dispatcher>REQUEST</dispatcher>
+        <!-- 增加对请求转发做拦截-->
+        <dispatcher>FORWARD</dispatcher>
+        <!-- 增加请求包含做拦截-->
+        <dispatcher>INCLUDE</dispatcher>
+        <!-- 增加跳转到错误页面做拦截-->
+        <dispatcher>ERROR</dispatcher>
     </filter-mapping>
 <!--    <filter-mapping>-->
 <!--        <filter-name>FilterDemo2</filter-name>-->
