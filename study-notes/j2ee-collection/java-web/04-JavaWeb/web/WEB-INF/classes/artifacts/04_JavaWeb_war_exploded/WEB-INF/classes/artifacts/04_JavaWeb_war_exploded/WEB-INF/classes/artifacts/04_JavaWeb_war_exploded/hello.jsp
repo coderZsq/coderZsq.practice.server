@@ -7,3 +7,10 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 师姐那么美, 我想去看看!
+
+<%
+    session.setAttribute("name", "coderZsq");
+    session.setAttribute("age", 18);
+    session.removeAttribute("age");
+    session.setAttribute("name", "Castie!");
+%>

@@ -1,10 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app [
+        <!ELEMENT web-app (servlet|servlet-mapping|session-config|context-param|error-page|filter|filter-mapping)*>
+        <!ATTLIST web-app
+                xmlns CDATA #REQUIRED
+                xmlns:xsi CDATA #REQUIRED
+                xsi:schemaLocation CDATA #REQUIRED
+                version CDATA #REQUIRED
+                metadata-complete CDATA #REQUIRED>
+        <!ELEMENT servlet (servlet-name|servlet-class|init-param|load-on-startup)*>
+        <!ELEMENT servlet-name (#PCDATA)>
+        <!ELEMENT servlet-class (#PCDATA)>
+        <!ELEMENT servlet-mapping (servlet-name|url-pattern)*>
+        <!ELEMENT url-pattern (#PCDATA)>
+        <!ELEMENT init-param (param-name|param-value)*>
+        <!ELEMENT param-name (#PCDATA)>
+        <!ELEMENT param-value (#PCDATA)>
+        <!ELEMENT load-on-startup (#PCDATA)>
+        <!ELEMENT session-config (session-timeout)*>
+        <!ELEMENT session-timeout (#PCDATA)>
+        <!ELEMENT context-param (param-name|param-value)*>
+        <!ELEMENT error-page (error-code|location)*>
+        <!ELEMENT error-code (#PCDATA)>
+        <!ELEMENT location (#PCDATA)>
+        <!ELEMENT filter (filter-name|filter-class|init-param)*>
+        <!ELEMENT filter-name (#PCDATA)>
+        <!ELEMENT filter-class (#PCDATA)>
+        <!ELEMENT filter-mapping (filter-name|url-pattern|dispatcher)*>
+        <!ELEMENT dispatcher (#PCDATA)>
+        ]>
 <web-app xmlns="http://java.sun.com/xml/ns/javaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 		  http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
          version="3.0" metadata-complete="false">
     <!--web的配置-->
+
+    <!--Listener-->
+    <!--Filter-->
+    <!--Servlet-->
+    <listener>
+        <listener-class>com.coderZsq._32_listener.ContextLoaderListener</listener-class>
+    </listener>
+
     <!--在告诉Tomcat来管理Servlet类-->
     <servlet>
         <servlet-name>HelloServlet</servlet-name>
@@ -106,28 +143,28 @@
         <error-code>404</error-code>
         <location>/404.jsp</location>
     </error-page>
-    <!--    <error-page>-->
-    <!--        <error-code>500</error-code>-->
-    <!--        <location>/500.jsp</location>-->
-    <!--    </error-page>-->
+    <!--<error-page>-->
+    <!--    <error-code>500</error-code>-->
+    <!--    <location>/500.jsp</location>-->
+    <!--</error-page>-->
 
     <filter>
         <filter-name>FilterDemo1</filter-name>
         <filter-class>com.coderZsq._28_filter.FilterDemo1</filter-class>
     </filter>
-    <!--    <filter>-->
-    <!--        <filter-name>FilterDemo2</filter-name>-->
-    <!--        <filter-class>com.coderZsq._28_filter.FilterDemo2</filter-class>-->
-    <!--    </filter>-->
-    <!--    <filter>-->
-    <!--        <filter-name>FilterDemo3</filter-name>-->
-    <!--        <filter-class>com.coderZsq._28_filter.FilterDemo3</filter-class>-->
-    <!--    </filter>-->
-    <!--    <filter-mapping>-->
-    <!--        <filter-name>FilterDemo3</filter-name>-->
-    <!--        &lt;!&ndash; 对哪些资源做过滤操作&ndash;&gt;-->
-    <!--        <url-pattern>/*</url-pattern>-->
-    <!--    </filter-mapping>-->
+    <!--<filter>-->
+    <!--    <filter-name>FilterDemo2</filter-name>-->
+    <!--    <filter-class>com.coderZsq._28_filter.FilterDemo2</filter-class>-->
+    <!--</filter>-->
+    <!--<filter>-->
+    <!--    <filter-name>FilterDemo3</filter-name>-->
+    <!--    <filter-class>com.coderZsq._28_filter.FilterDemo3</filter-class>-->
+    <!--</filter>-->
+    <!--<filter-mapping>-->
+    <!--    <filter-name>FilterDemo3</filter-name>-->
+    <!--    &lt;!&ndash; 对哪些资源做过滤操作&ndash;&gt;-->
+    <!--    <url-pattern>/*</url-pattern>-->
+    <!--</filter-mapping>-->
     <filter-mapping>
         <filter-name>FilterDemo1</filter-name>
         <!-- 对哪些资源做过滤操作-->
@@ -141,11 +178,11 @@
         <!-- 增加跳转到错误页面做拦截-->
         <dispatcher>ERROR</dispatcher>
     </filter-mapping>
-    <!--    <filter-mapping>-->
-    <!--        <filter-name>FilterDemo2</filter-name>-->
-    <!--        &lt;!&ndash; 对哪些资源做过滤操作&ndash;&gt;-->
-    <!--        <url-pattern>/*</url-pattern>-->
-    <!--    </filter-mapping>-->
+    <!--<filter-mapping>-->
+    <!--    <filter-name>FilterDemo2</filter-name>-->
+    <!--    &lt;!&ndash; 对哪些资源做过滤操作&ndash;&gt;-->
+    <!--    <url-pattern>/*</url-pattern>-->
+    <!--</filter-mapping>-->
 
     <filter>
         <filter-name>CharacterEncodingFilter</filter-name>
@@ -169,7 +206,7 @@
         <filter-class>com.coderZsq._30_checklogin.CheckLoginFilter</filter-class>
         <init-param>
             <param-name>unCheckUris</param-name>
-            <!--            <param-value>uncheckuris.xml</param-value>-->
+            <!--<param-value>uncheckuris.xml</param-value>-->
             <param-value>/system/*</param-value>
         </init-param>
     </filter>
@@ -177,4 +214,5 @@
         <filter-name>CheckLoginFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
+
 </web-app>
