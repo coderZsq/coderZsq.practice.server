@@ -106,10 +106,10 @@
         <error-code>404</error-code>
         <location>/404.jsp</location>
     </error-page>
-    <error-page>
-        <error-code>500</error-code>
-        <location>/500.jsp</location>
-    </error-page>
+    <!--    <error-page>-->
+    <!--        <error-code>500</error-code>-->
+    <!--        <location>/500.jsp</location>-->
+    <!--    </error-page>-->
 
     <filter>
         <filter-name>FilterDemo1</filter-name>
@@ -167,6 +167,11 @@
     <filter>
         <filter-name>CheckLoginFilter</filter-name>
         <filter-class>com.coderZsq._30_checklogin.CheckLoginFilter</filter-class>
+        <init-param>
+            <param-name>unCheckUris</param-name>
+            <!--            <param-value>uncheckuris.xml</param-value>-->
+            <param-value>/system/*</param-value>
+        </init-param>
     </filter>
     <filter-mapping>
         <filter-name>CheckLoginFilter</filter-name>
