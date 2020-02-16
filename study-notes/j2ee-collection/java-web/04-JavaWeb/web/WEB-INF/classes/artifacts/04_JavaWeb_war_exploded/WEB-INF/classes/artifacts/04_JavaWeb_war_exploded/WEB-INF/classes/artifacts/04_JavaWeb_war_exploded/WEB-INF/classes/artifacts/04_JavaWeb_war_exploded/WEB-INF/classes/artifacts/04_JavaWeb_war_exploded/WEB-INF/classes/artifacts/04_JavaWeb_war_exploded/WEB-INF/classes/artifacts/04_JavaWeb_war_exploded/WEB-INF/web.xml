@@ -106,8 +106,38 @@
         <error-code>404</error-code>
         <location>/404.jsp</location>
     </error-page>
-<!--    <error-page>-->
-<!--        <error-code>500</error-code>-->
-<!--        <location>/500.jsp</location>-->
-<!--    </error-page>-->
+    <error-page>
+        <error-code>500</error-code>
+        <location>/500.jsp</location>
+    </error-page>
+
+    <filter>
+        <filter-name>FilterDemo1</filter-name>
+        <filter-class>com.coderZsq._28_filter.FilterDemo1</filter-class>
+    </filter>
+<!--    <filter>-->
+<!--        <filter-name>FilterDemo2</filter-name>-->
+<!--        <filter-class>com.coderZsq._28_filter.FilterDemo2</filter-class>-->
+<!--    </filter>-->
+<!--    <filter>-->
+<!--        <filter-name>FilterDemo3</filter-name>-->
+<!--        <filter-class>com.coderZsq._28_filter.FilterDemo3</filter-class>-->
+<!--    </filter>-->
+<!--    <filter-mapping>-->
+<!--        <filter-name>FilterDemo3</filter-name>-->
+<!--        &lt;!&ndash; 对哪些资源做过滤操作&ndash;&gt;-->
+<!--        <url-pattern>/*</url-pattern>-->
+<!--    </filter-mapping>-->
+    <filter-mapping>
+        <filter-name>FilterDemo1</filter-name>
+        <!-- 对哪些资源做过滤操作-->
+        <url-pattern>/*</url-pattern>
+        <!-- 只对请求做拦截(默认)-->
+        <dispatcher>REQUEST</dispatcher>
+    </filter-mapping>
+<!--    <filter-mapping>-->
+<!--        <filter-name>FilterDemo2</filter-name>-->
+<!--        &lt;!&ndash; 对哪些资源做过滤操作&ndash;&gt;-->
+<!--        <url-pattern>/*</url-pattern>-->
+<!--    </filter-mapping>-->
 </web-app>
