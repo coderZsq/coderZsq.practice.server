@@ -13,6 +13,20 @@
     <title>Title</title>
 </head>
 <body>
+<form action="/product" method="post">
+    商品名称: <input type="text" name="name" value="${qo.name}">
+    商品价格: <input type="text" name="minSalePrice" style="width: 100px" value="${qo.minSalePrice}">
+    到<input type="text" name="maxSalePrice" style="width: 100px" value="${qo.maxSalePrice}">
+    商品分类:
+    <select name="dirId">
+        <option value="-1">所有分类</option>
+        <c:forEach items="${dirs}" var="d">
+            <option value="${d.id}" ${d.id == qo.dirId ? "selected" : ""}>${d.dirName}</option>
+        </c:forEach>
+    </select>
+    关键字: <input type="text" name="keyword" placeholder="商品名称或商品品牌" value="${qo.keyword}">
+    <input type="submit" value="查询" style="background: orange">
+</form>
 <table border="1" width="90%" cellpadding="0" cellspacing="0">
     <tr style="background-color: orange">
         <th>货品编号</th>
