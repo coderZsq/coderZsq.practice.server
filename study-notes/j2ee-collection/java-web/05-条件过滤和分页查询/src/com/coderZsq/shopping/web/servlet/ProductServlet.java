@@ -1,8 +1,8 @@
-package com.coderZsq._01_shopping.web.servlet;
+package com.coderZsq.shopping.web.servlet;
 
-import com.coderZsq._01_shopping.dao.IProductDAO;
-import com.coderZsq._01_shopping.dao.impl.ProductDAOImpl;
-import com.coderZsq._01_shopping.domain.Product;
+import com.coderZsq.shopping.dao.IProductDAO;
+import com.coderZsq.shopping.dao.impl.ProductDAOImpl;
+import com.coderZsq.shopping.domain.Product;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

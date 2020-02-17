@@ -1,4 +1,4 @@
-package com.coderZsq._01_shopping.handler;
+package com.coderZsq.shopping.handler;
 
 import java.sql.ResultSet;
 

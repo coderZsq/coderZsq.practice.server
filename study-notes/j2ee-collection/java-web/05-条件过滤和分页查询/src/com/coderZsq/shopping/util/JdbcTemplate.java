@@ -1,6 +1,6 @@
-package com.coderZsq._01_shopping.util;
+package com.coderZsq.shopping.util;
 
-import com.coderZsq._01_shopping.handler.IResultSetHandler;
+import com.coderZsq.shopping.handler.IResultSetHandler;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

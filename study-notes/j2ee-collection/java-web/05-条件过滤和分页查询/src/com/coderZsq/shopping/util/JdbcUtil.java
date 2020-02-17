@@ -1,4 +1,4 @@
-package com.coderZsq._01_shopping.util;
+package com.coderZsq.shopping.util;
 
 import com.alibaba.druid.pool.DruidDataSourceFactory;
 

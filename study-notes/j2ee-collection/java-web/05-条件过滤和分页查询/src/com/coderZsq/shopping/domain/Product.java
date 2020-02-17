@@ -1,4 +1,4 @@
-package com.coderZsq._01_shopping.domain;
+package com.coderZsq.shopping.domain;
 
 import lombok.Data;
 

@@ -1,11 +1,10 @@
-package com.coderZsq._01_shopping.dao.impl;
+package com.coderZsq.shopping.dao.impl;
 
-import com.coderZsq._01_shopping.dao.IProductDAO;
-import com.coderZsq._01_shopping.domain.Product;
-import com.coderZsq._01_shopping.handler.BeanHandler;
-import com.coderZsq._01_shopping.handler.BeanListHandler;
-import com.coderZsq._01_shopping.util.JdbcTemplate;
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
+import com.coderZsq.shopping.dao.IProductDAO;
+import com.coderZsq.shopping.domain.Product;
+import com.coderZsq.shopping.handler.BeanListHandler;
+import com.coderZsq.shopping.query.ProductQueryObject;
+import com.coderZsq.shopping.util.JdbcTemplate;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
@@ -42,5 +41,15 @@ public class ProductDAOImpl implements IProductDAO {
         System.out.println("SQL = " + sql);
         System.out.println("参数 = " + parameters);
         return JdbcTemplate.query(sql.toString(), new BeanListHandler<>(Product.class), parameters.toArray());
+    }
+
+    @Override
+    public List<Product> query(ProductQueryObject qo) {
+        String querySql = qo.getQuery();
+        List<Object> parameters = qo.getParameters();
+        String sql = "SELECT * FROM product" + querySql;
+        System.out.println("SQL = " + sql);
+        System.out.println("参数 = " + parameters);
+        return JdbcTemplate.query(sql, new BeanListHandler<>(Product.class), parameters.toArray());
     }
 }
