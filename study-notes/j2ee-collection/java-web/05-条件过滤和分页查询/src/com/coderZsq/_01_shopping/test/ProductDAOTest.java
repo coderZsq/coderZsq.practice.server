@@ -18,4 +18,15 @@ public class ProductDAOTest {
             System.out.println(p);
         }
     }
+
+    // 高级查询测试
+    @Test
+    public void testQuery() {
+        List<Product> list = dao.query("", new BigDecimal("100"), new BigDecimal("200"));
+        System.out.println(list.size());
+        for (Product p : list) {
+            System.out.println(p);
+        }
+    }
+
 }
