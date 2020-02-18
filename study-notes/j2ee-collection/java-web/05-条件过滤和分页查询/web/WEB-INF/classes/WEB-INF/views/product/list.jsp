@@ -38,7 +38,8 @@
         <th>成&nbsp;本&nbsp;价</th>
         <th>折&nbsp;&nbsp;扣</th>
     </tr>
-    <c:forEach items="${products}" var="p" varStatus="vs">
+    <%--<c:forEach items="${products}" var="p" varStatus="vs">--%>
+    <c:forEach items="${pageResult.listData}" var="p" varStatus="vs">
         <tr style='background-color: ${vs.count % 2 == 0 ? "gray" : ""}'>
             <td>${p.id}</td>
             <td>${p.productName}</td>
@@ -57,6 +58,16 @@
             <td>${p.cutoff}</td>
         </tr>
     </c:forEach>
+    <tr>
+        <td colspan="8" align="center">
+            <a href="/page?currentPage=1">首页</a>
+            <a href="/page?currentPage=${pageResult.prevPage}">上页</a>
+            <a href="/page?currentPage=${pageResult.nextPage}">下页</a>
+            <a href="/page?currentPage=${pageResult.totalPage}">末页</a>
+            当前第${pageResult.currentPage}/${pageResult.totalPage}页,
+            一共${pageResult.totalCount}条数据
+        </td>
+    </tr>
 </table>
 </body>
 </html>

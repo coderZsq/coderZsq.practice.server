@@ -1,6 +1,7 @@
 package com.coderZsq.shopping.dao;
 
 import com.coderZsq.shopping.domain.Product;
+import com.coderZsq.shopping.page.PageResult;
 import com.coderZsq.shopping.query.ProductQueryObject;
 
 import java.math.BigDecimal;
@@ -23,4 +24,13 @@ public interface IProductDAO {
      * 高级查询
      */
     List<Product> query(ProductQueryObject qo);
+
+    /**
+     * 分页查询
+     *
+     * @param currentPage 用户传入: 当前需要跳转到哪一页
+     * @param pageSize    用户传入: 当前页最多显示多少条数据
+     * @return 分页的结果对象
+     */
+    PageResult query(Integer currentPage, Integer pageSize);
 }

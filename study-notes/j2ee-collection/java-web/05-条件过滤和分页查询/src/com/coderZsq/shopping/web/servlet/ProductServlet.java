@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 
-// 处理所有student相关的请求操作
 @WebServlet("/product")
 public class ProductServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
