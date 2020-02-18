@@ -39,19 +39,21 @@ public class _977_有序数组的平方 {
         int i = B.length - 1;
         while (r >= p && l < p) {
             if (Math.abs(A[l]) > A[r]) {
-                B[i--] = (int) Math.pow(A[l++], 2);
+                B[i--] = A[l] * A[l];
+                l++;
             } else {
-                B[i--] = (int) Math.pow(A[r--], 2);
+                B[i--] = A[r] * A[r];
+                r--;
             }
         }
         if (i >= 0) {
             if (l < p) {
                 for (int j = l; j < p; j++) {
-                    B[i--] = (int) Math.pow(A[j], 2);
+                    B[i--] = A[j] * A[j];
                 }
             } else {
                 for (int j = r; j >= p; j--) {
-                    B[i--] = (int) Math.pow(A[j], 2);
+                    B[i--] = A[j] * A[j];
                 }
             }
         }
