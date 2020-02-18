@@ -2,7 +2,7 @@ package com.coderZsq.shopping.page;
 
 import lombok.Getter;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,6 +21,11 @@ public class PageResult {
     private Integer nextPage; // 下页: 计算出来
     private Integer totalPage; // 末页/总页数: 计算出来
 
+    private Integer beginIndex;
+    private Integer endIndex;
+
+    private List<Integer> pageItems = Arrays.asList(3, 5, 10);
+
     public static PageResult empty(Integer pageSize) {
         return new PageResult(1, pageSize, Collections.EMPTY_LIST, 0);
     }
@@ -34,5 +39,9 @@ public class PageResult {
         this.totalPage = totalCount % pageSize == 0 ? totalCount / pageSize : totalCount/ pageSize + 1;
         this.prevPage = currentPage - 1 >= 1 ? currentPage - 1 : 1;
         this.nextPage = currentPage + 1 <= totalPage ? currentPage + 1 : totalPage;
+        // ----------------------------------
+        PageIndex pageIndex = PageIndex.getPageIndex(3, currentPage, totalPage);
+        this.beginIndex = pageIndex.getBeginIndex();
+        this.endIndex = pageIndex.getEndIndex();
     }
 }

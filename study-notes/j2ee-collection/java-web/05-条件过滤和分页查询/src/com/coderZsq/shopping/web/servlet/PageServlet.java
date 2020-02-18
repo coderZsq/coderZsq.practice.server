@@ -39,7 +39,13 @@ public class PageServlet extends HttpServlet {
         if (StringUtils.isNotBlank(sCurrentPage)) {
             currentPage = Integer.valueOf(sCurrentPage);
         }
-        PageResult pageResult = dao.query(currentPage, 5);
+        Integer pageSize = 5;
+        // 接受用户传入的每页多少条
+        String sPageSize = req.getParameter("pageSize");
+        if (StringUtils.isNotBlank(sPageSize)) {
+            pageSize = Integer.valueOf(sPageSize);
+        }
+        PageResult pageResult = dao.query(currentPage, pageSize);
         req.setAttribute("pageResult", pageResult);
         // -----------------------------------
         req.setAttribute("dirs", dirDAO.list());
