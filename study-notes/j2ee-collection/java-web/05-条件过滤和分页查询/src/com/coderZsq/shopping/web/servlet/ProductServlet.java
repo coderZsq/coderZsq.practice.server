@@ -4,7 +4,6 @@ import com.coderZsq.shopping.dao.IProductDAO;
 import com.coderZsq.shopping.dao.IProductDirDAO;
 import com.coderZsq.shopping.dao.impl.ProductDAOImpl;
 import com.coderZsq.shopping.dao.impl.ProductDirDAOImpl;
-import com.coderZsq.shopping.domain.Product;
 import com.coderZsq.shopping.page.PageResult;
 import com.coderZsq.shopping.query.ProductQueryObject;
 import org.apache.commons.lang3.StringUtils;
@@ -16,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.List;
 
 @WebServlet("/product")
 public class ProductServlet extends HttpServlet {
@@ -51,6 +49,16 @@ public class ProductServlet extends HttpServlet {
          String maxSalePrice = req.getParameter("maxSalePrice");
          String dirId = req.getParameter("dirId");
          String keyword = req.getParameter("keyword");
+
+         // 接受用户传入的currentPage和pageSize
+        String currentPage = req.getParameter("currentPage");
+        String pageSize = req.getParameter("pageSize");
+        if (StringUtils.isNotBlank(currentPage)) {
+            qo.setCurrentPage(Integer.valueOf(currentPage));
+        }
+        if (StringUtils.isNotBlank(pageSize)) {
+            qo.setPageSize(Integer.valueOf(pageSize));
+        }
          if (StringUtils.isNotBlank(keyword)) {
              qo.setKeyword(keyword);
          }
