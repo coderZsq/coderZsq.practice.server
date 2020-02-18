@@ -1,5 +1,7 @@
 package com.coderZsq.shopping.query;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -8,6 +10,11 @@ import java.util.List;
 
 // 高级查询对象的基类, 包含所有查询对象的共性
 public class QueryObject {
+    @Getter@Setter
+    private Integer currentPage = 1;
+    @Getter@Setter
+    private Integer pageSize = 5;
+
     // 封装查询条件
     private List<String> conditions = new ArrayList<>();
 

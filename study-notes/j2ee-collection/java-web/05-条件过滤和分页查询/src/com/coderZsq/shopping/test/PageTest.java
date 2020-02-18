@@ -6,9 +6,11 @@ import com.coderZsq.shopping.domain.Product;
 import com.coderZsq.shopping.handler.BeanListHandler;
 import com.coderZsq.shopping.handler.IResultSetHandler;
 import com.coderZsq.shopping.page.PageResult;
+import com.coderZsq.shopping.query.ProductQueryObject;
 import com.coderZsq.shopping.util.JdbcTemplate;
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.List;
 
@@ -21,6 +23,23 @@ public class PageTest {
         Integer currentPage = 1;
         Integer pageSize = 5;
         PageResult pageResult = dao.query(currentPage, pageSize);
+        System.out.println("总条数: " + pageResult.getTotalCount());
+        System.out.println("上页 = " + pageResult.getPrevPage() + ", 下页 = " + pageResult.getNextPage());
+        for (Object o : pageResult.getListData()) {
+            System.out.println(o);
+        }
+    }
+
+    @Test
+    public void test3() throws Exception {
+        ProductQueryObject qo = new ProductQueryObject();
+        qo.setCurrentPage(2);
+        qo.setPageSize(10);
+        qo.setName("M");
+        qo.setMinSalePrice(new BigDecimal("100"));
+        // qo.setMaxSalePrice(new BigDecimal("200"));
+        // ----------------------------------
+        PageResult pageResult = dao.query(qo);
         System.out.println("总条数: " + pageResult.getTotalCount());
         System.out.println("上页 = " + pageResult.getPrevPage() + ", 下页 = " + pageResult.getNextPage());
         for (Object o : pageResult.getListData()) {

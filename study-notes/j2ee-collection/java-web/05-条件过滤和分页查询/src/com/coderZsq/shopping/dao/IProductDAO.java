@@ -23,7 +23,7 @@ public interface IProductDAO {
     /**
      * 高级查询
      */
-    List<Product> query(ProductQueryObject qo);
+    List<Product> query0(ProductQueryObject qo);
 
     /**
      * 分页查询
@@ -33,4 +33,9 @@ public interface IProductDAO {
      * @return 分页的结果对象
      */
     PageResult query(Integer currentPage, Integer pageSize);
+
+    /**
+     * 高级查询 + 分页查询
+     */
+    PageResult query(ProductQueryObject qo);
 }

@@ -5,6 +5,7 @@ import com.coderZsq.shopping.dao.IProductDirDAO;
 import com.coderZsq.shopping.dao.impl.ProductDAOImpl;
 import com.coderZsq.shopping.dao.impl.ProductDirDAOImpl;
 import com.coderZsq.shopping.domain.Product;
+import com.coderZsq.shopping.page.PageResult;
 import com.coderZsq.shopping.query.ProductQueryObject;
 import org.apache.commons.lang3.StringUtils;
 
@@ -36,11 +37,11 @@ public class ProductServlet extends HttpServlet {
         // 把请求参数信息封装到查询对象中
         this.request2Object(req, qo);
         req.setAttribute("qo", qo); // 把查询数据回显在表单中
-        List<Product> list = dao.query(qo);
+        PageResult pageResult = dao.query(qo);
         // 把所有的商品分类信息共享给JSP
         req.setAttribute("dirs", dirDAO.list());
         // -----------------------------------
-        req.setAttribute("products", list);
+        req.setAttribute("pageResult", pageResult);
         req.getRequestDispatcher("/WEB-INF/views/product/list.jsp").forward(req, resp);
     }
 

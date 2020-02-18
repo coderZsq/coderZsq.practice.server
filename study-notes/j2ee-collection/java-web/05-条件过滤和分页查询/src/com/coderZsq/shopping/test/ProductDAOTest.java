@@ -38,7 +38,7 @@ public class ProductDAOTest {
         qo.setMinSalePrice(new BigDecimal("100"));
         qo.setMaxSalePrice(new BigDecimal("200"));
         // =====================================
-        List<Product> list = dao.query(qo);
+        List<Product> list = dao.query0(qo);
         System.out.println(list.size());
         for (Product p : list) {
             System.out.println(p);
