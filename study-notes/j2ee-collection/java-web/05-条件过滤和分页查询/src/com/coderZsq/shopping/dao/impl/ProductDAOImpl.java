@@ -14,7 +14,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductDAOImpl implements IProductDAO {
+public class ProductDAOImpl extends BaseDAO implements IProductDAO {
     @Override
     public List<Product> list() {
         return JdbcTemplate.query("SELECT * FROM product", new BeanListHandler<>(Product.class));
@@ -81,8 +81,7 @@ public class ProductDAOImpl implements IProductDAO {
     }
 
     // ============================================
-    @Override
-    public PageResult query(ProductQueryObject qo) {
+    public PageResult query1(ProductQueryObject qo) {
         // 查询结果总数
         String countSql = "SELECT COUNT(*) FROM product" + qo.getQuery();
         Integer totalCount = JdbcTemplate.query(countSql, new IResultSetHandler<Long>() {
@@ -102,7 +101,7 @@ public class ProductDAOImpl implements IProductDAO {
         System.out.println("参数 = " + qo.getParameters());
         // ---------------------------------
         // 查询结果集
-        String resultSql = "SELECT * FROM product " + qo.getQuery() +" LIMIT ?,?";
+        String resultSql = "SELECT * FROM product " + qo.getQuery() + " LIMIT ?,?";
         // 增加LIMIT的两个占位符参数
         qo.getParameters().add((qo.getCurrentPage() - 1) * qo.getPageSize()); // LIMIT第一个?
         qo.getParameters().add(qo.getPageSize()); // LIMIT第二个?
@@ -110,6 +109,12 @@ public class ProductDAOImpl implements IProductDAO {
         System.out.println("resultSql = " + resultSql);
         System.out.println("参数 = " + qo.getParameters());
         return new PageResult(qo.getCurrentPage(), qo.getPageSize(), listData, totalCount);
+    }
+
+    // ============================================
+    @Override
+    public PageResult query(ProductQueryObject qo) {
+        return super.query(Product.class, qo);
     }
     // ============================================
 }

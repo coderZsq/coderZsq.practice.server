@@ -11,14 +11,6 @@
 <html>
 <head>
     <title>货品显示列表</title>
-    <script type="text/javascript">
-        function go(pageNo) {
-            // 吧需要跳转的页面设置到<input type="number" name=currentPage/>上
-            document.getElementById("currentPage").value = pageNo;
-            // 提交表单
-            document.forms[0].submit();
-        }
-    </script>
 </head>
 <body>
 <form action="/product" method="post">

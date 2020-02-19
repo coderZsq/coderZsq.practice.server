@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 // 高级查询对象的基类, 包含所有查询对象的共性
-public class QueryObject {
+public class QueryObject implements IQuery {
     @Getter@Setter
     private Integer currentPage = 1;
     @Getter@Setter
@@ -31,6 +31,7 @@ public class QueryObject {
         }
 
     }
+    @Override
     public String getQuery() {
         this.init();
         StringBuilder sql = new StringBuilder(80);
@@ -45,6 +46,7 @@ public class QueryObject {
     }
 
     // 返回查询条件中的占位符参数值
+    @Override
     public List<Object> getParameters() {
         this.init();
         return parameters;
