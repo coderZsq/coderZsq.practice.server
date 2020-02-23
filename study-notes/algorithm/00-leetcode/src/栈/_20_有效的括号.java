@@ -5,6 +5,7 @@ import java.util.Stack;
 
 /**
  * https://leetcode-cn.com/problems/valid-parentheses/
+ *
  * @author zhushuangquan
  */
 public class _20_有效的括号 {

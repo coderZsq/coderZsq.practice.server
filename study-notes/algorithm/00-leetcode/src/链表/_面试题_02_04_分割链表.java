@@ -2,6 +2,7 @@ package 链表;
 
 /**
  * https://leetcode-cn.com/problems/partition-list-lcci/
+ *
  * @author zhushuangquan
  */
 public class _面试题_02_04_分割链表 {

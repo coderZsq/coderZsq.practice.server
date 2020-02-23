@@ -2,6 +2,7 @@ package 链表;
 
 /**
  * https://leetcode-cn.com/problems/partition-list/
+ *
  * @author zhushuangquan
  */
 public class _86_分隔链表 {

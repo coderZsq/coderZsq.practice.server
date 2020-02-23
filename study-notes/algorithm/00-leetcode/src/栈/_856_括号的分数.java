@@ -4,6 +4,7 @@ import java.util.Stack;
 
 /**
  * https://leetcode-cn.com/problems/score-of-parentheses/
+ *
  * @author zhushuangquan
  */
 public class _856_括号的分数 {

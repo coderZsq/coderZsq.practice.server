@@ -5,6 +5,17 @@ import java.util.Set;
 
 @SuppressWarnings("unchecked")
 public class _36_有效的数独 {
+    public static void main(String[] args) {
+        char c = '6';
+        System.out.println(c - '1');
+
+        int num = 1;
+        System.out.println(Integer.toBinaryString(1 << 0));
+        System.out.println(Integer.toBinaryString(1 << 1));
+        System.out.println(Integer.toBinaryString(1 << 2));
+        System.out.println(Integer.toBinaryString(1 << 3));
+    }
+
     public boolean isValidSudoku(char[][] board) {
         short[] rows = new short[9];
         short[] cols = new short[9];
@@ -52,17 +63,6 @@ public class _36_有效的数独 {
             }
         }
         return true;
-    }
-
-    public static void main(String[] args) {
-        char c = '6';
-        System.out.println(c - '1');
-
-        int num = 1;
-        System.out.println(Integer.toBinaryString(1 << 0));
-        System.out.println(Integer.toBinaryString(1 << 1));
-        System.out.println(Integer.toBinaryString(1 << 2));
-        System.out.println(Integer.toBinaryString(1 << 3));
     }
 
     public boolean isValidSudoku1(char[][] board) {

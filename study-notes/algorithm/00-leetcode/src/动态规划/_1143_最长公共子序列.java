@@ -2,6 +2,7 @@ package 动态规划;
 
 /**
  * https://leetcode-cn.com/problems/longest-common-subsequence/submissions/
+ *
  * @author zhushuangquan
  */
 public class _1143_最长公共子序列 {
@@ -18,7 +19,7 @@ public class _1143_最长公共子序列 {
             rowsChars = chars2;
         }
         int[] dp = new int[colsChars.length + 1];
-        for (int i = 1; i <= rowsChars.length; i ++) {
+        for (int i = 1; i <= rowsChars.length; i++) {
             int cur = 0;
             for (int j = 1; j <= colsChars.length; j++) {
                 int leftTop = cur;

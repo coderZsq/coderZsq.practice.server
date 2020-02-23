@@ -4,10 +4,12 @@ import java.util.Stack;
 
 /**
  * https://leetcode-cn.com/problems/flatten-binary-tree-to-linked-list/
+ *
  * @author zhushuangquan
  */
 public class _114_二叉树展开为链表 {
     private TreeNode prev;
+
     public void flatten(TreeNode root) {
         if (root == null) return;
         flatten(root.right);

@@ -4,25 +4,26 @@ import java.util.Stack;
 
 /**
  * https://leetcode-cn.com/problems/evaluate-reverse-polish-notation/
+ *
  * @author zhushuangquan
  */
 public class _150_逆波兰表达式求值 {
 
     /*
-    * 四则运算的表达式可以分为3种
-    * 前缀表达式 (prefix expression), 又称为波兰表达式
-    *   + 1 2
-    *   + 2 * 3 4
-    *   + 9 * - 4 1 2
-    * 中缀表达式 (infix expression)
-    *   1 + 2
-    *   2 + 3 * 4
-    *   9 + (4 - 1) * 2
-    * 后缀表达式 (postfix expression), 又称为逆波兰表达式
-    *   1 2 +
-    *   2 3 4 * +
-    *   9 4 1 - 2 * +
-    * */
+     * 四则运算的表达式可以分为3种
+     * 前缀表达式 (prefix expression), 又称为波兰表达式
+     *   + 1 2
+     *   + 2 * 3 4
+     *   + 9 * - 4 1 2
+     * 中缀表达式 (infix expression)
+     *   1 + 2
+     *   2 + 3 * 4
+     *   9 + (4 - 1) * 2
+     * 后缀表达式 (postfix expression), 又称为逆波兰表达式
+     *   1 2 +
+     *   2 3 4 * +
+     *   9 4 1 - 2 * +
+     * */
 
     public int evalRPN(String[] tokens) {
         Stack<Integer> stack = new Stack<Integer>();
@@ -49,16 +50,20 @@ public class _150_逆波兰表达式求值 {
         return stack.pop();
     }
 
-    private  boolean isOperator(String token) {
+    private boolean isOperator(String token) {
         return "+-*/".contains(token);
     }
 
     private int calculate(Integer right, Integer left, String operator) {
         switch (operator) {
-            case "+": return left + right;
-            case "-": return left - right;
-            case "*": return left * right;
-            default: return left / right;
+            case "+":
+                return left + right;
+            case "-":
+                return left - right;
+            case "*":
+                return left * right;
+            default:
+                return left / right;
         }
     }
 

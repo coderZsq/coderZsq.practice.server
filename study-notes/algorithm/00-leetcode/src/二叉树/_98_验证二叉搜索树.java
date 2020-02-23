@@ -6,6 +6,7 @@ import java.util.Stack;
 
 /**
  * https://leetcode-cn.com/problems/validate-binary-search-tree/
+ *
  * @author zhushuangquan
  */
 public class _98_验证二叉搜索树 {
@@ -13,6 +14,8 @@ public class _98_验证二叉搜索树 {
     private Queue<TreeNode> nodes = new LinkedList<>();
     private Queue<Integer> mins = new LinkedList<>();
     private Queue<Integer> maxes = new LinkedList<>();
+    private Integer last;
+
     private void offer(TreeNode node, Integer min, Integer max) {
         if (node == null) return;
         nodes.offer(node);
@@ -72,7 +75,6 @@ public class _98_验证二叉搜索树 {
         return true;
     }
 
-    private  Integer last;
     public boolean isValidBST3(TreeNode root) {
         if (root == null) return true;
 

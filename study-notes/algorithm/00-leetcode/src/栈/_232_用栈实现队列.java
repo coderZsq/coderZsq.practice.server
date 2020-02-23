@@ -4,8 +4,9 @@ import java.util.Stack;
 
 /**
  * https://leetcode-cn.com/problems/implement-queue-using-stacks/
+ *
  * @author zhushuangquan
- * */
+ */
 public class _232_用栈实现队列 {
     private Stack<Integer> inStack;
     private Stack<Integer> outStack;
@@ -15,24 +16,32 @@ public class _232_用栈实现队列 {
         outStack = new Stack<>();
     }
 
-    /** 入队 */
+    /**
+     * 入队
+     */
     public void push(int x) {
         inStack.push(x);
     }
 
-    /** 出队 */
+    /**
+     * 出队
+     */
     public int pop() {
         checkOutStack();
         return outStack.pop();
     }
 
-    /** 获取队头元素 */
+    /**
+     * 获取队头元素
+     */
     public int peek() {
         checkOutStack();
         return outStack.peek();
     }
 
-    /** 是否为空 */
+    /**
+     * 是否为空
+     */
     public boolean empty() {
         return inStack.isEmpty() && outStack.isEmpty();
     }

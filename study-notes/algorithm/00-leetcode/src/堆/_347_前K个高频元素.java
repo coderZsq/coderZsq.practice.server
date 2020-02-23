@@ -6,6 +6,11 @@ import java.util.Map.Entry;
 @SuppressWarnings("unchecked")
 public class _347_前K个高频元素 {
 
+    public static void main(String[] args) {
+        int[] nums = {1, 1, 1, 2, 2, 3};
+        new _347_前K个高频元素().topKFrequent(nums, 2);
+    }
+
     /**
      * 快速排序
      */
@@ -38,7 +43,7 @@ public class _347_前K个高频元素 {
     }
 
     private int pivotIndex(Entry<Integer, Integer>[] entries, int begin, int end) {
-        int newBegin = begin + (int)(Math.random() * (end - begin));
+        int newBegin = begin + (int) (Math.random() * (end - begin));
         Entry<Integer, Integer> tmp = entries[begin];
         entries[begin] = entries[newBegin];
         entries[newBegin] = tmp;
@@ -48,7 +53,7 @@ public class _347_前K个高频元素 {
             while (begin < end) {
                 if (pivot.getValue() > entries[end].getValue()) {
                     end--;
-                } else  {
+                } else {
                     entries[begin++] = entries[end];
                     break;
                 }
@@ -135,8 +140,8 @@ public class _347_前K个高频元素 {
         // PriorityQueue 最小堆
         PriorityQueue<Entry<Integer, Integer>> queue = new PriorityQueue<>(
                 (Entry<Integer, Integer> e1, Entry<Integer, Integer> e2) -> {
-            return e1.getValue() - e2.getValue();
-        });
+                    return e1.getValue() - e2.getValue();
+                });
         for (Entry<Integer, Integer> entry : counts.entrySet()) { // O(mlogk)
             if (queue.size() < k) {
                 queue.offer(entry);
@@ -180,10 +185,5 @@ public class _347_前K个高频元素 {
         }
 
         return result;
-    }
-
-    public static void main(String[] args) {
-        int[] nums = {1, 1, 1, 2, 2, 3};
-        new _347_前K个高频元素().topKFrequent(nums, 2);
     }
 }
