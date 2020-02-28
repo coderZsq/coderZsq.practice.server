@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="vertical"
+android:gravity="center_horizontal"
+    >
+
+<ImageView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:src="@mipmap/profile" />
+<EditText
+    android:id="@+id/et_name"
+    android:layout_width="match_parent"
+    android:hint="输入用户名"
+    android:layout_height="wrap_content"/>
+<EditText
+    android:id="@+id/et_password"
+    android:layout_width="match_parent"
+    android:hint="密码"
+    android:layout_height="wrap_content"/>
+<Button
+    android:onClick="login"
+    android:id="@+id/btn_login"
+    android:layout_width="match_parent"
+    android:text="登录"
+    android:layout_height="wrap_content"/>
+
+</LinearLayout>
