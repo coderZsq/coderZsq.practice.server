@@ -1,29 +1,27 @@
-package com.coderZsq.ui;
+package com.coderZsq.ui.storage;
 
-import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.coderZsq.ui.R;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 
-public class CacheActivity extends AppCompatActivity {
+public class StorageActivity extends Activity {
     private EditText et_name;
     private EditText et_password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cache);
+        setContentView(R.layout.activity_storage);
         et_name = findViewById(R.id.et_name);
         et_password = findViewById(R.id.et_password);
         try {
@@ -76,19 +74,20 @@ public class CacheActivity extends AppCompatActivity {
         // 在data/data/com.coderZsq.ui/files/路径下面创建一个文件info.txt, 然后向里面写东西
 //        File file = new File(getFilesDir(), "info.txt");
         File file = new File(getCacheDir(), "info.txt");
-        BufferedWriter bw = new BufferedWriter(new FileWriter(file));
-        bw.write(name);
-        bw.newLine();
-        bw.write(password);
-        bw.close();
+//        BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+//        bw.write(name);
+//        bw.newLine();
+//        bw.write(password);
+//        bw.close();
 
         // 打开文件, 该文件只能由调用该方法的应用程序访问
         // MODE_PRIVATE 该文件只能由调用该方法的应用程序访问
         // MODE_APPEND 如果文件已存在, 就在结尾追加内容, 而不是覆盖文件
         // MODE_WORLD_READABLE 赋予所有应用程序读权限
         // MODE_WORLD_WRITEABLE 赋予所有应用程序写权限
-        FileOutputStream outputStream = this.openFileOutput(getFilesDir().getAbsolutePath() + "/info.txt", MODE_WORLD_WRITEABLE + MODE_WORLD_READABLE);
-        outputStream.write("hahaha".getBytes());
+        FileOutputStream outputStream = this.openFileOutput("info.txt", MODE_WORLD_WRITEABLE + MODE_WORLD_READABLE);
+        outputStream.write(name.getBytes());
+        outputStream.write(password.getBytes());
         outputStream.flush();
         outputStream.close();
     }

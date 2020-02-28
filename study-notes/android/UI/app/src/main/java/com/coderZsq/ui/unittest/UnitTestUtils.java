@@ -1,4 +1,4 @@
-package com.coderZsq.ui;
+package com.coderZsq.ui.unittest;
 
 public class UnitTestUtils {
     public static int add(int x, int y) {
