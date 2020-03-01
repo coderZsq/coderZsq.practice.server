@@ -14,13 +14,20 @@ public class _234_回文链表 {
         // 翻转右半部分 (中间节点的右边部分)
         ListNode rHead = reverseList(mid.next);
         ListNode lHead = head;
+        ListNode rOldHead = rHead;
         // 从lHead, rHead触发, 判断是否为回文链表
+        boolean result = true;
         while (rHead != null) {
-            if (lHead.val != rHead.val) return false;
+            if (lHead.val != rHead.val) {
+                result = false;
+                break;
+            }
             rHead = rHead.next;
             lHead = lHead.next;
         }
-        return true;
+        // 恢复右半部分 (对右半部分再次翻转)
+        reverseList(rOldHead);
+        return result;
     }
 
     /**
@@ -32,7 +39,13 @@ public class _234_回文链表 {
      * @return
      */
     private ListNode middleNode(ListNode head) {
-        return null;
+        ListNode fast = head;
+        ListNode slow = head;
+        while (fast.next != null && fast.next.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return slow;
     }
 
     /**
@@ -43,6 +56,27 @@ public class _234_回文链表 {
      * @return 翻转之后链表的头结点(返回4)
      */
     private ListNode reverseList(ListNode head) {
-        return null;
+        ListNode newHead = null;
+        while (head != null) {
+            ListNode tmp = head.next;
+            head.next = newHead;
+            newHead = head;
+            head = tmp;
+        }
+        return newHead;
+    }
+
+    public static void main(String[] args) {
+        ListNode head = new ListNode(1);
+        head.next = new ListNode(2);
+        head.next.next = new ListNode(3);
+        head.next.next.next = new ListNode(2);
+        head.next.next.next.next = new ListNode(1);
+        System.out.println(head);
+
+        _234_回文链表 obj = new _234_回文链表();
+        obj.isPalindrome(head);
+
+        System.out.println(head);
     }
 }
