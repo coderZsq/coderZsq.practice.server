@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.coderZsq.rbac.mapper.EmployeeMapper">
+    <resultMap id="BaseResultMap" type="com.coderZsq.rbac.domain.Employee">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="password" property="password" jdbcType="VARCHAR"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="age" property="age" jdbcType="INTEGER"/>
+        <result column="admin" property="admin" jdbcType="BIT"/>
+        <association property="dept" javaType="com.coderZsq.rbac.domain.Department" columnPrefix="d_">
+            <id column="id" property="id" jdbcType="BIGINT"/>
+            <result column="name" property="name" jdbcType="VARCHAR"/>
+        </association>
+        <!--
+        jdbcType 属性类型
+        ofType   集合中的元素类型
+        -->
+        <collection property="roles" ofType="com.coderZsq.rbac.domain.Role"
+                    select="com.coderZsq.rbac.mapper.RoleMapper.selectRolesByEmployeeId" column="id"></collection>
+
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        DELETE FROM employee
+        WHERE id = #{id,jdbcType=BIGINT}
+    </delete>
+    <delete id="deleteRelationEmployeeAndRole">
+        DELETE FROM employee_role
+        WHERE employee_id = #{id}
+    </delete>
+    <insert id="insert" parameterType="com.coderZsq.rbac.domain.Employee" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO employee (name, password, email,
+                              age, admin, dept_id)
+        VALUES (#{name,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
+                #{age,jdbcType=INTEGER}, #{admin,jdbcType=BIT}, #{dept.id,jdbcType=BIGINT})
+    </insert>
+    <insert id="insertRelationEmployeeAndRole">
+        INSERT INTO employee_role (employee_id, role_id) VALUES (#{employeeId}, #{roleId})
+    </insert>
+    <update id="updateByPrimaryKey" parameterType="com.coderZsq.rbac.domain.Employee">
+        UPDATE employee
+        SET name    = #{name,jdbcType=VARCHAR},
+            email   = #{email,jdbcType=VARCHAR},
+            age     = #{age,jdbcType=INTEGER},
+            admin   = #{admin,jdbcType=BIT},
+            dept_id = #{dept.id,jdbcType=BIGINT}
+        WHERE id = #{id,jdbcType=BIGINT}
+    </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        SELECT
+            e.id,
+            e.name,
+            e.password,
+            e.email,
+            e.age,
+            e.admin,
+
+            d.id   d_id,
+            d.name d_name
+        FROM employee e
+            LEFT JOIN department d ON e.dept_id = d.id
+        WHERE e.id = #{id,jdbcType=BIGINT}
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT
+            e.id,
+            e.name,
+            e.password,
+            e.email,
+            e.age,
+            e.admin,
+
+            d.id   d_id,
+            d.name d_name
+        FROM employee e
+            LEFT JOIN department d ON e.dept_id = d.id
+    </select>
+
+    <select id="selectByQuery" resultMap="BaseResultMap">
+        SELECT
+        e.id,
+        e.name,
+        e.password,
+        e.email,
+        e.age,
+        e.admin,
+
+        d.id d_id,
+        d.name d_name
+        FROM employee e
+        LEFT JOIN department d ON e.dept_id = d.id
+        <include refid="where_sql"/>
+        LIMIT #{start}, #{pageSize}
+    </select>
+    <select id="selectByCount" resultType="java.lang.Integer">
+        SELECT count(id)
+        FROM employee
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (name LIKE concat('%',#{keyword},'%') or email LIKE concat('%',#{keyword},'%'))
+            </if>
+            <if test="deptId != -1">
+                AND dept_id= #{deptId}
+            </if>
+        </where>
+    </select>
+    <select id="selectByNameAndPassword" resultType="com.coderZsq.rbac.domain.Employee">
+        SELECT * FROM  employee WHERE name = #{username} and password = #{password}
+    </select>
+
+    <select id="queryByName" resultType="com.coderZsq.rbac.domain.Employee">
+        SELECT id, name, password, email, age, admin, dept_id
+        FROM employee
+        WHERE name = #{username}
+    </select>
+
+    <sql id="where_sql">
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (e.name LIKE concat('%',#{keyword},'%') or e.email LIKE concat('%',#{keyword},'%'))
+            </if>
+            <if test="deptId != -1">
+                AND d.id=#{deptId}
+            </if>
+        </where>
+    </sql>
+
+</mapper>
