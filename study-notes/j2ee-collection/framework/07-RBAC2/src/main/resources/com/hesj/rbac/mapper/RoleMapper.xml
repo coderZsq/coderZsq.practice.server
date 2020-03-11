@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hesj.rbac.mapper.RoleMapper" >
+  <resultMap id="BaseResultMap" type="com.hesj.rbac.domain.Role" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="sn" property="sn" jdbcType="VARCHAR" />
+    <collection property="permissions" ofType="com.hesj.rbac.domain.Permission" select="com.hesj.rbac.mapper.PermissionMapper.selectAllPermissionByRoleId" column="id"/>
+
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from role
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteRelationRoleAndPermissionByRoleId" parameterType="java.lang.Long" >
+    delete from role_permission
+    where role_id = #{roleId}
+  </delete>
+
+  <insert id="insert" parameterType="com.hesj.rbac.domain.Role" useGeneratedKeys="true" keyProperty="id" >
+    insert into role (name, sn)
+    values (#{name,jdbcType=VARCHAR}, #{sn,jdbcType=VARCHAR})
+  </insert>
+
+  <insert id="insertRelationRoleAndPermission">
+    insert into role_permission(role_id,permission_id) values (#{roleId},#{permissionId})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.hesj.rbac.domain.Role" >
+    update role
+    set name = #{name,jdbcType=VARCHAR},
+      sn = #{sn,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  select id, name, sn
+  from role
+  where id = #{id,jdbcType=BIGINT}
+</select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, name, sn
+    from role
+  </select>
+
+  <select id="queryRoleSnsByEmpId" resultType="java.lang.String">
+    select r.sn
+    from role r
+           left join employee_role er on r.id = er.role_id
+    where er.employee_id = #{employeeId}
+  </select>
+
+  <select id="selectByQuery" resultType="com.hesj.rbac.domain.Role">
+    select id, name, sn
+    from role
+    limit #{start},#{pageSize}
+  </select>
+  <select id="selectByCount" resultType="java.lang.Integer">
+    select count(id)
+    from role
+  </select>
+  <select id="selectRolesByEmployeeId" resultMap="BaseResultMap">
+    SELECT * FROM role r
+      LEFT JOIN employee_role er ON r.id = er.role_id
+    where er.employee_id = #{employeeId}
+  </select>
+
+
+</mapper>
