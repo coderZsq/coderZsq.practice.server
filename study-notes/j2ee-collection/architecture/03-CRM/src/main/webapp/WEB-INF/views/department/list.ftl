@@ -5,6 +5,51 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>部门管理</title>
 <#include "../common/link.ftl"/>
+    <script>
+        /*页面加载完毕*/
+        $(function () {
+            //1 给删除按钮绑定点击事件
+            $(".btn-delete1").click(function () {
+                //2 获取需要删除数据的id
+                var billId= $(this).data("id");
+                //3 开始执行删除操作
+                $.messager.confirm("温馨提示","确定要删除吗?",function () {
+                    $.get("/department/delete.do",{id:billId},function (data) {
+                        if(data.success){
+                           $.messager.alert("删除成功, 1s后刷新");
+                           setTimeout(function () {
+                               window.location.reload()
+                           },1000)
+                        }
+                    })
+                })
+            })
+
+            // 给编辑或者添加 增加一个点击事件
+            $(".btn-input").click(function () {
+                //清空表单数据
+                $("#editForm input").val("");
+                // 怎么判断是新增还是编辑
+                var json = $(this).data("json")
+                console.log(json);
+                if(json){//编辑
+                    $("input[name='id']").val(json.id);
+                    $("input[name='sn']").val(json.sn);
+                    $("input[name='name']").val(json.name);
+                }
+                $("#editModal").modal({show:true});
+            })
+            /*异步提交表单: 保存数据*/
+            $(".btn-submit").click(function () {
+                $("#editForm").ajaxSubmit(function (data) {
+                    if(data.success){
+                        window.location.href="/department/list.do";
+                    }
+                })
+            })
+
+        })
+    </script>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
@@ -19,8 +64,13 @@
         <section class="content">
             <div class="box">
                 <!--高级查询--->
-                <form class="form-inline" id="searchForm" action="/department/list" method="post">
+                <form class="form-inline" id="searchForm" action="/department/list.do" method="post">
                     <input type="hidden" name="currentPage" id="currentPage" value="1">
+                    <div class="form-group">
+                        <label for="keyword">关键字:</label>
+                        <input type="text" class="form-control" id="keyword" name="keyword" placeholder="请输入名称/编码">
+                    </div>
+                    <button id="btn_query" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span> 查询</button>
                     <a href="javascript:;" class="btn btn-success btn-input" style="margin: 10px">
                         <span class="glyphicon glyphicon-plus"></span> 添加
                     </a>
@@ -35,28 +85,29 @@
                             <th>操作</th>
                         </tr>
                     <#--list,要遍历的集合 as 变量-->
-                    <#list depts as entity>
+                    <#list pageInfo.list as entity>
                         <tr>
                         <#--从0开始,需要加1-->
-                            <td>${entity_index + 1}</td>
-                            <td>${entity.name}</td>
-                            <td>${entity.sn}</td>
-                            <td>
-                                <a class="btn btn-info btn-xs btn-input" data-json='${entity.jsonString}'>
-                                    <span class="glyphicon glyphicon-pencil"></span> 编辑
-                                </a>
+                        <td>${entity_index + 1}</td>
+                        <td>${entity.name}</td>
+                        <td>${entity.sn}</td>
+                        <td>
+                            <a class="btn btn-info btn-xs btn-input" data-json='${entity.json}'>
+                                <span class="glyphicon glyphicon-pencil"></span> 编辑
+                            </a>
 
-                                    <a href="javascript:;" data-url="/department/delete?id=${entity.id}"
-                                       class="btn btn-danger btn-xs btn-delete">
-                                        <span class="glyphicon glyphicon-trash"></span> 删除
-                                    </a>
-                            </td>
+                            <a href="javascript:;"
+                               class="btn btn-danger btn-xs btn-delete1" data-id="${entity.id}">
+                                <span class="glyphicon glyphicon-trash"></span> 删除
+                            </a>
+                        </td>
                         </tr>
                     </#list>
                     </table>
+                    <!--分页-->
+                    <#include "../common/page.ftl"/>
                 </div>
             </div>
-
         </section>
     </div>
 <#include "../common/footer.ftl"/>
@@ -70,7 +121,7 @@
                 <h4 class="modal-title">部门编辑</h4>
             </div>
             <div class="modal-body">
-                <form class="form-horizontal" action="/department/saveOrUpdate" method="post" id="editForm">
+                <form class="form-horizontal" action="/department/saveOrUpdate.do" method="post" id="editForm">
                     <input type="hidden" value="" name="id">
                     <div class="form-group" >
                         <label  class="col-sm-3 control-label">部门名称：</label>

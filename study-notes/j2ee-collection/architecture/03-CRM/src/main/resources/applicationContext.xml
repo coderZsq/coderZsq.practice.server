@@ -5,7 +5,7 @@
        xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
-    <!--1 制定包扫描路径-->
+    <!--1 制定包扫描路径 扫描@Controller @Service -->
     <context:component-scan base-package="com.coderZsq.crm"/>
 
     <!--2 加载db.properties配置文件-->
@@ -25,6 +25,13 @@
         <property name="dataSource" ref="dataSource"/>
         <property name="mapperLocations" value="classpath:com/coderZsq/crm/mapper/*.xml"/>
         <property name="typeAliasesPackage" value="com.coderZsq.crm.domain"/>
+        <!-- 注意其他配置 -->
+        <property name="plugins">
+            <array>
+                <bean class="com.github.pagehelper.PageInterceptor">
+                </bean>
+            </array>
+        </property>
     </bean>
 
     <!--5 配置事务管理器-->
@@ -32,24 +39,29 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
+    <!-- 开启事务注解 扫描Transactional -->
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
+    <!-- 2. 切入之后的具体操作 进行事务控制的TransactionInterceptor -->
     <tx:advice id="advice" transaction-manager="transactionManager">
         <tx:attributes>
             <tx:method name="query*" read-only="true"/>
             <tx:method name="select*" read-only="true"/>
             <tx:method name="list*" read-only="true"/>
             <tx:method name="count*" read-only="true"/>
-            <!--所有的增, 删,改方法-->
+            <!--所有的增, 删,改方法 需要事务控制-->
             <tx:method name="*" />
         </tx:attributes>
     </tx:advice>
 
+    <!-- 面向切片编程 -->
     <aop:config>
+        <!-- 1. 指定切入点 -->
         <aop:pointcut id="pc" expression="execution(* com.coderZsq.crm.service.*.*(..))"></aop:pointcut>
+        <!-- 3. 把切入点和具体事务关联起来 -->
         <aop:advisor advice-ref="advice" pointcut-ref="pc"/>
     </aop:config>
-    <!--6 配置一个mapper扫描器-->
+    <!--6 配置一个mapper扫描器 扫描Mapper接口 -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage" value="com.coderZsq.crm.mapper"/>
     </bean>

@@ -11,8 +11,8 @@
 <script src="/js/adminlte/js/adminlte.min.js"></script>
 <script src="/js/plugins/twbsPagination/jquery.twbsPagination.min.js"></script>
 <script src="/js/plugins/messager/jquery.bootstrap.min.js"></script>
-<script type="text/javascript" src="/js/plugins/jquery-validation/jquery.validate.min.js"></script>
-<script type="text/javascript" src="/js/plugins/jquery-validation/message/messages_cn.js"></script>
+<script type="text/javascript" src="/js/plugins/jquery-validate/jquery.validate.min.js"></script>
+<script type="text/javascript" src="/js/plugins/jquery-validate/message/messages_cn.js"></script>
 <script type="text/javascript" src="/js/plugins/jquery-form/jquery.form.js"></script>
 <script src="/js/system/commonAll.js"></script>
 

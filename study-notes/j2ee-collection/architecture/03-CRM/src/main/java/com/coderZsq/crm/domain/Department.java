@@ -1,7 +1,11 @@
 package com.coderZsq.crm.domain;
 
+import com.alibaba.fastjson.JSON;
 import lombok.Data;
 import lombok.ToString;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Data
 @ToString
@@ -10,7 +14,13 @@ public class Department {
     private String sn;
     private String name;
 
-    public String getJsonString() {
-        return "";
+    public String getJson() {
+        Map map = new HashMap();
+        map.put("id", id);
+        map.put("sn", sn);
+        map.put("name", name);
+        // 怎么把mapper对象转换为json
+        // 1 可以使用fastjson 2 springmvc内置的jackson
+        return JSON.toJSONString(map);
     }
 }
