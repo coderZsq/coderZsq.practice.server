@@ -3,7 +3,7 @@ package com.coderZsq.crm.web.controller;
 import com.coderZsq.crm.common.PageResult;
 import com.coderZsq.crm.domain.Department;
 import com.coderZsq.crm.query.DepartmentQueryObject;
-import com.coderZsq.crm.service.IDepartmentService;
+import com.coderZsq.crm.service.DepartmentService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("department")
 public class DepartmentController {
     @Autowired
-    private IDepartmentService departmentService;
+    private DepartmentService departmentService;
 
     @RequestMapping("list")
     public String queryAll(Model model, DepartmentQueryObject qo) {

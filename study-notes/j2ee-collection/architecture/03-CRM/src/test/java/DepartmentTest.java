@@ -1,5 +1,5 @@
 import com.coderZsq.crm.domain.Department;
-import com.coderZsq.crm.service.IDepartmentService;
+import com.coderZsq.crm.service.DepartmentService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ import java.util.List;
 public class DepartmentTest {
 
     @Autowired
-    private IDepartmentService departmentService;
+    private DepartmentService departmentService;
 
     @Test
     public void testQuery() throws Exception {

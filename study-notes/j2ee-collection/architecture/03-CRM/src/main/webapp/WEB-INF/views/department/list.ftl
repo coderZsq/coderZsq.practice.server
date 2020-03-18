@@ -8,23 +8,6 @@
     <script>
         /*页面加载完毕*/
         $(function () {
-            //1 给删除按钮绑定点击事件
-            $(".btn-delete1").click(function () {
-                //2 获取需要删除数据的id
-                var billId= $(this).data("id");
-                //3 开始执行删除操作
-                $.messager.confirm("温馨提示","确定要删除吗?",function () {
-                    $.get("/department/delete.do",{id:billId},function (data) {
-                        if(data.success){
-                           $.messager.alert("删除成功, 1s后刷新");
-                           setTimeout(function () {
-                               window.location.reload()
-                           },1000)
-                        }
-                    })
-                })
-            })
-
             // 给编辑或者添加 增加一个点击事件
             $(".btn-input").click(function () {
                 //清空表单数据
@@ -97,7 +80,7 @@
                             </a>
 
                             <a href="javascript:;"
-                               class="btn btn-danger btn-xs btn-delete1" data-id="${entity.id}">
+                               class="btn btn-danger btn-xs btn-delete" data-id="${entity.id}">
                                 <span class="glyphicon glyphicon-trash"></span> 删除
                             </a>
                         </td>

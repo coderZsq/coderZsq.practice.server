@@ -3,7 +3,7 @@ package com.coderZsq.crm.service.impl;
 import com.coderZsq.crm.domain.Department;
 import com.coderZsq.crm.mapper.DepartmentMapper;
 import com.coderZsq.crm.query.DepartmentQueryObject;
-import com.coderZsq.crm.service.IDepartmentService;
+import com.coderZsq.crm.service.DepartmentService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class DepartmentServiceImpl implements IDepartmentService {
+public class DepartmentServiceImpl implements DepartmentService {
     @Autowired // @Resource
     private DepartmentMapper departmentMapper;
 

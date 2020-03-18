@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.coderZsq.crm.mapper.EmployeeMapper">
+
+    <!-- 方式一: 使用不同的数据结果集封装 单个查询 有关联查询, 多个查询, 不需要关联角色信息-->
+    <!-- 方式二: 使用Mybatis的延迟加载: 刚开始不会发送额外sql去查询, 只有在调用对象的方法的时候, 会发送额外sql-->
+    <!-- 方式三: 完全可以在业务处理的时候去给关联属性设置值 需要在service的业务方法手动去设置关联属性 -->
+    <resultMap type="com.coderZsq.crm.domain.Employee" id="EmployeeMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="age" column="age" jdbcType="INTEGER"/>
+        <result property="admin" column="admin" jdbcType="BOOLEAN"/>
+        <!--单个对象关联 发送额外sql查询, 会有n+1问题 推荐使用关联插件-->
+        <association property="dept" javaType="Department" columnPrefix="d_">
+            <result property="id" column="id"  />
+            <result property="name" column="name" />
+            <result property="sn" column="sn"  />
+        </association>
+        <!-- 多个对象管理 发送额外sql 但是在列表页面 不需要 -->
+        <!--<collection property="roles" column="id" select="com.coderZsq.crm.mapper.RoleMapper.queryByEmpId"/>-->
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="EmployeeMap">
+        select
+            emp.id, emp.name, emp.password, emp.email, emp.age, emp.admin, emp.dept_id,
+               dept.id d_id, dept.name d_name, dept.sn d_sn
+        from employee emp left join department dept on emp.dept_id=dept.id
+        where emp.id = #{id}
+    </select>
+
+    <!--查询所有列表数据-->
+    <select id="queryAll" resultMap="EmployeeMap">
+        select
+            emp.id, emp.name, emp.password, emp.email, emp.age, emp.admin, emp.dept_id,
+            dept.id d_id, dept.name d_name, dept.sn d_sn
+        from employee emp left join department dept on emp.dept_id=dept.id
+    </select>
+	
+    <!--查询指定条件的数据-->
+    <select id="query" resultMap="EmployeeMap">
+        select
+            emp.id, emp.name, emp.password, emp.email, emp.age, emp.admin, emp.dept_id,
+            dept.id d_id, dept.name d_name, dept.sn d_sn
+        from employee emp left join department dept on emp.dept_id=dept.id
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into employee(name, password, email, age, admin, dept_id)
+        values (#{name}, #{password}, #{email}, #{age}, #{admin}, #{dept.id})
+    </insert>
+    <insert id="insertRelation">
+        insert into employee_role(employee_id, role_id) VALUES (#{empId},#{roleId})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update employee
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="password != null and password != ''">
+                password = #{password},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+            <if test="age != null">
+                age = #{age},
+            </if>
+            <if test="admin != null">
+                admin = #{admin},
+            </if>
+            <if test="dept != null">
+                dept_id = #{dept.id},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from employee where id = #{id}
+    </delete>
+    <delete id="deleteRelation">
+        delete from employee_role where employee_id=#{empId}
+    </delete>
+
+</mapper>

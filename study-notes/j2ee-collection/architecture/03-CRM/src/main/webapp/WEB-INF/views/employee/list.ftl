@@ -107,7 +107,7 @@
                             <th>操作</th>
                         </tr>
                     <#--list,要遍历的集合 as 变量-->
-                    <#list pageResult.list as entity>
+                    <#list pageInfo.list as entity>
                         <tr>
                             <td><input type="checkbox" class="selectOne" data-id="${entity.id}"></td>
                             <#--从0开始,需要加1-->

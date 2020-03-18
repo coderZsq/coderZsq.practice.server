@@ -25,11 +25,17 @@
         <property name="dataSource" ref="dataSource"/>
         <property name="mapperLocations" value="classpath:com/coderZsq/crm/mapper/*.xml"/>
         <property name="typeAliasesPackage" value="com.coderZsq.crm.domain"/>
+        <property name="configLocation" value="classpath:mybatis-cfg.xml"/>
         <!-- 注意其他配置 -->
         <property name="plugins">
             <array>
-                <bean class="com.github.pagehelper.PageInterceptor">
-                </bean>
+                 <bean class="com.github.pagehelper.PageInterceptor">
+                     <property name="properties">
+                         <!-- 使用下面的方式配置参数, 一行配置一个 -->
+                         <value></value>
+                     </property>
+                 </bean>
+                 <!--<bean class="com.coderZsq.crm.plugin.ExamplePlugin"/>-->
             </array>
         </property>
     </bean>
