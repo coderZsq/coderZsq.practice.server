@@ -80,7 +80,7 @@
                             </a>
 
                             <a href="javascript:;"
-                               class="btn btn-danger btn-xs btn-delete" data-id="${entity.id}">
+                               class="btn btn-danger btn-xs btn-delete" data-url="/department/delete.do?id=${entity.id}">
                                 <span class="glyphicon glyphicon-trash"></span> 删除
                             </a>
                         </td>

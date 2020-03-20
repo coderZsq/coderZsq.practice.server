@@ -40,6 +40,9 @@
         insert into role(name, sn)
         values (#{name}, #{sn})
     </insert>
+    <insert id="insertRelation">
+        insert into role_permission(role_id, permission_id) VALUES (#{roleId}, #{permissionId})
+    </insert>
 
     <!--通过主键修改数据-->
     <update id="update">
@@ -58,6 +61,9 @@
     <!--通过主键删除-->
     <delete id="deleteById">
         delete from role where id = #{id}
+    </delete>
+    <delete id="deleteRelation">
+        delete from role_permission where role_id = #{roleId}
     </delete>
 
 </mapper>

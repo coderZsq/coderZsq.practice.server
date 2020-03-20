@@ -61,7 +61,7 @@
             <div class="box">
                 <!--高级查询--->
                 <div style="margin: 10px;">
-                    <form class="form-inline" id="searchForm" action="/employee/list" method="post">
+                    <form class="form-inline" id="searchForm" action="/employee/list.do" method="post">
                         <input type="hidden" name="currentPage" id="currentPage" value="1">
                         <div class="form-group">
                             <label for="keyword">关键字:</label>
@@ -80,7 +80,7 @@
                             </script>
                         </div>
                         <button id="btn_query" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span> 查询</button>
-                        <a href="/employee/input" class="btn btn-success btn_redirect" >
+                        <a href="/employee/input.do" class="btn btn-success btn_redirect" >
                             <span class="glyphicon glyphicon-plus"></span> 添加
                         </a>
                         <a href="javascript:;" class="btn btn-danger btn_batchDelete" data-url="/employee/batchDelete">
@@ -117,10 +117,10 @@
                             <td>${entity.age}</td>
                             <td>${(entity.dept.name)!}</td>
                             <td>
-                                <a href="/employee/input?id=${entity.id}" class="btn btn-info btn-xs btn-input" >
+                                <a href="/employee/input.do?id=${entity.id}" class="btn btn-info btn-xs btn-input" >
                                     <span class="glyphicon glyphicon-pencil"></span> 编辑
                                 </a>
-                                <a href="javascript:;" data-url="/employee/delete?id=${entity.id}"
+                                <a href="javascript:;" data-url="/employee/delete.do?id=${entity.id}"
                                    class="btn btn-danger btn-xs btn-delete">
                                     <span class="glyphicon glyphicon-trash"></span> 删除
                                 </a>

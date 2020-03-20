@@ -21,5 +21,10 @@
         <property name="contentType" value="text/html;charset=utf-8"></property>
         <property name="suffix" value=".ftl"></property>
     </bean>
-
+    <!-- 配置一个异常处理的bean对象 SimpleMappingExceptionResolver -->
+<!--    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">-->
+<!--        <property name="defaultErrorView" value="common/error"></property>-->
+<!--        &lt;!&ndash; request.setAttribute("ex", exceptionObj) &ndash;&gt;-->
+<!--        <property name="exceptionAttribute" value="ex"></property>-->
+<!--    </bean>-->
 </beans>

@@ -39,14 +39,14 @@ public interface RoleService {
      * @param role 实例对象
      * @return 实例对象
      */
-    Role insert(Role role);
+    Role insert(Role role, Long[] ids);
 
     /**
      * 修改数据
      * @param role 实例对象
      * @return 实例对象
      */
-    Role update(Role role);
+    Role update(Role role, Long[] ids);
 
     /**
      * 通过主键删除数据

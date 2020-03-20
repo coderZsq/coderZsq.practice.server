@@ -45,6 +45,14 @@
             emp.id, emp.name, emp.password, emp.email, emp.age, emp.admin, emp.dept_id,
             dept.id d_id, dept.name d_name, dept.sn d_sn
         from employee emp left join department dept on emp.dept_id=dept.id
+        <where>
+            <if test="keyword!=null and keyword != ''">
+                and (emp.name like concat('%', #{keyword}, '%') or emp.email like concat('%', #{keyword}, '%'))
+            </if>
+            <if test="deptId > 0">
+                and (emp.dept_id = #{deptId})
+            </if>
+        </where>
     </select>
 
     <!--新增所有列-->

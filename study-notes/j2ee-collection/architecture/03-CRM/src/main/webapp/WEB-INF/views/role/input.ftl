@@ -65,7 +65,7 @@
                             <input type="text" class="form-control" id="sn" name="sn" value="${(role.sn)!''}" placeholder="请输入角色编号">
                         </div>
                     </div>
-<#--                    <div class="form-group " id="role">
+                   <div class="form-group " id="role">
                         <label for="role" class="col-sm-2 control-label">分配权限：</label><br/>
                         <div class="row" style="margin-top: 10px">
                             <div class="col-sm-2 col-sm-offset-2">
@@ -113,7 +113,7 @@
                                 </select>
                             </div>
                         </div>
-                    </div>-->
+                    </div>
                     <div class="form-group">
                         <div class="col-sm-offset-1 col-sm-6">
                             <button id="btn-submit" type="button" class="btn btn-primary">保存</button>

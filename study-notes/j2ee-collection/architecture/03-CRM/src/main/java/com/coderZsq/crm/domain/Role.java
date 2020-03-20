@@ -1,6 +1,9 @@
 package com.coderZsq.crm.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Data;
 
 
@@ -19,4 +22,7 @@ public class Role implements Serializable {
     private String name;
     
     private String sn;
+
+    // 权限关联关系的维护
+    private List<Permission> permissions = new ArrayList<>();
 }

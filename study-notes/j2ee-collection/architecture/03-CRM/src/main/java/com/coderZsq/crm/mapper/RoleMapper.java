@@ -58,4 +58,8 @@ public interface RoleMapper {
     int deleteById(Long id);
 
     List<Role> queryByEmpId(Long empId);
+
+    void insertRelation(@Param("roleId") Long roleId, @Param("permissionId") Long permissionId);
+
+    void deleteRelation(Long roleId);
 }
