@@ -1,4 +1,4 @@
-package 二叉树.printer;
+package 树.printer;
 
 public class Strings {
 	public static String repeat(String string, int count) {

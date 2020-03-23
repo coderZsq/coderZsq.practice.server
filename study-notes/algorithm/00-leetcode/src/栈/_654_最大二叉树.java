@@ -1,6 +1,6 @@
 package 栈;
 
-import 二叉树.TreeNode;
+import 树.TreeNode;
 
 import java.util.Arrays;
 import java.util.Stack;

@@ -1,4 +1,4 @@
-package 二叉树;
+package 树;
 
 import java.util.Stack;
 

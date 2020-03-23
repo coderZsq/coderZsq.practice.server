@@ -1,8 +1,8 @@
 package 字符串;
 
-import 二叉树.TreeNode;
-import 二叉树.printer.BinaryTreeInfo;
-import 二叉树.printer.BinaryTrees;
+import 树.TreeNode;
+import 树.printer.BinaryTreeInfo;
+import 树.printer.BinaryTrees;
 
 /**
  * https://leetcode-cn.com/problems/subtree-of-another-tree/
