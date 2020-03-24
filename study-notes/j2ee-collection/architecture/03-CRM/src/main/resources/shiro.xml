@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+
+    <!--配置用户自定义数据源-->
+    <bean name="userRealm" class="com.coderZsq.crm.shiro.UserRealm">
+
+    </bean>
+
+    <bean name="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <!--把数据源realm 交给安全管理器-->
+        <property name="realm" ref="userRealm"></property>
+    </bean>
+
+    <!--ctx.getBean("shiroFilter")-->
+    <bean name="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager"></property>
+        <!--登录操作的url地址-->
+        <property name="loginUrl" value="/login.do"></property>
+        <property name="filterChainDefinitions">
+            <value>
+                /css/**=anon
+                /js/**=anon
+                /login.html=anon
+                /logout.do=logout
+                /**=crmAuthc
+            </value>
+        </property>
+    </bean>
+    <!--配置一个异步表单的filterBean对象-->
+    <bean name="crmAuthc" class="com.coderZsq.crm.shiro.CRMFormAuthenticationFilter"></bean>
+    <!--开启shiro权限注解扫描-->
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"/>
+    </bean>
+</beans>

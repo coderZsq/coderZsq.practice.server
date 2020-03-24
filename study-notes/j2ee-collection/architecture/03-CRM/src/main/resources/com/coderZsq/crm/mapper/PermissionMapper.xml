@@ -36,6 +36,13 @@
         from permission p join role_permission rp on p.id = rp.permission_id
         where rp.role_id = #{roleId}
     </select>
+    <select id="querySnByEmpId" resultType="java.lang.String">
+        select p.expression
+        from permission p
+            join role_permission rp on p.id=rp.permission_id
+            join employee_role er on er.role_id=rp.role_id
+        where er.employee_id=#{empId}
+    </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">

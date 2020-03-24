@@ -60,4 +60,6 @@ public interface PermissionMapper {
     List<String> queryExp();
 
     List<Permission> queryByRoleId(Long id);
+
+    List<String> querySnByEmpId(Long id);
 }

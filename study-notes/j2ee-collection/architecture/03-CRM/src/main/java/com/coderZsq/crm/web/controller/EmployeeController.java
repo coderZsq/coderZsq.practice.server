@@ -5,6 +5,8 @@ import com.coderZsq.crm.domain.Employee;
 import com.coderZsq.crm.service.DepartmentService;
 import com.coderZsq.crm.service.EmployeeService;
 import com.coderZsq.crm.service.RoleService;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,8 +36,8 @@ public class EmployeeController {
 
     @Autowired
     private RoleService roleService;
-	
     @RequestMapping("/list")
+    @RequiresPermissions(value = {"员工列表", "employee:query"}, logical = Logical.OR)
     public String list(Model model, EmployeeQueryObject qo){
         // 把所有的部门查询共享到页面
         model.addAttribute("depts", departmentService.queryAll());

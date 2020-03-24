@@ -60,4 +60,6 @@ public interface EmployeeMapper {
     void insertRelation(@Param("empId") Long empId, @Param("roleId") Long roleId);
 
     void deleteRelation(Long empId);
+
+    Employee queryByUsername(String username);
 }

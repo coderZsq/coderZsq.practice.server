@@ -54,6 +54,12 @@
             </if>
         </where>
     </select>
+    <select id="queryByUsername" resultType="com.coderZsq.crm.domain.Employee">
+        select
+            emp.id, emp.name, emp.password, emp.email, emp.age, emp.admin, emp.dept_id
+        from employee emp
+        where emp.name = #{username}
+    </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
