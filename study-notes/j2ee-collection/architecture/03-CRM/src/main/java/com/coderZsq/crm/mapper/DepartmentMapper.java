@@ -15,4 +15,6 @@ public interface DepartmentMapper {
     public void update(Department department);
 
     List<Department> query(DepartmentQueryObject qo);
+
+    Department queryByName(String name);
 }

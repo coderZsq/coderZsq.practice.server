@@ -5,15 +5,38 @@
        xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
+    <!--在SpringIOC中创建一个凭证匹配器-->
+    <bean name="credentialsMatcher" class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+        <!--setter属性, 调用的是对象的setter方法进行赋值操作-->
+        <property name="hashAlgorithmName" value="md5"/>
+        <property name="hashIterations" value="1"/>
+    </bean>
 
     <!--配置用户自定义数据源-->
     <bean name="userRealm" class="com.coderZsq.crm.shiro.UserRealm">
+        <!--注入md5的凭证匹配器-->
+        <property name="credentialsMatcher" ref="credentialsMatcher"/>
+    </bean>
 
+    <!--让spring容器创建一个cookie对象-->
+    <bean name="simpleCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+        <property name="name" value="testRemember"></property>
+        <property name="path" value="/"></property>
+        <property name="domain" value="localhost"></property>
+        <property name="maxAge" value="31536000"></property>
+    </bean>
+
+    <!--让spring容器创建一个记住我的管理器-->
+    <bean name="cookieRememberMeManager" class="org.apache.shiro.web.mgt.CookieRememberMeManager">
+        <property name="cookie" ref="simpleCookie"/>
     </bean>
 
     <bean name="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
         <!--把数据源realm 交给安全管理器-->
         <property name="realm" ref="userRealm"></property>
+        <property name="rememberMeManager" ref="cookieRememberMeManager"></property>
+        <!--配置缓存管理器-->
+        <property name="cacheManager" ref="cacheManager"/>
     </bean>
 
     <!--ctx.getBean("shiroFilter")-->
@@ -27,6 +50,7 @@
                 /js/**=anon
                 /login.html=anon
                 /logout.do=logout
+                /department/list.do=user
                 /**=crmAuthc
             </value>
         </property>
@@ -37,4 +61,11 @@
     <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
         <property name="securityManager" ref="securityManager"/>
     </bean>
+    
+    <!--缓存管理器-->
+    <bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+        <!--设置配置文件-->
+        <property name="cacheManagerConfigFile" value="classpath:shiro-ehcache.xml"/>
+    </bean>
+    <!--缓存数据的一致性-->
 </beans>

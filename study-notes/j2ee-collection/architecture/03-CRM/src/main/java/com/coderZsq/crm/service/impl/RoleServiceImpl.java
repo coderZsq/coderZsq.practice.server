@@ -113,4 +113,14 @@ public class RoleServiceImpl implements RoleService {
         this.roleMapper.deleteRelation(id);
         return this.roleMapper.deleteById(id) > 0;
     }
+
+    @Override
+    public List<Role> queryByEmpId(Long empId) {
+        return roleMapper.queryByEmpId(empId);
+    }
+
+    @Override
+    public Long queryBySn(String sn) {
+        return roleMapper.queryBySn(sn);
+    }
 }

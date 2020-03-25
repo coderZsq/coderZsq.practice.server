@@ -12,6 +12,10 @@
             </if>
         </where>
     </select>
+    <select id="queryByName" resultType="com.coderZsq.crm.domain.Department">
+        select id, name, sn from department
+        where name = #{name}
+    </select>
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
         insert into department(name,sn) values (#{name},#{sn})
     </insert>

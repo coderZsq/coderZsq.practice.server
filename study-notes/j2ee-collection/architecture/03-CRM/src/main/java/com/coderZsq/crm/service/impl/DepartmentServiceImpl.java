@@ -52,4 +52,9 @@ public class DepartmentServiceImpl implements DepartmentService {
         PageInfo page = new PageInfo(list);
         return page;
     }
+
+    @Override
+    public Department queryByName(String name) {
+        return departmentMapper.queryByName(name);
+    }
 }

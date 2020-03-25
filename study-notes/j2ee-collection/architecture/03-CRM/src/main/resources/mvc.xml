@@ -23,9 +23,13 @@
         <property name="suffix" value=".ftl"></property>
     </bean>
     <!-- 配置一个异常处理的bean对象 SimpleMappingExceptionResolver -->
-<!--    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">-->
-<!--        <property name="defaultErrorView" value="common/error"></property>-->
-<!--        &lt;!&ndash; request.setAttribute("ex", exceptionObj) &ndash;&gt;-->
-<!--        <property name="exceptionAttribute" value="ex"></property>-->
-<!--    </bean>-->
+    <!--    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">-->
+    <!--        <property name="defaultErrorView" value="common/error"></property>-->
+    <!--        &lt;!&ndash; request.setAttribute("ex", exceptionObj) &ndash;&gt;-->
+    <!--        <property name="exceptionAttribute" value="ex"></property>-->
+    <!--    </bean>-->
+    <!--配置文件上传视图解析器-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="#{1024*1024*10}"/>
+    </bean>
 </beans>

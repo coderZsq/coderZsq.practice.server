@@ -39,6 +39,11 @@
         from role  r join employee_role er on r.id=er.role_id
         where er.employee_id=#{empId}
     </select>
+    <select id="queryBySn" resultType="java.lang.Long">
+        select r.id
+        from role r
+        where r.sn = #{sn}
+    </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">

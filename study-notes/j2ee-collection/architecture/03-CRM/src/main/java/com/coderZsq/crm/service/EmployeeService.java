@@ -55,4 +55,5 @@ public interface EmployeeService {
      */
     boolean deleteById(Long id);
 
+    void batchDelete(Long[] ids);
 }

@@ -18,4 +18,6 @@ public interface DepartmentService {
     void update(Department department);
 
     PageInfo query(DepartmentQueryObject qo);
+
+    Department queryByName(String name);
 }

@@ -55,4 +55,7 @@ public interface RoleService {
      */
     boolean deleteById(Long id);
 
+    List<Role> queryByEmpId(Long empId);
+
+    Long queryBySn(String sn);
 }

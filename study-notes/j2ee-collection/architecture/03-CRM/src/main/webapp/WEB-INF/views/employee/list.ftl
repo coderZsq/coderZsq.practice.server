@@ -27,8 +27,16 @@
                     var ids = $.map($('.selectOne:checked'),function (item) {
                         return $(item).data("id");
                     });
-                    $.get("/employee/batchDelete",{ ids : ids } ,function (data) {
-                        handleResult(data)
+                    $.get("/employee/batchDelete.do",{ ids : ids } ,function (data) {
+                        if (data.success) {
+                            //删除成功
+                            $.messager.confirm("温馨提示", "删除成功", function () {
+                                window.location.reload();
+                            })
+                        } else {
+                            //删除失败
+                            $.messager.popup(data.msg);
+                        }
                     })
                 })
             });
@@ -39,7 +47,15 @@
 
             $(".btn_save").click(function () {
                $("#importForm").ajaxSubmit(function (data) {
-                   handleResult(data);
+                   if (data.success) {
+                       //导入成功
+                       $.messager.confirm("温馨提示", "删除成功", function () {
+                           window.location.reload();
+                       })
+                   } else {
+                       //导入失败
+                       $.messager.popup(data.msg);
+                   }
                })
             })
         })
@@ -86,7 +102,7 @@
                         <a href="javascript:;" class="btn btn-danger btn_batchDelete" data-url="/employee/batchDelete">
                             <span class="glyphicon glyphicon-trash"></span> 批量删除
                         </a>
-                        <a href="/employee/exportXls" target="_blank" class="btn btn-warning">
+                        <a href="/employee/exportXls.do" target="_blank" class="btn btn-warning">
                             <span class="glyphicon glyphicon-export"></span> 导出
                         </a>
                         <a href="javascript:;" class="btn btn-warning btn_import">
@@ -147,7 +163,8 @@
                     <h4 class="modal-title">员工导入</h4>
                 </div>
                 <div class="modal-body">
-                    <form class="form-horizontal" action="/employee/importXls" method="post" id="importForm" enctype="multipart/form-data">
+                    <form class="form-horizontal" action="/employee/importXls.do"
+                          method="post" id="importForm" enctype="multipart/form-data">
                         <div class="form-group">
                             <div class="col-sm-6">
                                 <input type="file" name="file" accept="application/vnd.ms-excel"><br/>
@@ -155,7 +172,6 @@
                                     <span class="glyphicon glyphicon-download-alt"></span> 下载模板
                                 </a>
                             </div>
-
                         </div>
                     </form>
                 </div>

@@ -16,6 +16,7 @@ import java.io.IOException;
 @Slf4j
 public class UserController {
     // 在登录失败的时候, return true --> 放行 ---> 目标方法
+    // login.xxx
     @RequestMapping("login")
     public String login(HttpServletRequest request, HttpServletResponse response) {
         Object errorMsg = request.getAttribute("shiroLoginFailure"); // 异常的名字

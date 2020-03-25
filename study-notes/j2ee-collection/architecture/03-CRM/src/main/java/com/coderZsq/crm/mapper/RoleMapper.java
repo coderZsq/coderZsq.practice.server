@@ -64,4 +64,6 @@ public interface RoleMapper {
     void deleteRelation(Long roleId);
 
     List<String> querySnByEmpId(Long id);
+
+    Long queryBySn(String sn);
 }
