@@ -60,6 +60,19 @@
         from employee emp
         where emp.name = #{username}
     </select>
+    <select id="querySellers" resultType="com.coderZsq.crm.domain.Employee">
+        select
+            emp.id,
+            emp.name
+        from
+            employee emp
+                join employee_role er on emp.id=er.employee_id
+                join role r on er.role_id=r.id
+        where r.sn in 
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">

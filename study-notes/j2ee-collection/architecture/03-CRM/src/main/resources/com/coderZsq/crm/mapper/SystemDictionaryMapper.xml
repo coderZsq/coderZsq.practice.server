@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.coderZsq.crm.mapper.SystemDictionaryMapper">
+
+    <resultMap type="com.coderZsq.crm.domain.SystemDictionary" id="SystemDictionaryMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="sn" column="sn" jdbcType="VARCHAR"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="intro" column="intro" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="SystemDictionaryMap">
+        select
+          id, sn, title, intro
+        from systemdictionary
+        where id = #{id}
+    </select>
+
+    <!--查询所有列表数据-->
+    <select id="queryAll" resultMap="SystemDictionaryMap">
+        select
+          id, sn, title, intro        from systemdictionary
+    </select>
+	
+    <!--查询指定条件的数据-->
+    <select id="query" resultMap="SystemDictionaryMap">
+        select
+          id, sn, title, intro        from systemdictionary		
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into systemdictionary(sn, title, intro)
+        values (#{sn}, #{title}, #{intro})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update systemdictionary
+        <set>
+            <if test="sn != null and sn != ''">
+                sn = #{sn},
+            </if>
+            <if test="title != null and title != ''">
+                title = #{title},
+            </if>
+            <if test="intro != null and intro != ''">
+                intro = #{intro},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from systemdictionary where id = #{id}
+    </delete>
+
+</mapper>

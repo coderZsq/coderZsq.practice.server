@@ -28,6 +28,7 @@
 
     <!--让spring容器创建一个记住我的管理器-->
     <bean name="cookieRememberMeManager" class="org.apache.shiro.web.mgt.CookieRememberMeManager">
+        <property name="cipherKey" value="#{T(org.apache.shiro.codec.Base64).decode('6ZmI6I2j5Y+R5aSn5ZOlAA==')}"/>
         <property name="cookie" ref="simpleCookie"/>
     </bean>
 

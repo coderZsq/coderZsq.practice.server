@@ -62,4 +62,6 @@ public interface EmployeeMapper {
     void deleteRelation(Long empId);
 
     Employee queryByUsername(String username);
+
+    List<Employee> querySellers(List<String> roleList);
 }

@@ -12,6 +12,7 @@ import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -127,5 +128,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         for (Long id : ids) {
             deleteById(id);
         }
+    }
+
+    @Override
+    public List<Employee> querySellers() {
+        List<String> roleList = new ArrayList<>();
+        roleList.add("Market_Manager");
+        roleList.add("Market");
+        return employeeMapper.querySellers(roleList);
     }
 }
