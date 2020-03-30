@@ -20,8 +20,10 @@ public class _21_合并两个有序链表 {
             return l2;
         }
     }
+}
 
-    public ListNode mergeTwoLists2(ListNode l1, ListNode l2) {
+class _21_合并两个有序链表2 {
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
         if (l1 == null) return l2;
         if (l2 == null) return l1;
 
@@ -45,8 +47,10 @@ public class _21_合并两个有序链表 {
         }
         return head.next;
     }
+}
 
-    public ListNode mergeTwoLists1(ListNode l1, ListNode l2) {
+class _21_合并两个有序链表3 {
+        public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
         if (l1 == null) return l2;
         if (l2 == null) return l1;
 

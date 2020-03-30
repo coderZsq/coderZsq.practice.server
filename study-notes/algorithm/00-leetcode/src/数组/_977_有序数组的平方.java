@@ -24,7 +24,10 @@ public class _977_有序数组的平方 {
         return B;
     }
 
-    public int[] sortedSquares1(int[] A) {
+}
+
+class _977_有序数组的平方2 {
+    public int[] sortedSquares(int[] A) {
         if (A.length == 0) return new int[]{};
         int p = 0;
         for (int i = 0; i < A.length; i++) {

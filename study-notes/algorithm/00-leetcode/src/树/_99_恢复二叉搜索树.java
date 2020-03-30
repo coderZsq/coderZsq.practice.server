@@ -59,11 +59,37 @@ public class _99_恢复二叉搜索树 {
         first.val = second.val;
         second.val = tmp;
     }
+}
 
+class _99_恢复二叉搜索树2 {
+    /**
+     * 上一次遍历过的节点
+     */
+    private TreeNode prev;
+    /**
+     * 第一个错误节点
+     */
+    private TreeNode first;
+    /**
+     * 第二个错误节点
+     */
+    private TreeNode second;
+
+    private void find(TreeNode node) {
+        // 出现了逆序对
+        if (prev != null && prev.val > node.val) {
+            // 第2个错误节点: 最后一个逆序对中较小的那个节点
+            second = node;
+            // 第1个错误节点: 第一个逆序对中较大的那个节点
+            if (first != null) return;
+            first = prev;
+        }
+        prev = node;
+    }
     /**
      * @param root 是一颗错误的二叉搜索树 (有2个节点被错误交换)
      */
-    public void recoverTree2(TreeNode root) {
+    public void recoverTree(TreeNode root) {
         findWrongNodes(root);
         // 交换2个错误节点的值
         int tmp = first.val;

@@ -71,10 +71,13 @@ public class _347_前K个高频元素 {
         return begin;
     }
 
+}
+
+class _347_前K个高频元素2 {
     /**
      * 桶排序
      */
-    public List<Integer> topKFrequent4(int[] nums, int k) {
+    public List<Integer> topKFrequent(int[] nums, int k) {
         Map<Integer, Integer> counts = new HashMap<>();
         for (int num : nums) { // O(n)
             counts.put(num, counts.getOrDefault(num, 0) + 1);
@@ -100,11 +103,13 @@ public class _347_前K个高频元素 {
         }
         return result;
     }
+}
 
+class _347_前K个高频元素3 {
     /**
      * 优先级队列
      */
-    public List<Integer> topKFrequent3(int[] nums, int k) {
+    public List<Integer> topKFrequent(int[] nums, int k) {
         Map<Integer, Integer> counts = new HashMap<>();
         for (int num : nums) { // O(n)
             counts.put(num, counts.getOrDefault(num, 0) + 1);
@@ -130,8 +135,10 @@ public class _347_前K个高频元素 {
         }
         return result;
     }
+}
 
-    public List<Integer> topKFrequent2(int[] nums, int k) {
+class _347_前K个高频元素4 {
+    public List<Integer> topKFrequent(int[] nums, int k) {
         Map<Integer, Integer> counts = new HashMap<>();
         for (int num : nums) { // O(n)
             counts.put(num, counts.getOrDefault(num, 0) + 1);
@@ -158,11 +165,13 @@ public class _347_前K个高频元素 {
         }
         return result;
     }
+}
 
+class _347_前K个高频元素5 {
     /**
      * 对entries全排序
      */
-    public List<Integer> topKFrequent1(int[] nums, int k) {
+    public List<Integer> topKFrequent(int[] nums, int k) {
         // 利用Map存储每个整数出现的次数
         Map<Integer, Integer> counts = new HashMap<>();
         // nums = [1, 1, 1, 2, 2, 3]

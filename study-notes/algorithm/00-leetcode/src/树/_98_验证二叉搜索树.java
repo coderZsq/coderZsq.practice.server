@@ -14,7 +14,6 @@ public class _98_验证二叉搜索树 {
     private Queue<TreeNode> nodes = new LinkedList<>();
     private Queue<Integer> mins = new LinkedList<>();
     private Queue<Integer> maxes = new LinkedList<>();
-    private Integer last;
 
     private void offer(TreeNode node, Integer min, Integer max) {
         if (node == null) return;
@@ -42,6 +41,9 @@ public class _98_验证二叉搜索树 {
         return true;
     }
 
+}
+
+class _98_验证二叉搜索树2 {
     public boolean isValidBST1(TreeNode root) {
         return isValidBST(root, null, null);
     }
@@ -55,6 +57,8 @@ public class _98_验证二叉搜索树 {
         return true;
     }
 
+}
+class _98_验证二叉搜索树3 {
     public boolean isValidBST2(TreeNode root) {
         if (root == null) return true;
         Stack<TreeNode> stack = new Stack<>();
@@ -74,6 +78,10 @@ public class _98_验证二叉搜索树 {
         }
         return true;
     }
+}
+
+class _98_验证二叉搜索树4 {
+    private Integer last;
 
     public boolean isValidBST3(TreeNode root) {
         if (root == null) return true;

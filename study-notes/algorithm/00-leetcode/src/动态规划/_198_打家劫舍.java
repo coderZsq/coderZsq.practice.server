@@ -23,43 +23,52 @@ public class _198_打家劫舍 {
         }
         return second;
     }
+}
 
-    public int rob1(int[] nums) {
+class _198_打家劫舍2 {
+    public int rob(int[] nums) {
         if (nums == null || nums.length == 0) return 0;
-        return rob1(nums, 0);
+        return rob(nums, 0);
     }
 
     /**
      * 从第begin号房子开始偷出来的最大金额(从前往后偷)
      */
-    private int rob1(int[] nums, int begin) {
+    private int rob(int[] nums, int begin) {
         if (begin == nums.length - 1) return nums[begin];
         if (begin == nums.length - 2) return Math.max(nums[begin], nums[begin + 1]);
-        int robCur = nums[begin] + rob1(nums, begin + 2);
-        int robNext = rob1(nums, begin + 1);
+        int robCur = nums[begin] + rob(nums, begin + 2);
+        int robNext = rob(nums, begin + 1);
         return Math.max(robCur, robNext);
     }
+
+}
+
+class _198_打家劫舍3 {
 
     // 假设当数据规模为n时, rob函数消耗的时间 T(n) = T(n - 2) + T(n - 1) + O(1)
     // 因此T(n) = O(2^n)
 
-    public int rob2(int[] nums) {
+    public int rob(int[] nums) {
         if (nums == null || nums.length == 0) return 0;
-        return rob2(nums, nums.length - 1);
+        return rob(nums, nums.length - 1);
     }
 
     /**
      * 从第begin号房子开始偷出来的最大金额(从后往前偷)
      */
-    private int rob2(int[] nums, int begin) {
+    private int rob(int[] nums, int begin) {
         if (begin == 0) return nums[0];
         if (begin == 1) return Math.max(nums[0], nums[1]);
-        int robCur = nums[begin] + rob2(nums, begin - 2); // T(n - 2)
-        int robNext = rob2(nums, begin - 1); // T(n - 1)
+        int robCur = nums[begin] + rob(nums, begin - 2); // T(n - 2)
+        int robNext = rob(nums, begin - 1); // T(n - 1)
         return Math.max(robCur, robNext);
     }
 
-    public int rob3(int[] nums) {
+}
+
+class _198_打家劫舍4 {
+    public int rob(int[] nums) {
         if (nums == null || nums.length == 0) return 0;
         if (nums.length == 1) return nums[0];
 
@@ -74,7 +83,10 @@ public class _198_打家劫舍 {
 //        array[i] 是从第i号房子开始往前偷出来的最大金额
     }
 
-    public int rob4(int[] nums) {
+}
+
+class _198_打家劫舍5 {
+    public int rob(int[] nums) {
         if (nums == null || nums.length == 0) return 0;
         if (nums.length == 1) return nums[0];
 

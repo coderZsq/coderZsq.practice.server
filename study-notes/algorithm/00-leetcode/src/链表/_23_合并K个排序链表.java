@@ -32,10 +32,36 @@ public class _23_合并K个排序链表 {
         return lists[0];
     }
 
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        if (l1 == null) return l2;
+        if (l2 == null) return l1;
+
+        head.next = null;
+        ListNode cur = head;
+        while (l1 != null && l2 != null) {
+            if (l1.val <= l2.val) {
+                cur = cur.next = l1;
+                l1 = l1.next;
+            } else {
+                cur = cur.next = l2;
+                l2 = l2.next;
+            }
+        }
+
+        if (l1 == null) {
+            cur.next = l2;
+        } else if (l2 == null) {
+            cur.next = l1;
+        }
+        return head.next;
+    }
+}
+
+class _23_合并K个排序链表2 {
     /**
      * 思路4 - 优先级队列 (小顶堆), O(nlogk), 空间复杂度: O(k)
      */
-    public ListNode mergeKLists4(ListNode[] lists) {
+    public ListNode mergeKLists(ListNode[] lists) {
         if (lists == null || lists.length == 0) return null;
 
         ListNode head = new ListNode(0);
@@ -62,11 +88,16 @@ public class _23_合并K个排序链表 {
 
         return head.next;
     }
+}
+
+class _23_合并K个排序链表3 {
+    // 虚拟头节点 (dummy head)
+    private ListNode head = new ListNode(0);
 
     /**
      * 思路3 - 逐一两两合并, O(kn)
      */
-    public ListNode mergeKLists3(ListNode[] lists) {
+    public ListNode mergeKLists(ListNode[] lists) {
         if (lists == null || lists.length == 0) return null;
 
         // k条链表, 总共n个节点, 每一条链表平均 n/k 个节点
@@ -101,7 +132,9 @@ public class _23_合并K个排序链表 {
         }
         return head.next;
     }
+}
 
+class _23_合并K个排序链表4 {
     // 10条链表
     // 每条链表有1W个节点
     // k == 10
@@ -110,7 +143,7 @@ public class _23_合并K个排序链表 {
     /**
      * 思路2 - 逐一比较, O(kn)
      */
-    public ListNode mergeKLists2(ListNode[] lists) {
+    public ListNode mergeKLists(ListNode[] lists) {
         if (lists == null || lists.length == 0) return null;
         ListNode head = new ListNode(0);
         ListNode cur = head;
@@ -133,11 +166,13 @@ public class _23_合并K个排序链表 {
 
         return head.next;
     }
+}
 
+class _23_合并K个排序链表5 {
     /**
      * 思路1 - 最笨的解法, O(nlogn), 空间复杂度: O(n)
      */
-    public ListNode mergeKLists1(ListNode[] lists) {
+    public ListNode mergeKLists(ListNode[] lists) {
         if (lists == null || lists.length == 0) return null;
 
         // 将所有节点添加到数组中

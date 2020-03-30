@@ -58,11 +58,13 @@ public class _5_最长回文子串 {
         int begin = (idx - maxLen) >> 1;
         return new String(oldCs, begin, maxLen);
     }
+}
 
+class _5_最长回文子串2 {
     /**
      * 扩展中心法2
      */
-    public String longestPalindrome2(String s) {
+    public String longestPalindrome(String s) {
         if (s == null) return null;
         char[] cs = s.toCharArray();
         if (cs.length <= 1) return s;
@@ -93,11 +95,13 @@ public class _5_最长回文子串 {
         }
         return new String(cs, begin, maxLen);
     }
+}
 
+class _5_最长回文子串3 {
     /**
      * 扩展中心法
      */
-    public String longestPalindrome3(String s) {
+    public String longestPalindrome(String s) {
         if (s == null) return null;
         char[] cs = s.toCharArray();
         if (cs.length <= 1) return s;
@@ -135,11 +139,13 @@ public class _5_最长回文子串 {
         }
         return r - l - 1;
     }
+}
 
+class _5_最长回文子串4 {
     /**
      * 动态规划
      */
-    public String longestPalindrome4(String s) {
+    public String longestPalindrome(String s) {
         if (s == null) return null;
         char[] cs = s.toCharArray();
         if (cs.length <= 1) return s;

@@ -37,7 +37,9 @@ public class _239_滑动窗口最大值 {
         }
         return maxes;
     }
+}
 
+class _239_滑动窗口最大值2 {
     public int[] maxSlidingWindow1(int[] nums, int k) {
         if (nums == null || nums.length == 0 || k < 1) return new int[0];
         if (k == 1) return nums;

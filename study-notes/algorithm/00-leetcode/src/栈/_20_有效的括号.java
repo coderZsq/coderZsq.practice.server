@@ -35,8 +35,10 @@ public class _20_有效的括号 {
         }
         return stack.isEmpty();
     }
+}
 
-    public boolean isValid1(String s) {
+class _20_有效的括号2 {
+    public boolean isValid(String s) {
         Stack<Character> stack = new Stack<>();
 
         int len = s.length();
@@ -56,7 +58,10 @@ public class _20_有效的括号 {
         return stack.isEmpty();
     }
 
-    public boolean isValid2(String s) {
+}
+
+class _20_有效的括号3 {
+    public boolean isValid(String s) {
         while (s.contains("{}")
                 || s.contains("[]")
                 || s.contains("()")) {

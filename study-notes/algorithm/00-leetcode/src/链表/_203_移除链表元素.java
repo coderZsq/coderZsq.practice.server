@@ -22,8 +22,10 @@ public class _203_移除链表元素 {
         newTail.next = null;
         return newHead.next;
     }
+}
 
-    public ListNode removeElements1(ListNode head, int val) {
+class _203_移除链表元素2 {
+    public ListNode removeElements(ListNode head, int val) {
         if (head == null) return null;
         // 新链表的头结点
         ListNode newHead = null;
@@ -50,8 +52,10 @@ public class _203_移除链表元素 {
         }
         return newHead;
     }
+}
 
-    public ListNode removeElements2(ListNode head, int val) {
+class _203_移除链表元素3 {
+    public ListNode removeElements(ListNode head, int val) {
         ListNode virtualHead = new ListNode(-1);
         virtualHead.next = head;
         ListNode current = virtualHead;

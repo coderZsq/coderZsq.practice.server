@@ -8,7 +8,7 @@ import java.util.Map;
  *
  * @author zhushuangquan
  */
-class _3_无重复字符的最长子串 {
+public class _3_无重复字符的最长子串 {
     public int lengthOfLongestSubstring(String s) {
         if (s == null) return 0;
         char[] chars = s.toCharArray();
@@ -36,8 +36,10 @@ class _3_无重复字符的最长子串 {
         }
         return max;
     }
+}
 
-    public int lengthOfLongestSubstring2(String s) {
+class _3_无重复字符的最长子串2 {
+    public int lengthOfLongestSubstring(String s) {
         if (s == null) return 0;
         char[] chars = s.toCharArray();
         if (chars.length == 0) return 0;

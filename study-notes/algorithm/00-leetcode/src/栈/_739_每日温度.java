@@ -27,8 +27,10 @@ public class _739_每日温度 {
         }
         return values;
     }
+}
 
-    public int[] dailyTemperatures1(int[] T) {
+class _739_每日温度2 {
+    public int[] dailyTemperatures(int[] T) {
         if (T == null || T.length == 0) return null;
         int[] values = new int[T.length];
         for (int i = T.length - 2; i >= 0; i--) {
@@ -50,8 +52,10 @@ public class _739_每日温度 {
         }
         return values;
     }
+}
 
-    public int[] dailyTemperatures2(int[] T) {
+class _739_每日温度3 {
+    public int[] dailyTemperatures(int[] T) {
         if (T == null || T.length == 0) return null;
         int[] result = new int[T.length];
         Stack<Integer> stack = new Stack<>();

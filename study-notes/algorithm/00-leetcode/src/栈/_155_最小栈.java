@@ -43,14 +43,16 @@ public class _155_最小栈 {
             }
         }
     }
+}
 
-    class MinStack1 {
+class _155_最小栈2 {
+    class MinStack {
         /* 用来存放正常数据 */
         private Stack<Integer> stack;
         /* 用来存放最小数据 */
         private Stack<Integer> minStack;
 
-        public MinStack1() {
+        public MinStack() {
             stack = new Stack<>();
             minStack = new Stack<>();
         }

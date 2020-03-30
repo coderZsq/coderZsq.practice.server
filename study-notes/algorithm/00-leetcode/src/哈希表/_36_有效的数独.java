@@ -42,7 +42,10 @@ public class _36_有效的数独 {
         return true;
     }
 
-    public boolean isValidSudoku2(char[][] board) {
+}
+
+class _36_有效的数独2 {
+    public boolean isValidSudoku(char[][] board) {
         boolean[][] rows = new boolean[9][9];
         boolean[][] cols = new boolean[9][9];
         boolean[][] boxes = new boolean[9][9];
@@ -65,7 +68,10 @@ public class _36_有效的数独 {
         return true;
     }
 
-    public boolean isValidSudoku1(char[][] board) {
+}
+
+class _36_有效的数独3 {
+    public boolean isValidSudoku(char[][] board) {
         Set<Character>[] rows = new Set[9];
         Set<Character>[] cols = new Set[9];
         Set<Character>[] boxes = new Set[9];

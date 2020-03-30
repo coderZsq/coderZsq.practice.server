@@ -50,6 +50,9 @@ public class _150_逆波兰表达式求值 {
         return stack.pop();
     }
 
+}
+
+class _150_逆波兰表达式求值2 {
     private boolean isOperator(String token) {
         return "+-*/".contains(token);
     }
@@ -67,7 +70,7 @@ public class _150_逆波兰表达式求值 {
         }
     }
 
-    public int evalRPN1(String[] tokens) {
+    public int evalRPN(String[] tokens) {
         Stack<Integer> stack = new Stack<Integer>();
         for (String token : tokens) {
             stack.push(isOperator(token)
@@ -77,7 +80,27 @@ public class _150_逆波兰表达式求值 {
         return stack.pop();
     }
 
-    public int evalRPN2(String[] tokens) {
+}
+
+class _150_逆波兰表达式求值3 {
+    private boolean isOperator(String token) {
+        return "+-*/".contains(token);
+    }
+
+    private int calculate(Integer right, Integer left, String operator) {
+        switch (operator) {
+            case "+":
+                return left + right;
+            case "-":
+                return left - right;
+            case "*":
+                return left * right;
+            default:
+                return left / right;
+        }
+    }
+
+    public int evalRPN(String[] tokens) {
         Stack<Integer> stack = new Stack<Integer>();
         for (String token : tokens) {
             if (isOperator(token)) {
@@ -90,8 +113,27 @@ public class _150_逆波兰表达式求值 {
         }
         return stack.pop();
     }
+}
 
-    public int evalRPN3(String[] tokens) {
+class _150_逆波兰表达式求值4 {
+    private boolean isOperator(String token) {
+        return "+-*/".contains(token);
+    }
+
+    private int calculate(Integer right, Integer left, String operator) {
+        switch (operator) {
+            case "+":
+                return left + right;
+            case "-":
+                return left - right;
+            case "*":
+                return left * right;
+            default:
+                return left / right;
+        }
+    }
+
+    public int evalRPN(String[] tokens) {
         Stack<Integer> stack = new Stack<Integer>();
         for (String token : tokens) {
             if (isOperator(token)) {

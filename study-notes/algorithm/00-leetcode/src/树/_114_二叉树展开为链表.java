@@ -20,8 +20,10 @@ public class _114_二叉树展开为链表 {
         }
         prev = root;
     }
+}
 
-    public void flatten1(TreeNode root) {
+class _114_二叉树展开为链表2 {
+    public void flatten(TreeNode root) {
         if (root == null) return;
 
         if (root.left != null) {
@@ -39,10 +41,12 @@ public class _114_二叉树展开为链表 {
             rightMost.right = oldRight;
         }
 
-        flatten1(root.right);
+        flatten(root.right);
     }
+}
 
-    public void flatten2(TreeNode root) {
+class _114_二叉树展开为链表3 {
+    public void flatten(TreeNode root) {
         while (root != null) {
             if (root.left != null) {
                 // 保留之前的right
@@ -61,8 +65,10 @@ public class _114_二叉树展开为链表 {
             root = root.right;
         }
     }
+}
 
-    public void flatten3(TreeNode root) {
+class _114_二叉树展开为链表4 {
+    public void flatten(TreeNode root) {
         if (root == null) return;
 
         Stack<TreeNode> stack = new Stack<>();
