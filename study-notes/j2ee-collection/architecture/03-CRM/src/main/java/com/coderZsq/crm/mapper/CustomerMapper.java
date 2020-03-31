@@ -57,4 +57,5 @@ public interface CustomerMapper {
      */
     int deleteById(Long id);
 
+    void updateStatus(@Param("customerId") Long customerId, @Param("status") Integer status);
 }

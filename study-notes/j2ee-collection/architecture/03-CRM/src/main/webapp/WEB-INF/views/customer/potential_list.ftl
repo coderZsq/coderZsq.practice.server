@@ -212,11 +212,11 @@
                                <a class="btn btn-primary btn-xs traceBtn"  data-json='${entity.jsonString}'>
                                    <span class="glyphicon glyphicon-pencil"></span>跟进
                                </a>
-                               <@shiro.hasRole name="Market_Manager">
+                              <#-- <@shiro.hasRole name="Market_Manager">-->
                                <a class="btn btn-warning btn-xs transferBtn"  data-json='${entity.jsonString}'>
                                    <span class="glyphicon glyphicon-pencil"></span>移交
                                </a>
-                               </@shiro.hasRole>
+                              <#-- </@shiro.hasRole>-->
                                <a class="btn btn-danger btn-xs statusBtn"  data-json='${entity.jsonString}'>
                                    <span class="glyphicon glyphicon-pencil"></span>修改状态
                                </a>

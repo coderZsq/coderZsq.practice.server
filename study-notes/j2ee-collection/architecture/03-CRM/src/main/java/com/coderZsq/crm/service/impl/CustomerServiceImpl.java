@@ -1,14 +1,18 @@
 package com.coderZsq.crm.service.impl;
 
 import com.coderZsq.crm.domain.Customer;
+import com.coderZsq.crm.domain.Employee;
 import com.coderZsq.crm.mapper.CustomerMapper;
 import com.coderZsq.crm.service.CustomerService;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.stereotype.Service;
 import com.coderZsq.crm.query.QueryObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -61,6 +65,9 @@ public class CustomerServiceImpl implements CustomerService {
      */
     @Override
     public Customer insert(Customer customer) {
+        Employee employee = (Employee) SecurityUtils.getSubject().getPrincipal();
+        customer.setInputUser(employee);
+        customer.setInputTime(new Date());
         this.customerMapper.insert(customer);
         return customer;
     }
@@ -86,5 +93,10 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public boolean deleteById(Long id) {
         return this.customerMapper.deleteById(id) > 0;
+    }
+
+    @Override
+    public void updateStatus(Long customerId, Integer status) {
+        customerMapper.updateStatus(customerId, status);
     }
 }

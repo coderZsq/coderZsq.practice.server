@@ -20,7 +20,7 @@
                 if (data) {
                     $("#transferForm input[name='customer.id']").val(data.id);
                     $("#transferForm input[name='customer.name']").val(data.name);
-                    $("#transferForm input[name='oldSeller.id']").val(data.seller);
+                    $("#transferForm input[name='oldSeller.id']").val(data.sellerId);
                     $("#transferForm input[name='oldSeller.name']").val(data.sellerName);
                 }
             })
@@ -49,7 +49,7 @@
                 if (data) {
                     $("#absorbForm input[name='customer.id']").val(data.id);
                     $("#absorbForm input[name='customer.name']").val(data.name);
-                    $("#absorbForm input[name='oldSeller.id']").val(data.seller);
+                    $("#absorbForm input[name='oldSeller.id']").val(data.sellerId);
                     $("#absorbForm input[name='oldSeller.name']").val(data.sellerName);
 
                 }
@@ -86,22 +86,25 @@
                         <input type="hidden" name="currentPage" id="currentPage" value="1">
                         <div class="form-group">
                             <label for="keyword">关键字:</label>
-                            <input type="text" class="form-control" id="keyword" name="keyword" value="${(qo.keyword)!''}" placeholder="请输入姓名/电话">
+                            <input type="text" class="form-control" id="keyword" name="keyword"
+                                   value="${(qo.keyword)!''}" placeholder="请输入姓名/电话">
                         </div>
                         <div class="form-group">
                             <label for="seller">销售员:</label>
                             <select class="form-control" id="seller" name="sellerId">
                                 <option value="-1">全部</option>
 
-                    <#list sellers as e>
-                        <option value="${e.id}">${e.name}</option>
-                    </#list>
+                                <#list sellers as e>
+                                    <option value="${e.id}">${e.name}</option>
+                                </#list>
                             </select>
                             <script>
                                 $("#seller option[value='${qo.sellerId}']").prop("selected", true);
                             </script>
                         </div>
-                        <button id="btn_query" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span> 查询</button>
+                        <button id="btn_query" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span>
+                            查询
+                        </button>
                     </form>
                 </div>
                 <table class="table table-striped table-hover">
@@ -132,11 +135,9 @@
                                 <a class="btn btn-primary btn-xs absorbBtn" data-json='${entity.jsonString}'>
                                     <span class="glyphicon glyphicon-pencil"></span> 吸纳
                                 </a>
-                                <@shiro.hasRole name="Market_Manager">
-                                    <a class="btn btn-warning btn-xs transferBtn" data-json='${entity.jsonString}'>
-                                        <span class="glyphicon glyphicon-pencil"></span>移交
-                                    </a>
-                                </@shiro.hasRole>
+                                <a class="btn btn-warning btn-xs transferBtn" data-json='${entity.jsonString}'>
+                                    <span class="glyphicon glyphicon-pencil"></span>移交
+                                </a>
                             </td>
                         </tr>
                     </#list>
@@ -153,11 +154,13 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
                 <h4 class="modal-title">移交</h4>
             </div>
             <div class="modal-body">
-                <form class="form-horizontal" action="/customerTransfer/saveOrUpdate.do" method="post" id="transferForm" style="margin: -3px 118px">
+                <form class="form-horizontal" action="/customerTransfer/saveOrUpdate.do" method="post" id="transferForm"
+                      style="margin: -3px 118px">
                     <input type="hidden" name="id" id="customerTransferId"/>
                     <div class="form-group">
                         <label for="name" class="col-sm-4 control-label">客户姓名：</label>
@@ -178,9 +181,9 @@
                         <label for="sn" class="col-sm-4 control-label">新营销人员：</label>
                         <div class="col-sm-8">
                             <select name="newSeller.id" id="newSeller" class="form-control">
-                            <#list sellers as e>
-                                <option value="${e.id}">${e.name}</option>
-                            </#list>
+                                <#list sellers as e>
+                                    <option value="${e.id}">${e.name}</option>
+                                </#list>
                             </select>
                         </div>
                     </div>
@@ -202,17 +205,18 @@
 </div><!-- /.modal -->
 
 
-
 <#--吸纳模态框-->
 <div id="absorbModal" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
                 <h4 class="modal-title">吸纳</h4>
             </div>
             <div class="modal-body">
-                <form class="form-horizontal" action="/customerTransfer/absorb.do" method="post" id="absorbForm" style="margin: -3px 118px">
+                <form class="form-horizontal" action="/customerTransfer/absorb.do" method="post" id="absorbForm"
+                      style="margin: -3px 118px">
                     <input type="hidden" name="id"/>
                     <input type="hidden" class="form-control" name="oldSeller.id">
                     <input type="hidden" class="form-control" name="customer.id">

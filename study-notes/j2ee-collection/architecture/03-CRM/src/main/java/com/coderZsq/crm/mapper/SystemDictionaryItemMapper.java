@@ -1,5 +1,6 @@
 package com.coderZsq.crm.mapper;
 
+import com.coderZsq.crm.domain.SystemDictionary;
 import com.coderZsq.crm.domain.SystemDictionaryItem;
 
 import java.util.List;
@@ -57,4 +58,5 @@ public interface SystemDictionaryItemMapper {
      */
     int deleteById(Long id);
 
+    List<SystemDictionary> queryByParentId(long parentId);
 }

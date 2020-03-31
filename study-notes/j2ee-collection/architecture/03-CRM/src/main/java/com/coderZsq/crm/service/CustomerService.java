@@ -55,4 +55,5 @@ public interface CustomerService {
      */
     boolean deleteById(Long id);
 
+    void updateStatus(Long customerId, Integer status);
 }

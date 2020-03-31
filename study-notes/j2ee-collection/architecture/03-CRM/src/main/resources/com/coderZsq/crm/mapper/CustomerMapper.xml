@@ -12,21 +12,21 @@
         <result property="inputTime" column="input_time" jdbcType="TIMESTAMP"/>
         <result property="status" column="status" jdbcType="INTEGER"/>
 
-        <association property="job" javaType="com.coderZsq.crm.domain.SystemDictionaryItem" columnPrefix="job_">
+        <association property="job" javaType="SystemDictionaryItem" columnPrefix="job_">
             <result property="id" column="id"/>
             <result property="title" column="title"/>
         </association>
-        <association property="source" javaType="com.coderZsq.crm.domain.SystemDictionaryItem" columnPrefix="source_">
+        <association property="source" javaType="SystemDictionaryItem" columnPrefix="source_">
             <result property="id" column="id"/>
             <result property="title" column="title"/>
         </association>
 
-        <association property="seller" javaType="com.coderZsq.crm.domain.Employee" columnPrefix="seller_">
+        <association property="seller" javaType="Employee" columnPrefix="seller_">
             <result property="id" column="id"/>
             <result property="name" column="name"/>
         </association>
 
-        <association property="inputUser" javaType="com.coderZsq.crm.domain.Employee" columnPrefix="inputUser_">
+        <association property="inputUser" javaType="Employee" columnPrefix="inputUser_">
             <result property="id" column="id"/>
             <result property="name" column="name"/>
         </association>
@@ -104,7 +104,7 @@
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
         insert into customer(name, age, gender, tel, qq, job_id, source_id, seller_id, inputUser_id, input_time,
                                    status)
-        values (#{name}, #{age}, #{gender}, #{tel}, #{qq}, #{jobId}, #{sourceId}, #{sellerId}, #{inputuserId},
+        values (#{name}, #{age}, #{gender}, #{tel}, #{qq}, #{job.id}, #{source.id}, #{seller.id}, #{inputUser.id},
                 #{inputTime}, #{status})
     </insert>
 
@@ -127,17 +127,17 @@
             <if test="qq != null and qq != ''">
                 qq = #{qq},
             </if>
-            <if test="jobId != null">
-                job_id = #{jobId},
+            <if test="job != null">
+                job_id = #{job.id},
             </if>
-            <if test="sourceId != null">
-                source_id = #{sourceId},
+            <if test="source!= null">
+                source_id = #{source.id},
             </if>
-            <if test="sellerId != null">
-                seller_id = #{sellerId},
+            <if test="seller != null">
+                seller_id = #{seller.id},
             </if>
-            <if test="inputUserId != null">
-                inputUser_id = #{inputUserId},
+            <if test="inputUser != null">
+                inputUser_id = #{inputUser.id},
             </if>
             <if test="inputTime != null">
                 input_time = #{inputTime},
@@ -147,6 +147,9 @@
             </if>
         </set>
         where id = #{id}
+    </update>
+    <update id="updateStatus">
+        update customer set status=#{status} where id=#{customerId}
     </update>
 
     <!--通过主键删除-->

@@ -1,5 +1,6 @@
 package com.coderZsq.crm.service.impl;
 
+import com.coderZsq.crm.domain.SystemDictionary;
 import com.coderZsq.crm.domain.SystemDictionaryItem;
 import com.coderZsq.crm.mapper.SystemDictionaryItemMapper;
 import com.coderZsq.crm.service.SystemDictionaryItemService;
@@ -86,5 +87,10 @@ public class SystemDictionaryItemServiceImpl implements SystemDictionaryItemServ
     @Override
     public boolean deleteById(Long id) {
         return this.systemdictionaryitemMapper.deleteById(id) > 0;
+    }
+
+    @Override
+    public List<SystemDictionary> queryByParentId(long parentId) {
+        return systemdictionaryitemMapper.queryByParentId(parentId);
     }
 }

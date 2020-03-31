@@ -33,6 +33,10 @@
             </if>
         </where>
     </select>
+    <select id="queryByParentId" resultType="com.coderZsq.crm.domain.SystemDictionary">
+        select  id, parent_id, title, sequence from systemdictionaryitem
+        where parent_id = #{parentId}
+    </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">

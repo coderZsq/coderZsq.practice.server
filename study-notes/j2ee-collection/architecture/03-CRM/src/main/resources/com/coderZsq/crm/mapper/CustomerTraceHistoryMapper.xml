@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.coderZsq.crm.mapper.CustomerTraceHistoryMapper">
+
+    <resultMap type="com.coderZsq.crm.domain.CustomerTraceHistory" id="CustomertracehistoryMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="traceTime" column="trace_time" jdbcType="OTHER"/>
+        <result property="traceDetails" column="trace_details" jdbcType="VARCHAR"/>
+        <result property="traceResult" column="trace_result" jdbcType="INTEGER"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="inputTime" column="input_time" jdbcType="TIMESTAMP"/>
+        <result property="type" column="type" jdbcType="INTEGER"/>
+        <association property="customer" javaType="Customer" columnPrefix="c_">
+            <result property="id" column="id"   />
+            <result property="name" column="name"  />
+        </association>
+        <association property="inputUser" javaType="Employee" columnPrefix="input_">
+            <result property="id" column="id"   />
+            <result property="name" column="name"  />
+        </association>
+        <association property="traceType" javaType="SystemDictionaryItem" columnPrefix="type_">
+            <result property="id" column="id"   />
+            <result property="title" column="title"  />
+        </association>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="CustomertracehistoryMap">
+        select
+          id, trace_time, trace_details, trace_type_id, trace_result, remark, customer_id, input_user_id, input_time, type
+        from customertracehistory
+        where id = #{id}
+    </select>
+
+    <!--查询所有列表数据-->
+    <select id="queryAll" resultMap="CustomertracehistoryMap">
+        select
+          id, trace_time, trace_details, trace_type_id, trace_result, remark, customer_id, input_user_id, input_time, type        from customertracehistory
+    </select>
+
+    <!--查询指定条件的数据-->
+    <select id="query" resultMap="CustomertracehistoryMap">
+        SELECT his.*,
+        input.id input_id,input.name input_name,
+        c.id c_id,c.name c_name,
+        item.id item_id, item.title item_title
+        from customertracehistory his
+        join employee input on his.input_user_id=input.id
+        join customer c on his.customer_id=c.id
+        join systemdictionaryitem  item on his.trace_type_id=item.id
+        <where>
+            <if test="type>-1">
+                his.type=#{type}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into customertracehistory(trace_time, trace_details, trace_type_id, trace_result, remark, customer_id, input_user_id, input_time, type)
+        values (#{traceTime}, #{traceDetails}, #{traceType.id}, #{traceResult}, #{remark}, #{customer.id}, #{inputUser.id}, #{inputTime}, #{type})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update customertracehistory
+        <set>
+            <if test="traceTime != null">
+                trace_time = #{traceTime},
+            </if>
+            <if test="traceDetails != null and traceDetails != ''">
+                trace_details = #{traceDetails},
+            </if>
+            <if test="traceTypeId != null">
+                trace_type_id = #{traceTypeId},
+            </if>
+            <if test="traceResult != null">
+                trace_result = #{traceResult},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+            <if test="customerId != null">
+                customer_id = #{customerId},
+            </if>
+            <if test="inputUserId != null">
+                input_user_id = #{inputUserId},
+            </if>
+            <if test="inputTime != null">
+                input_time = #{inputTime},
+            </if>
+            <if test="type != null">
+                type = #{type},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from customertracehistory where id = #{id}
+    </delete>
+
+</mapper>
