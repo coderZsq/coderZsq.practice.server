@@ -1,4 +1,4 @@
-package 哈希表;
+package 数组;
 
 import java.util.HashMap;
 import java.util.Map;
