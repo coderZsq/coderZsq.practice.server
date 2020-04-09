@@ -89,9 +89,7 @@ contract EcommerceStore {
             ProductCondition
         )
     {
-
-            Product memory product
-         = stores[productIdInStore[_productId]][_productId];
+        Product memory product = stores[productIdInStore[_productId]][_productId];
         return (
             product.id,
             product.name,
@@ -111,9 +109,7 @@ contract EcommerceStore {
         payable
         returns (bool)
     {
-
-            Product storage product
-         = stores[productIdInStore[_productId]][_productId];
+        Product storage product = stores[productIdInStore[_productId]][_productId];
         require(
             now >= product.auctionStartTime,
             "Current time should be later than auction start time"
@@ -145,9 +141,7 @@ contract EcommerceStore {
         string memory _amount,
         string memory _secret
     ) public {
-
-            Product storage product
-         = stores[productIdInStore[_productId]][_productId];
+        Product storage product = stores[productIdInStore[_productId]][_productId];
         require(now >= product.auctionEndTime, "");
         bytes32 sealedBid = sha3(_amount, _secret);
         Bid memory bidInfo = product.bids[msg.sender][sealedBid];
@@ -183,5 +177,34 @@ contract EcommerceStore {
         if (refund > 0) {
             msg.sender.transfer(refund);
         }
+    }
+
+    function stringToUint(string memory s) private pure returns (uint256) {
+        bytes memory b = bytes(s);
+        uint256 result = 0;
+        for (uint256 i = 0; i < b.length; i++) {
+            if (b[i] >= 48 && b[i] <= 57) {
+                result = result * 10 + (uint256(b[i]) - 48);
+            }
+        }
+        return result;
+    }
+
+    function highestBidderInfo(uint256 _productId)
+        public
+        view
+        returns (address, uint256, uint256)
+    {
+        Product memory product = stores[productIdInStore[_productId]][_productId];
+        return (
+            product.highestBidder,
+            product.highestBid,
+            product.secondHighestBid
+        );
+    }
+
+    function totalBids(uint256 _productId) public view returns (uint256) {
+        Product memory product = stores[productIdInStore[_productId]][_productId];
+        return product.totalBids;
     }
 }

@@ -162,3 +162,4 @@ COPYRIGHT:
    Copyright 2013-2017 The go-ethereum Authors
    
 Fatal: Error starting protocol stack: datadir already used by another process
+Fatal: Error starting protocol stack: listen unix /Users/zhushuangquan/Native Drive/GitHub/coderZsq.practice.server.java/study-notes/blockchain/ethereum/01-geth/geth.ipc: bind: invalid argument

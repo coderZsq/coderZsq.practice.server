@@ -30,3 +30,21 @@
 13:53:08.242829 table@compaction committed F-1 S-16KiB Ke·0 D·417 T·42.010823ms
 13:53:08.246664 table@remove removed @5
 13:53:08.246979 table@remove removed @2
+=============== Apr 9, 2020 (CST) ===============
+18:02:09.705028 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+18:02:09.706453 version@stat F·[0 1] S·51KiB[0B 51KiB] Sc·[0.00 0.00]
+18:02:09.706495 db@open opening
+18:02:09.706636 journal@recovery F·1
+18:02:09.709840 journal@recovery recovering @6
+18:02:09.749295 memdb@flush created L0@9 N·14585 S·775KiB "Blo..ion,v1275":"r\x00\x00..,\x18&,v15855"
+18:02:09.754295 version@stat F·[1 1] S·826KiB[775KiB 51KiB] Sc·[0.25 0.00]
+18:02:09.794937 db@janitor F·4 G·0
+18:02:09.795028 db@open done T·88.487377ms
+18:02:09.807584 table@compaction L0·1 -> L1·1 S·826KiB Q·15861
+18:02:09.828880 table@build created L1@12 N·10463 S·630KiB "Blo..ion,v1275":"\xeaB\x04..\xf4\xd0;,v2"
+18:02:09.828994 version@stat F·[0 1] S·630KiB[0B 630KiB] Sc·[0.00 0.01]
+18:02:09.859496 table@compaction committed F-1 S-196KiB Ke·0 D·4977 T·51.795938ms
+18:02:09.863567 table@remove removed @9
+18:02:09.864217 table@remove removed @8
+18:02:12.290701 db@close closing
+18:02:12.290744 db@close done T·42.095µs
