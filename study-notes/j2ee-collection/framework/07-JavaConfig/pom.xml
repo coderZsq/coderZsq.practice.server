@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.example</groupId>
-    <artifactId>07-SpringBoot</artifactId>
+    <artifactId>07-JavaConfig</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
