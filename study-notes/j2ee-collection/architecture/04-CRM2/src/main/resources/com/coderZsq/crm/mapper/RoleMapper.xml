@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.coderZsq.crm.mapper.RoleMapper">
+
+    <resultMap type="com.coderZsq.crm.domain.Role" id="RoleMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="sn" column="sn" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="RoleMap">
+        select
+          id, name, sn
+        from role
+        where id = #{id}
+    </select>
+
+    <!--查询所有列表数据-->
+    <select id="queryAll" resultMap="RoleMap">
+        select
+          id, name, sn        from role
+    </select>
+
+    <!--查询指定条件的数据-->
+    <select id="query" resultMap="RoleMap">
+        select
+          id, name, sn        from role		
+    </select>
+
+    <!--根据员工id查询角色信息-->
+    <select id="queryByEmpId" resultMap="RoleMap">
+        select r.id, r.name, r.sn
+        from role  r join employee_role er on r.id=er.role_id
+        where er.employee_id=#{empId}
+    </select>
+    <select id="querySnByEmpId" resultType="java.lang.String">
+        select r.sn
+        from role  r join employee_role er on r.id=er.role_id
+        where er.employee_id=#{empId}
+    </select>
+    <select id="queryBySn" resultType="java.lang.Long">
+        select r.id
+        from role r
+        where r.sn = #{sn}
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into role(name, sn)
+        values (#{name}, #{sn})
+    </insert>
+    <insert id="insertRelation">
+        insert into role_permission(role_id, permission_id) VALUES (#{roleId}, #{permissionId})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update role
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="sn != null and sn != ''">
+                sn = #{sn},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from role where id = #{id}
+    </delete>
+    <delete id="deleteRelation">
+        delete from role_permission where role_id = #{roleId}
+    </delete>
+
+</mapper>

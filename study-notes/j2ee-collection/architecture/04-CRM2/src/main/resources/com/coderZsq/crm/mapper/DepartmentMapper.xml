@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.coderZsq.crm.mapper.DepartmentMapper">
+    <select id="queryAll" resultType="com.coderZsq.crm.domain.Department">
+        select id, name, sn  from department
+    </select>
+    <select id="query" resultType="com.coderZsq.crm.domain.Department">
+        select id, name, sn from department
+        <where>
+            <if test="keyword != null">
+                and ( name like concat('%',#{keyword},'%') or sn like concat('%',#{keyword},'%') )
+            </if>
+        </where>
+    </select>
+    <select id="queryByName" resultType="com.coderZsq.crm.domain.Department">
+        select id, name, sn from department
+        where name = #{name}
+    </select>
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into department(name,sn) values (#{name},#{sn})
+    </insert>
+
+    <delete id="delete">
+        delete from department where id=#{id}
+    </delete>
+    <update id="update">
+        update department set name=#{name},sn=#{sn} where id=#{id}
+    </update>
+</mapper>

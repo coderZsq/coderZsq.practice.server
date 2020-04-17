@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.coderZsq.crm.mapper.CustomerTransferMapper">
+
+    <resultMap type="com.coderZsq.crm.domain.CustomerTransfer" id="CustomertransferMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="operateTime" column="operate_time" jdbcType="TIMESTAMP"/>
+        <result property="reason" column="reason" jdbcType="VARCHAR"/>
+        <association property="customer" javaType="Customer" columnPrefix="c_">
+            <result property="id" column="id"/>
+            <result property="name" column="name"/>
+        </association>
+        <association property="oldSeller" javaType="Employee" columnPrefix="old_">
+            <result property="id" column="id"/>
+            <result property="name" column="name"/>
+        </association>
+        <association property="newSeller" javaType="Employee" columnPrefix="new_">
+            <result property="id" column="id"/>
+            <result property="name" column="name"/>
+        </association>
+        <association property="operator" javaType="Employee" columnPrefix="op_">
+            <result property="id" column="id"/>
+            <result property="name" column="name"/>
+        </association>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="CustomertransferMap">
+        select
+          id, customer_id, operator_id, operate_time, oldSeller_id, newSeller_id, reason
+        from customertransfer
+        where id = #{id}
+    </select>
+
+    <!--查询所有列表数据-->
+    <select id="queryAll" resultMap="CustomertransferMap">
+        select
+          id, customer_id, operator_id, operate_time, oldSeller_id, newSeller_id, reason        from customertransfer
+    </select>
+
+    <!--查询指定条件的数据-->
+    <select id="query" resultMap="CustomertransferMap">
+        select trans.*,
+               c.id c_id,c.name c_name,
+               old.id old_id,old.name old_name,
+               new.id new_id,new.name new_name,
+               op.id op_id,op.name op_name
+        from customertransfer trans
+                 join customer c on trans.customer_id=c.id
+                 join employee old on trans.oldSeller_id=old.id
+                 join employee new on trans.newSeller_id=new.id
+                 join employee op on trans.operator_id=op.id
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into customertransfer(customer_id, operator_id, operate_time, oldSeller_id, newSeller_id, reason)
+        values (#{customer.id}, #{operator.id}, #{operateTime}, #{oldSeller.id}, #{newSeller.id}, #{reason})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update customertransfer
+        <set>
+            <if test="customerId != null">
+                customer_id = #{customerId},
+            </if>
+            <if test="operatorId != null">
+                operator_id = #{operatorId},
+            </if>
+            <if test="operateTime != null">
+                operate_time = #{operateTime},
+            </if>
+            <if test="oldsellerId != null">
+                oldSeller_id = #{oldsellerId},
+            </if>
+            <if test="newsellerId != null">
+                newSeller_id = #{newsellerId},
+            </if>
+            <if test="reason != null and reason != ''">
+                reason = #{reason},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from customertransfer where id = #{id}
+    </delete>
+
+</mapper>

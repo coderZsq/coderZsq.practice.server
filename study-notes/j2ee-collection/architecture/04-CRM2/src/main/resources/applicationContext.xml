@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!--5 配置事务管理器-->
+    <bean name="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!-- 开启事务注解 扫描Transactional -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!-- 2. 切入之后的具体操作 进行事务控制的TransactionInterceptor -->
+    <tx:advice id="advice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="query*" read-only="true"/>
+            <tx:method name="select*" read-only="true"/>
+            <tx:method name="list*" read-only="true"/>
+            <tx:method name="count*" read-only="true"/>
+            <!--所有的增, 删,改方法 需要事务控制-->
+            <tx:method name="*" />
+        </tx:attributes>
+    </tx:advice>
+
+    <!-- 面向切片编程 -->
+    <aop:config>
+        <!-- 1. 指定切入点 -->
+        <aop:pointcut id="pc" expression="execution(* com.coderZsq.crm.service.*.*(..))"></aop:pointcut>
+        <!-- 3. 把切入点和具体事务关联起来 -->
+        <aop:advisor advice-ref="advice" pointcut-ref="pc"/>
+    </aop:config>
+</beans>
