@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.coderzsq._04_mybatis.mapper.PermissionMapper">
+
+    <resultMap type="com.coderzsq._04_mybatis.domain.Permission" id="PermissionMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="expression" column="expression" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+
+    <!--查询指定条件的数据-->
+    <select id="list" resultMap="PermissionMap">
+        select
+          id, name, expression        from permission
+    </select>
+
+
+
+</mapper>

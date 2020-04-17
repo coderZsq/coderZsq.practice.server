@@ -1,0 +1,42 @@
+#https://www.toyaml.com
+fileupload: /Users/zhushuangquan/Desktop/upload
+logging:
+  level:
+    com:
+      coderzsq:
+        _04_mybatis: trace
+server:
+  port: 8082
+spring:
+  datasource:
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      initial-size: 6
+      max-active: 12
+      password: root
+      url: jdbc:mysql://127.0.0.1:3306/crmdemo?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
+      username: root
+  main:
+    banner-mode: 'off'
+  profiles:
+    active: dev
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,classpath:/mydir/,file:/Users/zhushuangquan/Desktop/upload/
+
+mybatis:
+  mapper-locations: classpath:com/coderzsq/_04_mybatis/PermissionMapper.xml
+  type-aliases-package: com.coderzsq._04_mybatis.domain
+
+sq:
+  name: Castie!
+#  scores: ["a", "b", "c"]
+#  info: {name: jack, age: 21, faceValue: 90}
+  scores:
+    - a
+    - b
+    - c
+    - d
+  info:
+    name: jack
+    age: 18
+    faceValue: 90
