@@ -1,0 +1,1 @@
+truffle exec seed.js
