@@ -13,6 +13,17 @@ window.App = {
     var self = this;
     EcommerceStore.setProvider(web3.currentProvider);
     renderStore();
+
+    $("#add-item-to-store").submit(function (event) {
+      const req = $("#add-item-to-store").serialize();
+      let params = JSON.parse('{"' + req.replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}');
+      let decodedParams = {}
+      Object.keys(params).forEach(function (v) {
+        decodedParams[v] = decodeURIComponent(decodeURI(params[v]));
+      });
+      saveProduct(reader, decodedParams);
+      event.preventDefault();
+    });
   },
 };
 
