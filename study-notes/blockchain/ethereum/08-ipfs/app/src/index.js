@@ -37,8 +37,46 @@ window.App = {
     if ($("#product-details").length > 0) {
       //This is product details page
       let productId = new URLSearchParams(window.location.search).get('id');
+      $("#bidding, #revealing").hide();
       renderProductDetails(productId);
     }
+
+    $("#bidding").submit(function (event) {
+      $("#msg").hide();
+      let amount = $("#bid-amount").val();
+      let sendAmount = $("#bid-send-amount").val();
+      let secretText = $("#secret-text").val();
+      let sealedBid = '0x' + web3.sha3(web3.toWei(amount, 'ether') + secretText).toString('hex');
+      let productId = $("#product-id").val();
+      console.log(sealedBid + " for " + productId);
+      EcommerceStore.deployed().then(function (i) {
+        i.bid(parseInt(productId), sealedBid, { value: web3.toWei(sendAmount), from: web3.eth.accounts[0], gas: 440000 }).then(
+          function (f) {
+            $("#msg").html("Your bid has been successfully submitted!");
+            $("#msg").show();
+            console.log(f)
+          }
+        )
+      });
+      event.preventDefault();
+    });
+
+    $("#revealing").submit(function (event) {
+      $("#msg").hide();
+      let amount = $("#actual-amount").val();
+      let secretText = $("#reveal-secret-text").val();
+      let productId = $("#product-id").val();
+      EcommerceStore.deployed().then(function (i) {
+        i.revealBid(parseInt(productId), web3.toWei(amount).toString(), secretText, { from: web3.eth.accounts[0], gas: 440000 }).then(
+          function (f) {
+            $("#msg").show();
+            $("#msg").html("Your bid has been successfully revealed!");
+            console.log(f)
+          }
+        )
+      });
+      event.preventDefault();
+    });
   },
 };
 
