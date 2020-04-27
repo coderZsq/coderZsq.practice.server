@@ -1,4 +1,4 @@
-package com.coderzsq.zookeeper;
+package com.coderzsq.zookeeper._01_zookeeper_api;
 
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;

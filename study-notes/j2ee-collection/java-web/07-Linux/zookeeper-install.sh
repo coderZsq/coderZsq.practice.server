@@ -61,6 +61,11 @@ vi zoo.cfg
 /usr/local/zookeeper-server-02/bin/zkServer.sh start
 /usr/local/zookeeper-server-03/bin/zkServer.sh start
 
+# 关闭 zookeeper 
+/usr/local/zookeeper-server-01/bin/zkServer.sh stop
+/usr/local/zookeeper-server-02/bin/zkServer.sh stop
+/usr/local/zookeeper-server-03/bin/zkServer.sh stop
+
 # 查看 zookeeper 状态
 /usr/local/zookeeper-server-01/bin/zkServer.sh status
 # ZooKeeper JMX enabled by default
