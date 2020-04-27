@@ -23,13 +23,13 @@ import java.util.HashMap;
  */
 public class _01_两数之和 {
     public static int[] twoSum(int[] nums, int target) {
-        HashMap map = new HashMap();
+        HashMap<Integer, Integer> map = new HashMap<>(nums.length);
         for (int i = 0; i < nums.length; i++) {
             // 2. 从哈希表中找 (目标值 - 遍历到的新值) 的值
             // 找到  说明之前遍历到的值 + 新值 = 目标值
             // 没找到 说明之前没有任何值 + 新值 = 目标值
             // idx : 之前遍历到的值对应的nums数组的下标
-            Integer idx = (Integer) map.get(target - nums[i]);
+            Integer idx = map.get(target - nums[i]);
             // 3. 找到 则返回[之前遍历到的值对应的nums数组的下标, 新遍历的下标]
             if (idx != null) return new int[]{idx, i};
             // 1. 使用哈希表的 key 唯一性
