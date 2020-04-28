@@ -16,7 +16,7 @@ public class _206_反转链表 {
 }
 
 class _206_反转链表2 {
-    public ListNode reverseList1(ListNode head) {
+    public ListNode reverseList(ListNode head) {
         if (head == null || head.next == null) return head;
         ListNode newHead = null;
         while (head != null) {
