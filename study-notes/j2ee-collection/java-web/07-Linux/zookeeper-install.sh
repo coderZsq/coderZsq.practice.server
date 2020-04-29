@@ -19,9 +19,9 @@ vi zoo.cfg
 # dataDir=/usr/local/apache-zookeeper-3.6.0-bin/data # 数据存放的目录
 # clientPort=2181 # 客户端连接端口
 # 集群中的服务列表 1 2 3 代表的是一个服务的id, 需要和myid(dataDir目录)文件中的内容一致, 而且在 1-254之间
-# server.1=172.19.189.121:2888:3888 # 2888: 数据同步端口, 3888: 选举端口
-# server.2=172.19.189.121:2887:3887
-# server.3=172.19.189.121:2889:3889
+# server.1=172.16.21.175:2888:3888 # 2888: 数据同步端口, 3888: 选举端口
+# server.2=172.16.21.175:2887:3887
+# server.3=172.16.21.175:2889:3889
 
 # 创建data目录
 cd /usr/local/apache-zookeeper-3.6.0-bin/
@@ -239,3 +239,17 @@ Created /pNode/node0000000002
 # WATCHER::
 # WatchedEvent state:SyncConnected type:NodeChildrenChanged path:/eNode
 # Created /eNode/node1
+
+# 管理监控命令
+# 安装 nc
+yum install -y nc 
+
+# 添加白名单
+vi /usr/local/zookeeper-server-01/conf/zoo.cfg
+# 4lw.commands.whitelist=*
+
+# 来查看哪个节点被选择作为follower或者leader
+echo stat | nc 127.0.0.1 2181
+
+# 查看配置信息
+echo conf | nc 127.0.0.1 2181

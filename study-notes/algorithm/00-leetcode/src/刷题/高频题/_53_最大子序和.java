@@ -23,13 +23,18 @@ public class _53_最大子序和 {
     /**
      * O(n) 解法
      *
-     * @param nums
-     * @return
+     * @param nums 整数数组
+     * @return 最大和
      */
     public static int maxSubArrayOn(int[] nums) {
         return 0;
     }
 
+    /**
+     * 分治法
+     * @param nums 整数数组
+     * @return 最大和
+     */
     public static int maxSubArrayDivideAndConquer(int[] nums) {
         return 0;
     }
