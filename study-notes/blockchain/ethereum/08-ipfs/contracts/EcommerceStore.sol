@@ -1,5 +1,7 @@
 pragma solidity >=0.4.21 <0.7.0;
 
+import "contracts/Escrow.sol";
+
 
 contract EcommerceStore {
     enum ProductStatus {Open, Sold, Unsold}
@@ -8,6 +10,8 @@ contract EcommerceStore {
     uint256 public productIndex;
     mapping(uint256 => address) productIdInStore;
     mapping(address => mapping(uint256 => Product)) stores;
+
+    mapping(uint256 => address) productEscrow;
 
     struct Product {
         uint256 id;
@@ -206,5 +210,49 @@ contract EcommerceStore {
     function totalBids(uint256 _productId) public view returns (uint256) {
         Product memory product = stores[productIdInStore[_productId]][_productId];
         return product.totalBids;
+    }
+
+    function finalizeAuction(uint256 _productId) public {
+        Product memory product = stores[productIdInStore[_productId]][_productId];
+        // 48 hours to reveal the bid
+        require(now > product.auctionEndTime);
+        require(product.status == ProductStatus.Open);
+        require(product.highestBidder != msg.sender);
+        require(productIdInStore[_productId] != msg.sender);
+
+        if (product.highestBidder == 0) {
+            product.status = ProductStatus.Unsold;
+        } else {
+            // Whoever finalizes the auction is the arbiter
+            Escrow escrow = (new Escrow).value(product.secondHighestBid)(
+                _productId,
+                product.highestBidder,
+                productIdInStore[_productId],
+                msg.sender
+            );
+            productEscrow[_productId] = address(escrow);
+            product.status = ProductStatus.Sold;
+            // The bidder only pays the amount equivalent to second highest bidder
+            // Refund the difference
+            uint256 refund = product.highestBid - product.secondHighestBid;
+            product.highestBidder.transfer(refund);
+        }
+        stores[productIdInStore[_productId]][_productId] = product;
+    }
+
+    function escrowAddressForProduct(uint256 _productId)
+        public
+        view
+        returns (address)
+    {
+        return productEscrow[_productId];
+    }
+
+    function escrowInfo(uint256 _productId)
+        public
+        view
+        returns (address, address, address, bool, uint256, uint256)
+    {
+        return Escrow(productEscrow[_productId]).escrowInfo();
     }
 }
