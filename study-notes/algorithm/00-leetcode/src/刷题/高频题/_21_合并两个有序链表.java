@@ -21,7 +21,33 @@ import java.util.List;
  */
 public class _21_合并两个有序链表 {
     public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
-        return null;
+        if (l1 == null) return l2;
+        if (l2 == null) return l1;
+
+        // 1. 创建虚拟头节点
+        ListNode dummyHead = new ListNode(-1);
+        ListNode cur = dummyHead;
+
+        // 2. 先遍历到一条链表结束为止
+        while (l1 != null && l2 != null) {
+            if (l1.val < l2.val) {
+                // 3. 接上新链表并继续遍历
+                cur = cur.next = l1;
+                l1 = l1.next;
+            } else {
+                cur = cur.next = l2;
+                l2 = l2.next;
+            }
+        }
+
+        // 3. 接上没有接上的链表
+        if (l1 == null) {
+            cur.next = l2;
+        } else {
+            cur.next = l1;
+        }
+
+        return dummyHead.next;
     }
 
     @Test
