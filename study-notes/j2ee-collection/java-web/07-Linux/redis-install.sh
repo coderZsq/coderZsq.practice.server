@@ -39,9 +39,31 @@ vi /usr/local/redis-5.0.8/conf/redis_6379.conf
 # /dir /usr/local/redis-5.0.8/data
 # /logfile "6379.log"
 # /requirepass ssh-keygen 添加密码
+# /appendfilename "appendonly_6379.aof" 
+# /appendonly yes
+bin/redis-cli shutdown
 bin/redis-server conf/redis_6379.conf
+bin/redis-cli
+
 cat data/6379.log
 
 # 关闭redis
 /usr/local/redis-5.0.8/bin/redis-cli shutdown
 /usr/local/redis-5.0.8/bin/redis-cli -a ssh-keygen shutdown
+
+# 分布式
+cat redis_6379.conf |grep -v '#' |grep -v '^$'
+
+vi redis_6379.conf
+:1,$d
+
+# port 6379
+# daemonize yes
+# pidfile /var/run/redis-6379.pid
+# logfile 6379.log
+# dbfilename dump_6379.rdb
+# dir /usr/local/redis-5.0.8/data
+
+cp redis_6379.conf redis_6380.conf
+vi redis_6380.conf
+:%s/6379/6380

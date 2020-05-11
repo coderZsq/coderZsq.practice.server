@@ -40,4 +40,14 @@ public class HyperLogLogDemo {
         pipelined.sync();
         System.out.println(jedis.pfcount("pf:user:login:20191207"));
     }
+
+    @Test
+    public void initData2() throws Exception {
+        // 添加登录过的用户 添加一万个用户
+        Pipeline pipelined = jedis.pipelined();
+        for (int i = 0; i < 5000000; i++) {
+            pipelined.set("key" + i, "value" + i);
+        }
+        pipelined.sync();
+    }
 }
