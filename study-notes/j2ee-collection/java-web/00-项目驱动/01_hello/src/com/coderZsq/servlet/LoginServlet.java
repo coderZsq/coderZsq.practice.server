@@ -1,4 +1,4 @@
-package com.coderZsq;
+package com.coderZsq.servlet;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
