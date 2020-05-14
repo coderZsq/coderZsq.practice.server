@@ -98,6 +98,35 @@ window.App = {
       event.preventDefault();
     });
 
+    $("#release-funds").click(function () {
+      let productId = new URLSearchParams(window.location.search).get('id');
+      EcommerceStore.deployed().then(function (f) {
+        $("#msg").html("Your transaction has been submitted. Please wait for few seconds for the confirmation").show();
+        console.log(productId);
+        f.releaseAmountToSeller(productId, { from: web3.eth.accounts[0], gas: 440000 }).then(function (f) {
+          console.log(f);
+          location.reload();
+        }).catch(function (e) {
+          console.log(e);
+        })
+      });
+    });
+
+    $("#refund-funds").click(function () {
+      let productId = new URLSearchParams(window.location.search).get('id');
+      EcommerceStore.deployed().then(function (f) {
+        $("#msg").html("Your transaction has been submitted. Please wait for few seconds for the confirmation").show();
+        f.refundAmountToBuyer(productId, { from: web3.eth.accounts[0], gas: 440000 }).then(function (f) {
+          console.log(f);
+          location.reload();
+        }).catch(function (e) {
+          console.log(e);
+        })
+      });
+
+      alert("refund the funds!");
+    });
+
     function renderProductDetails(productId) {
       EcommerceStore.deployed().then(function (i) {
         i.getProduct.call(productId).then(function (p) {
