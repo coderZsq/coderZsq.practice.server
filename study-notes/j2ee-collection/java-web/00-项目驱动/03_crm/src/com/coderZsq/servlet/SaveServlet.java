@@ -34,6 +34,10 @@ public class SaveServlet extends HttpServlet {
         Data.add(customer);
 
         // 重定向
+        // 状态码: 302
+        // response.setStatus(302);
+        // 响应头Location: /crm/list
+        // response.setHeader("Location", "/crm/list");
         response.sendRedirect("/crm/list");
 
         // request.getRequestDispatcher("/list").forward(request, response);
