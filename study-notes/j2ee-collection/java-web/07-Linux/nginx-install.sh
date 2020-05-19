@@ -19,6 +19,9 @@ make && make install
 # 启动nginx
 /usr/local/nginx/sbin/nginx
 
+# 停止nginx
+/usr/local/nginx/sbin/nginx -s stop
+
 # 修改配置文件
 cd conf/
 vi nginx.conf
@@ -114,8 +117,8 @@ sbin/nginx -s reload
 # 负载均衡
 upstream crm {
   ip_hash;
-  server 47.101.146.105:8080;
-  server 172.19.189.121:8080;
+  server 47.101.146.105:8080 weight 1;
+  server 172.19.189.121:8080 weight 1;
 }
 
 # 获取客户端真实地址
@@ -141,7 +144,7 @@ gzip_min_length 1k;
 # 压缩基本, 1-9级别越高, 越消耗cpu, 默认值为1
 gzip_comp_level 2;
 # 压缩文件的类型, 对于jpg, png图片压缩效率不高
-gzip_types text/plain application/javascript application/x-javascript text/css application/xml text/javascript
+gzip_types text/plain application/javascript application/x-javascript text/css application/xml text/javascript;
 # 根据客户端的HTTP头来判断, 是否需要压缩
 gzip_vary on;
 
@@ -213,3 +216,49 @@ server {
 }
 # 重启服务
 sbin/nginx -s reload
+
+# 跨域请求
+location / {
+  add_header Access-Control-Allow-Origin *;
+  add_header Access-Control-Allow-Methods 'GET, POST, OPTIONS';
+  add_header Access-Control-Allow-Headers '*';
+  ...
+}
+
+# 开启缓存 
+http {
+  ...
+  proxy_cache_path /datas/cache levels=1:2 keys_zone=one:10m;
+  ...
+}
+
+location / {
+  proxy_cache one;
+  proxy_cache_valid 200 1m;
+  ...
+}
+
+# 请求防盗链
+location / {
+  valid_referers none blocked server_names
+                 域名;
+  if ($valid_referer) {
+    return 403;
+  }
+  ...
+}
+
+# 限流方案
+# 配置连接数量限制
+http {
+  ...
+  limit_conn_zone $binary_remote_addr zone=addr:10m;
+  ...
+}
+
+location / {
+  limit_conn_status 500;
+  limit_conn_log_level error;
+  limit_rate 50;
+  limit_conn addr 1;
+}
