@@ -230,12 +230,13 @@ http {
   ...
   proxy_cache_path /datas/cache levels=1:2 keys_zone=one:10m;
   ...
-}
-
-location / {
-  proxy_cache one;
-  proxy_cache_valid 200 1m;
-  ...
+  server {
+    location / {
+      proxy_cache one;
+      proxy_cache_valid 200 1m;
+      ...
+    }
+  }
 }
 
 # 请求防盗链
@@ -249,16 +250,45 @@ location / {
 }
 
 # 限流方案
-# 配置连接数量限制
+# 限制并发连接数
 http {
   ...
   limit_conn_zone $binary_remote_addr zone=addr:10m;
   ...
+  server {
+    location / {
+      limit_conn_status 500;
+      limit_conn_log_level error;
+      limit_rate 50;
+      limit_conn addr 1;
+    }
+  }
 }
 
-location / {
-  limit_conn_status 500;
-  limit_conn_log_level error;
-  limit_rate 50;
-  limit_conn addr 1;
+# 限制访问频率
+http {
+  ...
+  limit_req_zone $binary_remote_addr zone=one:10m rate=1r/s;
+  ...
+  server {
+    location / {
+      limit_req_zone=one burst=5;
+    }
+  }
 }
+
+# http重定向https
+# 重新定位到443服务器
+http {
+  ...
+  rewrite \.* https://47.101.146.105:443/ break;
+  ...
+  server {
+    location / {
+      ...
+      rewrite \.* https://47.101.146.105:443/ break;
+      ...
+    }
+  }
+}
+
