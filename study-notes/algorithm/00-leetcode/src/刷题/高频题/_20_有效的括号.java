@@ -54,7 +54,7 @@ public class _20_有效的括号 {
     public boolean isValid(String s) {
         int len = s.length();
 
-        // 4. 创建一个栈
+        // 4. 创建一个栈c
         Stack<Character> stack = new Stack();
 
         // 3. 遍历每一个字符

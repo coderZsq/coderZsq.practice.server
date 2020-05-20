@@ -22,7 +22,7 @@ import org.junit.Test;
  * <p>
  * 输出: [1,2,2,3,5,6]
  * 来源：力扣（LeetCode）
- * 链接：https://leetcode-cn.com/problems/reverse-linked-list
+ * 链接：https://leetcode-cn.com/problems/merge-sorted-array/
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class _88_合并两个有序数组 {
