@@ -25,11 +25,16 @@ package 刷题.高频题;
  */
 public class _7_整数反转 {
     public int reverse(int x) {
+        // 1. 定义需要返回的反转整数
         int res = 0;
+        // 3. 当退到最后一位退出
         while (x != 0) {
+            // 4. 循环取出最后一位放在进位之后的res
             int prevRes = res;
             res = prevRes * 10 + x % 10;
+            // 5. 倒推回去判断是否溢出
             if ((res - x % 10) / 10 != prevRes) return 0;
+            // 2. 循环res除以10退位
             x /= 10;
         }
         return res;
