@@ -1,1 +1,0 @@
-cd ../04-dapp && npm run ganache
