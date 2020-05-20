@@ -24,7 +24,7 @@ package 刷题.高频题;
  * 3.  2 阶 + 1
  * <p>
  * 作者：LeetCode
- * 链接：https://leetcode-cn.com/problems/climbing-stairs/solution/pa-lou-ti-by-leetcode/
+ * 链接：https://leetcode-cn.com/problems/climbing-stairs/
  * 来源：力扣（LeetCode）
  * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
  */
