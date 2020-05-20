@@ -31,7 +31,7 @@ package 刷题.高频题;
 public class _70_爬楼梯 {
     public int climbStairs(int n) {
         // 1. 如果只有一阶, 则只有一种选择
-        if (n == 1) return 1;
+        if (n <= 1) return n;
 
         int first = 1;
         // 2. 如果只有两阶, 则只有两种选择, 不进入循环
@@ -39,9 +39,9 @@ public class _70_爬楼梯 {
         // 3. 循环从第三阶开始, 到第n阶结束(包括n)
         for (int i = 3; i <= n; i++) {
             // 4. 斐波那契
-            int tmp = first + second;
+            int sum = first + second;
             first = second;
-            second = tmp;
+            second = sum;
         }
         return second;
     }
