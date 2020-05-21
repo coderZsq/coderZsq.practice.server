@@ -1,0 +1,13 @@
+// 使用的协议版本 proto3 proto2
+syntax = "proto3";
+// 生成的Java类的包名
+option java_package = "com.coderzsq.serialization.domain";
+// 创建一个文件名 PersonModel
+option java_outer_classname = "PersonModel";
+
+// 具体需要系列化的类
+message Person {
+    // 对于后面的数字是唯一的一个编号
+    string name = 1;
+    int32 age = 2;
+}
