@@ -1,4 +1,4 @@
-package 标签.数组;
+package 标签.哈希表;
 
 import java.util.HashMap;
 import java.util.Map;
