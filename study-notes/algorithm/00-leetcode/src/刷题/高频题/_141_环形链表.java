@@ -47,7 +47,7 @@ public class _141_环形链表 {
         // 2. 定义慢指针, 慢指针每一次走一格
         ListNode slow = head;
         // 3. 定义快指针, 快指针每一次走两格
-        ListNode fast = head;
+        ListNode fast = head.next;
         while (fast.next != null && fast.next.next != null) {
             slow = slow.next;
             fast = fast.next.next;

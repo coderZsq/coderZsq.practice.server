@@ -53,7 +53,7 @@ public class _234_回文链表 {
 
     private ListNode middleNode(ListNode head) {
         ListNode slow = head;
-        ListNode fast = head;
+        ListNode fast = head.next;
         while (fast.next != null && fast.next.next != null) {
             slow = slow.next;
             fast = fast.next.next;

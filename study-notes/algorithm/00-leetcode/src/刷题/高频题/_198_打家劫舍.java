@@ -25,16 +25,16 @@ package 刷题.高频题;
 public class _198_打家劫舍 {
     public int rob(int[] nums) {if (nums == null) return 0;
         // 1. 定义变量 (偷, 不偷)
-        int prevMax = 0, curMax = 0;
+        int first = 0, second = 0;
         // 2. 遍历每间屋子
         for (int x : nums) {
             // 3. 保存下如果不偷的值
-            int tmp = curMax;
+            int tmp = second;
             // 4. 比较两种偷法的最大值
-            curMax = Math.max(prevMax + x, curMax);
+            second = Math.max(first + x, second);
             // 5. 覆盖进行循环
-            prevMax = tmp;
+            first = tmp;
         }
-        return curMax;
+        return second;
     }
 }
