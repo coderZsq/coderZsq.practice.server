@@ -1,8 +1,7 @@
 package com.coderZsq;
 
-import org.omg.CORBA.PRIVATE_MEMBER;
-
 public class KMP {
+
     public static int indexOf(String text, String pattern) {
         if (text == null || pattern == null) return -1;
         char[] textChars = text.toCharArray();
