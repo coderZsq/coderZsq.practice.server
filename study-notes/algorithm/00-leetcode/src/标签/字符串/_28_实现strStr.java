@@ -1,4 +1,4 @@
-package 刷题.高频题;
+package 标签.字符串;
 
 /**
  * 实现 strStr() 函数。
