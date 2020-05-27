@@ -27,6 +27,6 @@ import java.util.List;
  */
 public class _118_杨辉三角 {
     public List<List<Integer>> generate(int numRows) {
-
+        return null;
     }
 }

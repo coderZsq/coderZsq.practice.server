@@ -25,6 +25,6 @@ package 刷题.高频题;
  */
 public class _28_实现strStr {
     public int strStr(String haystack, String needle) {
-
+        return 0;
     }
 }
