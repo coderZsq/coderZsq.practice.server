@@ -24,6 +24,17 @@ package 刷题.高频题;
  */
 public class _344_反转字符串 {
     public void reverseString(char[] s) {
-
+        // 1. 定义双指针变量
+        int l = 0, r = s.length - 1;
+        // 2. 相等退出
+        while (l < r) {
+            // 3. 交换收尾
+            char tmp = s[l];
+            s[l] = s[r];
+            s[r] = tmp;
+            // 4. 往中间遍历
+            l++;
+            r--;
+        }
     }
 }
