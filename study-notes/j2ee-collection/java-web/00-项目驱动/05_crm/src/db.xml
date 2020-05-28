@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<db>
+    <url>jdbc:mysql://localhost:3306/crm</url>
+    <username>root</username>
+    <password>root</password>
+</db>

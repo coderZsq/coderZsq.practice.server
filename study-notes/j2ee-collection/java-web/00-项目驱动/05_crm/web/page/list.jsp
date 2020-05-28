@@ -13,7 +13,7 @@
 </head>
 <body>
 
-<a href="page/add.html">添加</a>
+<a href="/crm/page/add.html">添加</a>
 
 <table>
     <thead>

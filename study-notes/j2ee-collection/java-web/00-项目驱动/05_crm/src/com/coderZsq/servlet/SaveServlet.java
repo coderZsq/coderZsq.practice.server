@@ -41,28 +41,4 @@ public class SaveServlet extends HttpServlet {
             request.getRequestDispatcher("/page/error.jsp").forward(request, response);
         }
     }
-
-    // @Override
-    // protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    //     try {
-    //         // 设置编码
-    //         request.setCharacterEncoding("UTF-8");
-    //
-    //         String sql = "INSERT INTO customer(name, age, height) VALUES (?, ?, ?)";
-    //         Class.forName("com.mysql.jdbc.Driver");
-    //         // 从数据库获取所有的客户数据
-    //         try (Connection conn = DriverManager.getConnection(Constants.URL, Constants.USERNAME, Constants.PASSWORD);
-    //              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-    //             pstmt.setString(1, request.getParameter("name"));
-    //             pstmt.setInt(2, Integer.parseInt(request.getParameter("age")));
-    //             pstmt.setDouble(3, Double.parseDouble(request.getParameter("height")));
-    //             pstmt.executeUpdate();
-    //
-    //             // 重定向到list页面
-    //             response.sendRedirect("/crm/list");
-    //         }
-    //     } catch (Exception e) {
-    //         e.printStackTrace();
-    //     }
-    // }
 }
