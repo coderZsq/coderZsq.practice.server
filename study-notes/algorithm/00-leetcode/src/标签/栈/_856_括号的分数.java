@@ -8,23 +8,24 @@ import java.util.Stack;
  * @author zhushuangquan
  */
 public class _856_括号的分数 {
-    public int scoreOfParentheses(String S) {
-        Stack<Character> stack = new Stack<>();
-        char[] c = S.toCharArray();
+    public static int scoreOfParentheses(String S) {
+        if (S == null || S.length() == 0) return 0;
+        char[] chars = S.toCharArray();
+        // 定义一个左括号的标记
+        boolean bracket = true;
         int sum = 0;
-        boolean f = true;
-        for (int i = 0; i < c.length; i++) {
-            if (c[i] == '(') {
-                stack.add(c[i]);
-                f = true;
+        Stack stack = new Stack();
+        for (int i = 0; i < chars.length; i++) {
+            char c = chars[i];
+            if (c == '(') {
+                stack.push(c);
+                bracket = true;
             } else {
-                if (f) {
+                if (bracket) {
                     sum += Math.pow(2, stack.size() - 1);
-                    stack.pop();
-                    f = false;
-                } else {
-                    stack.pop();
+                    bracket = false;
                 }
+                stack.pop();
             }
         }
         return sum;
