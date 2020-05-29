@@ -1,6 +1,5 @@
-package com.coderzsq.rpc.v1;
+package com.coderZsq.rpc;
 
-import com.coderZsq.rpc.v1.common.RpcRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +15,7 @@ public class RpcProxy {
     private RpcClient rpcClient;
 
     // 通用的代理对象, 可以代理任何接口
-    public <T> T getProxy(Class<T> interfaceClass) {
+    public <T> T getProxy(final Class<T> interfaceClass) {
         return (T) Proxy.newProxyInstance(interfaceClass.getClassLoader(), // 类加载器
                 new Class[]{interfaceClass},
                 new InvocationHandler() {
