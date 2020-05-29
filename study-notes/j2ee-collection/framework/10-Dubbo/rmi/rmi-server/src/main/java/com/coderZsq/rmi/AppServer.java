@@ -4,7 +4,7 @@ import java.rmi.Naming;
 import java.rmi.registry.LocateRegistry;
 
 // 启动服务
-public class APPServer {
+public class AppServer {
     public static void main(String[] args) throws Exception {
         // 1. 注册服务端口
         LocateRegistry.createRegistry(1099);
