@@ -1,0 +1,12 @@
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://dubbo.apache.org/schema/dubbo"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://dubbo.apache.org/schema/dubbo http://dubbo.apache.org/schema/dubbo/dubbo.xsd">
+    <!--1 配置应用名称-->
+    <dubbo:application name="dubbo-client"/>
+    <!--2 配置注册中心-->
+    <dubbo:registry address="zookeeper//172.16.21.175:2181"/>
+    <!--3 引入服务-->
+    <dubbo:reference interface="com.coderZsq.IHelloService" id="helloService"/>
+</beans>
