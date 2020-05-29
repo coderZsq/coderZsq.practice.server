@@ -6,7 +6,7 @@
     <!--1 配置应用名称-->
     <dubbo:application name="dubbo-client"/>
     <!--2 配置注册中心-->
-    <dubbo:registry address="zookeeper//172.16.21.175:2181"/>
+    <dubbo:registry address="zookeeper://192.168.199.102:2181"/>
     <!--3 引入服务-->
     <dubbo:reference interface="com.coderZsq.IHelloService" id="helloService"/>
 </beans>
