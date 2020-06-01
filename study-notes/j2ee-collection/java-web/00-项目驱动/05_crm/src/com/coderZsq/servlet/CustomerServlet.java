@@ -34,6 +34,8 @@ public class CustomerServlet extends HttpServlet {
             method.invoke(this, request, response);
         } catch (Exception e) {
             e.printStackTrace();
+            request.setAttribute("error", "访问路径有问题");
+            request.getRequestDispatcher("/page/error.jsp").forward(request, response);
         }
     }
 
@@ -50,7 +52,7 @@ public class CustomerServlet extends HttpServlet {
         // 存储到数据库
         if (dao.save(customer)) {
             // 重定向
-            response.sendRedirect("/crm/list");
+            response.sendRedirect("/crm/customer/list");
         } else {
             request.setAttribute("error", "保存客户信息失败");
             request.getRequestDispatcher("/page/error.jsp").forward(request, response);

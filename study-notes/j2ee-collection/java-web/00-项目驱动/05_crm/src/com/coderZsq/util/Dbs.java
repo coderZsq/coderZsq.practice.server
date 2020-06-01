@@ -57,12 +57,12 @@ public class Dbs {
                     pstmt.setObject(i + 1, args[i]);
                 }
                 // 执行
-                ResultSet rs = pstmt.executeQuery();
                 List<T> array = new ArrayList<>();
-                for (int row = 0; rs.next(); row++) {
-                    array.add(mapper.map(rs, row));
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    for (int row = 0; rs.next(); row++) {
+                        array.add(mapper.map(rs, row));
+                    }
                 }
-                rs.close();
                 return array;
             }
         } catch (Exception e) {
