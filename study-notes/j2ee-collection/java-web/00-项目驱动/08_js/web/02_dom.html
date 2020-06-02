@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        // function add() {
+        //     let li = document.createElement('li')
+        //     let txt = document.createTextNode('测试')
+        //     li.appCodeName(txt)
+        //
+        //     document.getElementsByTagName('ul')[0].append(l1)
+        // }
+        
+        function remove() {
+            // 通过css选择器查找DOM对象
+            document.querySelector('div span').remove()
+        }
+    </script>
+</head>
+<body>
+
+<div>
+    <span>我是span1</span>
+</div>
+<span>我是span2</span>
+
+<ul>
+    <li>111</li>
+    <li>222</li>
+    <li>333</li>
+</ul>
+
+<button onclick="remove()">添加</button>
+
+</body>
+</html>

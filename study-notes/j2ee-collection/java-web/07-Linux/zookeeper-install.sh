@@ -72,7 +72,7 @@ vi zoo.cfg
 # Using config: /usr/local/zookeeper-server-01/bin/../conf/zoo.cfg
 # Client port found: 2181. Client address: localhost.
 # Mode: follower
-/usr/local/zookeeper-server-02/bin/zkServer.sh status
+/usr/local/zookeeper-server-02cd/bin/zkServer.sh status
 # ZooKeeper JMX enabled by default
 # Using config: /usr/local/zookeeper-server-02/bin/../conf/zoo.cfg
 # Client port found: 2182. Client address: localhost.
