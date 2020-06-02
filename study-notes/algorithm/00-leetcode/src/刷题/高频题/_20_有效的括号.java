@@ -42,7 +42,7 @@ import java.util.Stack;
  */
 public class _20_有效的括号 {
     // 1. 使用哈希表装载括号
-    static HashMap<Character, Character> map = new HashMap<>();
+    private static HashMap<Character, Character> map = new HashMap<>();
 
     // 2. 初始化括号
     static {

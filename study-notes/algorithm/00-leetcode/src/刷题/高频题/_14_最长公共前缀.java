@@ -29,7 +29,7 @@ public class _14_最长公共前缀 {
         String prefix = strs[0];
         // 2. 遍历和后面的每一个字符串进行比较
         for (int i = 1; i < strs.length; i++) {
-            // 3. 判断字符串是否包含 前缀
+            // 3. 判断字符串是否以prefix前缀开头 != 0 表示不是prefix开头
             while (strs[i].indexOf(prefix) != 0) {
                 // 4. 如果不匹配, 从后删减模式串
                 prefix = prefix.substring(0, prefix.length() - 1);
