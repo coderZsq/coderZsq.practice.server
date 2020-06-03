@@ -44,13 +44,15 @@ public class _202_快乐数 {
         // 8. 使用快慢指针判断是否有环
         int slow = n;
         int fast = next(n);
-        // 9. 退出条件 快指针 == 1 为快乐数, 或者指针相遇有环退出, 不为快乐数
-        while (fast != 1 && fast != slow) {
-            // 10. 快慢指针赛跑
-            slow = next(slow);
+        // 9. 进行循环
+        while (true) {
+            // 10. 快慢指针
             fast = next(next(fast));
+            slow = next(slow);
+            // 11. 如果 fast == 1 判定为快乐数 (必须先判断, 因为有 fast = slow = 1)
+            if (fast == 1) return true;
+            // 12. 快慢指针相遇为有环, 判定不是快乐数
+            if (fast == slow) return false;
         }
-        // 11. 判断是否是快乐数
-        return fast == 1;
     }
 }
