@@ -1,8 +1,5 @@
 package 刷题.高频题;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 /**
  * 给定一个整数数组 nums ，找到一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。
  * <p>
@@ -85,12 +82,5 @@ public class _53_最大子序和 {
 
         // 4. 将区间分成三份, 左 中 右, 分治取最大子序和
         return Math.max(leftMax + rightMax, Math.max(maxSubArrayDivideAndConquer(nums, begin, mid), maxSubArrayDivideAndConquer(nums, mid, end)));
-    }
-
-    @Test
-    public void test() {
-        int[] nums = new int[]{-2, 1, -3, 4, -1, 2, 1, -5, 4};
-        Assert.assertEquals(new 标签.动态规划._53_最大子序和().maxSubArray(nums), maxSubArrayOn(nums));
-        Assert.assertEquals(new 标签.动态规划._53_最大子序和().maxSubArray(nums), maxSubArrayDivideAndConquer(nums));
     }
 }

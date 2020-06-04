@@ -1,8 +1,5 @@
 package 刷题.高频题;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 import java.util.HashMap;
 
 /**
@@ -38,10 +35,5 @@ public class _1_两数之和 {
             map.put(nums[i], i);
         }
         return null;
-    }
-
-    @Test
-    public void test() {
-        Assert.assertArrayEquals(new int[]{0, 1}, twoSum(new int[]{2, 7, 11, 15}, 9));
     }
 }

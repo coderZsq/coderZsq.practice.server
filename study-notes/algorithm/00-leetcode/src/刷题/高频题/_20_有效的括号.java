@@ -1,8 +1,5 @@
 package 刷题.高频题;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 import java.util.HashMap;
 import java.util.Stack;
 
@@ -76,15 +73,5 @@ public class _20_有效的括号 {
         }
         // 10. 判断栈是否为空
         return stack.isEmpty();
-    }
-
-    @Test
-    public void test() {
-        Assert.assertEquals(new 标签.栈._20_有效的括号().isValid("()"), new _20_有效的括号().isValid("()"));
-        Assert.assertEquals(new 标签.栈._20_有效的括号().isValid("()[]{}"), new _20_有效的括号().isValid("()[]{}"));
-        Assert.assertEquals(new 标签.栈._20_有效的括号().isValid("(]"), new _20_有效的括号().isValid("(]"));
-        Assert.assertEquals(new 标签.栈._20_有效的括号().isValid("([)]"), new _20_有效的括号().isValid("([)]"));
-        Assert.assertEquals(new 标签.栈._20_有效的括号().isValid("{[]}"), new _20_有效的括号().isValid("{[]}"));
-
     }
 }
