@@ -1,4 +1,4 @@
-package 刷题.高频题;
+package 标签.数组;
 
 import java.util.Arrays;
 
