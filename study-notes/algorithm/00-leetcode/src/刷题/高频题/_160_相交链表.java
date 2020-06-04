@@ -54,6 +54,15 @@ import 标签.链表.ListNode;
  */
 public class _160_相交链表 {
     public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
-        return null;
+        ListNode curA = headA;
+        ListNode curB = headB;
+        // 1. 将两条链表相互拼接进行遍历
+        while (curA != curB) {
+            // 2. 当遍历到元素为null时进行拼接
+            curA = curA == null ? headB : curA.next;
+            curB = curB == null ? headA : curB.next;
+        }
+        // 3. 当遍历到的节点相同是则为相交
+        return curA;
     }
 }
