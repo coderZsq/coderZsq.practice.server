@@ -1,5 +1,7 @@
 package 刷题.高频题;
 
+import java.util.Arrays;
+
 /**
  * 给定两个数组，编写一个函数来计算它们的交集。
  * <p>
@@ -22,7 +24,27 @@ package 刷题.高频题;
  * 如果 nums2 的元素存储在磁盘上，磁盘内存是有限的，并且你不能一次加载所有的元素到内存中，你该怎么办？
  */
 public class _350_两个数组的交集II {
-    public int[] intersect(int[] nums1, int[] nums2) {
-        return null;
+    public static int[] intersect(int[] nums1, int[] nums2) {
+        // 1. 先将两个数组进行排序
+        Arrays.sort(nums1);
+        Arrays.sort(nums2);
+        // 2. 定义三指针
+        int i1 = 0, i2 = 0, cur = 0;
+        // 3. 同时遍历两个数组
+        while (i1 < nums1.length && i2 < nums2.length) {
+            // 4. 如果不相等且小的跳过
+            if (nums1[i1] < nums2[i2]) {
+                i1++;
+            } else if (nums1[i1] > nums2[i2]) {
+                i2++;
+            } else {
+                // 5. 相等则为交集赋值
+                nums1[cur++] = nums1[i1];
+                i1++;
+                i2++;
+            }
+        }
+        // 5. 截断拷贝数组
+        return Arrays.copyOfRange(nums1, 0, cur);
     }
 }
