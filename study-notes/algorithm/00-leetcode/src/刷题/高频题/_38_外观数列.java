@@ -34,26 +34,26 @@ package 刷题.高频题;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class _38_外观数列 {
-    public static String countAndSay(int n) {
+    public String countAndSay(int n) {
         if (n == 1) return "1";
         // 1. 递归, 缩小规模
         char[] chars = countAndSay(n - 1).toCharArray();
-        // 2. loc 为起始点, offset 为相同字符的偏移
-        int loc = 0, offset = 1;
+        // 2. start 为起始点, stop 为相同字符的偏移
+        int start = 0, stop = 1;
         StringBuilder s = new StringBuilder();
-        while (offset < chars.length) {
+        while (stop < chars.length) {
             // 4. 如果前一个和后一个不相等
-            if (chars[loc] != chars[offset]) {
+            if (chars[start] != chars[stop]) {
                 // 6. 计算长度
-                s.append(offset - loc).append(chars[loc]);
+                s.append(stop - start).append(chars[start]);
                 // 5. 动态规划
-                loc = offset;
+                start = stop;
             }
             // 3. 循环
-            offset++;
+            stop++;
         }
         // 7. 补上 n == 2 的情况
-        s.append(offset - loc).append(chars[loc]);
+        s.append(stop - start).append(chars[start]);
         return s.toString();
     }
 }
