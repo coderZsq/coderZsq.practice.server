@@ -1,6 +1,4 @@
-package 标签.栈;
-
-import 标签.树.TreeNode;
+package 标签.树;
 
 import java.util.Arrays;
 import java.util.Stack;
