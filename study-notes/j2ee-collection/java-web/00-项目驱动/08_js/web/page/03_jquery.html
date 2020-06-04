@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div>
+    <span>我是span1</span>
+</div>
+<div>
+    <span>我是span2</span>
+</div>
+<div>
+    <span>我是span3</span>
+</div>
+
+<ul>
+    <li>111</li>
+    <li>222</li>
+    <li>333</li>
+</ul>
+
+<!--<button onclick="remove()">删除</button>-->
+<button>删除</button>
+
+<script src="js/jquery-3.5.1.min.js"></script>
+<script>
+    // document.querySelector('div span').remove()
+    // $('div span').remove()
+
+    // window.onload = function () {
+    //     $('div span').remove()
+    // }
+
+    // $(function () {
+    //     // 利用$函数找到的节点, 是jQuery包装过后的节点, 并非JS原生的DOM节点
+    //     $('div span').remove()
+    // })
+
+    // function remove() {
+    //     $('div span').append('<a href="http://baidu.com">百度</a>')
+    // }
+
+    // document.querySelector('button').onclick = function () {
+    //     alert(123)
+    // }
+
+    // $('button').on('click', function () {
+    //     alert(444)
+    // })
+
+    $('button').click(() => {
+        alert(555)
+    })
+</script>
+</body>
+</html>
