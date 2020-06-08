@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @Service
 public class OrderServiceImpl implements IOrderService {
-    @Reference(mock = "com.coderZsq.service.impl.ProductServiceImpl")
+    @Reference(timeout = 100000, mock = "com.coderZsq.service.impl.ProductServiceImpl")
     private IProductService productService;
 
     @Override

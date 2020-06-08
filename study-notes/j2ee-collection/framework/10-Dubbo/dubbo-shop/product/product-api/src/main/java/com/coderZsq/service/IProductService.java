@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface IProductService {
     List<Product> list();
-    Product get(Long id);
+    Product get(Long id) throws BizException;
 }
