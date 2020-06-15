@@ -39,7 +39,7 @@ public class _654_最大二叉树 {
 
     /**
      * 题目变种
-     * <p>
+     *
      * 返回一个数组, 数组里面存着每个节点的父节点的索引 (如果没有父节点, 就存-1)
      */
     public int[] parentIndexes(int[] nums) {
