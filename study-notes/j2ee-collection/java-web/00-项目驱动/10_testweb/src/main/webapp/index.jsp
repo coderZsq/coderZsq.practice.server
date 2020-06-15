@@ -11,6 +11,10 @@
     <title>Title</title>
 </head>
 <body>
-    This is 10_testweb
+    <form action="/test/login" method="get">
+        <p><input placeholder="请输入用户名" name="username"></p>
+        <p><input placeholder="请输入密码" name="password"></p>
+        <p><button type="submit">登录</button></p>
+    </form>
 </body>
 </html>

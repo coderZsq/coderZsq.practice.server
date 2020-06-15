@@ -11,6 +11,11 @@
     <!-- 打包方式 -->
     <packaging>war</packaging>
 
+    <!-- 属性 -->
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
     <!-- 依赖 -->
     <dependencies>
         <dependency>
@@ -19,24 +24,29 @@
             <version>4.0.1</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>1.1.22</version>
+        </dependency>
     </dependencies>
 
     <build>
+        <finalName>10_testweb</finalName>
         <plugins>
-            <plugin>
-                <groupId>org.apache.tomcat.maven</groupId>
-                <artifactId>tomcat7-maven-plugin</artifactId>
-                <version>2.2</version>
-                <configuration>
-                    <uriEncoding>UTF-8</uriEncoding>
-                    <path>/test</path>
-                    <update>true</update>
-                    <url>http://localhost:8080/manager/text</url>
-                    <server>tomcat9</server>
-                    <!--<username>root</username>-->
-                    <!--<password>root</password>-->
-                </configuration>
-            </plugin>
+        <!--<plugin>-->
+        <!--    <groupId>org.apache.tomcat.maven</groupId>-->
+        <!--    <artifactId>tomcat7-maven-plugin</artifactId>-->
+        <!--    <version>2.2</version>-->
+        <!--    <configuration>-->
+        <!--        <update>true</update>-->
+        <!--        <path>/test</path>-->
+        <!--        <port>8080</port>-->
+        <!--        <server>tomcat9</server>-->
+        <!--        &lt;!&ndash;<url>http://localhost:8080/manager/text</url>&ndash;&gt;-->
+        <!--        <uriEncoding>UTF-8</uriEncoding>-->
+        <!--    </configuration>-->
+        <!--</plugin>-->
         </plugins>
     </build>
 </project>
