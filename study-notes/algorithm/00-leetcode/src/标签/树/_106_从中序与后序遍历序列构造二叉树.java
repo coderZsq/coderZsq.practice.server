@@ -23,7 +23,21 @@ package 标签.树;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class _106_从中序与后序遍历序列构造二叉树 {
-    public TreeNode buildTree(int[] inorder, int[] postorder) {
-        return null;
+    public TreeNode recursive(int[] inorder, int[] postorder) {
+        return recursive(inorder, 0, inorder.length - 1, postorder, 0, postorder.length - 1);
+    }
+
+    public TreeNode recursive(int[] inorder, int iStart, int iEnd, int[] postorder, int pStart, int pEnd) {
+        if (iStart > iEnd || pStart > pEnd) return null;
+        TreeNode root = new TreeNode(postorder[pEnd]);
+        if (pEnd ==  pStart) return root;
+        int i = iEnd;
+        while (i >= iStart) {
+            if (inorder[i] == postorder[pEnd]) break;
+            i--;
+        }
+        root.left = recursive(inorder, iStart, i - 1, postorder, pStart, pStart + (i -iStart - 1) );
+        root.right = recursive(inorder, i + 1, iEnd, postorder, pStart + (i -iStart), pEnd - 1);
+        return root;
     }
 }
