@@ -45,9 +45,34 @@ import 标签.树.TreeNode;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 
-// TODO
+// TODO 树
 public class _450_删除二叉搜索树中的节点 {
-    public TreeNode deleteNode(TreeNode root, int key) {
-        return null;
+    public int successor(TreeNode root) {
+        root = root.right;
+        while (root.left != null) root = root.left;
+        return root.val;
     }
+
+    public int predecessor(TreeNode root) {
+        root = root.left;
+        while (root.right != null) root = root.right;
+        return root.val;
+    }
+
+    public TreeNode deleteNode(TreeNode root, int key) {
+        if (root == null) return null;
+        if (key > root.val) root.right = deleteNode(root.right, key);
+        else if (key < root.val) root.left = deleteNode(root.left, key);
+        else {
+            if (root.left == null && root.right == null) root = null;
+            else if (root.right != null) {
+                root.val = successor(root);
+                root.right = deleteNode(root.right, root.val);
+            }
+            else {
+                root.val = predecessor(root);
+                root.left = deleteNode(root.left, root.val);
+            }
+        }
+        return root;    }
 }

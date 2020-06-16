@@ -34,7 +34,7 @@ import 标签.树.TreeNode;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 
-// TODO
+// TODO 树
 public class _530_二叉搜索树的最小绝对差 {
     public int getMinimumDifference(TreeNode root) {
         return 0;

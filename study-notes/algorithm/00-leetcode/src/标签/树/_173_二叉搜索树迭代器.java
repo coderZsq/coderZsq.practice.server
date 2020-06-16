@@ -1,6 +1,7 @@
-package 刷题.待完成;
+package 标签.树;
 
-import 标签.树.TreeNode;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 实现一个二叉搜索树迭代器。你将使用二叉搜索树的根节点初始化迭代器。
@@ -34,23 +35,36 @@ import 标签.树.TreeNode;
  * 链接：https://leetcode-cn.com/problems/binary-search-tree-iterator
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
-
-// TODO
 public class _173_二叉搜索树迭代器 {
     class BSTIterator {
+        private List<Integer> list;
+        private int index;
 
         public BSTIterator(TreeNode root) {
-
+            list = new ArrayList<>();
+            index = 0;
+            inorder(root);
         }
 
-        /** @return the next smallest number */
+        /**
+         * @return the next smallest number
+         */
         public int next() {
-            return 0;
+            return list.get(index++);
         }
 
-        /** @return whether we have a next smallest number */
+        /**
+         * @return whether we have a next smallest number
+         */
         public boolean hasNext() {
-            return false;
+            return index < list.size();
+        }
+
+        private void inorder(TreeNode root) {
+            if (root == null) return;
+            inorder(root.left);
+            list.add(root.val);
+            inorder(root.right);
         }
     }
 }

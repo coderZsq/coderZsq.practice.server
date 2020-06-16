@@ -1,6 +1,4 @@
-package 刷题.待完成;
-
-import 标签.树.TreeNode;
+package 标签.树;
 
 /**
  * 给定一个二叉搜索树, 找到该树中两个指定节点的最近公共祖先。
@@ -34,10 +32,16 @@ import 标签.树.TreeNode;
  * 链接：https://leetcode-cn.com/problems/lowest-common-ancestor-of-a-binary-search-tree
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
-
-// TODO
 public class _235_二叉搜索树的最近公共祖先 {
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-        return null;
+        if (root == null) return null;
+        // 如果两个节点都比当前遍历到的节点要小, 则往左边(小)节点去找
+        if (root.val > p.val && root.val > q.val) {
+            return lowestCommonAncestor(root.left, p, q);
+        } else if (root.val < p.val && root.val < q.val) {
+            return lowestCommonAncestor(root.right, p, q);
+        } else {
+            return root;
+        }
     }
 }
