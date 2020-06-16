@@ -1,4 +1,6 @@
-package 标签.树;
+package 刷题.待完成;
+
+import 标签.树.TreeNode;
 
 /**
  * 返回与给定的前序和后序遍历匹配的任何二叉树。
@@ -23,26 +25,10 @@ package 标签.树;
  * 链接：https://leetcode-cn.com/problems/construct-binary-tree-from-preorder-and-postorder-traversal
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
+
+// TODO
 public class _889_根据前序和后序遍历构造二叉树 {
-    int[] pre, post;
     public TreeNode constructFromPrePost(int[] pre, int[] post) {
-        this.pre = pre;
-        this.post = post;
-        return recursive(0, 0, pre.length);
-    }
-
-    public TreeNode recursive(int i0, int i1, int N) {
-        if (N == 0) return null;
-        TreeNode root = new TreeNode(pre[i0]);
-        if (N == 1) return root;
-
-        int L = 1;
-        for (; L < N; ++L)
-            if (post[i1 + L-1] == pre[i0 + 1])
-                break;
-
-        root.left = recursive(i0+1, i1, L);
-        root.right = recursive(i0+L+1, i1+L, N-1-L);
-        return root;
+        return null;
     }
 }

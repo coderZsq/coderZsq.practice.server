@@ -1,4 +1,4 @@
-package 刷题.高频题;
+package 刷题.待完成;
 
 /**
  * 不使用运算符 + 和 - ​​​​​​​，计算两整数 ​​​​​​​a 、b ​​​​​​​之和。
@@ -16,13 +16,10 @@ package 刷题.高频题;
  * 链接：https://leetcode-cn.com/problems/sum-of-two-integers/
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
+
+// TODO
 public class _371_两整数之和 {
     public int getSum(int a, int b) {
-        while (b != 0) {
-            int c = (a & b) << 1;
-            a ^= b;
-            b = c;
-        }
-        return a;
+        return 0;
     }
 }
