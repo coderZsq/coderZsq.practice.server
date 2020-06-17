@@ -1,6 +1,4 @@
-package 刷题.待完成;
-
-import 标签.树.TreeNode;
+package 标签.树;
 
 /**
  * 给定二叉搜索树（BST）的根节点和一个值。 你需要在BST中找到节点值等于给定值的节点。 返回以该节点为根的子树。 如果节点不存在，则返回 NULL。
@@ -27,10 +25,14 @@ import 标签.树.TreeNode;
  * 链接：https://leetcode-cn.com/problems/search-in-a-binary-search-tree
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
-
-// TODO 树
 public class _700_二叉搜索树中的搜索 {
     public TreeNode searchBST(TreeNode root, int val) {
-        return null;
+        if (root == null) return null;
+        if (val == root.val) return root;
+        if (val > root.val) {
+            return searchBST(root.right, val);
+        } else {
+            return searchBST(root.left, val);
+        }
     }
 }

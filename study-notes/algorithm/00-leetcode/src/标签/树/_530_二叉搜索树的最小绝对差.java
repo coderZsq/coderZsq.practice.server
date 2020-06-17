@@ -1,6 +1,4 @@
-package 刷题.待完成;
-
-import 标签.树.TreeNode;
+package 标签.树;
 
 /**
  * 给你一棵所有节点为非负值的二叉搜索树，请你计算树中任意两节点的差的绝对值的最小值。
@@ -33,10 +31,23 @@ import 标签.树.TreeNode;
  * 链接：https://leetcode-cn.com/problems/minimum-absolute-difference-in-bst/
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
-
-// TODO 树
 public class _530_二叉搜索树的最小绝对差 {
+    private Integer min = Integer.MAX_VALUE;
+    private Integer prev = null;
+
     public int getMinimumDifference(TreeNode root) {
-        return 0;
+        inorder(root);
+        return min;
+    }
+
+    public void inorder(TreeNode node) {
+        if (node == null) return;
+        inorder(node.left);
+        // 中序遍历, 比较前一个节点和当前节点的差值
+        if (prev != null) {
+            min = Math.min(min, node.val - prev);
+        }
+        prev = node.val;
+        inorder(node.right);
     }
 }

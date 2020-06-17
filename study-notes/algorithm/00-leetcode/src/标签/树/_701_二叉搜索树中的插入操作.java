@@ -1,6 +1,4 @@
-package 刷题.待完成;
-
-import 标签.树.TreeNode;
+package 标签.树;
 
 /**
  * 给定二叉搜索树（BST）的根节点和要插入树中的值，将值插入二叉搜索树。 返回插入后二叉搜索树的根节点。 保证原始二叉搜索树中不存在新值。
@@ -39,10 +37,14 @@ import 标签.树.TreeNode;
  * 链接：https://leetcode-cn.com/problems/insert-into-a-binary-search-tree
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
-
-// TODO 树
 public class _701_二叉搜索树中的插入操作 {
     public TreeNode insertIntoBST(TreeNode root, int val) {
-        return null;
+        if (root == null) return new TreeNode(val);
+        if (val > root.val) {
+            root.right = insertIntoBST(root.right, val);
+        } else {
+            root.left = insertIntoBST(root.left, val);
+        }
+        return root;
     }
 }
