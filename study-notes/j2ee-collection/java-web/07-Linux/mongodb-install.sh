@@ -163,4 +163,21 @@ use admin
 sh.addShard("shardRs/127.0.0.1:27017,127.0.0.1:27018,127.0.0.1:27019")
 
 # 重置分片数据块大小
-use config 
+# [默认是64M, 这里测试简单弄小一点]
+use config
+db.settings.save({"_id": "chunksize", "value": 1})
+
+# 准备数据, 尽可能多
+use mongodemo
+for (i = 1; i <= 100; i++) { db.users.insert({"id": 1, "name": "coderZsq" + i, age: i, money: i}) }
+db.users.find()
+
+# 对指定库指定集合开启分片功能支持
+sh.enableSharding("mongodemo")
+db.users.createIndex({"id": 1})
+sh.shardCollection("mongodemo.users", {"id": 1})
+
+# 分片情况查看
+db.users.stats()
+sh.status()
+db.users.getShardDistribution()
