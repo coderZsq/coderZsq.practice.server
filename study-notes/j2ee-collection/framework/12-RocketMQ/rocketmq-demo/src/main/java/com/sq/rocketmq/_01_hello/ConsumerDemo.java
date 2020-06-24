@@ -13,7 +13,9 @@ public class ConsumerDemo {
         // 1. 创建一个消费者对象
         DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("group1");
         // 2. 设置NameServerAddr
-        consumer.setNamesrvAddr("172.16.21.175:9876");
+        // 生产环境, 测试环境 NameServerAddr 不一样
+        // 需要配置环境参数 export NAMESRV_ADDR=172.16.21.175:9876
+        // consumer.setNamesrvAddr("172.16.21.175:9876");
         // 3. 先订阅消息主题
         consumer.subscribe("01_hello", "*");
         // 4. 注册监听消息的处理

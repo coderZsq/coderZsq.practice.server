@@ -10,7 +10,7 @@ public class ProducerDemo {
         // 1. 创建一个生产者对象
         DefaultMQProducer producer = new DefaultMQProducer("group01");
         // 2. 设置NameServer的地址
-        producer.setNamesrvAddr("172.16.21.175:9876");
+        // producer.setNamesrvAddr("172.16.21.175:9876");
         // 3. 启动生产者
         producer.start();
         // 4. 创建消息Message
