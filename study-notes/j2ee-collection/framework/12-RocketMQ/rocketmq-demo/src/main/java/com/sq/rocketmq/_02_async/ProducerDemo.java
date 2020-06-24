@@ -47,7 +47,7 @@ public class ProducerDemo {
                     }
                 });
             } catch (MQClientException e) {
-                // 补救措施 把对应的消息先保存到另一个地方 MySQL, 自己到时候重新出发 发送消息
+                // 补救措施 把对应的消息先保存到另一个地方 MySQL, 自己到时候重新触发 发送消息
                 e.printStackTrace();
             } catch (RemotingException e) {
                 // 补救措施
