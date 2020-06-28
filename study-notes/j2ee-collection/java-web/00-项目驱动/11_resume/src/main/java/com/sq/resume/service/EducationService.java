@@ -1,10 +1,10 @@
-package com.sq.resume.dao;
+package com.sq.resume.service;
 
-import com.sq.resume.bean.Website;
+import com.sq.resume.bean.Education;
 
 import java.util.List;
 
-public interface WebsiteDao {
+public interface EducationService {
     /**
      * 删除
      */
@@ -18,17 +18,17 @@ public interface WebsiteDao {
     /**
      * 添加或更新
      */
-    boolean save(Website website);
+    boolean save(Education education);
 
     /**
      * 获取单个对象
      */
-    Website get(Integer id);
+    Education get(Integer id);
 
     /**
      * 获取多个对象
      */
-    List<Website> list();
+    List<Education> list();
 
     /**
      * 获取统计值

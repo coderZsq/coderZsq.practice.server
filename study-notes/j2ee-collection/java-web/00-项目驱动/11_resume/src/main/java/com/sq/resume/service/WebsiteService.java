@@ -1,10 +1,10 @@
-package com.sq.resume.dao;
+package com.sq.resume.service;
 
 import com.sq.resume.bean.Website;
 
 import java.util.List;
 
-public interface WebsiteDao {
+public interface WebsiteService {
     /**
      * 删除
      */
