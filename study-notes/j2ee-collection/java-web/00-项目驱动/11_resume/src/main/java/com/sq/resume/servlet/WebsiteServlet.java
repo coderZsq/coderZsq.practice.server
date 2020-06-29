@@ -2,7 +2,7 @@ package com.sq.resume.servlet;
 
 import com.sq.resume.bean.Website;
 import com.sq.resume.service.WebsiteService;
-import com.sq.resume.service.WebsiteServiceImpl;
+import com.sq.resume.service.impl.WebsiteServiceImpl;
 import org.apache.commons.beanutils.BeanUtils;
 
 import javax.servlet.annotation.WebServlet;
