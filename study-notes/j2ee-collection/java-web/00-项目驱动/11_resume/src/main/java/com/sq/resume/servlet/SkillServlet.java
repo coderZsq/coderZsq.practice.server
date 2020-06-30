@@ -1,10 +1,7 @@
 package com.sq.resume.servlet;
 
-import com.sq.resume.bean.Education;
 import com.sq.resume.bean.Skill;
-import com.sq.resume.service.EducationService;
 import com.sq.resume.service.SkillService;
-import com.sq.resume.service.impl.EducationServiceImpl;
 import com.sq.resume.service.impl.SkillServiceImpl;
 import org.apache.commons.beanutils.BeanUtils;
 

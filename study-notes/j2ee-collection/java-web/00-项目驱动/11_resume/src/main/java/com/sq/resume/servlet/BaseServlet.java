@@ -41,6 +41,15 @@ public class BaseServlet extends HttpServlet {
             method.invoke(this, request, response);
         } catch (Exception e) {
             e.printStackTrace();
+
+            // e一般是InvocationTargetException
+            Throwable cause = e;
+            while (cause.getCause() != null) {
+                cause = cause.getCause();
+            }
+
+            request.setAttribute("error", cause.getClass().getSimpleName() + ": " + cause.getMessage());
+            request.getRequestDispatcher("/WEB-INF/page/error.jsp").forward(request, response);
         }
     }
 }
