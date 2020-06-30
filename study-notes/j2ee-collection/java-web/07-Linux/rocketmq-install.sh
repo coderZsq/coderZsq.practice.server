@@ -30,7 +30,7 @@ nohup ./mqbroker -n 127.0.0.1:9876 &
 
 # 关闭服务
 ./mqshutdown broker
-./mqshutdown nameserver
+./mqshutdown namesrv
 
 # 下载管理控制台 
 https://github.com/apache/rocketmq-externals
@@ -62,3 +62,17 @@ export NAMESRV_ADDR=127.0.0.1:9876
 bin/tools.sh org.apache.rocketmq.example.quickstart.Producer
 # 消费者
 bin/tools.sh org.apache.rocketmq.example.quickstart.Consumer
+
+# 过滤消息配置
+vi conf/broker.conf
+# brokerClusterName = DefaultCluster
+# brokerName = broker-a
+# namesrvAddr = 127.0.0.1:9876
+# brokerId = 0
+# deleteWhen = 04
+# fileReservedTime = 48
+# brokerRole = ASYNC_MASTER
+# flushDiskType = ASYNC_FLUSH
+# enablePropertyFilter = true
+./mqshutdown broker
+nohup ./mqbroker -c ../conf/broker.conf &
