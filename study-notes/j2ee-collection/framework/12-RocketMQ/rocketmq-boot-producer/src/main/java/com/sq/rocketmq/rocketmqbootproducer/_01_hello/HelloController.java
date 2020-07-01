@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class HelloController {
     @Autowired
     private RocketMQTemplate rocketMQTemplate;
-
     private String topic = "01_boot_hello";
 
     // 需求: 把接收的msg消息发送到mq的topic中

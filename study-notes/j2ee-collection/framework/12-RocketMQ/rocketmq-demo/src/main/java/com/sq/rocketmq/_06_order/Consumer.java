@@ -16,7 +16,10 @@ public class Consumer {
         DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("06_order");
         consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
         consumer.subscribe("06_order", "TagA || TagC || TagD");
-        consumer.registerMessageListener(new MessageListenerOrderly() {
+        // 设置消费的线程数量
+        consumer.setConsumeThreadMin(8);
+        consumer.setConsumeThreadMax(12);
+        consumer.registerMessageListener(new MessageListenerOrderly() { // 每一个消费的队列, 都是只有一个线程去消费
             Random random = new Random();
             @Override
             public ConsumeOrderlyStatus consumeMessage(List<MessageExt> msgs, ConsumeOrderlyContext context) {
