@@ -76,3 +76,9 @@ vi conf/broker.conf
 # enablePropertyFilter = true
 ./mqshutdown broker
 nohup ./mqbroker -c ../conf/broker.conf &
+
+# namesrv配置
+vi conf/namesrv.conf
+# listenPort=9876
+# useEpollNativeSelector=true
+nohup ./mqnamesrv -c ../conf/namesrv.conf &

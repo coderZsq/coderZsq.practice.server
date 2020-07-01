@@ -232,10 +232,13 @@ public class BrokerController {
     }
 
     public boolean initialize() throws CloneNotSupportedException {
+        // 加载topic的配置信息
         boolean result = this.topicConfigManager.load();
-
+        // 加载啊消费者队列偏移量的配置
         result = result && this.consumerOffsetManager.load();
+        // 消费者订阅组
         result = result && this.subscriptionGroupManager.load();
+        // 消息过滤的设置
         result = result && this.consumerFilterManager.load();
 
         if (result) {
@@ -265,6 +268,7 @@ public class BrokerController {
             NettyServerConfig fastConfig = (NettyServerConfig) this.nettyServerConfig.clone();
             fastConfig.setListenPort(nettyServerConfig.getListenPort() - 2);
             this.fastRemotingServer = new NettyRemotingServer(fastConfig, this.clientHousekeepingService);
+            // 初始化一系列的线程池
             this.sendMessageExecutor = new BrokerFixedThreadPoolExecutor(
                 this.brokerConfig.getSendMessageThreadPoolNums(),
                 this.brokerConfig.getSendMessageThreadPoolNums(),
@@ -308,7 +312,7 @@ public class BrokerController {
                 TimeUnit.MILLISECONDS,
                 this.clientManagerThreadPoolQueue,
                 new ThreadFactoryImpl("ClientManageThread_"));
-
+            // 发送心跳信息
             this.heartbeatExecutor = new BrokerFixedThreadPoolExecutor(
                 this.brokerConfig.getHeartbeatThreadPoolNums(),
                 this.brokerConfig.getHeartbeatThreadPoolNums(),
@@ -337,6 +341,7 @@ public class BrokerController {
                 @Override
                 public void run() {
                     try {
+                        // 统计当前Broker的状态信息
                         BrokerController.this.getBrokerStats().record();
                     } catch (Throwable e) {
                         log.error("schedule record error.", e);
@@ -348,6 +353,7 @@ public class BrokerController {
                 @Override
                 public void run() {
                     try {
+                        // 持久化消费者的偏移
                         BrokerController.this.consumerOffsetManager.persist();
                     } catch (Throwable e) {
                         log.error("schedule persist consumerOffset error.", e);
@@ -359,6 +365,7 @@ public class BrokerController {
                 @Override
                 public void run() {
                     try {
+                        // 过滤参数检测
                         BrokerController.this.consumerFilterManager.persist();
                     } catch (Throwable e) {
                         log.error("schedule persist consumer filter error.", e);
