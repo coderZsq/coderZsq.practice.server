@@ -61,6 +61,7 @@ public interface Protocol {
      * 3. When there's check=false set in URL, the implementation must not throw exception but try to recover when
      * connection fails.
      *
+     *
      * @param <T>  Service type
      * @param type Service class
      * @param url  URL address for the remote service

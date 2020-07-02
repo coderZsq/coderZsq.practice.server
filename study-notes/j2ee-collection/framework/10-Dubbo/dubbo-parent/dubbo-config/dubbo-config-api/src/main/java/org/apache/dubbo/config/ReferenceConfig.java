@@ -150,11 +150,13 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
         this.repository = ApplicationModel.getServiceRepository();
     }
 
+    // 获取远程代理对象的入口
     public synchronized T get() {
         if (destroyed) {
             throw new IllegalStateException("The invoker of ReferenceConfig(" + url + ") has already destroyed!");
         }
         if (ref == null) {
+            // ref 代理对象, 初始化一个代理对象
             init();
         }
         return ref;
@@ -180,6 +182,7 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
         dispatch(new ReferenceConfigDestroyedEvent(this));
     }
 
+    // 初始化方法
     public synchronized void init() {
         if (initialized) {
             return;
@@ -191,8 +194,9 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
         }
 
         checkAndUpdateSubConfigs();
-
+        // @service
         checkStubAndLocal(interfaceClass);
+        // 检查mock数据
         ConfigValidationUtils.checkMock(interfaceClass, this);
 
         Map<String, String> map = new HashMap<String, String>();
@@ -245,8 +249,10 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
             }
         }
 
+        // 绑定主机操作
         String hostToRegistry = ConfigUtils.getSystemProperty(DUBBO_IP_TO_REGISTRY);
         if (StringUtils.isEmpty(hostToRegistry)) {
+            // 自动获取一个本地地址
             hostToRegistry = NetUtils.getLocalHost();
         } else if (isInvalidLocalHost(hostToRegistry)) {
             throw new IllegalArgumentException("Specified invalid registry ip from property:" + DUBBO_IP_TO_REGISTRY + ", value:" + hostToRegistry);
@@ -254,7 +260,7 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
         map.put(REGISTER_IP_KEY, hostToRegistry);
 
         serviceMetadata.getAttachments().putAll(map);
-
+        // createProxy 创建一个代理对象 map传递需要的参数
         ref = createProxy(map);
 
         serviceMetadata.setTarget(ref);
@@ -279,6 +285,7 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
             }
         } else {
             urls.clear();
+            // url属性
             if (url != null && url.length() > 0) { // user specified URL, could be peer-to-peer address, or register center's address.
                 String[] us = SEMICOLON_SPLIT_PATTERN.split(url);
                 if (us != null && us.length > 0) {
@@ -296,8 +303,10 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
                 }
             } else { // assemble URL from register center's configuration
                 // if protocols not injvm checkRegistry
+                // 通过注册中心获取对应的配置信息
                 if (!LOCAL_PROTOCOL.equalsIgnoreCase(getProtocol())) {
                     checkRegistry();
+                    // 获取注册中心的url地址
                     List<URL> us = ConfigValidationUtils.loadRegistries(this, false);
                     if (CollectionUtils.isNotEmpty(us)) {
                         for (URL u : us) {
@@ -314,9 +323,10 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
                 }
             }
 
-            if (urls.size() == 1) {
+            if (urls.size() == 1) { // 只有单个注册中心
+                // REF_PROTOCOL 是一个适配器对象 创建一个代理对象, 和url有关系, 注册中心的url registry://127.0.0.1
                 invoker = REF_PROTOCOL.refer(interfaceClass, urls.get(0));
-            } else {
+            } else { // 有多个注册中心
                 List<Invoker<?>> invokers = new ArrayList<Invoker<?>>();
                 URL registryURL = null;
                 for (URL url : urls) {

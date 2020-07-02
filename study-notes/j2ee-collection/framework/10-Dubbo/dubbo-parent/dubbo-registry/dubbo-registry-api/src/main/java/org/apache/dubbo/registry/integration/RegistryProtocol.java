@@ -393,7 +393,9 @@ public class RegistryProtocol implements Protocol {
     @Override
     @SuppressWarnings("unchecked")
     public <T> Invoker<T> refer(Class<T> type, URL url) throws RpcException {
+        // 获取到注册中心地址
         url = getRegistryUrl(url);
+        // 到注册中心配置
         Registry registry = registryFactory.getRegistry(url);
         if (RegistryService.class.equals(type)) {
             return proxyFactory.getInvoker((T) registry, type, url);
@@ -407,6 +409,7 @@ public class RegistryProtocol implements Protocol {
                 return doRefer(getMergeableCluster(), registry, type, url);
             }
         }
+        // cluster
         return doRefer(cluster, registry, type, url);
     }
 
@@ -415,19 +418,23 @@ public class RegistryProtocol implements Protocol {
     }
 
     private <T> Invoker<T> doRefer(Cluster cluster, Registry registry, Class<T> type, URL url) {
+        // 创建注册目录对象
         RegistryDirectory<T> directory = new RegistryDirectory<T>(type, url);
         directory.setRegistry(registry);
         directory.setProtocol(protocol);
         // all attributes of REFER_KEY
         Map<String, String> parameters = new HashMap<String, String>(directory.getConsumerUrl().getParameters());
+        // 消费者 需要向注册中心订阅地址信息
         URL subscribeUrl = new URL(CONSUMER_PROTOCOL, parameters.remove(REGISTER_IP_KEY), 0, type.getName(), parameters);
         if (directory.isShouldRegister()) {
             directory.setRegisteredConsumerUrl(subscribeUrl);
             registry.register(directory.getRegisteredConsumerUrl());
         }
+        // 绑定路由信息
         directory.buildRouterChain(subscribeUrl);
+        // 订阅
         directory.subscribe(toSubscribeUrl(subscribeUrl));
-
+        // invoker 添加集群容错的功能
         Invoker<T> invoker = cluster.join(directory);
         List<RegistryProtocolListener> listeners = findRegistryProtocolListeners(url);
         if (CollectionUtils.isEmpty(listeners)) {
@@ -438,6 +445,7 @@ public class RegistryProtocol implements Protocol {
         for (RegistryProtocolListener listener : listeners) {
             listener.onRefer(this, registryInvokerWrapper);
         }
+        // 返回代理对象
         return registryInvokerWrapper;
     }
 
