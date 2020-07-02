@@ -63,7 +63,9 @@
                                                 </div>
                                             </td>
                                             <td>${award.name}</td>
-                                            <td>${award.image}</td>
+                                            <td>
+                                                <img src="${ctx}/${award.image}" alt="">
+                                            </td>
                                             <td>${award.intro}</td>
                                             <td>
                                                 <button type="button" class="btn bg-blue waves-effect btn-xs"
@@ -102,6 +104,8 @@
                       method="post"
                       enctype="multipart/form-data"
                       action="${ctx}/award/save">
+                    <input style="display: none" type="text" name="id">
+                    <input style="display: none" type="text" name="image">
                     <div class="row">
                         <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3 form-control-label">
                             <label>图片</label>
@@ -114,7 +118,7 @@
                                     </div>
                                     <div class="fileinput-preview fileinput-exists thumbnail"></div>
                                     <i class="material-icons clear fileinput-exists" data-dismiss="fileinput">close</i>
-                                    <input type="file" name="image" accept="image/*">
+                                    <input type="file" name="imageFile" accept="image/*">
                                 </div>
                             </div>
                         </div>
@@ -166,11 +170,14 @@
 
     const $addFormBox = $('#add-form-box')
     const $addForm = $addFormBox.find('form')
+    const $img = $addForm.find('.fileinput .thumbnail img')
 
     function add() {
         $addFormBox.modal()
-        // 重置表单的内容
+        // 重置表单的内容 (并不会去重置type=hidden的表单)
         $addForm[0].reset()
+        // 重新设置图片
+        $img.attr('src', '${ctx}/asset/admin/img/noimage.png')
     }
 
     // 函数 - 方法
@@ -179,7 +186,14 @@
 
         // 填充表单信息
         for (const k in json) {
-            $addForm.find('[name=' + k + ']').val(json[k])
+            const $input = $addForm.find('[name=' + k + ']')
+            if ($input.attr('type') === 'file') continue
+            $input.val(json[k])
+        }
+
+        // 设置img的值
+        if (json.image) {
+            $img.attr('src', '${ctx}/' + json.image)
         }
     }
 
@@ -197,7 +211,7 @@
             if (!willDelete) return
             // 点击了【确定】
             // window.location.href
-            location.href = '${ctx}/skill/award?id=' + id
+            location.href = '${ctx}/award/remove?id=' + id
         })
     }
 

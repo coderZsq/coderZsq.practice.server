@@ -15,7 +15,7 @@ CREATE TABLE user (
 	password VARCHAR(32) NOT NULL,
 	email VARCHAR(50) NOT NULL UNIQUE,
 	birthday DATE,
-	photo VARCHAR(50),
+	photo VARCHAR(100),
 	intro VARCHAR(1000),
 	name VARCHAR(20),
 	address VARCHAR(100),
@@ -59,7 +59,7 @@ CREATE TABLE award (
 	id INT AUTO_INCREMENT, 
 	created_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
 	name VARCHAR(20) NOT NULL,
-	image VARCHAR(50),
+	image VARCHAR(100),
 	intro VARCHAR(1000),
 	PRIMARY KEY (id)
 );
@@ -108,7 +108,7 @@ CREATE TABLE project (
 	name VARCHAR(20) NOT NULL,
 	intro VARCHAR(1000),
 	website VARCHAR(50),
-	image VARCHAR(50),
+	image VARCHAR(100),
 	begin_day DATE NOT NULL, 
 	end_day DATE, 
 	company_id INT NOT NULL,
