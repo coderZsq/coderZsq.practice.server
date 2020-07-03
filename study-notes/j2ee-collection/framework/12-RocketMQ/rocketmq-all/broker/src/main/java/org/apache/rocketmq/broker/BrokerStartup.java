@@ -234,7 +234,7 @@ public class BrokerStartup {
                 @Override
                 public void run() {
                     synchronized (this) {
-                        log.info("Shutdown hook was invoked, {}", this.shutdownTimes.incrementAndGet());
+                        log.info("Shutdown hook was inv￿oked, {}", this.shutdownTimes.incrementAndGet());
                         if (!this.hasShutdown) {
                             this.hasShutdown = true;
                             long beginTime = System.currentTimeMillis();
