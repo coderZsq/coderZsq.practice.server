@@ -2,18 +2,12 @@ package com.sq.resume.dao.impl;
 
 import com.sq.resume.bean.Education;
 import com.sq.resume.dao.EducationDao;
-import com.sq.resume.util.Dbs;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class EducationDaoImpl extends BaseDaoImpl<Education> implements EducationDao {
-    @Override
-    protected String table() {
-        return "education";
-    }
-
     /**
      * 添加或更新
      */
@@ -33,7 +27,7 @@ public class EducationDaoImpl extends BaseDaoImpl<Education> implements Educatio
             sql = "UPDATE education SET name = ?, type = ?, intro = ?, begin_day = ?, end_day = ? WHERE id = ?";
             args.add(id);
         }
-        return Dbs.getTpl().update(sql, args.toArray()) > 0;
+        return tpl.update(sql, args.toArray()) > 0;
     }
 
     /**
@@ -42,7 +36,7 @@ public class EducationDaoImpl extends BaseDaoImpl<Education> implements Educatio
     @Override
     public Education get(Integer id) {
         String sql = "SELECT id, created_time, name, type, intro, begin_day, end_day FROM education WHERE id = ?";
-        return Dbs.getTpl().queryForObject(sql, new BeanPropertyRowMapper<>(Education.class), id);
+        return tpl.queryForObject(sql, new BeanPropertyRowMapper<>(Education.class), id);
     }
 
     /**
@@ -51,6 +45,6 @@ public class EducationDaoImpl extends BaseDaoImpl<Education> implements Educatio
     @Override
     public List<Education> list() {
         String sql = "SELECT id, created_time, name, type, intro, begin_day, end_day FROM education";
-        return Dbs.getTpl().query(sql, new BeanPropertyRowMapper<>(Education.class));
+        return tpl.query(sql, new BeanPropertyRowMapper<>(Education.class));
     }
 }

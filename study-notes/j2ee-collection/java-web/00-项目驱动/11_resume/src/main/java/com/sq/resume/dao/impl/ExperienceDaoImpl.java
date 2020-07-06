@@ -1,20 +1,18 @@
 package com.sq.resume.dao.impl;
 
-import com.sq.resume.bean.Award;
-import com.sq.resume.dao.AwardDao;
+import com.sq.resume.bean.Experience;
+import com.sq.resume.dao.ExperienceDao;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AwardDaoImpl extends BaseDaoImpl<Award> implements AwardDao {
+public class ExperienceDaoImpl extends BaseDaoImpl<Experience> implements ExperienceDao {
     @Override
-    public boolean save(Award bean) {
+    public boolean save(Experience bean) {
         Integer id = bean.getId();
         List<Object> args = new ArrayList<>();
-        args.add(bean.getName());
-        args.add(bean.getImage());
-        args.add(bean.getIntro());
+
         String sql;
         if (id == null || id < 1) { // 添加
             sql = "INSERT INTO award(name, image, intro) VALUES(?, ?, ?)";
@@ -26,14 +24,14 @@ public class AwardDaoImpl extends BaseDaoImpl<Award> implements AwardDao {
     }
 
     @Override
-    public Award get(Integer id) {
+    public Experience get(Integer id) {
         String sql = "SELECT id, created_time, name, image, intro FROM award WHERE id = ?";
-        return tpl.queryForObject(sql, new BeanPropertyRowMapper<>(Award.class), id);
+        return tpl.queryForObject(sql, new BeanPropertyRowMapper<>(Experience.class), id);
     }
 
     @Override
-    public List<Award> list() {
+    public List<Experience> list() {
         String sql = "SELECT id, created_time, name, image, intro FROM award";
-        return tpl.query(sql, new BeanPropertyRowMapper<>(Award.class));
+        return tpl.query(sql, new BeanPropertyRowMapper<>(Experience.class));
     }
 }

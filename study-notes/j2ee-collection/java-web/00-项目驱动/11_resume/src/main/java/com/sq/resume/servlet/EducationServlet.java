@@ -12,12 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet("/education/*")
-public class EducationServlet extends BaseServlet {
-    private EducationService service = new EducationServiceImpl();
+public class EducationServlet extends BaseServlet<Education> {
 
     public void admin(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request.setAttribute("educations", service.list());
-        request.getRequestDispatcher("/WEB-INF/page/admin/education.jsp").forward(request, response);
+        forward(request, response, "admin/education.jsp");
     }
 
     public void save(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -25,10 +24,9 @@ public class EducationServlet extends BaseServlet {
         BeanUtils.populate(education, request.getParameterMap());
         if (service.save(education)) { // 保存成功
             // 重定向到admin
-            response.sendRedirect(request.getContextPath() + "/education/admin");
+            redirect(request, response, "education/admin");
         } else { // 保存失败
-            request.setAttribute("error", "教育信息保存失败");
-            request.getRequestDispatcher("/WEB-INF/page/error.jsp").forward(request, response);
+            forwardError(request, response, "教育信息保存失败");
         }
     }
 
@@ -41,10 +39,9 @@ public class EducationServlet extends BaseServlet {
         System.out.println(ids);
         // 删除
         if (service.remove(ids)) {
-            response.sendRedirect(request.getContextPath() + "/education/admin");
+            redirect(request, response, "education/admin");
         } else {
-            request.setAttribute("error", "教育信息删除失败");
-            request.getRequestDispatcher("/WEB-INF/page/error.jsp").forward(request, response);
+            forwardError(request, response, "教育信息删除失败");
         }
     }
 }

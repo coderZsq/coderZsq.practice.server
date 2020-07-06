@@ -1,6 +1,7 @@
 package com.sq.resume.servlet;
 
 import com.sq.resume.bean.Award;
+import com.sq.resume.bean.Company;
 import com.sq.resume.util.Uploads;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.fileupload.FileItem;
@@ -15,12 +16,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@WebServlet("/award/*")
-public class AwardServlet extends BaseServlet<Award> {
+@WebServlet("/company/*")
+public class CompanyServlet extends BaseServlet<Company> {
 
     public void admin(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        request.setAttribute("awards", service.list());
-        forward(request, response, "admin/award.jsp");
+        request.setAttribute("companies", service.list());
+        forward(request, response, "admin/company.jsp");
     }
 
     public void save(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -42,17 +43,17 @@ public class AwardServlet extends BaseServlet<Award> {
             }
         }
 
-        Award award = new Award();
-        BeanUtils.populate(award, params);
+        Company company = new Company();
+        BeanUtils.populate(company, params);
 
-        FileItem item = fileParams.get("imageFile");
-        award.setImage(Uploads.uploadImage(item, request, award.getImage()));
+        FileItem item = fileParams.get("logoFile");
+        company.setLogo(Uploads.uploadImage(item, request, company.getLogo()));
 
-        if (service.save(award)) { // 保存成功
+        if (service.save(company)) { // 保存成功
             // 重定向到admin
-            redirect(request, response, "award/admin");
+            redirect(request, response, "company/admin");
         } else { // 保存失败
-            forwardError(request, response, "获奖成就保存失败");
+            forwardError(request, response, "公司信息保存失败");
         }
     }
 
@@ -64,9 +65,9 @@ public class AwardServlet extends BaseServlet<Award> {
         }
         // 删除
         if (service.remove(ids)) {
-            redirect(request, response, "award/admin");
+            redirect(request, response, "company/admin");
         } else {
-            forwardError(request, response, "获奖成就删除失败");
+            forwardError(request, response, "公司信息删除失败");
         }
     }
 }

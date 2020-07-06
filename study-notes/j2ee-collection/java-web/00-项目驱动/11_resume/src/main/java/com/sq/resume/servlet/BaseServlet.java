@@ -1,5 +1,6 @@
 package com.sq.resume.servlet;
 
+import com.sq.resume.service.BaseService;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.DateConverter;
 
@@ -11,12 +12,29 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Date;
 
-public class BaseServlet extends HttpServlet {
+@SuppressWarnings("unchecked")
+public abstract class BaseServlet<T> extends HttpServlet {
     static {
         // null参数表示允许值为null
         DateConverter dateConverter = new DateConverter(null);
         dateConverter.setPatterns(new String[]{"yyyy-MM-dd"});
         ConvertUtils.register(dateConverter, Date.class);
+    }
+
+    protected BaseService<T> service = newService();
+
+    protected BaseService<T> newService() {
+        // com.sq.resume.servlet.WebsiteServlet
+        // com.sq.resume.service.impl.WebsiteServiceImpl
+        try {
+            String clsName = getClass().getName()
+                    .replace(".servlet.", ".service.impl.")
+                    .replace("Servlet", "ServiceImpl");
+            return (BaseService<T>) Class.forName(clsName).newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
@@ -48,8 +66,20 @@ public class BaseServlet extends HttpServlet {
                 cause = cause.getCause();
             }
 
-            request.setAttribute("error", cause.getClass().getSimpleName() + ": " + cause.getMessage());
-            request.getRequestDispatcher("/WEB-INF/page/error.jsp").forward(request, response);
+            forwardError(request, response, cause.getClass().getSimpleName() + ": " + cause.getMessage());
         }
+    }
+
+    protected void redirect(HttpServletRequest request, HttpServletResponse response, String path) throws ServletException, IOException {
+        response.sendRedirect(request.getContextPath() + "/" + path);
+    }
+
+    protected void forward(HttpServletRequest request, HttpServletResponse response, String path) throws ServletException, IOException {
+        request.getRequestDispatcher("/WEB-INF/page/" + path).forward(request, response);
+    }
+
+    protected void forwardError(HttpServletRequest request, HttpServletResponse response, String error) throws ServletException, IOException {
+        request.setAttribute("error", error);
+        forward(request, response, "error.jsp");
     }
 }

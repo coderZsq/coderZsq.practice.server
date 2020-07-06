@@ -1,8 +1,6 @@
 package com.sq.resume.servlet;
 
 import com.sq.resume.bean.Skill;
-import com.sq.resume.service.SkillService;
-import com.sq.resume.service.impl.SkillServiceImpl;
 import org.apache.commons.beanutils.BeanUtils;
 
 import javax.servlet.annotation.WebServlet;
@@ -12,12 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet("/skill/*")
-public class SkillServlet extends BaseServlet {
-    private SkillService service = new SkillServiceImpl();
+public class SkillServlet extends BaseServlet<Skill> {
 
     public void admin(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request.setAttribute("skills", service.list());
-        request.getRequestDispatcher("/WEB-INF/page/admin/skill.jsp").forward(request, response);
+        forward(request, response, "admin/skill.jsp");
     }
 
     public void save(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -25,10 +22,9 @@ public class SkillServlet extends BaseServlet {
         BeanUtils.populate(skill, request.getParameterMap());
         if (service.save(skill)) { // 保存成功
             // 重定向到admin
-            response.sendRedirect(request.getContextPath() + "/skill/admin");
+            redirect(request, response, "skill/admin");
         } else { // 保存失败
-            request.setAttribute("error", "专业技能保存失败");
-            request.getRequestDispatcher("/WEB-INF/page/error.jsp").forward(request, response);
+            forwardError(request, response, "专业技能保存失败");
         }
     }
 
@@ -40,10 +36,9 @@ public class SkillServlet extends BaseServlet {
         }
         // 删除
         if (service.remove(ids)) {
-            response.sendRedirect(request.getContextPath() + "/skill/admin");
+            redirect(request, response, "skill/admin");
         } else {
-            request.setAttribute("error", "专业技能删除失败");
-            request.getRequestDispatcher("/WEB-INF/page/error.jsp").forward(request, response);
+            forwardError(request, response, "专业技能删除失败");
         }
     }
 }

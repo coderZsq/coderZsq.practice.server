@@ -5,10 +5,23 @@ import com.sq.resume.service.BaseService;
 
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public abstract class BaseServiceImpl<T> implements BaseService<T> {
-    private BaseDao<T> dao = dao();
+    protected BaseDao<T> dao = newDao();
 
-    protected abstract BaseDao<T> dao();
+    protected BaseDao<T> newDao() {
+        // com.sq.resume.service.impl.WebsiteServiceImpl
+        // com.sq.resume.dao.impl.WebsiteDaoImpl
+        try {
+            String clsName = getClass().getName()
+                    .replace(".service.", ".dao.")
+                    .replace("Service", "Dao");
+            return (BaseDao<T>) Class.forName(clsName).newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     /**
      * 删除

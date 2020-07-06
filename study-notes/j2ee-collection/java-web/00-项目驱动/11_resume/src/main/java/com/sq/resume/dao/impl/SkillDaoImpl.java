@@ -2,18 +2,12 @@ package com.sq.resume.dao.impl;
 
 import com.sq.resume.bean.Skill;
 import com.sq.resume.dao.SkillDao;
-import com.sq.resume.util.Dbs;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SkillDaoImpl extends BaseDaoImpl<Skill> implements SkillDao {
-    @Override
-    protected String table() {
-        return "skill";
-    }
-
     @Override
     public boolean save(Skill bean) {
         Integer id = bean.getId();
@@ -27,13 +21,13 @@ public class SkillDaoImpl extends BaseDaoImpl<Skill> implements SkillDao {
             sql = "UPDATE skill SET name = ?, level = ? WHERE id = ?";
             args.add(id);
         }
-        return Dbs.getTpl().update(sql, args.toArray()) > 0;
+        return tpl.update(sql, args.toArray()) > 0;
     }
 
     @Override
     public Skill get(Integer id) {
         String sql = "SELECT id, created_time, name, level FROM skill WHERE id = ?";
-        return Dbs.getTpl().queryForObject(sql, new BeanPropertyRowMapper<>(Skill.class), id);
+        return tpl.queryForObject(sql, new BeanPropertyRowMapper<>(Skill.class), id);
     }
 
     /**
@@ -42,6 +36,6 @@ public class SkillDaoImpl extends BaseDaoImpl<Skill> implements SkillDao {
     @Override
     public List<Skill> list() {
         String sql = "SELECT id, created_time, name, level FROM skill";
-        return Dbs.getTpl().query(sql, new BeanPropertyRowMapper<>(Skill.class));
+        return tpl.query(sql, new BeanPropertyRowMapper<>(Skill.class));
     }
 }

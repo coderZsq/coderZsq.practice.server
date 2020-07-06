@@ -91,19 +91,19 @@
                     </a>
                 </li>
                 <li class="company">
-                    <a href="../company.html">
+                    <a href="${ctx}/company/admin">
                         <i class="material-icons">domain</i>
                         <span>公司信息</span>
                     </a>
                 </li>
                 <li class="experience">
-                    <a href="../experience.html">
+                    <a href="${ctx}/experience/admin">
                         <i class="material-icons">work</i>
                         <span>工作经验</span>
                     </a>
                 </li>
                 <li class="project">
-                    <a href="../project.html">
+                    <a href="${ctx}/project/admin">
                         <i class="material-icons">build</i>
                         <span>项目经验</span>
                     </a>
@@ -115,7 +115,7 @@
                     </a>
                 </li>
                 <li class="contact">
-                    <a href="../contact.html">
+                    <a href="${ctx}/contact/admin">
                         <i class="material-icons">comment</i>
                         <span>留言信息</span>
                     </a>
