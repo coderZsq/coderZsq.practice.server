@@ -202,6 +202,7 @@ public class DefaultMQProducer extends ClientConfig implements MQProducer {
     public DefaultMQProducer(final String namespace, final String producerGroup, RPCHook rpcHook) {
         this.namespace = namespace;
         this.producerGroup = producerGroup;
+        // 默认的生产者实例对象
         defaultMQProducerImpl = new DefaultMQProducerImpl(this, rpcHook);
     }
 
@@ -267,8 +268,11 @@ public class DefaultMQProducer extends ClientConfig implements MQProducer {
      */
     @Override
     public void start() throws MQClientException {
+        // 1 设置生产者组
         this.setProducerGroup(withNamespace(this.producerGroup));
+        // 2 启动对象defaultMQProducerImpl
         this.defaultMQProducerImpl.start();
+        // 3 消息跟踪 消息创建-->发送-->存储-->消费的整个流程
         if (null != traceDispatcher) {
             try {
                 traceDispatcher.start(this.getNamesrvAddr(), this.getAccessChannel());

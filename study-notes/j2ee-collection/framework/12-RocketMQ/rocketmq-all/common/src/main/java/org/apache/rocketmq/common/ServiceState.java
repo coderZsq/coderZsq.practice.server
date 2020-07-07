@@ -23,6 +23,8 @@ public enum ServiceState {
     CREATE_JUST,
     /**
      * Service Running
+     * 服务正常运行的状态
+     * 可以和Broker进行消息通信
      */
     RUNNING,
     /**
