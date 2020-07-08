@@ -17,7 +17,7 @@ public class TplTest {
             User.class
     };
     private static final Map<String, String> TPL_DIRS = new HashMap<>();
-    private static final String BASE_DIR = "/Users/zhushuangquan/Desktop/11_resume/src/main/java/com/sq/resume/";
+    private static final String BASE_DIR = "/Users/zhushuangquan/Codes/GitHub/coderZsq.practice.server/study-notes/j2ee-collection/java-web/00-项目驱动/11_resume/src/main/java/com/sq/resume/";
 
     static {
         TPL_DIRS.put("Dao", "dao");
@@ -32,8 +32,9 @@ public class TplTest {
             String suffix = entry.getKey(); // 后缀
             String dir = entry.getValue();
             // 获取tpl文件的路径
-            String tpl = "tpl/" + suffix + ".tpl";
-            String tplFilepath = TplTest.class.getClassLoader().getResource(tpl).getFile();
+            String tpl = "/tpl/" + suffix + ".tpl";
+            // String tplFilepath = TplTest.class.getClassLoader().getResource(tpl).getFile();
+            String tplFilepath = TplTest.class.getResource(tpl).toURI().getPath();
             // 模板文件的内容
             String text = FileUtils.readFileToString(new File(tplFilepath), "UTF-8");
             // 根据类名替换文件内容
@@ -42,7 +43,6 @@ public class TplTest {
                 String newText = text.replace("#0#", clsName);
                 String filename = clsName + suffix + ".java";
                 String filepath = BASE_DIR + "/" + dir + "/" + filename;
-
                 File file = new File(filepath);
                 if (file.exists()) {
                     System.out.println("已经存在: " + file);
