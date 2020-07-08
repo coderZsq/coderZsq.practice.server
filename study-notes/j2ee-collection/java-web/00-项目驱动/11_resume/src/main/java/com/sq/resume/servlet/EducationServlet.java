@@ -1,8 +1,6 @@
 package com.sq.resume.servlet;
 
 import com.sq.resume.bean.Education;
-import com.sq.resume.service.EducationService;
-import com.sq.resume.service.impl.EducationServiceImpl;
 import org.apache.commons.beanutils.BeanUtils;
 
 import javax.servlet.annotation.WebServlet;

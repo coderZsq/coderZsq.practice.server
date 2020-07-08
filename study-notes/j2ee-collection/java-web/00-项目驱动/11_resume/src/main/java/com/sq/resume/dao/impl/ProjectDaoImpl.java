@@ -62,7 +62,7 @@ public class ProjectDaoImpl extends BaseDaoImpl<Project> implements ProjectDao {
         args.add(bean.getCompany().getId());
         String sql;
         if (id == null || id < 1) { // 添加
-            sql = "INSERT INTO project(name, intro, image, website, begin_day, end_day, company_id) VALUES(?, ?, ?, ?, ?, ?)";
+            sql = "INSERT INTO project(name, intro, image, website, begin_day, end_day, company_id) VALUES(?, ?, ?, ?, ?, ?, ?)";
         } else {
             sql = "UPDATE project SET name = ?, intro = ?, image = ?, website = ?, begin_day = ?, end_day = ?, company_id = ? WHERE id = ?";
             args.add(id);
