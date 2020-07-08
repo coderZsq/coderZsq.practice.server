@@ -1,5 +1,7 @@
 package com.sq.resume.bean;
 
+import com.sq.resume.bean.base.BaseBean;
+
 public class Award extends BaseBean {
     private String name;
     private String image;

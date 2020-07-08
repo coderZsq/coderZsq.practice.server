@@ -1,6 +1,7 @@
 package com.sq.resume.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sq.resume.bean.base.BaseBean;
 
 public class Skill extends BaseBean {
     private String name;

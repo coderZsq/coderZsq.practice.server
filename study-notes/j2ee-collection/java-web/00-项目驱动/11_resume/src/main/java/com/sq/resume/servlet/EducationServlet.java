@@ -36,7 +36,6 @@ public class EducationServlet extends BaseServlet<Education> {
         for (String idStr : idStrs) {
             ids.add(Integer.valueOf(idStr));
         }
-        System.out.println(ids);
         // 删除
         if (service.remove(ids)) {
             redirect(request, response, "education/admin");

@@ -1,14 +1,11 @@
 package com.sq.resume.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sq.resume.bean.base.DateBean;
 
-import java.util.Date;
-
-public class Education extends BaseBean {
+public class Education extends DateBean {
     private String name;
     private String intro;
-    private Date beginDay;
-    private Date endDay;
     /**
      * 0: 其它
      * 1: 小学
@@ -60,22 +57,6 @@ public class Education extends BaseBean {
 
     public void setIntro(String intro) {
         this.intro = intro;
-    }
-
-    public Date getBeginDay() {
-        return beginDay;
-    }
-
-    public void setBeginDay(Date beginDay) {
-        this.beginDay = beginDay;
-    }
-
-    public Date getEndDay() {
-        return endDay;
-    }
-
-    public void setEndDay(Date endDay) {
-        this.endDay = endDay;
     }
 
     public Integer getType() {

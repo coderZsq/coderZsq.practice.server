@@ -4,12 +4,11 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-    <title>小码哥简历管理-教育信息</title>
+    <title>小码哥简历管理-项目经验</title>
     <%@ include file="common/head.jsp" %>
 </head>
 
 <body class="theme-blue">
-
 <%@ include file="common/middle.jsp" %>
 
 <section class="content">
@@ -18,7 +17,7 @@
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <div class="card">
                     <div class="header">
-                        <h2>教育信息</h2>
+                        <h2>项目经验</h2>
                     </div>
                     <div class="body table-responsive">
                         <div class="menus">
@@ -37,47 +36,68 @@
                                 </button>
                             </div>
                         </div>
-                        <c:if test="${not empty educations}">
+                        <c:if test="${not empty projects}">
                             <table class="table table-bordered table-hover table-striped">
                                 <thead>
                                 <tr>
                                     <th>
                                         <div class="switch">
-                                            <label><input type="checkbox"><span
-                                                    class="lever switch-col-blue"></span></label>
+                                            <label><input type="checkbox"><span class="lever switch-col-blue"></span></label>
                                         </div>
                                     </th>
                                     <th>名称</th>
+                                    <th>图片</th>
+                                    <th>公司</th>
                                     <th>开始</th>
                                     <th>结束</th>
-                                    <th>类型</th>
                                     <th>简介</th>
                                     <th>操作</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <form id="remove-form" action="${ctx}/education/remove" method="post">
-                                    <c:forEach items="${educations}" var="education">
+                                <form id="remove-form" action="${ctx}/project/remove" method="post">
+                                    <c:forEach items="${projects}" var="project">
                                         <tr>
                                             <td>
                                                 <div class="switch">
-                                                    <label><input type="checkbox" name="id" value="${education.id}"><span
-                                                            class="lever switch-col-blue"></span></label>
+                                                    <label><input type="checkbox" name="id" value="${project.id}"><span class="lever switch-col-blue"></span></label>
                                                 </div>
                                             </td>
-                                            <td>${education.name}</td>
-                                            <td><fmt:formatDate pattern="yyyy-MM-dd" value="${education.beginDay}"/></td>
-                                            <td><fmt:formatDate pattern="yyyy-MM-dd" value="${education.endDay}"/></td>
-                                            <td>${education.typeString}</td>
-                                            <td>${education.intro}</td>
+                                            <c:choose>
+                                                <c:when test="${empty project.website}">
+                                                    <td>${project.name}</td>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <td>
+                                                        <a href="${project.website}" target="_blank">${project.name}</a>
+                                                    </td>
+                                                </c:otherwise>
+                                            </c:choose>
+
+                                            <td><img src="${ctx}/${project.image}" alt=""></td>
+
+                                            <c:choose>
+                                                <c:when test="${empty project.company.website}">
+                                                    <td>${project.company.name}</td>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <td>
+                                                        <a href="${project.company.website}" target="_blank">${project.company.name}</a>
+                                                    </td>
+                                                </c:otherwise>
+                                            </c:choose>
+
+                                            <td><fmt:formatDate pattern="yyyy-MM-dd" value="${project.beginDay}" /></td>
+                                            <td><fmt:formatDate pattern="yyyy-MM-dd" value="${project.endDay}" /></td>
+                                            <td>${project.intro}</td>
                                             <td>
                                                 <button type="button" class="btn bg-blue waves-effect btn-xs"
-                                                        onclick="edit(${education.JSON})">
+                                                        onclick="edit(${project.JSON})">
                                                     <i class="material-icons">edit</i>
                                                     <span>编辑</span>
                                                 </button>
                                                 <button type="button" class="btn bg-pink waves-effect btn-xs"
-                                                        onclick="remove('${education.id}', '${education.name}')">
+                                                        onclick="remove('${project.id}', '${project.name}')">
                                                     <i class="material-icons">delete</i>
                                                     <span>删除</span>
                                                 </button>
@@ -100,11 +120,16 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">添加教育信息</h4>
+                <h4 class="modal-title">添加项目经验</h4>
             </div>
             <div class="modal-body">
-                <form class="form-validation" method="post" action="${ctx}/education/save">
+                <form class="form-validation"
+                      method="post"
+                      enctype="multipart/form-data"
+                      action="${ctx}/project/save">
                     <input style="display: none" type="text" name="id">
+                    <input style="display: none" type="text" name="image">
+
                     <div class="row">
                         <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3 form-control-label">
                             <label for="name">名称</label>
@@ -119,29 +144,56 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="row">
                         <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3 form-control-label">
-                            <label>类型</label>
+                            <label>图片</label>
                         </div>
                         <div class="col-lg-10 col-md-10 col-sm-9 col-xs-9">
                             <div class="form-group">
-                                <select name="type">
-                                    <option value="1">小学</option>
-                                    <option value="2">初中</option>
-                                    <option value="3">高中</option>
-                                    <option value="4">中专</option>
-                                    <option value="5">大专</option>
-                                    <option value="6" selected>本科</option>
-                                    <option value="7">硕士</option>
-                                    <option value="8">博士</option>
-                                    <option value="0">其它</option>
+                                <div class="fileinput fileinput-new" data-provides="fileinput">
+                                    <div class="fileinput-new thumbnail">
+                                        <img src="${ctx}/asset/admin/img/noimage.png" alt="">
+                                    </div>
+                                    <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                    <i class="material-icons clear fileinput-exists" data-dismiss="fileinput">close</i>
+                                    <input type="file" name="imageFile" accept="image/*">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3 form-control-label">
+                            <label>公司</label>
+                        </div>
+                        <div class="col-lg-10 col-md-10 col-sm-9 col-xs-9">
+                            <div class="form-group">
+                                <select name="companyId" required>
+                                    <c:forEach items="${companies}" var="company">
+                                        <option value="${company.id}">${company.name}</option>
+                                    </c:forEach>
                                 </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3 form-control-label">
+                            <label for="website">网址</label>
+                        </div>
+                        <div class="col-lg-10 col-md-10 col-sm-9 col-xs-9">
+                            <div class="form-group">
+                                <div class="form-line">
+                                    <input type="url" id="website" name="website" maxlength="20" class="form-control"
+                                           placeholder="网址（以http://、https://开头）">
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3 form-control-label">
-                            <label for="beginDay">入学</label>
+                            <label for="beginDay">开始</label>
                         </div>
                         <div class="col-lg-10 col-md-10 col-sm-9 col-xs-9">
                             <div class="form-group">
@@ -154,7 +206,7 @@
                     </div>
                     <div class="row">
                         <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3 form-control-label">
-                            <label for="endDay">毕业</label>
+                            <label for="endDay">结束</label>
                         </div>
                         <div class="col-lg-10 col-md-10 col-sm-9 col-xs-9">
                             <div class="form-group">
@@ -172,8 +224,7 @@
                         <div class="col-lg-10 col-md-10 col-sm-9 col-xs-9">
                             <div class="form-group">
                                 <div class="form-line">
-                                    <textarea name="intro" maxlength="1000" id="intro" cols="30" rows="5"
-                                              class="form-control no-resize" placeholder="简介"></textarea>
+                                    <textarea name="intro" maxlength="1000" id="intro" cols="30" rows="5" class="form-control no-resize" placeholder="简介"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -192,22 +243,24 @@
 </div>
 
 <%@ include file="common/foot.jsp" %>
-
 <script>
-    $('.menu .list .education').addClass('active')
+    $('.menu .list .project').addClass('active')
+
     addValidatorRules('.form-validation')
 
     const $addFormBox = $('#add-form-box')
     const $addForm = $addFormBox.find('form')
+    const $img = $addForm.find('.fileinput .thumbnail img')
 
     function add() {
         $addFormBox.modal()
         // 重置表单的内容
         $addForm[0].reset()
-
         // 原生的form对象有一个reset方法
-        // document.getElement... document.query... 获取的是原生的DOM对象
-        // $()获取的是jQuery包装过的对象, 并不是原生的DOM对象
+        // document.getElement...、document.query...获取的是原生的DOM对象
+        // $()获取的是jQuery包装过的对象，并不是原生的DOM对象
+        // 重新设置图片
+        $img.attr('src', '${ctx}/asset/admin/img/noimage.png')
     }
 
     // 函数 - 方法
@@ -216,7 +269,16 @@
 
         // 填充表单信息
         for (const k in json) {
-            $addForm.find('[name=' + k + ']').val(json[k])
+            const $input = $addForm.find('[name=' + k + ']')
+            if ($input.attr('type') === 'file') continue
+            $input.val(json[k])
+        }
+
+        $addForm.find('[name=companyId]').val(json.company.id)
+
+        // 设置img的值
+        if (json.image) {
+            $img.attr('src', '${ctx}/' + json.image)
         }
     }
 
@@ -234,7 +296,7 @@
             if (!willDelete) return
             // 点击了【确定】
             // window.location.href
-            location.href = '${ctx}/education/remove?id=' + id
+            location.href = '${ctx}/project/remove?id=' + id;
 
             // swal({
             //     title: '删除成功',
@@ -259,7 +321,7 @@
         }).then(willDelete => {
             if (!willDelete) return
 
-            // 拿到表单, 发送请求
+            // 拿到表单，发送请求
             $('#remove-form').submit()
         })
     }

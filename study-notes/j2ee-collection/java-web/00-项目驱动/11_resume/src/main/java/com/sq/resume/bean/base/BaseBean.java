@@ -1,4 +1,4 @@
-package com.sq.resume.bean;
+package com.sq.resume.bean.base;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class BaseBean {
+public abstract class BaseBean {
     private Integer id;
     private Date createdTime;
 

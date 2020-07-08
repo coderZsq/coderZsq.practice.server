@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-    <title>小码哥简历管理-专业技能</title>
+    <title>小码哥简历管理-工作经验</title>
     <%@ include file="common/head.jsp" %>
 </head>
 
@@ -18,7 +18,7 @@
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <div class="card">
                     <div class="header">
-                        <h2>专业技能</h2>
+                        <h2>工作经验</h2>
                     </div>
                     <div class="body table-responsive">
                         <div class="menus">
@@ -37,40 +37,56 @@
                                 </button>
                             </div>
                         </div>
-
-                        <c:if test="${not empty skills}">
+                        <c:if test="${not empty experiences}">
                             <table class="table table-bordered table-hover table-striped">
                                 <thead>
                                 <tr>
                                     <th>
                                         <div class="switch">
-                                            <label><input type="checkbox"><span class="lever switch-col-blue"></span></label>
+                                            <label><input type="checkbox"><span
+                                                    class="lever switch-col-blue"></span></label>
                                         </div>
                                     </th>
-                                    <th>名称</th>
-                                    <th>级别</th>
+                                    <th>职位</th>
+                                    <th>公司</th>
+                                    <th>开始</th>
+                                    <th>结束</th>
+                                    <th>简介</th>
                                     <th>操作</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <form id="remove-form" method="post" action="${ctx}/skill/remove">
-                                    <c:forEach items="${skills}" var="skill">
+                                <form id="remove-form" action="${ctx}/experience/remove" method="post">
+                                    <c:forEach items="${experiences}" var="experience">
                                         <tr>
                                             <td>
                                                 <div class="switch">
-                                                    <label><input name="id" type="checkbox" value="${skill.id}"><span class="lever switch-col-blue"></span></label>
+                                                    <label><input type="checkbox" name="id" value="${experience.id}"><span
+                                                            class="lever switch-col-blue"></span></label>
                                                 </div>
                                             </td>
-                                            <td>${skill.name}</td>
-                                            <td>${skill.levelString}</td>
+                                            <td>${experience.job}</td>
+                                            <c:choose>
+                                                <c:when test="${empty experience.company.website}">
+                                                    <td>${experience.company.name}</td>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <td>
+                                                        <a href="${experience.company.website}" target="_blank">${experience.company.name}</a>
+                                                    </td>
+                                                </c:otherwise>
+                                            </c:choose>
+                                            <td><fmt:formatDate pattern="yyyy-MM-dd" value="${experience.beginDay}"/></td>
+                                            <td><fmt:formatDate pattern="yyyy-MM-dd" value="${experience.endDay}"/></td>
+                                            <td>${experience.intro}</td>
                                             <td>
                                                 <button type="button" class="btn bg-blue waves-effect btn-xs"
-                                                        onclick="edit(${skill.JSON})">
+                                                        onclick="edit(${experience.JSON})">
                                                     <i class="material-icons">edit</i>
                                                     <span>编辑</span>
                                                 </button>
                                                 <button type="button" class="btn bg-pink waves-effect btn-xs"
-                                                        onclick="remove('${skill.id}', '${skill.name}')">
+                                                        onclick="remove('${experience.id}', '${experience.job}')">
                                                     <i class="material-icons">delete</i>
                                                     <span>删除</span>
                                                 </button>
@@ -93,20 +109,34 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">添加专业技能</h4>
+                <h4 class="modal-title">添加工作经验</h4>
             </div>
             <div class="modal-body">
-                <form class="form-validation" method="post" action="${ctx}/skill/save">
+                <form class="form-validation" method="post" action="${ctx}/experience/save">
                     <input style="display: none" type="text" name="id">
                     <div class="row">
                         <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3 form-control-label">
-                            <label for="name">名称</label>
+                            <label>公司</label>
+                        </div>
+                        <div class="col-lg-10 col-md-10 col-sm-9 col-xs-9">
+                            <div class="form-group">
+                                <select name="companyId" required>
+                                    <c:forEach items="${companies}" var="company">
+                                        <option value="${company.id}">${company.name}</option>
+                                    </c:forEach>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3 form-control-label">
+                            <label for="job">职位</label>
                         </div>
                         <div class="col-lg-10 col-md-10 col-sm-9 col-xs-9">
                             <div class="form-group">
                                 <div class="form-line">
-                                    <input type="text" id="name" name="name" maxlength="20" class="form-control"
-                                           placeholder="名称"
+                                    <input type="text" id="job" name="job" maxlength="20" class="form-control"
+                                           placeholder="职位"
                                            required>
                                 </div>
                             </div>
@@ -114,19 +144,44 @@
                     </div>
                     <div class="row">
                         <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3 form-control-label">
-                            <label>级别</label>
+                            <label for="beginDay">开始</label>
                         </div>
                         <div class="col-lg-10 col-md-10 col-sm-9 col-xs-9">
                             <div class="form-group">
-                                <select name="level">
-                                    <option value="0">了解</option>
-                                    <option value="1">熟悉</option>
-                                    <option value="2">掌握</option>
-                                    <option value="3">精通</option>
-                                </select>
+                                <div class="form-line">
+                                    <input type="date" id="beginDay" name="beginDay" class="form-control"
+                                           required>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3 form-control-label">
+                            <label for="endDay">结束</label>
+                        </div>
+                        <div class="col-lg-10 col-md-10 col-sm-9 col-xs-9">
+                            <div class="form-group">
+                                <div class="form-line">
+                                    <input type="date" id="endDay" name="endDay" class="form-control"
+                                           required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3 form-control-label">
+                            <label for="intro">简介</label>
+                        </div>
+                        <div class="col-lg-10 col-md-10 col-sm-9 col-xs-9">
+                            <div class="form-group">
+                                <div class="form-line">
+                                    <textarea name="intro" maxlength="1000" id="intro" cols="30" rows="5"
+                                              class="form-control no-resize" placeholder="简介"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-3 col-xs-offset-3">
                             <button class="btn btn-primary waves-effect m-l-15" type="submit">保存</button>
@@ -139,10 +194,10 @@
     </div>
 </div>
 
-<%@ include file="common/foot.jsp"%>
+<%@ include file="common/foot.jsp" %>
 
 <script>
-    $('.menu .list .skill').addClass('active')
+    $('.menu .list .experience').addClass('active')
     addValidatorRules('.form-validation')
 
     const $addFormBox = $('#add-form-box')
@@ -152,6 +207,10 @@
         $addFormBox.modal()
         // 重置表单的内容
         $addForm[0].reset()
+
+        // 原生的form对象有一个reset方法
+        // document.getElement... document.query... 获取的是原生的DOM对象
+        // $()获取的是jQuery包装过的对象, 并不是原生的DOM对象
     }
 
     // 函数 - 方法
@@ -162,6 +221,8 @@
         for (const k in json) {
             $addForm.find('[name=' + k + ']').val(json[k])
         }
+
+        $addForm.find('[name=companyId]').val(json.company.id)
     }
 
     function remove(id, name) {
@@ -178,7 +239,15 @@
             if (!willDelete) return
             // 点击了【确定】
             // window.location.href
-            location.href = '${ctx}/skill/remove?id=' + id
+            location.href = '${ctx}/experience/remove?id=' + id
+
+            // swal({
+            //     title: '删除成功',
+            //     text: '【' + name + '】已经被删除！',
+            //     icon: 'success',
+            //     timer: 1500,
+            //     buttons: false
+            // })
         })
     }
 

@@ -1,5 +1,7 @@
 package com.sq.resume.bean;
 
+import com.sq.resume.bean.base.BaseBean;
+
 public class Company extends BaseBean {
     private String name;
     private String logo;
