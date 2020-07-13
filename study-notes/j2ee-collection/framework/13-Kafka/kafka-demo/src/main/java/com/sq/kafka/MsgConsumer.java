@@ -43,7 +43,7 @@ public class MsgConsumer {
         //consumer.assign(Collections.singletonList(new TopicPartition(topicName, 0)));
         //consumer.seekToBeginning(Collections.singletonList(new TopicPartition(topicName, 0)));
         //指定offset消费
-        //consumer.seek(new TopicPartition(topicName, 0), 10);
+        // consumer.seek(new TopicPartition(topicName, 0), 10);
 
         //消费指定时间前的消息
         Date now = new Date();
