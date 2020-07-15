@@ -35,7 +35,7 @@ public class MsgConsumer {
         KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
         // 消费主题
         String topicName = "test666";
-        /*consumer.subscribe(Arrays.asList(topicName));*/// 消费最新的消息
+        consumer.subscribe(Arrays.asList(topicName));// 消费最新的消息
         // 消费指定分区
         /*consumer.assign(Arrays.asList(new TopicPartition(topicName, 0)));*/// 消费最新的消息
 
@@ -45,28 +45,28 @@ public class MsgConsumer {
         //指定offset消费
         // consumer.seek(new TopicPartition(topicName, 0), 10);
 
-        //消费指定时间前的消息
-        Date now = new Date();
-        // 前2个小时
-        Long times = now.getTime() - (1000 * 60 * 60 * 2);
-        List<PartitionInfo> partitionInfos = consumer.partitionsFor(topicName);
-        Map<TopicPartition, Long> partitionMap = new HashMap<>();
-        for (PartitionInfo part: partitionInfos) {
-            partitionMap.put(new TopicPartition(part.topic(), part.partition()), times);
-        }
-
-        Map<TopicPartition, OffsetAndTimestamp> parMap = consumer.offsetsForTimes(partitionMap);
-        for (Map.Entry<TopicPartition, OffsetAndTimestamp> entry : parMap.entrySet()) {
-            TopicPartition key = entry.getKey();
-            OffsetAndTimestamp value = entry.getValue();
-            if (value != null) {
-                long offset = value.offset();
-                System.out.println("partition-"+key.partition() + "|offset=" + offset);
-
-                consumer.assign(Collections.singletonList(key));
-                consumer.seek(key, offset);
-            }
-        }
+        // //消费指定时间前的消息
+        // Date now = new Date();
+        // // 前2个小时
+        // Long times = now.getTime() - (1000 * 60 * 60 * 2);
+        // List<PartitionInfo> partitionInfos = consumer.partitionsFor(topicName);
+        // Map<TopicPartition, Long> partitionMap = new HashMap<>();
+        // for (PartitionInfo part: partitionInfos) {
+        //     partitionMap.put(new TopicPartition(part.topic(), part.partition()), times);
+        // }
+        //
+        // Map<TopicPartition, OffsetAndTimestamp> parMap = consumer.offsetsForTimes(partitionMap);
+        // for (Map.Entry<TopicPartition, OffsetAndTimestamp> entry : parMap.entrySet()) {
+        //     TopicPartition key = entry.getKey();
+        //     OffsetAndTimestamp value = entry.getValue();
+        //     if (value != null) {
+        //         long offset = value.offset();
+        //         System.out.println("partition-"+key.partition() + "|offset=" + offset);
+        //
+        //         consumer.assign(Collections.singletonList(key));
+        //         consumer.seek(key, offset);
+        //     }
+        // }
 
         while (true) {
             /*

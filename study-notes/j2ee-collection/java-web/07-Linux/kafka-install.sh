@@ -126,3 +126,6 @@ vi server-2.properties
 # []
 # [zk: localhost:2181(CONNECTED) 8] get /brokers/topics/my-replicated-topic/partitions/0/state
 # {"controller_epoch":1,"leader":2,"version":1,"leader_epoch":0,"isr":[2,0,1]}
+
+# 增加topic的分区数量(目前kafka不支持减少分区)
+./bin/kafka-topics.sh -alter --partitions 3 --zookeeper 127.0.0.1:2181 --topic test
