@@ -1,15 +1,9 @@
-﻿<!DOCTYPE html>
+﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html>
 <html lang="zh">
 <head>
-    <meta charset="UTF-8">
     <title>小码哥简历管理-登录</title>
-    <link rel="icon" href="../../asset/admin/img/favicon.png" type="image/x-icon">
-    <link href="../../asset/plugin/bootstrap/bootstrap.min.css" rel="stylesheet">
-    <link href="../../asset/plugin/node-waves/waves.css" rel="stylesheet">
-    <link href="../../asset/plugin/animate-css/animate.min.css" rel="stylesheet">
-    <link href="../../asset/admin/css/material-icons.css" rel="stylesheet">
-    <link href="../../asset/admin/css/style.min.css" rel="stylesheet">
-    <link href="../../asset/admin/css/main.css" rel="stylesheet">
+    <%@ include file="../WEB-INF/page/admin/common/head.jsp"%>
 </head>
 
 <body class="login-page">
@@ -20,7 +14,7 @@
         </div>
         <div class="card">
             <div class="body">
-                <form class="form-validation" method="post">
+                <form class="form-validation" method="post" action="${ctx}/user/login">
                     <div class="msg">赶紧登录吧</div>
                     <div class="input-group form-group form-float">
                         <span class="input-group-addon">
@@ -35,7 +29,8 @@
                             <i class="material-icons">lock</i>
                         </span>
                         <div class="form-line">
-                            <input type="password" class="form-control" name="password" maxlength="20"placeholder="密码" required>
+                            <input type="hidden" name="password">
+                            <input id="originPassword" type="password" class="form-control" maxlength="20"placeholder="密码" required>
                         </div>
                     </div>
                     <div class="input-group form-group captcha">
@@ -45,7 +40,7 @@
                         <div class="form-line">
                             <input type="text" class="form-control" name="captcha" placeholder="验证码" required>
                         </div>
-                        <img src="../../asset/img/captcha.png" alt="验证码">
+                        <img id="captcha" src="${ctx}/user/captcha" alt="验证码">
                     </div>
                     <div class="row">
                         <div class="col-xs-8 p-t-5">
@@ -56,27 +51,22 @@
                             <button class="btn btn-block bg-pink waves-effect" type="submit">登录</button>
                         </div>
                     </div>
-                    <div class="row m-t-15 m-b--20">
-                        <div class="col-xs-6">
-                            <a href="register.html">现在注册</a>
-                        </div>
-                    </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <script src="../../asset/plugin/jquery/jquery.min.js"></script>
-    <script src="../../asset/plugin/bootstrap/bootstrap.min.js"></script>
-    <script src="../../asset/plugin/node-waves/waves.js"></script>
-    <script src="../../asset/plugin/jquery-validation/jquery.validate.js"></script>
-    <script src="../../asset/plugin/jquery-validation/messages_zh.js"></script>
-
-    <!-- Custom Js -->
-    <script src="../../asset/admin/js/default.js"></script>
-    <script src="../../asset/admin/js/main.js"></script>
+    <%@ include file="../WEB-INF/page/admin/common/foot.jsp"%>
+    <script src="${ctx}/asset/plugin/JavaScript-MD5/md5.min.js"></script>
     <script>
-        addValidatorRules('.form-validation')
+        addValidatorRules('.form-validation', function () {
+            $('[name=password]').val(md5($('#originPassword').val()))
+            return true
+        })
+
+        $('#captcha').click(function () {
+            $(this).hide().attr('src', '${ctx}/user/captcha?time=' + new Date().getTime()).fadeIn()
+        })
     </script>
 </body>
 
