@@ -1,1 +1,58 @@
-html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mail</title>
+</head>
+
+<body>
+    邮件系统
+    <hr>
+    <a href="mailto:a13701777868@sina.com?subject=这是邮件的主题&body=这是邮件的内容" rel="nofollow">普通发送邮件</a>
+    <br>
+    <a href="mailto:a13701777868@sina.com?cc=a13701777868@gmail.com&bcc=a13701777868@gmail.com"
+        rel="nofollow">带抄送密送发送邮件</a>
+    <hr>
+    <form id="form">
+        <label for="sender">发件人</label>
+        <input name="sender" id="sender" type="email" required>
+        <label for="recipient">收件人</label>
+        <input name="recipient" id="recipient" type="email" required>
+        <label for="subject">主题</label>
+        <input name="subject" id="subject" type="text" required>
+        <label for="body">内容</label>
+        <textarea name="body" id="body" cols="30" rows="10" required></textarea>
+        <input id="submit" type="submit" value="发送">
+    </form>
+    <hr>
+    <script src="./node_modules/jquery/dist/jquery.min.js"></script>
+    <script>
+
+        const $form = $('#form')
+        const $submit = $('#submit')
+
+        const $sender = $('#sender')
+        const $recipient = $('#recipient')
+        const $subject = $('#subject')
+        const $body = $('#body')
+
+        // addValidatorRules($form)
+
+        $submit.click(event => {
+            event.preventDefault()
+            $.post('/mailto', {
+                sender: $sender.val(),
+                recipient: $recipient.val(),
+                subject: $subject.val(),
+                body: $body.val()
+            }, (data, status) => {
+                $form[0].reset()
+                alert('邮件发送成功')
+            })
+        })
+    </script>
+</body>
+
+</html>
