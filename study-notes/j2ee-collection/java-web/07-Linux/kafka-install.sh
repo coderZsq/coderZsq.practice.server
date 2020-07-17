@@ -129,3 +129,40 @@ vi server-2.properties
 
 # 增加topic的分区数量(目前kafka不支持减少分区)
 ./bin/kafka-topics.sh -alter --partitions 3 --zookeeper 127.0.0.1:2181 --topic test
+
+# kafka manager
+# 下载安装包
+wget https://github.com/yahoo/kafka-manager/archive/1.3.3.18.zip
+
+# 解压安装包
+unzip 1.3.3.18.zip -d /usr/local/src/
+
+# sbt编译
+# yum安装sbt(因为kafka-manager需要sbt编译)
+curl https://bintray.com/sbt/rpm/rpm > bintray-sbt-rpm.repo
+sudo mv bintray-sbt-rpm.repo /etc/yum.repos.d/
+sudo yum install sbt
+sbt-version
+
+# 编译 kafka manager
+./sbt clean dist
+
+# 安装
+cd /usr/local/src/CMAK-1.3.3.18/target/universal/
+unzip kafka-manager-1.3.3.18.zip -d /usr/local/
+
+# 修改配置文件
+cd conf/
+vi application.conf
+kafka-manager.zkhosts="172.16.21.175:2181"
+
+# 启动服务
+nohup bin/kafka-manager -Dconfig.file=conf/application.conf -Dhttp.port=9000 &
+# [root@localhost ~]# jps
+# 14177 QuorumPeerMain
+# 8082 Kafka
+# 10482 ProdServerStart
+# 7652 Kafka
+# 11061 Jps
+# 4716 QuorumPeerMain
+# 14301 QuorumPeerMain
