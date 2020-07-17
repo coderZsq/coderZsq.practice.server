@@ -29,17 +29,12 @@
     <hr>
     <script src="./node_modules/jquery/dist/jquery.min.js"></script>
     <script>
-
         const $form = $('#form')
         const $submit = $('#submit')
-
         const $sender = $('#sender')
         const $recipient = $('#recipient')
         const $subject = $('#subject')
         const $body = $('#body')
-
-        // addValidatorRules($form)
-
         $submit.click(event => {
             event.preventDefault()
             $.post('/mailto', {
@@ -48,9 +43,11 @@
                 subject: $subject.val(),
                 body: $body.val()
             }, (data, status) => {
-                $form[0].reset()
+                console.log(data)
+                console.log(status)
                 alert('邮件发送成功')
             })
+            $form[0].reset()
         })
     </script>
 </body>

@@ -20,10 +20,6 @@ public class MailController {
     public static String myEmailSMTPHost = "smtp.sina.com";
 
     public static MimeMessage createMimeMessage(Session session, Mail mail) throws Exception {
-        System.out.println(mail.getSender());
-        System.out.println(mail.getRecipient());
-        System.out.println(mail.getSubject());
-        System.out.println(mail.getBody());
         MimeMessage message = new MimeMessage(session);
         message.setFrom(new InternetAddress(myEmailAccount, "coderZsq", "UTF-8"));
         message.setRecipient(MimeMessage.RecipientType.TO, new InternetAddress(mail.getRecipient(), mail.getRecipient(), "UTF-8"));
@@ -36,7 +32,11 @@ public class MailController {
 
     @RequestMapping("/mailto")
     public void mailto(Mail mail) {
-        sendMail(mail);
+        System.out.println(mail.getSender());
+        System.out.println(mail.getRecipient());
+        System.out.println(mail.getSubject());
+        System.out.println(mail.getBody());
+        // sendMail(mail);
     }
 
     public void sendMail(Mail mail) {
