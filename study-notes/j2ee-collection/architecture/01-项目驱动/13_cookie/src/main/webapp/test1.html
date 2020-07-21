@@ -5,11 +5,36 @@
     <title>test1</title>
     <script>
         // key=value
-        document.cookie = 'age=10'
-        console.log(document.cookie)
+        // document.cookie = 'age=10'
+        // console.log(document.cookie)
+        // document.cookie = "name=coderZsq; expires=" + new Date().toUTCString();
+
+        function add() {
+            const key = document.querySelector('#key').value;
+            const value = document.querySelector('#value').value
+            const time = document.querySelector('#time').value
+            document.cookie = key + "=" + value + "; max-age=" + time
+
+            // 清除cookie js中 0 或 负数
+            // document.cookie = "name=; max-age=0"
+
+            // 域名/路径
+            // document.cookie = "name=jack; max-age=3000; domain=520it.com; path=/"
+
+            // js中的默认path是 /
+        }
+
+        function show() {
+            console.log(document.cookie)
+        }
     </script>
 </head>
 <body>
+<input type="text" id="key" placeholder="key"><br>
+<input type="text" id="value" placeholder="value"><br>
+<input type="text" id="time" placeholder="有效期 (秒)"><br>
 
+<button onclick="add()">添加Cookie</button>
+<button onclick="show()">查看Cookie</button>
 </body>
 </html>
