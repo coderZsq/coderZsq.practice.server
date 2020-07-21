@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.coderZsq</groupId>
-    <artifactId>10_testweb</artifactId>
+    <artifactId>10_maven</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <!-- 打包方式 -->
@@ -32,7 +32,7 @@
     </dependencies>
 
     <build>
-        <finalName>10_testweb</finalName>
+        <finalName>10_maven</finalName>
         <plugins>
         <!--<plugin>-->
         <!--    <groupId>org.apache.tomcat.maven</groupId>-->

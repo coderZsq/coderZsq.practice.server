@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.util.Properties;
@@ -30,6 +31,17 @@ public class UserServlet extends BaseServlet<User> {
     }
 
     public void login(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        // 检查验证码
+        String captcha = request.getParameter("captcha").toLowerCase();
+
+        // 从Session中取出验证码
+        String code = (String) request.getSession().getAttribute("code");
+        if (!captcha.equals(code)) {
+            forwardError(request, response, "验证码不正确");
+            return;
+        }
+
+        // 检查用户名, 密码
         User user = new User();
         BeanUtils.populate(user, request.getParameterMap());
         user = ((UserService) service).get(user);
@@ -54,6 +66,10 @@ public class UserServlet extends BaseServlet<User> {
 
         // 生成验证码字符串
         String code = dk.createText();
+
+        // 存储到Session中(当这个客户端是首次请求服务器时, 就会创建一个全新的Session)
+        HttpSession session = request.getSession();
+        session.setAttribute("code", code.toLowerCase());
 
         // 生成验证码图片
         BufferedImage image = dk.createImage(code);
