@@ -1,4 +1,6 @@
-package 刷题.待完成;
+package 标签.堆;
+
+import java.util.PriorityQueue;
 
 /**
  * 给定一个 n x n 矩阵，其中每行和每列元素均按升序排序，找到矩阵中第 k 小的元素。
@@ -27,6 +29,17 @@ package 刷题.待完成;
  */
 public class _378_有序矩阵中第K小的元素 {
     public int kthSmallest(int[][] matrix, int k) {
-        return 0;
+        PriorityQueue<Integer> heap = new PriorityQueue<>(k, ((o1, o2) -> o2 - o1));
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                if (heap.size() < k) {
+                    heap.offer(matrix[i][j]);
+                } else if (matrix[i][j] < heap.peek()) {
+                    heap.poll();
+                    heap.offer(matrix[i][j]);
+                }
+            }
+        }
+        return heap.peek();
     }
 }

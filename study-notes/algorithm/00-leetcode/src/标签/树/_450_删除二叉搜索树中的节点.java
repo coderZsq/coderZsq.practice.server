@@ -1,7 +1,5 @@
 package 标签.树;
 
-import org.junit.Test;
-
 /**
  * 给定一个二叉搜索树的根节点 root 和一个值 key，删除二叉搜索树中的 key 对应的节点，并保证二叉搜索树的性质不变。返回二叉搜索树（有可能被更新）的根节点的引用。
  *
@@ -86,23 +84,5 @@ public class _450_删除二叉搜索树中的节点 {
             }
         }
         return root;
-    }
-
-    @Test
-    public void test() {
-        /*
-         *      5
-         *     / \
-         *    3   6
-         *   / \   \
-         *  2   4   7
-         */
-        TreeNode node = new TreeNode(5);
-        node.left = new TreeNode(3);
-        node.right = new TreeNode(6);
-        node.left.left = new TreeNode(2);
-        node.left.right = new TreeNode(4);
-        node.right.right = new TreeNode(7);
-        deleteNode(node, 3);
     }
 }

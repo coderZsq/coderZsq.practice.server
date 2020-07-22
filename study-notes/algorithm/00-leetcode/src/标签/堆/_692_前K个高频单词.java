@@ -1,6 +1,6 @@
-package 刷题.待完成;
+package 标签.堆;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * 给一非空的单词列表，返回前 k 个出现次数最多的单词。
@@ -38,7 +38,23 @@ import java.util.List;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class _692_前K个高频单词 {
-    public List<String> topKFrequent(String[] words, int k) {
-        return null;
+    public static List<String> topKFrequent(String[] words, int k) {
+        Map<String, Integer> map = new HashMap<>();
+        for (String word: words) {
+            map.put(word, map.getOrDefault(word, 0) + 1);
+        }
+        PriorityQueue<String> heap = new PriorityQueue<>(
+                (o1, o2) -> map.get(o1).equals(map.get(o2)) ?
+                        o2.compareTo(o1) : map.get(o1) - map.get(o2));
+
+        for (String word: map.keySet()) {
+            heap.offer(word);
+            if (heap.size() > k) heap.poll();
+        }
+
+        List<String> res = new ArrayList<>();
+        while (!heap.isEmpty()) res.add(heap.poll());
+        Collections.reverse(res);
+        return res;
     }
 }

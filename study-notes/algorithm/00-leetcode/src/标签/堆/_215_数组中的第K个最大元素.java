@@ -1,4 +1,6 @@
-package 刷题.待完成;
+package 标签.堆;
+
+import java.util.PriorityQueue;
 
 /**
  * 在未排序的数组中找到第 k 个最大的元素。请注意，你需要找的是数组排序后的第 k 个最大的元素，而不是第 k 个不同的元素。
@@ -19,8 +21,17 @@ package 刷题.待完成;
  * 链接：https://leetcode-cn.com/problems/kth-largest-element-in-an-array
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
-public class _215_数组中的第K个最大元素 {
+class _215_数组中的第K个最大元素 {
     public int findKthLargest(int[] nums, int k) {
-        return 0;
+        PriorityQueue<Integer> heap = new PriorityQueue<>(k);
+        for (int num : nums) {
+            if (heap.size() < k) {
+                heap.offer(num);
+            } else if (num > heap.peek()){
+                heap.poll();
+                heap.offer(num);
+            }
+        }
+        return heap.peek();
     }
 }

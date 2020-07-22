@@ -1,10 +1,6 @@
 package 标签.树;
 
-import org.junit.Test;
-
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 
 /**
@@ -95,16 +91,5 @@ public class _662_二叉树最大宽度 {
             System.out.println(list);
         }
         return max;
-    }
-
-    @Test
-    public void test() {
-        TreeNode node = new TreeNode(1);
-        node.left = new TreeNode(3);
-        node.right = new TreeNode(2);
-        node.left.left = new TreeNode(5);
-        node.left.right = new TreeNode(3);
-        node.right.right = new TreeNode(9);
-        widthOfBinaryTree(node);
     }
 }

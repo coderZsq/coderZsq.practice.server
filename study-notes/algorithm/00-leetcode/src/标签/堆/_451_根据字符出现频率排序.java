@@ -1,4 +1,8 @@
-package 刷题.待完成;
+package 标签.堆;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.PriorityQueue;
 
 /**
  * 给定一个字符串，请将字符串里的字符按照出现的频率降序排列。
@@ -42,7 +46,25 @@ package 刷题.待完成;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class _451_根据字符出现频率排序 {
-    public String frequencySort(String s) {
-        return null;
+    public static String frequencySort(String s) {
+        if (s == null || s.length() == 0) return "";
+        char[] chars = s.toCharArray();
+        Map<Character, Integer> map = new HashMap<>(chars.length);
+        for (char c: chars) {
+            map.put(c, map.get(c) != null ? map.get(c) + 1 : 1);
+        }
+        PriorityQueue<Character> heap = new PriorityQueue<>(map.size(), ((o1, o2) -> map.get(o2) - map.get(o1)));
+        for (Character key : map.keySet()) {
+            heap.offer(key);
+        }
+        StringBuilder sb = new StringBuilder();
+        int size = heap.size();
+        for (int i = 0; i < size; i++) {
+            Character key = heap.poll();
+            for (int j = 0; j < map.get(key); j++) {
+                sb.append(key);
+            }
+        }
+        return sb.toString();
     }
 }

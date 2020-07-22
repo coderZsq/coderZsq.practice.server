@@ -1,12 +1,6 @@
 package 刷题.高频题;
 
-import org.junit.Assert;
-import org.junit.Test;
 import 标签.链表.ListNode;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * 反转一个单链表。
@@ -71,26 +65,5 @@ public class _206_反转链表 {
         }
         // 2. 返回新定义的头节点引用
         return newHead;
-    }
-
-    @Test
-    public void test() {
-        List<Integer> list = Arrays.asList(1, 2, 3, 4, 5);
-        String outStringR = ListNode.serializationFromListNode(
-                reverseListRecursive(
-                        ListNode.createListNodeFromList(list)
-                )
-        );
-        String outStringI = ListNode.serializationFromListNode(
-                reverseListIterate(
-                        ListNode.createListNodeFromList(list)
-                )
-        );
-        Collections.reverse(list);
-        String targetString = ListNode.serializationFromListNode(
-                ListNode.createListNodeFromList(list)
-        );
-        Assert.assertEquals(targetString, outStringR);
-        Assert.assertEquals(targetString, outStringI);
     }
 }

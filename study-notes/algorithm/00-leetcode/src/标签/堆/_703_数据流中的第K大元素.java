@@ -1,4 +1,6 @@
-package 刷题.待完成;
+package 标签.堆;
+
+import java.util.PriorityQueue;
 
 /**
  * 设计一个找到数据流中第K大元素的类（class）。注意是排序后的第K大元素，不是第K个不同的元素。
@@ -24,11 +26,25 @@ package 刷题.待完成;
  */
 public class _703_数据流中的第K大元素 {
     class KthLargest {
-        public KthLargest(int k, int[] nums) {
+        private PriorityQueue<Integer> queue;
+        private int limit;
 
+        public KthLargest(int k, int[] nums) {
+            limit = k;
+            queue = new PriorityQueue<>(k);
+            for (int num : nums) {
+                add(num);
+            }
         }
+
         public int add(int val) {
-            return 0;
+            if (queue.size() < limit) {
+                queue.add(val);
+            } else if (val > queue.peek()) {
+                queue.poll();
+                queue.add(val);
+            }
+            return queue.peek();
         }
     }
 }
