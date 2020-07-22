@@ -7,3 +7,20 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
+
+#feign:
+#  client:
+#    config:
+#      default:
+#        connectTimeout: 2000
+#        readTimeout: 2000
+
+ribbon:
+  MaxAutoRetries: 2 # 在一个服务上的最大重试次数, 不包括第一次
+  MaxAutoRetriesNextServer: 1 # 重试之后选择下一个服务器的次数
+  ConnectTimeout: 2000
+  ReadTimeout: 2000
+
+#product-server:
+#  ribbon:
+#    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RoundRobinRule
