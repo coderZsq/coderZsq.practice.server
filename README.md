@@ -1,5 +1,16 @@
 ## Find inspiration in practice
 
+### mail
+> Browser sending mail **implemention** and server sending mail **implemention**.
+
+#### Contents
+- **JavaMail:** Practice of sending mail using java api.
+ 
+#### Display
+<img width="30"><img src="./mail/contents/img.png" width="300">
+<br/>
+
+
 ### resume
 >Practice building a server through java, and **interact** with the front-end.
 
@@ -17,7 +28,7 @@
 
 - Then need to launch **tomcat server** at **localhost:8080**.
 
-#### Content
+#### Contents
 
 - **SSM:** **Spring** & **SpringMVC** & **MyBatis** practice.
 
