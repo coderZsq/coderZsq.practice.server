@@ -5,28 +5,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>mail</title>
+    <style>
+        body {
+            background-color: skyblue;
+        }
+
+        input {
+            margin: 0 0 8px 0;
+        }
+
+        .container {
+            margin: 100px auto;
+            padding: 8px 10px;
+            width: 280px;
+            border: 1px solid #999;
+            border-radius: 10px;
+            background-color: #fff;
+        }
+
+        #sender,
+        #recipient,
+        #subject {
+            width: 270px;
+        }
+
+        #body {
+            margin: 0 0 5px 0;
+        }
+    </style>
 </head>
 
 <body>
-    邮件系统
-    <hr>
-    <a href="mailto:a13701777868@sina.com?subject=这是邮件的主题&body=这是邮件的内容" rel="nofollow">普通发送邮件</a>
-    <br>
-    <a href="mailto:a13701777868@sina.com?cc=a13701777868@gmail.com&bcc=a13701777868@gmail.com"
-        rel="nofollow">带抄送密送发送邮件</a>
-    <hr>
-    <form id="form">
-        <label for="sender">发件人</label>
-        <input name="sender" id="sender" type="text" required>
-        <label for="recipient">收件人</label>
-        <input name="recipient" id="recipient" type="email" required>
-        <label for="subject">主题</label>
-        <input name="subject" id="subject" type="text" required>
-        <label for="body">内容</label>
-        <textarea name="body" id="body" cols="30" rows="10" required></textarea>
-        <input id="submit" type="submit" value="发送">
-    </form>
-    <hr>
+    <div class="container">
+        <h2>New Message</h2>
+        <hr>
+        <a href="mailto:a13701777868@sina.com?subject=Subject&body=Body" rel="nofollow">Send mail</a>
+        <br>
+        <a href="mailto:a13701777868@sina.com?cc=a13701777868@gmail.com&bcc=a13701777868@gmail.com" rel="nofollow">Send
+            mail with cc bcc</a>
+        <hr>
+        <form id="form">
+            <input name="sender" id="sender" type="text" placeholder="From" required>
+            <input name="recipient" id="recipient" type="email" placeholder="To" required>
+            <input name="subject" id="subject" type="text" placeholder="Subject" required>
+            <label for="body"></label>
+            <textarea name="body" id="body" cols="32" rows="10" required></textarea>
+            <input id="submit" type="submit" value="发送">
+        </form>
+    </div>
     <script src="./node_modules/jquery/dist/jquery.min.js"></script>
     <script>
         const $form = $('#form')
