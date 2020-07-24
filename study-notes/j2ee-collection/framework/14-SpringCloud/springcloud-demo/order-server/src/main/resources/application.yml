@@ -1,8 +1,16 @@
 server:
   port: 8090
+  tomcat:
+    threads:
+      max: 400
+
 spring:
   application:
     name: order-server
+  redis:
+    port: 6379
+    host: 172.16.21.175
+
 eureka:
   client:
     serviceUrl:
@@ -24,3 +32,15 @@ ribbon:
 #product-server:
 #  ribbon:
 #    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RoundRobinRule
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 2000
+
+feign:
+  hystrix:
+    enabled: true
