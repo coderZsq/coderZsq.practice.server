@@ -45,6 +45,9 @@ public class UserServlet extends BaseServlet<User> {
         if (service.save(user)) { // 保存成功
             // 重定向到admin
             redirect(request, response, "user/admin");
+
+            // 更新session中的用户
+            request.getSession().setAttribute("user", user);
         } else { // 保存失败
             forwardError(request, response, "个人信息保存失败");
         }
@@ -76,6 +79,17 @@ public class UserServlet extends BaseServlet<User> {
         } else { // 用户名, 密码有问题
             forwardError(request, response, "邮箱或密码不正确");
         }
+    }
+
+    /**
+     * 退出登录
+     */
+    public void logout(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        // 清除登录信息 (将session中的用户删除)
+        request.getSession().removeAttribute("user");
+
+        // 重定向到登录页面
+        redirect(request, response, "page/login.jsp");
     }
 
     public void captcha(HttpServletRequest request, HttpServletResponse response) throws Exception {

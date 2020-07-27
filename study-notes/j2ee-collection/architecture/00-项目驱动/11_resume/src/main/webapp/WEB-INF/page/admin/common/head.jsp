@@ -13,6 +13,7 @@
 <link href="${ctx}/asset/plugin/bootstrap-fileinput/bootstrap-fileinput.css" rel="stylesheet">
 <link href="${ctx}/asset/plugin/node-waves/waves.css" rel="stylesheet">
 <link href="${ctx}/asset/plugin/animate-css/animate.min.css" rel="stylesheet">
+<link href="${ctx}/asset/plugin/bootstrap-tagsinput/bootstrap-tagsinput.css" rel="stylesheet">
 <link href="${ctx}/asset/admin/css/material-icons.css" rel="stylesheet">
 <link href="${ctx}/asset/admin/css/style.min.css" rel="stylesheet">
 <link href="${ctx}/asset/admin/css/theme-blue.min.css" rel="stylesheet">

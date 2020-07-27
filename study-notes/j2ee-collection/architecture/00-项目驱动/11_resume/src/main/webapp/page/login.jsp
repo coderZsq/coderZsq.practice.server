@@ -21,7 +21,9 @@
                             <i class="material-icons">email</i>
                         </span>
                         <div class="form-line">
-                            <input type="email" class="form-control" name="email" maxlength="50" placeholder="邮箱" required autofocus>
+                            <input type="email" class="form-control"
+                                   value="a13701777868@sina.com"
+                                   name="email" maxlength="50" placeholder="邮箱" required autofocus>
                         </div>
                     </div>
                     <div class="input-group form-group">
@@ -30,7 +32,9 @@
                         </span>
                         <div class="form-line">
                             <input type="hidden" name="password">
-                            <input id="originPassword" type="password" class="form-control" maxlength="20"placeholder="密码" required>
+                            <input id="originPassword" type="password"
+                                   value="666"
+                                   class="form-control" maxlength="20"placeholder="密码" required>
                         </div>
                     </div>
                     <div class="input-group form-group captcha">

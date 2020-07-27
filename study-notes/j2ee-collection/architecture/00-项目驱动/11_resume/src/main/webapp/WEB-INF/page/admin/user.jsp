@@ -6,7 +6,6 @@
 <head>
     <title>小码哥简历管理-个人信息</title>
     <%@ include file="common/head.jsp" %>
-    <link href="${ctx}/asset/plugin/bootstrap-tagsinput/bootstrap-tagsinput.css" rel="stylesheet">
 </head>
 
 <body class="theme-blue">
@@ -144,7 +143,7 @@
                                     <div class="form-group">
                                         <div class="form-line">
                                             <input type="date" id="birthday" name="birthday"
-                                                   value="${user.birthday}"
+                                                   value="<fmt:formatDate pattern="yyyy-MM-dd" value="${user.birthday}"/>"
                                                    class="form-control">
                                         </div>
                                     </div>
