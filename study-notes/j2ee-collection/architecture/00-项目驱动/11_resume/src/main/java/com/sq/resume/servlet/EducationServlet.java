@@ -11,6 +11,10 @@ import java.util.List;
 
 @WebServlet("/education/*")
 public class EducationServlet extends BaseServlet<Education> {
+    public void front(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        request.setAttribute("educations", service.list());
+        forward(request, response, "front/education.jsp");
+    }
 
     public void admin(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request.setAttribute("educations", service.list());

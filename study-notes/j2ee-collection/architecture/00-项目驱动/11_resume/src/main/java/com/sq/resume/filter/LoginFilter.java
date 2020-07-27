@@ -20,7 +20,11 @@ public class LoginFilter implements Filter {
         // 优先放开的请求
         if (uri.contains("/asset/")) {
             chain.doFilter(request, response);
-        } else if (uri.contains("/admin") || uri.contains("/save") || uri.contains("/remove")) {
+        } else if (uri.contains("/admin")
+                || uri.contains("/save")
+                || uri.contains("/remove")
+                || uri.contains("/user/password")
+                || uri.contains("/user/updatePassword")) {
             // 需要做登录验证的请求
             Object user = request.getSession().getAttribute("user");
             if (user != null) { // 登录成功过

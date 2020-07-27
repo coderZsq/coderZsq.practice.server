@@ -3,7 +3,7 @@
 <html lang="zh">
 <head>
     <title>小码哥教育-500</title>
-    <%@ include file="admin/common/head.jsp"%>
+    <%@ include file="admin/common/style.jsp"%>
 </head>
 
 <body class="five-zero-zero">

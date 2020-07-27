@@ -3,7 +3,7 @@
 <html lang="zh">
 <head>
     <title>小码哥简历管理-登录</title>
-    <%@ include file="../WEB-INF/page/admin/common/head.jsp"%>
+    <%@ include file="../WEB-INF/page/admin/common/style.jsp"%>
 </head>
 
 <body class="login-page">
@@ -60,7 +60,7 @@
         </div>
     </div>
 
-    <%@ include file="../WEB-INF/page/admin/common/foot.jsp"%>
+    <%@ include file="../WEB-INF/page/admin/common/script.jsp"%>
     <script src="${ctx}/asset/plugin/JavaScript-MD5/md5.min.js"></script>
     <script>
         addValidatorRules('.form-validation', function () {

@@ -5,12 +5,12 @@
 <html lang="zh">
 <head>
     <title>小码哥简历管理-个人信息</title>
-    <%@ include file="common/head.jsp" %>
+    <%@ include file="common/style.jsp" %>
 </head>
 
 <body class="theme-blue">
 
-<%@ include file="common/middle.jsp" %>
+<%@ include file="common/nav.jsp" %>
 
 <section class="content">
     <div class="container-fluid">
@@ -190,7 +190,7 @@
 </section>
 
 
-<%@ include file="common/foot.jsp"%>
+<%@ include file="common/script.jsp"%>
 <script src="${ctx}/asset/plugin/bootstrap-tagsinput/bootstrap-tagsinput.min.js"></script>
 
 <script>

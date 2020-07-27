@@ -19,6 +19,11 @@ import java.util.List;
 public class ProjectServlet extends BaseServlet<Project> {
     private CompanyService companyService = new CompanyServiceImpl();
 
+    public void front(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        request.setAttribute("projects", service.list());
+        forward(request, response, "front/project.jsp");
+    }
+
     public void admin(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request.setAttribute("projects", service.list());
         request.setAttribute("companies", companyService.list());

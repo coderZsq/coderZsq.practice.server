@@ -16,6 +16,11 @@ import java.util.List;
 public class ExperienceServlet extends BaseServlet<Experience> {
     private CompanyService companyService = new CompanyServiceImpl();
 
+    public void front(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        request.setAttribute("experiences", service.list());
+        forward(request, response, "front/experience.jsp");
+    }
+
     public void admin(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request.setAttribute("experiences", service.list());
         request.setAttribute("companies", companyService.list());
