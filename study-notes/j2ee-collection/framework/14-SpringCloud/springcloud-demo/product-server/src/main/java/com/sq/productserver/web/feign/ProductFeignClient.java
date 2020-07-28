@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.concurrent.TimeUnit;
-
 @RestController
 public class ProductFeignClient implements ProductFeignApi {
     @Autowired
@@ -23,10 +21,13 @@ public class ProductFeignClient implements ProductFeignApi {
         System.out.println("调用商品服务feign接口");
         // 业务方法执行, 重试策略 --> 业务方法会执行多次 --> 接口一定要做幂等性
         Product product = productService.get(id);
-        try {
-            TimeUnit.SECONDS.sleep(5);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        // try {
+        //     Thread.sleep(4000);
+        // } catch (InterruptedException e) {
+        //     e.printStackTrace();
+        // }
+        if (1 > 0) {
+            throw new RuntimeException("网络异常");
         }
         Product result = new Product();
         BeanUtils.copyProperties(product, result);
