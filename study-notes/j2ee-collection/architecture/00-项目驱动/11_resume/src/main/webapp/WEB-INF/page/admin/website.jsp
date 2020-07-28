@@ -1,9 +1,10 @@
 ﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<% request.setAttribute("ctx", request.getContextPath()); %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-    <title>小码哥简历管理-网站信息</title>
+    <title>Castie! 简历管理-网站信息</title>
     <%@ include file="common/style.jsp" %>
 </head>
 

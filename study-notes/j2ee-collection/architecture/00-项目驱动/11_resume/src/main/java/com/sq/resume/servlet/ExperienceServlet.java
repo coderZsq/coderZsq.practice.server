@@ -3,7 +3,11 @@ package com.sq.resume.servlet;
 import com.sq.resume.bean.Company;
 import com.sq.resume.bean.Experience;
 import com.sq.resume.service.CompanyService;
+import com.sq.resume.service.UserService;
+import com.sq.resume.service.WebsiteService;
 import com.sq.resume.service.impl.CompanyServiceImpl;
+import com.sq.resume.service.impl.UserServiceImpl;
+import com.sq.resume.service.impl.WebsiteServiceImpl;
 import org.apache.commons.beanutils.BeanUtils;
 
 import javax.servlet.annotation.WebServlet;
@@ -15,8 +19,12 @@ import java.util.List;
 @WebServlet("/experience/*")
 public class ExperienceServlet extends BaseServlet<Experience> {
     private CompanyService companyService = new CompanyServiceImpl();
+    private UserService userService = new UserServiceImpl();
+    private WebsiteService websiteService = new WebsiteServiceImpl();
 
     public void front(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        request.setAttribute("user", userService.list().get(0));
+        request.setAttribute("footer", websiteService.list().get(0).getFooter());
         request.setAttribute("experiences", service.list());
         forward(request, response, "front/experience.jsp");
     }

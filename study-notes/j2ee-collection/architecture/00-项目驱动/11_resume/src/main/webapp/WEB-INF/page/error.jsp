@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-    <title>小码哥教育-Error</title>
+    <title>Castie! 教育-Error</title>
     <%@ include file="admin/common/style.jsp"%>
 </head>
 
@@ -11,7 +11,7 @@
         <div class="error-title">喔豁，出错了</div>
         <div class="error-msg">${error}</div>
         <div class="button-place">
-            <a href="#" class="btn btn-default btn-lg waves-effect">回到首页</a>
+            <a href="${ctx}" class="btn btn-default btn-lg waves-effect">回到首页</a>
         </div>
     </div>
 </body>

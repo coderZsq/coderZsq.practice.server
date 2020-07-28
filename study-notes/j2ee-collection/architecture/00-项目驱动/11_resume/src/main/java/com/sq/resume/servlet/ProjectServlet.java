@@ -4,7 +4,11 @@ import com.sq.resume.bean.Company;
 import com.sq.resume.bean.Project;
 import com.sq.resume.bean.UploadParams;
 import com.sq.resume.service.CompanyService;
+import com.sq.resume.service.UserService;
+import com.sq.resume.service.WebsiteService;
 import com.sq.resume.service.impl.CompanyServiceImpl;
+import com.sq.resume.service.impl.UserServiceImpl;
+import com.sq.resume.service.impl.WebsiteServiceImpl;
 import com.sq.resume.util.Uploads;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.fileupload.FileItem;
@@ -18,8 +22,12 @@ import java.util.List;
 @WebServlet("/project/*")
 public class ProjectServlet extends BaseServlet<Project> {
     private CompanyService companyService = new CompanyServiceImpl();
+    private UserService userService = new UserServiceImpl();
+    private WebsiteService websiteService = new WebsiteServiceImpl();
 
     public void front(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        request.setAttribute("user", userService.list().get(0));
+        request.setAttribute("footer", websiteService.list().get(0).getFooter());
         request.setAttribute("projects", service.list());
         forward(request, response, "front/project.jsp");
     }

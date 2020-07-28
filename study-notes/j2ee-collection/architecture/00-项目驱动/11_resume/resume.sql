@@ -121,12 +121,12 @@ INSERT INTO user(email, name, password,
 	job, phone, birthday, 
 	address, trait, interests, 
 	intro) VALUES(
-	'mj@qq.com', '小码哥MJ', '3f05d332600fa9d9b7837172521ffa60', 
+	'mj@qq.com', 'Castie! MJ', '3f05d332600fa9d9b7837172521ffa60', 
 	'程序员', '9527', '1988-01-02', 
 	'天朝广州', '活泼,可爱', '足球,台球,电玩',
 	'本人学识渊博、经验丰富，代码风骚、效率恐怖，C/C++ C#、Java、PHP、Android、iOS、Python、JavaScript，无不精通玩转，熟练掌握各种框架，并自写语言，创操作系统，写CPU处理器构架，做指令集成。深山苦练20余年，一天只睡3小时，千里之外定位问题，瞬息之间修复上线。身体强壮、健步如飞，可连续工作100小时不休息，讨论技术方案9小时不喝水，上至研发CPU芯片、带项目、出方案、弄计划，下至盗账号、黑网站、Shell提权挂马、攻击同行、拍片摄影、泡妞把妹纸、开挖掘机、威胁PM，啥都能干。'
 );
 
 INSERT INTO website(footer) VALUES(
-	'<a href="https://space.bilibili.com/325538782" target="_blank">小码哥MJ</a> © All Rights Reserved 2020'
+	'<a href="https://space.bilibili.com/325538782" target="_blank">Castie! MJ</a> © All Rights Reserved 2020'
 );

@@ -2,14 +2,14 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-    <title>小码哥简历管理-登录</title>
+    <title>Castie! 简历管理-登录</title>
     <%@ include file="../WEB-INF/page/admin/common/style.jsp"%>
 </head>
 
 <body class="login-page">
     <div class="login-box">
         <div class="logo">
-            <a href="javascript:void(0);"><b>小码哥简历管理</b></a>
+            <a href="javascript:void(0);"><b>Castie! 简历管理</b></a>
             <small>您身边最好用的简历助手</small>
         </div>
         <div class="card">
