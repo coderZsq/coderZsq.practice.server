@@ -26,9 +26,9 @@ public class ProductFeignClient implements ProductFeignApi {
         // } catch (InterruptedException e) {
         //     e.printStackTrace();
         // }
-        if (1 > 0) {
-            throw new RuntimeException("网络异常");
-        }
+        // if (1 > 0) {
+        //     throw new RuntimeException("网络异常");
+        // }
         Product result = new Product();
         BeanUtils.copyProperties(product, result);
         result.setName(result.getName() + ", data from " + port);
