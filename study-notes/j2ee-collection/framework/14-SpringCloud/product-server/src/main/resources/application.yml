@@ -1,0 +1,14 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: product-server
+  zipkin:
+    base-url: http://localhost:9411
+  sleuth:
+    sampler:
+      probability: 1
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
