@@ -1,0 +1,60 @@
+#server:
+#  port: 8090
+#  tomcat:
+#    threads:
+#      max: 400
+
+spring:
+  application:
+    name: order-server
+  cloud:
+    config:
+      discovery:
+        service-id: config-server
+        enabled: true
+      label: master
+      name: order-server
+#  redis:
+#    port: 6379
+#    host: 172.16.21.175
+#  zipkin:
+#    base-url: http://localhost:9411
+#  sleuth:
+#    sampler:
+#      probability: 1
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+#feign:
+#  client:
+#    config:
+#      default:
+#        connectTimeout: 2000
+#        readTimeout: 2000
+
+#ribbon:
+#  MaxAutoRetries: 1 # 在一个服务上的最大重试次数, 不包括第一次
+#  MaxAutoRetriesNextServer: 1 # 重试之后选择下一个服务器的次数
+#  ConnectTimeout: 2000
+#  ReadTimeout: 2000
+
+#product-server:
+#  ribbon:
+#    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RoundRobinRule
+
+#hystrix:
+#  command:
+#    default:
+#      execution:
+#        isolation:
+#          thread:
+#            timeoutInMilliseconds: 10000
+# 对于feign和hystrix的超时时间的配置关系
+# hystrix的容错时间 >= ribbon的超时时间 (MaxAutoRetries + 1) * (MaxAutoRetriesNextServer + 1) * timeout
+
+#feign:
+#  hystrix:
+#    enabled: true

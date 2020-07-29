@@ -7,9 +7,9 @@ spring:
     config:
       server:
         git:
-          uri:
-          username:
-          password:
+          uri: https://gitee.com/heshengjun/cloud-config
+          username: heshengjun811@163.com
+          password: Haoren123
 
 eureka:
   client:
