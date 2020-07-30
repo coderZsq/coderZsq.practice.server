@@ -1,4 +1,4 @@
-package com.sq.servlet;
+package com.sq.cookie;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

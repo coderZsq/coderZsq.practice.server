@@ -97,13 +97,9 @@ public class ContactDaoImpl extends BaseDaoImpl<Contact> implements ContactDao {
          总页数 = (总数量 + 每页的数量 + 1) / 每页的数量
          */
         String countSql = "SELECT COUNT(*) FROM contact WHERE 1 = 1 " + condition;
-        Integer totalCount = tpl.queryForObject(countSql, new RowMapper<Integer>() {
-            @Override
-            public Integer mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-                return resultSet.getInt(1);
-            }
-        }, args.toArray());
-        result.setTotalPages((totalCount + pageSize - 1) / pageSize);
+        Integer totalCount = tpl.queryForObject(countSql, Integer.class, args.toArray());
+        int totalPages = (totalCount + pageSize - 1) / pageSize;
+        result.setTotalPages(totalPages);
         result.setTotalCount(totalCount);
 
         // 分页
@@ -112,6 +108,8 @@ public class ContactDaoImpl extends BaseDaoImpl<Contact> implements ContactDao {
         Integer pageNo = param.getPageNo();
         if (pageNo == null) {
             pageNo = 1;
+        } else if (pageNo > totalPages) {
+            pageNo = totalPages;
         }
         args.add((pageNo - 1) * pageSize);
         args.add(pageSize);
@@ -122,5 +120,11 @@ public class ContactDaoImpl extends BaseDaoImpl<Contact> implements ContactDao {
         result.setContacts(contacts);
 
         return result;
+    }
+
+    @Override
+    public boolean read(Integer id) {
+        String sql = "UPDATE contact SET already_read = 1 WHERE id = ?";
+        return tpl.update(sql, id) > 0;
     }
 }

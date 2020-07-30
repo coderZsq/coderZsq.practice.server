@@ -20,6 +20,8 @@
                         <h2>留言信息</h2>
                     </div>
                     <form id="list-form" method="post" action="${ctx}/contact/admin">
+                        <!-- 页码 -->
+                        <input type="hidden" name="pageNo" value="${result.pageNo}">
                         <div class="body table-responsive">
                             <div class="menus">
                                 <div class="search-box input-group">
@@ -42,7 +44,8 @@
                                         <i class="material-icons">search</i>
                                     </span>
                                     <div class="form-line keyword">
-                                        <input name="keyword" value="${result.keyword}" type="text" class="form-control" placeholder="主题、内容等">
+                                        <input name="keyword" value="${result.keyword}" type="text" class="form-control"
+                                               placeholder="主题、内容等">
                                     </div>
                                     <button type="submit" class="btn bg-blue waves-effect btn-sm">搜索</button>
                                 </div>
@@ -66,12 +69,24 @@
                                         <tr>
                                             <td>
                                                 <div class="switch">
-                                                    <label><input type="checkbox" disabled><span class="lever switch-col-blue"></span></label>
+                                                    <label>
+                                                        <c:choose>
+                                                            <c:when test="${contact.alreadyRead}">
+                                                                <input id="read-${contact.id}" type="checkbox" disabled
+                                                                       checked>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <input id="read-${contact.id}" type="checkbox" disabled>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                        <span class="lever switch-col-blue"></span>
+                                                    </label>
                                                 </div>
                                             </td>
                                             <td>${contact.name}</td>
                                             <td>${contact.email}</td>
-                                            <td><fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" value="${contact.createdTime}"/></td>
+                                            <td><fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss"
+                                                                value="${contact.createdTime}"/></td>
                                             <td>${contact.subject}</td>
                                             <td>${contact.comment}</td>
                                             <td>
@@ -85,40 +100,78 @@
                                     </c:forEach>
                                     </tbody>
                                 </table>
-                            </c:if>
-
-                            <div class="page-box">
-                                <div class="page-size">
-                                    共${result.totalCount}条${result.totalPages}页，每页
-                                    <select name="pageSize">
-                                        <option value="10">10</option>
-                                        <option value="20">20</option>
-                                        <option value="30">30</option>
-                                        <option value="40">40</option>
-                                        <option value="50">50</option>
-                                    </select>
-                                    条
+                                <div class="page-box">
+                                    <div class="page-size">
+                                        共${result.totalCount}条${result.totalPages}页，每页
+                                        <select name="pageSize">
+                                            <option value="10">10</option>
+                                            <option value="20">20</option>
+                                            <option value="40">40</option>
+                                            <option value="80">80</option>
+                                            <option value="160">160</option>
+                                        </select>
+                                        条
+                                    </div>
+                                    <nav>
+                                        <ul class="pagination">
+                                            <!-- 上一页 -->
+                                            <li id="prevPage">
+                                                <a onclick="go(${result.pageNo - 1})">
+                                                    <i class="material-icons">chevron_left</i>
+                                                </a>
+                                            </li>
+                                                <%--<c:choose>--%>
+                                                <%--    <c:when test="${result.pageNo == 1}">--%>
+                                                <%--        <li class="disabled">--%>
+                                                <%--            <a onclick="go(${result.pageNo - 1})">--%>
+                                                <%--                <i class="material-icons">chevron_left</i>--%>
+                                                <%--            </a>--%>
+                                                <%--        </li>--%>
+                                                <%--    </c:when>--%>
+                                                <%--    <c:otherwise>--%>
+                                                <%--        <li>--%>
+                                                <%--            <a onclick="go(${result.pageNo - 1})">--%>
+                                                <%--                <i class="material-icons">chevron_left</i>--%>
+                                                <%--            </a>--%>
+                                                <%--        </li>--%>
+                                                <%--    </c:otherwise>--%>
+                                                <%--</c:choose>--%>
+                                            <c:forEach begin="1" end="${result.totalPages}" var="idx">
+                                                <c:choose>
+                                                    <c:when test="${idx == result.pageNo}">
+                                                        <li class="active"><a>${idx}</a></li>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <li><a onclick="go(${idx})" class="waves-effect">${idx}</a></li>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </c:forEach>
+                                            <!-- 下一页 -->
+                                            <li id="nextPage">
+                                                <a onclick="go(${result.pageNo + 1})" class="waves-effect">
+                                                    <i class="material-icons">chevron_right</i>
+                                                </a>
+                                            </li>
+                                                <%--<c:choose>--%>
+                                                <%--    <c:when test="${result.pageNo == result.totalPages}">--%>
+                                                <%--        <li class="disabled">--%>
+                                                <%--            <a onclick="go(${result.pageNo + 1})" class="waves-effect">--%>
+                                                <%--                <i class="material-icons">chevron_right</i>--%>
+                                                <%--            </a>--%>
+                                                <%--        </li>--%>
+                                                <%--    </c:when>--%>
+                                                <%--    <c:otherwise>--%>
+                                                <%--        <li>--%>
+                                                <%--            <a onclick="go(${result.pageNo + 1})" class="waves-effect">--%>
+                                                <%--                <i class="material-icons">chevron_right</i>--%>
+                                                <%--            </a>--%>
+                                                <%--        </li>--%>
+                                                <%--    </c:otherwise>--%>
+                                                <%--</c:choose>--%>
+                                        </ul>
+                                    </nav>
                                 </div>
-                                <nav>
-                                    <ul class="pagination">
-                                        <li class="disabled">
-                                            <a>
-                                                <i class="material-icons">chevron_left</i>
-                                            </a>
-                                        </li>
-                                        <li class="active"><a>1</a></li>
-                                        <li><a href="javascript:void(0);" class="waves-effect">2</a></li>
-                                        <li><a href="javascript:void(0);" class="waves-effect">3</a></li>
-                                        <li><a href="javascript:void(0);" class="waves-effect">4</a></li>
-                                        <li><a href="javascript:void(0);" class="waves-effect">5</a></li>
-                                        <li>
-                                            <a href="javascript:void(0);" class="waves-effect">
-                                                <i class="material-icons">chevron_right</i>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </nav>
-                            </div>
+                            </c:if>
                         </div>
                     </form>
                 </div>
@@ -221,23 +274,17 @@
 
 <%@ include file="common/script.jsp" %>
 <script>
-    $('.menu .list .contact').addClass('active')
-
+    /* 变量和常量 */
     const $viewFormBox = $('#view-form-box')
     const $viewForm = $viewFormBox.find('form')
-    function view(json) {
-        // 显示数据框
-        $viewFormBox.modal()
+    const $form = $('#list-form')
+    const $pageSize = $('[name=pageSize]')
+    const $pageNo = $form.find('[name=pageNo]')
 
-        // 填充表单信息
-        for (const k in json) {
-            $viewForm.find('[name=' + k + ']').val(json[k])
-        }
-    }
+    /* 初始化 */
+    $('.menu .list .contact').addClass('active')
 
     // 监听每页大小的改变
-    const $form = $('#list-form')
-    const $pageSize =  $('[name=pageSize]')
     $pageSize.change(function () {
         $form.submit()
     })
@@ -245,8 +292,51 @@
     // 设置每页大小
     $pageSize.val(${result.pageSize})
 
+    // 上一页\下一页的可用性
+    if (${result.pageNo} == 1
+    )
+    {
+        $('#prevPage').addClass('disabled')
+    }
+    if (${result.pageNo} == ${result.totalPages}) {
+        $('#nextPage').addClass('disabled')
+    }
+
     // 设置阅读状态
-    $('[name=alreadyRead]').val(${result.alreadyRead})
+    $('[name=alreadyRead]').change(function () {
+        $form.submit()
+    }).val(${result.alreadyRead})
+
+    /* 函数 */
+    function view(json) {
+        console.log(json)
+        // 显示数据框
+        $viewFormBox.modal()
+
+        // 填充表单信息
+        for (const k in json) {
+            $viewForm.find('[name=' + k + ']').val(json[k])
+        }
+
+        // 发送AJAX请求告诉服务器: 已读
+        $.getJSON('${ctx}/contact/read', {id: json.id}, function (data) {
+            if (data.success) {
+                // 利用JS让对应的checkbox打勾
+                // $('#read-' + json.id).attr('checked', 'checked')
+                // $('#read-' + json.id).prop('checked', 'checked')
+                // $('#read-' + json.id).attr('checked', true)
+                $('#read-' + json.id).prop('checked', true)
+            } else {
+                console.log('查看失败')
+            }
+        })
+    }
+
+    function go(pageNo) {
+        if (pageNo > ${result.totalPages} || pageNo < 1) return
+        $pageNo.val(pageNo)
+        $form.submit()
+    }
 </script>
 </body>
 

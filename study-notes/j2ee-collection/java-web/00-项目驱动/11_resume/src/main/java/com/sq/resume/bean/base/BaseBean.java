@@ -30,7 +30,7 @@ public abstract class BaseBean {
     @JsonIgnore
     public String getJSON() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
-        mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
+        mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
         return mapper.writeValueAsString(this).replace("\"", "'");
 
         // SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");

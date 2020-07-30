@@ -1,5 +1,6 @@
 package com.sq.resume.servlet;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import com.google.code.kaptcha.util.Config;
 import com.sq.resume.bean.UploadParams;
@@ -24,6 +25,8 @@ import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 @WebServlet("/user/*")
@@ -81,27 +84,37 @@ public class UserServlet extends BaseServlet<User> {
     }
 
     public void login(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        // 设置编码
+        response.setContentType("text/json; charset=UTF-8");
+        Map<String, Object> result = new HashMap<>();
+
         // 检查验证码
         String captcha = request.getParameter("captcha").toLowerCase();
 
         // 从Session中取出验证码
         String code = (String) request.getSession().getAttribute("code");
         if (!captcha.equals(code)) {
-            forwardError(request, response, "验证码不正确");
-            return;
+            // forwardError(request, response, "验证码不正确");
+            result.put("success", false);
+            result.put("msg", "验证码不正确");
+        } else {
+            // 检查用户名, 密码
+            User user = new User();
+            BeanUtils.populate(user, request.getParameterMap());
+            user = ((UserService) service).get(user);
+            if (user != null) { // 用户名, 密码正确
+                // 登录成功后, 将User对象放入Session中
+                request.getSession().setAttribute("user", user);
+                // redirect(request, response, "user/admin");
+                result.put("success", true);
+            } else { // 用户名, 密码有问题
+                // forwardError(request, response, "邮箱或密码不正确");
+                result.put("success", false);
+                result.put("msg", "邮箱或密码不正确");
+            }
         }
 
-        // 检查用户名, 密码
-        User user = new User();
-        BeanUtils.populate(user, request.getParameterMap());
-        user = ((UserService) service).get(user);
-        if (user != null) { // 用户名, 密码正确
-            // 登录成功后, 将User对象放入Session中
-            request.getSession().setAttribute("user", user);
-            redirect(request, response, "user/admin");
-        } else { // 用户名, 密码有问题
-            forwardError(request, response, "邮箱或密码不正确");
-        }
+        response.getWriter().write(new ObjectMapper().writeValueAsString(result));
     }
 
     /**

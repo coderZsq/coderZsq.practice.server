@@ -48,4 +48,11 @@ public class Contact extends BaseBean {
     public void setAlreadyRead(Boolean alreadyRead) {
         this.alreadyRead = alreadyRead;
     }
+
+    // @Override
+    // public String getJSON() throws Exception {
+    //     ObjectMapper mapper = new ObjectMapper();
+    //     mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+    //     return mapper.writeValueAsString(this).replace("\"", "'");
+    // }
 }

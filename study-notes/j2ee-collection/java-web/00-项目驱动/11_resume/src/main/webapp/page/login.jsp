@@ -65,7 +65,35 @@
     <script>
         addValidatorRules('.form-validation', function () {
             $('[name=password]').val(md5($('#originPassword').val()))
-            return true
+            // 先弹框
+            swal({
+                title: '正在登录中...',
+                text: ' ',
+                icon: 'info',
+                buttons: false,
+                closeOnClickOutside: false
+            })
+
+            // 利用AJAX发送请求给服务器
+            $.post('${ctx}/user/login', {
+                email: $('[name=email]').val(),
+                password: $('[name=password]').val(),
+                captcha: $('[name=captcha]').val()
+            }, function (data) {
+                if (data.success) {
+                    location.href = '${ctx}/user/admin'
+                } else {
+                    swal({
+                        title: '提示',
+                        text: data.msg,
+                        icon: 'error',
+                        dangerMode: true,
+                        buttons: false,
+                        timer: 1500
+                    })
+                }
+            }, 'json')
+            return false
         })
 
         $('#captcha').click(function () {

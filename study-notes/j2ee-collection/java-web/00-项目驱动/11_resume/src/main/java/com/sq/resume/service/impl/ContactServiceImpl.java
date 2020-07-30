@@ -11,4 +11,9 @@ public class ContactServiceImpl extends BaseServiceImpl<Contact> implements Cont
     public ContactListResult list(ContactListParam param) {
         return ((ContactDao) dao).list(param);
     }
+
+    @Override
+    public boolean read(Integer id) {
+        return ((ContactDao) dao).read(id);
+    }
 }

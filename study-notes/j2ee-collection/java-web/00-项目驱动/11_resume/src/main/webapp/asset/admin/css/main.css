@@ -229,3 +229,7 @@ td img {
     height: 50px;
     width: auto;
 }
+
+.pagination li {
+    cursor: pointer;
+}

@@ -1,5 +1,6 @@
 package com.sq.resume.servlet;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sq.resume.bean.Contact;
 import com.sq.resume.bean.ContactListParam;
 import com.sq.resume.service.ContactService;
@@ -12,6 +13,8 @@ import org.apache.commons.beanutils.BeanUtils;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 @WebServlet("/contact/*")
 public class ContactServlet extends BaseServlet<Contact> {
@@ -49,6 +52,22 @@ public class ContactServlet extends BaseServlet<Contact> {
         } else { // 保存失败
             forwardError(request, response, "留言信息保存失败");
         }
+    }
+
+    public void read(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Integer id = Integer.valueOf(request.getParameter("id"));
+
+        Map<String, Object> result = new HashMap<>();
+        if (((ContactService) service).read(id)) {
+            result.put("success", true);
+            result.put("msg", "查看成功");
+        } else {
+            result.put("success", false);
+            result.put("msg", "查看失败");
+        }
+
+        response.setContentType("text/json; charset=UTF-8");
+        response.getWriter().write(new ObjectMapper().writeValueAsString(result));
     }
 
     public void remove(HttpServletRequest request, HttpServletResponse response) throws Exception {
