@@ -1,0 +1,41 @@
+server:
+  port: 8090
+  tomcat:
+    threads:
+      max: 400
+
+spring:
+  application:
+    name: order-server
+  redis:
+    port: 6379
+    host: 172.16.21.175
+  zipkin:
+    base-url: http://localhost:9411
+  sleuth:
+    sampler:
+      probability: 1
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+ribbon:
+  MaxAutoRetries: 1
+  MaxAutoRetriesNextServer: 1
+  ConnectTimeout: 2000
+  ReadTimeout: 2000
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 10000
+
+feign:
+  hystrix:
+    enabled: true
+limitNum: 99
