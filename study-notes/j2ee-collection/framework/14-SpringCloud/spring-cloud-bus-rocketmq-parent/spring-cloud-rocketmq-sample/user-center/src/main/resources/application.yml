@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: user-center
+  cloud:
+    #bus:
+      # 可自定义使用的topic 但发布方需和监听方一致
+      #destination: springCloudBus
+    stream:
+      rocket:
+        binder:
+          name-server: 10.241.0.43:9876
+        bindings:
+          springCloudBusInput:
+            consumer:
+              broadcasting: true
+      bindings:
+        springCloudBusInput:
+          group: test-group
+server:
+  port: 8902

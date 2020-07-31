@@ -7,10 +7,25 @@ spring:
     config:
       server:
         git:
-          uri: https://gitee.com/heshengjun/cloud-config
-          username: heshengjun811@163.com
-          password: Haoren123
-
+          uri: https://e.coding.net/dtid_ada36270f1f70012/cloud-config/cloud-config.git
+          username:
+          password:
+    stream:
+      rocket:
+        binder:
+          name-server: 172.16.21.175:9876
+        bindings:
+          springCloudBusInput:
+            consumer:
+              broadcasting: true
+      bindings:
+        springCloudBusInput:
+          group: test-group
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 eureka:
   client:
     serviceUrl:

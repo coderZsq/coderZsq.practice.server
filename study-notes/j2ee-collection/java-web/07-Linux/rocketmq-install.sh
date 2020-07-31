@@ -190,7 +190,7 @@ nohup bin/mqbroker -c conf/3m-6s-async/broker-b.properties &
 nohup bin/mqbroker -c conf/3m-6s-async/broker-c.properties &
 
 # 管理控制台
-scp application.properties rocketmq-console-ng-1.0.1.jar 7.101.146.105 :/root/
+scp application.properties rocketmq-console-ng-1.0.1.jar 47.101.146.105 :/root/
 vi application.properties
 # server.port=9999
 # rocketmq.config.namesrvAddr=172.19.189.121:9876;172.19.189.121:9876;172.19.189.121:9876

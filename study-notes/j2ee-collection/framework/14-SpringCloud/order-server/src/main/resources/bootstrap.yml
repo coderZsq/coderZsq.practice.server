@@ -1,5 +1,5 @@
-#server:
-#  port: 8090
+server:
+  port: 8090
 #  tomcat:
 #    threads:
 #      max: 400
@@ -14,6 +14,22 @@ spring:
         enabled: true
       label: master
       name: order-server
+    stream:
+      rocket:
+        binder:
+          name-server: 172.16.21.175:9876
+        bindings:
+          springCloudBusInput:
+            consumer:
+              broadcasting: true
+      bindings:
+        springCloudBusInput:
+          group: test-group
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 #  redis:
 #    port: 6379
 #    host: 172.16.21.175

@@ -3,6 +3,8 @@ package com.sq.orderserver.web;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,7 +13,26 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.concurrent.TimeUnit;
 
 @RestController
+// 发送post请求
+// http://localhost:8090/actuator/bus-refresh // (广播)
+// http://localhost:8090/actuator/env // 环境信息
+// http://localhost:8090/actuator/beans // IoC容器的bean对象集合
+// http://localhost:8090/actuator/refresh // 重新加载配置(单体)
+// http://localhost:9100/monitor?path=* Content-Type:application/x-www-form-urlencoded // (需要表单提交)
+// 删除原来的缓存实例对象
+// 在访问的时候重新根据配置文件创建一个实例对象
+@RefreshScope // 标记的类是一个延迟加载对象, 在访问的时候创建, 并且刷新env环境的时候会清除该对象
 public class HelloController {
+
+    @Value("${limitNum}")
+    private String limitNum;
+
+    @RequestMapping("hello")
+    public String hello() {
+        System.out.println("用户的限购数量: " + limitNum);
+        return limitNum;
+    }
+
     @Autowired
     private RedisTemplate redisTemplate;
 

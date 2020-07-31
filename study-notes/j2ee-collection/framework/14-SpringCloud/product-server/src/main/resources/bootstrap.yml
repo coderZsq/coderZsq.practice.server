@@ -10,6 +10,23 @@ spring:
         enabled: true
       label: master
       name: product-server
+    stream:
+      rocket:
+        binder:
+          name-server: 172.16.21.175:9876
+        bindings:
+          springCloudBusInput:
+            consumer:
+              broadcasting: true
+      bindings:
+        springCloudBusInput:
+          group: test-group
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
 #  zipkin:
 #    base-url: http://localhost:9411
 #  sleuth:
