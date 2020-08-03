@@ -19,6 +19,7 @@ import org.apache.commons.fileupload.FileItem;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -93,6 +94,7 @@ public class UserServlet extends BaseServlet<User> {
 
         // 从Session中取出验证码
         String code = (String) request.getSession().getAttribute("code");
+
         if (!captcha.equals(code)) {
             // forwardError(request, response, "验证码不正确");
             result.put("success", false);
@@ -113,6 +115,10 @@ public class UserServlet extends BaseServlet<User> {
                 result.put("msg", "邮箱或密码不正确");
             }
         }
+
+        Cookie cookie = new Cookie("JESSIONID", request.getSession().getId());
+        cookie.setMaxAge(3600 * 24 * 7);
+        response.addCookie(cookie);
 
         response.getWriter().write(new ObjectMapper().writeValueAsString(result));
     }

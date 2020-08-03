@@ -87,7 +87,7 @@ public class ContactDaoImpl extends BaseDaoImpl<Contact> implements ContactDao {
         }
 
         Integer pageSize = param.getPageSize();
-        if (pageSize == null) {
+        if (pageSize == null || pageSize < 10) {
             pageSize = 10;
         }
 
@@ -98,6 +98,8 @@ public class ContactDaoImpl extends BaseDaoImpl<Contact> implements ContactDao {
          */
         String countSql = "SELECT COUNT(*) FROM contact WHERE 1 = 1 " + condition;
         Integer totalCount = tpl.queryForObject(countSql, Integer.class, args.toArray());
+        if (totalCount == 0) return result;
+
         int totalPages = (totalCount + pageSize - 1) / pageSize;
         result.setTotalPages(totalPages);
         result.setTotalCount(totalCount);
@@ -106,9 +108,9 @@ public class ContactDaoImpl extends BaseDaoImpl<Contact> implements ContactDao {
         sql.append(condition);
         sql.append("LIMIT ?, ?");
         Integer pageNo = param.getPageNo();
-        if (pageNo == null) {
+        if (pageNo == null || pageNo < 1) {
             pageNo = 1;
-        } else if (pageNo > totalPages) {
+        } else if (pageNo > totalPages) { // 页码如果已经超过了总页数
             pageNo = totalPages;
         }
         args.add((pageNo - 1) * pageSize);

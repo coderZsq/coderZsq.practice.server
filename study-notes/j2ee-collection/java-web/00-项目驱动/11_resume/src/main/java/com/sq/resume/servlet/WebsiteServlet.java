@@ -3,6 +3,8 @@ package com.sq.resume.servlet;
 import com.sq.resume.bean.Website;
 import org.apache.commons.beanutils.BeanUtils;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

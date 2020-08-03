@@ -20,4 +20,34 @@
         <location>/WEB-INF/page/500.jsp</location>
     </error-page>
 
+    <!-- 配置Filter -->
+    <!--<filter>-->
+    <!--    <filter-name>LoginFilter</filter-name>-->
+    <!--    <filter-class>com.sq.resume.filter.LoginFilter</filter-class>-->
+    <!--</filter>-->
+    <!--<filter-mapping>-->
+    <!--    <filter-name>LoginFilter</filter-name>-->
+    <!--    <url-pattern>/*</url-pattern>-->
+    <!--    <dispatcher>REQUEST</dispatcher>-->
+    <!--</filter-mapping>-->
+
+    <!-- 配置Listener -->
+    <!--<listener>-->
+    <!--    <listener-class>com.sq.resume.listener.ContextListener</listener-class>-->
+    <!--</listener>-->
+
+    <!-- 配置Servlet -->
+    <!--<servlet>-->
+    <!--    <servlet-name>ContactServlet</servlet-name>-->
+    <!--    <servlet-class>com.sq.resume.servlet.ContactServlet</servlet-class>-->
+    <!--</servlet>-->
+    <!--<servlet-mapping>-->
+    <!--    <servlet-name>ContactServlet</servlet-name>-->
+    <!--    <url-pattern>/contact/*</url-pattern>-->
+    <!--</servlet-mapping>-->
+
+    <!-- 配置Sesssion的寿命 -->
+    <!--<session-config>-->
+    <!--    <session-timeout>30</session-timeout>-->
+    <!--</session-config>-->
 </web-app>
