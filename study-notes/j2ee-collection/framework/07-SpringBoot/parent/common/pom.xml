@@ -18,6 +18,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <version>1.18.12</version>
             <!-- 配置为true, 不会被依赖 -->
             <optional>true</optional>
         </dependency>
