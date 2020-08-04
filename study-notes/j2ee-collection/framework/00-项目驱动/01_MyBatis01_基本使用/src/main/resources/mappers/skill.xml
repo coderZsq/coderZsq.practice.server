@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="skill">
+    <select id="list" resultType="com.sq.bean.Skill">
+        SELECT * FROM skill
+    </select>
+
+    <select id="list2" resultType="com.sq.bean.Skill">
+        SELECT * FROM skill WHERE id > #{id} OR level > #{level} OR name LIKE #{name}
+    </select>
+
+    <select id="get" resultType="com.sq.bean.Skill">
+        SELECT * FROM skill WHERE id = #{id}
+    </select>
+
+    <!-- <resultMap id="rmSkill" type="com.sq.bean.Skill">-->
+        <!--<id property="id" column="id"/>-->
+        <!--<result property="id" column="id"/>-->
+        <!--<result property="createdTime" column="created_time"/>-->
+        <!--<result property="name" column="name"/>-->
+        <!--<result property="level" column="level"/>-->
+    <!--</resultMap>-->
+
+    <!--<select id="list" resultMap="rmSkill">-->
+    <!--    SELECT * FROM skill-->
+    <!--</select>-->
+</mapper>
