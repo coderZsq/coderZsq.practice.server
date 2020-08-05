@@ -1,0 +1,1 @@
+rocketmq=com.sq.springcloudstreambinderrocketmq.RocketMQMessageChannelBinderConfiguration
