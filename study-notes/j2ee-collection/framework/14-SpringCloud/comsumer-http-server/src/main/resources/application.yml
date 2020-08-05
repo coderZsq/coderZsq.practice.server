@@ -1,0 +1,11 @@
+server:
+  port: 6000
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+spring:
+  application:
+    name: comsumer-http-server
