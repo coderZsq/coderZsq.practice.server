@@ -22,6 +22,10 @@ public class MyBatises {
         }
     }
 
+    public static SqlSession openSession(boolean autoCommit) {
+        return factory.openSession(autoCommit);
+    }
+
     public static SqlSession openSession() {
         return factory.openSession();
     }

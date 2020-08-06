@@ -9,7 +9,9 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Test;
 
 import java.io.Reader;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SkillTest {
     @Test
@@ -53,6 +55,72 @@ public class SkillTest {
             param.setLevel(5);
             param.setName("%J%");
             List<Skill> skills = session.selectList("skill.list2", param);
+            for (Skill skill : skills) {
+                System.out.println(skill);
+            }
+        }
+    }
+
+    @Test
+    public void select4() throws Exception {
+        try (SqlSession session = MyBatises.openSession()) {
+            List<Skill> skills = session.selectList("skill.list3", "%A%");
+            for (Skill skill : skills) {
+                System.out.println(skill);
+            }
+        }
+    }
+
+    @Test
+    public void insert() throws Exception {
+       try (SqlSession session = MyBatises.openSession(true)) {
+           Skill skill = new Skill("iOS", 888);
+           session.insert("skill.insert", skill);
+       }
+    }
+
+    @Test
+    public void insert2() throws Exception {
+        try (SqlSession session = MyBatises.openSession()) {
+            Skill skill = new Skill("Android", 999);
+            session.insert("skill.insert2", skill);
+            System.out.println(skill.getId());
+            session.commit();
+        }
+    }
+
+    @Test
+    public void update() throws Exception {
+        try (SqlSession session = MyBatises.openSession()) {
+            Skill skill = new Skill("Java", 666);
+            skill.setId(8);
+            session.update("skill.update", skill);
+            session.commit();
+        }
+    }
+
+    @Test
+    public void delete() throws Exception {
+        try (SqlSession session = MyBatises.openSession()) {
+            session.delete("skill.delete", 8);
+            session.commit();
+        }
+    }
+
+    @Test
+    public void dynamicSQL() throws Exception {
+        try (SqlSession session = MyBatises.openSession()) {
+            Map<String, Object> param = new HashMap<>();
+            // param.put("id", 5);
+            // param.put("name", "%S%");
+            param.put("level", 900);
+            /*
+                SELECT * FROM skill WHERE 1 = 1
+                AND id > #{id}
+                AND name LIKE #{name}
+                AND level < #{level}
+             */
+            List<Skill> skills = session.selectList("skill.dynamicSQL2", param);
             for (Skill skill : skills) {
                 System.out.println(skill);
             }

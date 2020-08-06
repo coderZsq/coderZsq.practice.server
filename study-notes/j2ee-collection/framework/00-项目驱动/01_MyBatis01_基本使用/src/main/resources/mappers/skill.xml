@@ -7,12 +7,44 @@
         SELECT * FROM skill
     </select>
 
-    <select id="list2" resultType="com.sq.bean.Skill">
+    <select id="list2" parameterType="com.sq.bean.Skill" resultType="com.sq.bean.Skill">
         SELECT * FROM skill WHERE id > #{id} OR level > #{level} OR name LIKE #{name}
     </select>
 
-    <select id="get" resultType="com.sq.bean.Skill">
+    <select id="list3" parameterType="String" resultType="com.sq.bean.Skill">
+        SELECT * FROM skill WHERE name LIKE #{name}
+    </select>
+
+    <select id="get" parameterType="int" resultType="com.sq.bean.Skill">
         SELECT * FROM skill WHERE id = #{id}
+    </select>
+
+    <select id="dynamicSQL" parameterType="Map" resultType="com.sq.bean.Skill">
+        SELECT * FROM skill WHERE 1 = 1
+        <if test="id != null">
+            AND id > #{id}
+        </if>
+        <if test="name != null">
+            AND name LIKE #{name}
+        </if>
+        <if test="level != null">
+            AND level &lt; #{level}
+        </if>
+    </select>
+
+    <select id="dynamicSQL2" parameterType="Map" resultType="com.sq.bean.Skill">
+        SELECT * FROM skill
+        <where>
+            <if test="id != null">
+                AND id > #{id}
+            </if>
+            <if test="name != null">
+                AND name LIKE #{name}
+            </if>
+            <if test="level != null">
+                AND level &lt; #{level}
+            </if>
+        </where>
     </select>
 
     <!-- <resultMap id="rmSkill" type="com.sq.bean.Skill">-->
@@ -26,4 +58,23 @@
     <!--<select id="list" resultMap="rmSkill">-->
     <!--    SELECT * FROM skill-->
     <!--</select>-->
+
+    <insert id="insert" parameterType="com.sq.bean.Skill">
+        INSERT INTO skill(name, level) VALUES (#{name}, #{level})
+    </insert>
+
+    <insert id="insert2" parameterType="com.sq.bean.Skill">
+        INSERT INTO skill(name, level) VALUES (#{name}, #{level})
+        <selectKey resultType="int" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <update id="update" parameterType="com.sq.bean.Skill">
+        UPDATE skill SET name = #{name}, level = #{level} WHERE id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        DELETE FROM skill WHERE id = #{id}
+    </delete>
 </mapper>
