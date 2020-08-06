@@ -3,24 +3,28 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="skill">
-    <select id="list" resultType="com.sq.bean.Skill">
+    <sql id="sqlListAll">
         SELECT * FROM skill
+    </sql>
+
+    <select id="list" resultType="Skill">
+        <include refid="sqlListAll"/>
     </select>
 
-    <select id="list2" parameterType="com.sq.bean.Skill" resultType="com.sq.bean.Skill">
-        SELECT * FROM skill WHERE id > #{id} OR level > #{level} OR name LIKE #{name}
+    <select id="list2" parameterType="sKill" resultType="skiLL">
+        <include refid="sqlListAll"/> WHERE id > #{id} OR level > #{level} OR name LIKE #{name}
     </select>
 
     <select id="list3" parameterType="String" resultType="com.sq.bean.Skill">
-        SELECT * FROM skill WHERE name LIKE #{name}
+        <include refid="sqlListAll"/> WHERE name LIKE #{name}
     </select>
 
     <select id="get" parameterType="int" resultType="com.sq.bean.Skill">
-        SELECT * FROM skill WHERE id = #{id}
+        <include refid="sqlListAll"/> WHERE id = #{id}
     </select>
 
     <select id="dynamicSQL" parameterType="Map" resultType="com.sq.bean.Skill">
-        SELECT * FROM skill WHERE 1 = 1
+        <include refid="sqlListAll"/> WHERE 1 = 1
         <if test="id != null">
             AND id > #{id}
         </if>
@@ -33,7 +37,7 @@
     </select>
 
     <select id="dynamicSQL2" parameterType="Map" resultType="com.sq.bean.Skill">
-        SELECT * FROM skill
+        <include refid="sqlListAll"/>
         <where>
             <if test="id != null">
                 AND id > #{id}
@@ -48,11 +52,11 @@
     </select>
 
     <!-- <resultMap id="rmSkill" type="com.sq.bean.Skill">-->
-        <!--<id property="id" column="id"/>-->
-        <!--<result property="id" column="id"/>-->
-        <!--<result property="createdTime" column="created_time"/>-->
-        <!--<result property="name" column="name"/>-->
-        <!--<result property="level" column="level"/>-->
+    <!--<id property="id" column="id"/>-->
+    <!--<result property="id" column="id"/>-->
+    <!--<result property="createdTime" column="created_time"/>-->
+    <!--<result property="name" column="name"/>-->
+    <!--<result property="level" column="level"/>-->
     <!--</resultMap>-->
 
     <!--<select id="list" resultMap="rmSkill">-->
@@ -76,5 +80,31 @@
 
     <delete id="delete" parameterType="int">
         DELETE FROM skill WHERE id = #{id}
+    </delete>
+
+    <insert id="batchInsert" parameterType="List">
+        INSERT INTO skill(name, level) VALUES
+        <foreach collection="list" item="skill" separator=",">
+            (#{skill.name}, #{skill.level})
+        </foreach>
+    </insert>
+
+    <delete id="batchDelete" parameterType="List">
+        DELETE FROM skill WHERE id IN (
+        <foreach collection="list" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </delete>
+
+    <delete id="batchDelete2" parameterType="List">
+        DELETE FROM skill WHERE id IN
+        <foreach collection="list"
+                 item="id"
+                 open="("
+                 close=")"
+                 separator=",">
+            #{id}
+        </foreach>
     </delete>
 </mapper>

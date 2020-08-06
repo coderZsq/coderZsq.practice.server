@@ -9,6 +9,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Test;
 
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,10 +74,10 @@ public class SkillTest {
 
     @Test
     public void insert() throws Exception {
-       try (SqlSession session = MyBatises.openSession(true)) {
-           Skill skill = new Skill("iOS", 888);
-           session.insert("skill.insert", skill);
-       }
+        try (SqlSession session = MyBatises.openSession(true)) {
+            Skill skill = new Skill("iOS", 888);
+            session.insert("skill.insert", skill);
+        }
     }
 
     @Test
@@ -124,6 +125,32 @@ public class SkillTest {
             for (Skill skill : skills) {
                 System.out.println(skill);
             }
+        }
+    }
+
+    @Test
+    public void batchInsert() throws Exception {
+        try (SqlSession session = MyBatises.openSession()) {
+            List<Skill> skills = new ArrayList<>();
+            skills.add(new Skill("Java1", 111));
+            skills.add(new Skill("Java2", 222));
+            skills.add(new Skill("Java3", 333));
+            skills.add(new Skill("Java4", 444));
+            session.insert("skill.batchInsert", skills);
+            session.commit();
+        }
+    }
+
+    @Test
+    public void batchDelete() throws Exception {
+        try (SqlSession session = MyBatises.openSession()) {
+            List<Integer> ids = new ArrayList<>();
+            ids.add(4);
+            ids.add(6);
+            ids.add(7);
+            ids.add(10);
+            session.delete("skill.batchDelete2", ids);
+            session.commit();
         }
     }
 }
