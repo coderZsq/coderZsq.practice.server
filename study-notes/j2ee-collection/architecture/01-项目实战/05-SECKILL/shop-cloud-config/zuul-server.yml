@@ -1,0 +1,40 @@
+ribbon:
+  ReadTimeout: 10000
+  SocketTimeout: 10000
+server:
+  port: 9000
+zuul:
+  SendErrorFilter:
+    error:
+      disable: true
+  forceOriginalQueryStringEncoding: true
+  host:
+    connect-timeout-millis: 60000
+    socket-timeout-millis: 60000
+  igonred-patterns: /*-server/**
+  ratelimit:
+    add-response-headers: true
+    behind-proxy: true
+    default-policy-list:
+    - limit: 10
+      quota: 1000
+      refresh-interval: 60
+      type:
+      - origin
+    enabled: true
+    key-prefix: ratelimit
+    repository: REDIS
+  routes:
+    goods-server-route:
+      custom-sensitive-headers: true
+      path: /goods/**
+      service-id: goods-server
+    member-server-route:
+      custom-sensitive-headers: true
+      path: /member/**
+      service-id: member-server
+    seckill-server-route:
+      custom-sensitive-headers: true
+      path: /seckill/**
+      service-id: seckill-server
+  sensitiveHeaders: ''
