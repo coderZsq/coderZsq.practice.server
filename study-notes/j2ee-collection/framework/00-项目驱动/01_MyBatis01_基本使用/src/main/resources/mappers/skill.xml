@@ -74,6 +74,13 @@
         </selectKey>
     </insert>
 
+    <insert id="insert3"
+            useGeneratedKeys="true"
+            keyProperty="id"
+            parameterType="com.sq.bean.Skill">
+        INSERT INTO skill(name, level) VALUES (#{name}, #{level})
+    </insert>
+
     <update id="update" parameterType="com.sq.bean.Skill">
         UPDATE skill SET name = #{name}, level = #{level} WHERE id = #{id}
     </update>
@@ -82,7 +89,10 @@
         DELETE FROM skill WHERE id = #{id}
     </delete>
 
-    <insert id="batchInsert" parameterType="List">
+    <insert id="batchInsert"
+            useGeneratedKeys="true"
+            keyProperty="id"
+            parameterType="List">
         INSERT INTO skill(name, level) VALUES
         <foreach collection="list" item="skill" separator=",">
             (#{skill.name}, #{skill.level})

@@ -1,5 +1,6 @@
 package com.sq;
 
+import com.github.pagehelper.PageHelper;
 import com.sq.bean.Skill;
 import com.sq.util.MyBatises;
 import org.apache.ibatis.io.Resources;
@@ -91,6 +92,16 @@ public class SkillTest {
     }
 
     @Test
+    public void insert3() throws Exception {
+        try (SqlSession session = MyBatises.openSession()) {
+            Skill skill = new Skill("Android", 999);
+            session.insert("skill.insert3", skill);
+            System.out.println(skill.getId());
+            session.commit();
+        }
+    }
+
+    @Test
     public void update() throws Exception {
         try (SqlSession session = MyBatises.openSession()) {
             Skill skill = new Skill("Java", 666);
@@ -137,6 +148,9 @@ public class SkillTest {
             skills.add(new Skill("Java3", 333));
             skills.add(new Skill("Java4", 444));
             session.insert("skill.batchInsert", skills);
+            for (Skill skill : skills) {
+                System.out.println(skill.getId());
+            }
             session.commit();
         }
     }
@@ -144,13 +158,25 @@ public class SkillTest {
     @Test
     public void batchDelete() throws Exception {
         try (SqlSession session = MyBatises.openSession()) {
-            List<Integer> ids = new ArrayList<>();
-            ids.add(4);
-            ids.add(6);
-            ids.add(7);
-            ids.add(10);
+            // List<Integer> ids = new ArrayList<>();
+            // ids.add(4);
+            // ids.add(6);
+            // ids.add(7);
+            // ids.add(10);
+            Integer[] ids = {23, 24, 25, 26};
             session.delete("skill.batchDelete2", ids);
             session.commit();
+        }
+    }
+
+    @Test
+    public void page() throws Exception {
+        try (SqlSession session = MyBatises.openSession()) {
+            PageHelper.startPage(3, 5);
+            List<Skill> skills = session.selectList("skill.list");
+            for (Skill skill : skills) {
+                System.out.println(skill);
+            }
         }
     }
 }

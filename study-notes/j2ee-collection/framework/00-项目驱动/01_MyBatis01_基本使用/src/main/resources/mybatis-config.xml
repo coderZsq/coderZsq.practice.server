@@ -6,7 +6,7 @@
     <properties resource="druid.properties"/>
     <!--<properties>-->
     <!--    <property name="driverClassName" value="com.mysql.jdbc.Driver"/>-->
-    <!--    <property name="url" value="jdbc:mysql://localhost:3306/xr"/>-->
+    <!--    <property name="url" value="jdbc:mysql://localhost:3306/test_mybatis"/>-->
     <!--    <property name="username" value="root"/>-->
     <!--    <property name="password" value="root"/>-->
     <!--    <property name="initialSize" value="5"/>-->
@@ -26,11 +26,18 @@
     <typeAliases>
         <!-- 一旦设置了别名, 它是不区分大小写的 -->
         <typeAlias type="com.sq.bean.Skill" alias="skill"/>
-        <typeAlias type="com.sq.common.DruidDataSourceFactory" alias="druid"/>
+        <typeAlias type="com.sq.com.sq.common.DruidDataSourceFactory" alias="druid"/>
 
         <!-- 这个包下的所有类, 都会起一个别名: 全类名的最后一个单词 -->
         <!--<package name="com.sq.bean"/>-->
     </typeAliases>
+
+    <plugins>
+        <plugin interceptor="com.github.pagehelper.PageInterceptor">
+            <!-- true代表分页合理化: pageNum <= 0 就会自动获取第1页, pageNum > pages就会自动获取最后1页 -->
+            <property name="reasonable" value="true"/>
+        </plugin>
+    </plugins>
 
     <!-- 环境 -->
     <environments default="development">
