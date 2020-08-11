@@ -54,7 +54,7 @@ public class UserServiceImpl implements IUserService {
         String token = UUID.randomUUID().toString().replaceAll("-", "");
         try {
             // 保存到 redis
-            String userStr = new ObjectMapper().writeValueAsString(user);
+            String userStr = JSONUtil.toJSONString(user);
             redisTemplate.opsForValue().set(
                     MemberRedisKey.USER_TOKEN_KEY.join(token), // 真实key
                     userStr,  // 用户对象转成 json 字符串

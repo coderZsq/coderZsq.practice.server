@@ -14,7 +14,7 @@ public class JSONUtil {
             e.printStackTrace();
         }
 
-        return null;
+        return "";
     }
 
     public static <T> T parseObject(String json, Class<T> clazz) {

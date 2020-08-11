@@ -7,6 +7,9 @@ import java.util.concurrent.TimeUnit;
 
 @Getter
 public enum MemberRedisKey {
+    /**
+     * 用户Redistoken
+     */
     USER_TOKEN_KEY("userToken:", 30, TimeUnit.MINUTES);
 
     MemberRedisKey(String prefix, long expireTime, TimeUnit unit) {

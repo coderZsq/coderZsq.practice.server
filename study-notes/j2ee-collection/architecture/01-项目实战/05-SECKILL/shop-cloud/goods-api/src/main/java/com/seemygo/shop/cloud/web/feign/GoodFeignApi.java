@@ -13,6 +13,10 @@ import java.util.Set;
 @FeignClient(name = "goods-server", fallback = GoodFeignHystrix.class)
 public interface GoodFeignApi {
 
+    /**
+     * @param idList
+     * @return
+     */
     @RequestMapping("/getListByIdList")
     Result<List<Good>> getListByIdList(@RequestParam("idList") Set<Long> idList);
 }

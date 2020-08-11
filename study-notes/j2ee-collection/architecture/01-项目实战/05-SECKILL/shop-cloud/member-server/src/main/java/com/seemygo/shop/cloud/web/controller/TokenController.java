@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.sql.Connection;
@@ -32,7 +33,7 @@ public class TokenController {
     }
 
     @PostMapping("/login")
-    public Result<String> login(LoginVo loginVo, HttpServletResponse resp) {
+    public Result<String> login(@Valid LoginVo loginVo, HttpServletResponse resp) {
         String token = userService.login(loginVo);
         // 将 token 通过响应，添加到 cookie
         CookieUtil.addCookie(resp, CookieUtil.TOKEN_IN_COOKIE, token, CookieUtil.TOKEN_EXPIRE_TIME);
@@ -43,8 +44,9 @@ public class TokenController {
     @GetMapping("/session")
     public Result<User> session(@CookieValue(value = CookieUtil.TOKEN_IN_COOKIE, required = false) String token) {
         User user = userService.findByToken(token);
-        if (user != null)
+        if (user != null) {
             System.out.println("user:" + user.getId());
+        }
         return Result.success(user);
     }
 
@@ -99,16 +101,19 @@ public class TokenController {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (pstmt != null)
+            if (pstmt != null) {
                 pstmt.close();
-            if (conn != null)
+            }
+            if (conn != null) {
                 conn.close();
+            }
         }
     }
 
     private List<User> initUser() {
         List<User> users = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
+        int max = 100;
+        for (int i = 0; i < max; i++) {
             User user = new User();
             user.setId(13000000000L + i);
             user.setLoginCount(1);

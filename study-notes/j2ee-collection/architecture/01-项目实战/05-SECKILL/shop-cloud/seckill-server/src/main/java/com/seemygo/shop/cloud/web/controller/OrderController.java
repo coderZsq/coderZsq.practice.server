@@ -1,20 +1,20 @@
 package com.seemygo.shop.cloud.web.controller;
 
-import com.seemygo.shop.cloud.service.IOrderInfoService;
-import com.seemygo.shop.cloud.service.ISeckillGoodService;
-import com.seemygo.shop.cloud.service.ISeckillOrderService;
-import com.seemygo.shop.cloud.vo.SeckillGoodVo;
-import com.seemygo.shop.cloud.web.SeckillCodeMsg;
 import com.seemygo.shop.cloud.domain.OrderInfo;
 import com.seemygo.shop.cloud.domain.SeckillOrder;
 import com.seemygo.shop.cloud.domain.User;
 import com.seemygo.shop.cloud.exception.BusinessException;
 import com.seemygo.shop.cloud.resp.Result;
+import com.seemygo.shop.cloud.service.IOrderInfoService;
+import com.seemygo.shop.cloud.service.ISeckillGoodService;
+import com.seemygo.shop.cloud.service.ISeckillOrderService;
 import com.seemygo.shop.cloud.util.CookieUtil;
+import com.seemygo.shop.cloud.vo.SeckillGoodVo;
+import com.seemygo.shop.cloud.web.SeckillCodeMsg;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @RestController
@@ -35,8 +35,9 @@ public class OrderController extends BaseController {
     @GetMapping("/{orderNo}")
     public Result<OrderInfo> orderDetail(@PathVariable("orderNo") String orderNo, @CookieValue(CookieUtil.TOKEN_IN_COOKIE) String token) {
         User user = this.getCurrentUser(token);
-        if (user == null)
+        if (user == null) {
             throw new BusinessException(SeckillCodeMsg.OP_ERROR);
+        }
 
         OrderInfo orderInfo = orderInfoService.findById(orderNo, user.getId());
         return Result.success(orderInfo);

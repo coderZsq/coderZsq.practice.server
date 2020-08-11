@@ -15,4 +15,6 @@ public class CodeMsg implements Serializable {
 
     private String code;
     private String msg;
+
+    public static final CodeMsg PARAM_ERROR = new CodeMsg("A0002", "参数错误");
 }

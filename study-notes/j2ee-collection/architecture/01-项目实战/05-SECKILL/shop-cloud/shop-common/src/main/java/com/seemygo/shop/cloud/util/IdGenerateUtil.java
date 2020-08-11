@@ -20,11 +20,11 @@ public class IdGenerateUtil {
     private long lastTimestamp      = -1L;
 
     private static class IdGenHolder {
-        private static final IdGenerateUtil instance = new IdGenerateUtil();
+        private static final IdGenerateUtil INSTANCE = new IdGenerateUtil();
     }
 
     public static IdGenerateUtil get() {
-        return IdGenHolder.instance;
+        return IdGenHolder.INSTANCE;
     }
 
     public IdGenerateUtil() {

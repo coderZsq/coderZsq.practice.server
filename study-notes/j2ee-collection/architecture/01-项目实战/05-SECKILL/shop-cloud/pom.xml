@@ -46,7 +46,7 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>com.seemygo.shop.cloud</groupId>
+                <groupId>cn.wolfcode.cloud</groupId>
                 <artifactId>shop-common</artifactId>
                 <version>1.0.0</version>
             </dependency>

@@ -22,7 +22,8 @@ public class VerifyCodeImgUtil {
         // create a random instance to generate the codes
         Random rdm = new Random();
         // make some confusion
-        for (int i = 0; i < 50; i++) {
+        int max = 50;
+        for (int i = 0; i < max; i++) {
             int x = rdm.nextInt(width);
             int y = rdm.nextInt(height);
             g.drawOval(x, y, 0, 0);

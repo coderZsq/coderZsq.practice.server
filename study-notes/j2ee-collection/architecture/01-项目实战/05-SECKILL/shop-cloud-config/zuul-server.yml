@@ -1,40 +1,40 @@
+server:
+  port: 9000
 ribbon:
   ReadTimeout: 10000
   SocketTimeout: 10000
-server:
-  port: 9000
 zuul:
   SendErrorFilter:
     error:
       disable: true
-  forceOriginalQueryStringEncoding: true
-  host:
-    connect-timeout-millis: 60000
-    socket-timeout-millis: 60000
-  igonred-patterns: /*-server/**
   ratelimit:
-    add-response-headers: true
-    behind-proxy: true
-    default-policy-list:
-    - limit: 10
-      quota: 1000
-      refresh-interval: 60
-      type:
-      - origin
-    enabled: true
     key-prefix: ratelimit
+    enabled: true
     repository: REDIS
+    behind-proxy: true
+    add-response-headers: true
+    default-policy-list: #optional - will apply unless specific policy exists
+      - limit: 10 #optional - request number limit per refresh interval window
+        quota: 1000 #optional - request time limit per refresh interval window (in seconds)
+        refresh-interval: 60 #default value (in seconds)
+        type: #optional
+          - origin #按照ip进行拦截
+  host:
+    socket-timeout-millis: 60000  #zuul的socket超时设置
+    connect-timeout-millis: 60000 #zuul的connect超时设置
+  forceOriginalQueryStringEncoding: true #强制采用原始请求的编码格式，即不对Get请求参数做编解码
+  ignored-patterns: /*-server/** #忽略匹配这个格式的路径
+  sensitiveHeaders: 
   routes:
-    goods-server-route:
-      custom-sensitive-headers: true
-      path: /goods/**
-      service-id: goods-server
     member-server-route:
-      custom-sensitive-headers: true
       path: /member/**
       service-id: member-server
-    seckill-server-route:
       custom-sensitive-headers: true
+    goods-server-route:
+      path: /goods/**
+      service-id: goods-server
+      custom-sensitive-headers: true
+    seckill-server-route:
       path: /seckill/**
       service-id: seckill-server
-  sensitiveHeaders: ''
+      custom-sensitive-headers: true
