@@ -25,11 +25,11 @@
     <!-- 别名 -->
     <typeAliases>
         <!-- 一旦设置了别名, 它是不区分大小写的 -->
-        <typeAlias type="com.sq.bean.Skill" alias="skill"/>
-        <typeAlias type="com.sq.com.sq.common.DruidDataSourceFactory" alias="druid"/>
+        <typeAlias type="com.com.sq.bean.Skill" alias="skill"/>
+        <typeAlias type="com.com.sq.com.com.sq.common.DruidDataSourceFactory" alias="druid"/>
 
         <!-- 这个包下的所有类, 都会起一个别名: 全类名的最后一个单词 -->
-        <!--<package name="com.sq.bean"/>-->
+        <!--<package name="com.com.sq.bean"/>-->
     </typeAliases>
 
     <plugins>

@@ -12,7 +12,7 @@
     <!-- 别名 -->
     <typeAliases>
         <!-- 一旦设置了别名, 它是不区分大小写的 -->
-        <typeAlias type="com.sq.common.DruidDataSourceFactory" alias="druid"/>
+        <typeAlias type="com.com.sq.common.DruidDataSourceFactory" alias="druid"/>
     </typeAliases>
 
     <!-- 环境 -->
@@ -39,5 +39,6 @@
         <mapper resource="mappers/person.xml"/>
         <mapper resource="mappers/idCard.xml"/>
         <mapper resource="mappers/bankCard.xml"/>
+        <mapper resource="mappers/job.xml"/>
     </mappers>
 </configuration>

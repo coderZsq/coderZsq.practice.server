@@ -5,13 +5,23 @@
 <mapper namespace="job">
     <sql id="sqlListAll">
         SELECT
-            j.*
+            j.*,
+            p.id person_id,
+            p.name person_name
         FROM
             job j
+        LEFT JOIN person_job pj ON j.id = pj.job_id
+        LEFT JOIN person p ON p.id = pj.person_id
     </sql>
 
-    <resultMap id="rmList" type="com.sq.bean.Job">
-
+    <resultMap id="rmList" type="com.com.sq.bean.Job">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="duty" column="duty"/>
+        <collection property="persons" ofType="com.com.sq.bean.Person">
+            <id property="id" column="person_id"/>
+            <result property="name" column="person_name"/>
+        </collection>
     </resultMap>
 
     <select id="list" resultMap="rmList">

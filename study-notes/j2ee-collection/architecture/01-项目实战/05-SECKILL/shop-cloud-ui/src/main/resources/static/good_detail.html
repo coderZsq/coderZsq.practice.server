@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<head>
+    <title>商品详情</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css" /><!-- bootstrap -->
+    <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/jquery-validation/jquery.validate.min.js"></script> <!-- jquery-validator -->
+    <script type="text/javascript" src="/jquery-validation/localization/messages_zh.min.js"></script>
+    <script type="text/javascript" src="/layer/layer.js"></script><!-- layer -->
+    <script type="text/javascript" src="/js/md5.min.js"></script><!-- md5.js -->
+    <script type="text/javascript" src="/js/common.js"></script><!-- common.js -->
+    <script type="text/javascript" src="/js/socket.js"></script><!-- common.js -->
+</head>
+<body>
+<div class="panel panel-default">
+    <div class="panel-heading">秒杀商品详情</div>
+    <div class="panel-body">
+    <div id="userTip" style="display: none">
+        <span> 您还没有登录，请<a href="/login.html">登陆</a>后再操作<br/></span>
+    </div>
+    <span>没有收货地址的提示。。。</span>
+</div>
+<table class="table">
+    <tr>
+        <td>商品名称</td>
+        <td colspan="3" id="goodName"></td>
+    </tr>
+    <tr>
+        <td>商品图片</td>
+        <td colspan="3"><img id="goodImg"  width="200" height="200" /></td>
+    </tr>
+    <tr>
+        <td>秒杀开始时间</td>
+        <td id="startDate"></td>
+        <td id="seckillTip">
+        </td>
+        <td>
+            <img id="verifyCodeImg" style="display: none" width="80" height="32" onclick="initVerifyCodeImg()">
+            <input id="verifyCode" style="display: none">
+            <button class="btn btn-primary btn-block" type="button" id="buyButton" disabled onclick="doSeckill()">立即秒杀</button>
+        </td>
+    </tr>
+    <tr>
+        <td>商品原价</td>
+        <td colspan="3" id="goodPrice"></td>
+    </tr>
+    <tr>
+        <td>秒杀价</td>
+        <td colspan="3" id="seckillPrice"></td>
+    </tr>
+    <tr>
+        <td>库存数量</td>
+        <td colspan="3" id="stockCount"></td>
+    </tr>
+</table>
+</div>
+<script>
+    var seckillId, user;
+
+    $(function () {
+        seckillId = getQueryString("seckillId");
+        // 渲染商品
+        initGood();
+        // 获取当前登录用户
+        initUser();
+    });
+
+    /**
+     * 获取秒杀接口路径
+     */
+    function getPath() {
+
+
+        // 发送请求到后端，获取秒杀接口的随机值
+        $.ajax({
+            url: 'http://localhost:9000/seckill/api/path',
+            type: "GET",
+            xhrFields: {withCredentials: true},
+            data: {seckillId: seckillId, verifyCode: verifyCode},
+            success: function (res) {
+                if (res.code === 200) {
+                    // res.data == random
+                    doSeckill(res.data);
+                } else {
+                    layer.msg(res.msg);
+                }
+            }
+        });
+    }
+
+    /**
+     * 秒杀函数
+     */
+    function doSeckill() {
+        if (!user) {
+            layer.msg("请登录后再进行秒杀！");
+            return;
+        }
+
+        // 发送秒杀请求
+        $.ajax({
+            url: 'http://localhost:9000/seckill/api/orders/',
+            type: "POST",
+            xhrFields: {withCredentials: true},
+            data: {seckillId: seckillId},
+            success: function (res) {
+                // 秒杀失败和秒杀成功
+                if (res.code === 200) {
+                    location.href = "/order_detail.html?orderNo=" + res.data;
+                } else {
+                    layer.msg(res.msg);
+                }
+            }
+        });
+    }
+    
+    function initUser() {
+        $.ajax({
+            url: 'http://localhost:9000/member/api/tokens/session',
+            type: "GET",
+            xhrFields: {withCredentials: true},
+            success: function (res) {
+                renderUser(res.data);
+            }
+        });
+    }
+
+    function renderUser(data) {
+        if (data) {
+            // 有登录
+            user = data;
+        } else {
+            // 没有登录
+            $("#userTip").show();
+        }
+    }
+
+
+    function initGood() {
+        $.ajax({
+            url: 'http://localhost:9000/seckill/api/seckill/goods/' + seckillId,
+            type: "GET",
+            xhrFields: {withCredentials: true},
+            success: function (res) {
+                render(res.data);
+            }
+        });
+    }
+
+    function render(good) {
+        $("#goodName").html(good.goodName);
+        $("#goodImg").prop("src", good.goodImg);
+        $("#goodPrice").html(good.goodPrice);
+        $("#startDate").html(good.startDate);
+        $("#seckillPrice").html(good.seckillPrice);
+        $("#stockCount").html(good.stockCount);
+        renderTime(good.startDate, good.endDate);
+    }
+
+    var remainStartSeconds,
+        remainEndSeconds,
+        timer;
+
+    function renderTime(sDate, eDate) {
+        // 将字符串date格式 2020-04-12 12:00:00 转换为 2020/04/12 12:00:00
+        var startTime = new Date(sDate);//开始时间
+        var endTime = new Date(eDate);//结束时间
+        var now = new Date();//当前时间
+
+        // startTime: 2020-04-12 12:00:00 - nowTime: 2020-04-12 00:45:00   >   0  // 说明秒杀尚未开始
+        // startTime: 2020-04-12 12:00:00 - nowTime: 2020-04-12 12:45:00   <   0  // 说明秒杀已经开始
+        remainStartSeconds = parseInt((startTime.getTime() - now.getTime()) / 1000);
+        // endTime: 2020-04-12 12:30:00 - nowTime: 2020-04-12 00:45:00   >   0  // 说明秒杀尚未结束
+        // endTime: 2020-04-12 12:30:00 - nowTime: 2020-04-12 12:45:00   <   0  // 说明秒杀已经结束
+        remainEndSeconds = parseInt((endTime.getTime() - now.getTime()) / 1000);
+
+        // 每秒钟执行一次
+        timer = setInterval(showTip, 1000);
+    }
+
+    var seckillTip = $("#seckillTip"),
+        buyButton = $("#buyButton");
+
+    function showTip() {
+        // 每次递减一秒
+        remainStartSeconds--;
+        remainEndSeconds--;
+
+        if (remainStartSeconds > 0) {
+            // 秒杀尚未开始
+            seckillTip.html("距离秒杀开始剩余：" + remainStartSeconds + "秒");
+        } else {
+            if (remainEndSeconds < 0) {
+                // 秒杀已经结束
+                seckillTip.html("秒杀已经结束");
+                buyButton.prop("disabled", true);
+                return;
+            }
+
+            // 秒杀进行中
+            seckillTip.html("秒杀进行中");
+            buyButton.prop("disabled", false);
+        }
+    }
+</script>
+</body>
+</html>

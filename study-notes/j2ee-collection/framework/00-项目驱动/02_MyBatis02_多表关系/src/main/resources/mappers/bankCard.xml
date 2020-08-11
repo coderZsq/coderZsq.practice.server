@@ -12,12 +12,12 @@
         JOIN person p ON p.id = bc.person_id
     </sql>
 
-    <resultMap id="rmList" type="com.sq.bean.BankCard">
+    <resultMap id="rmList" type="com.com.sq.bean.BankCard">
         <id property="id" column="id"/>
         <result property="no" column="no"/>
         <result property="amout" column="amout"/>
         <association property="person"
-                     javaType="com.sq.bean.Person">
+                     javaType="com.com.sq.bean.Person">
             <id property="id" column="person_id"/>
             <result property="name" column="person_name"/>
         </association>
