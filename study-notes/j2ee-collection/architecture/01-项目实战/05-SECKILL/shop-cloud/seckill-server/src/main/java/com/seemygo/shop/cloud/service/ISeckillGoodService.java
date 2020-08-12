@@ -26,6 +26,13 @@ public interface ISeckillGoodService {
      */
     SeckillGoodVo detail(Long seckillId);
 
+    /**
+     * 从缓存查询秒杀详情
+     * @param seckillId
+     * @return
+     */
+    SeckillGoodVo detailByCache(Long seckillId);
+
     int decrStockCount(Long seckillId);
 
     /**

@@ -45,7 +45,7 @@ public class TokenController {
     public Result<User> session(@CookieValue(value = CookieUtil.TOKEN_IN_COOKIE, required = false) String token) {
         User user = userService.findByToken(token);
         if (user != null) {
-            System.out.println("user:" + user.getId());
+            System.out.println("user: " + user.getId());
         }
         return Result.success(user);
     }
@@ -53,13 +53,13 @@ public class TokenController {
     @RequestMapping("/initData")
     public Result<String> initData() throws Exception {
         List<User> users = initUser();//在内存中创建100个User对象
-        //insertToDb(users);//把100个User对象保存到数据库中
+        // insertToDb(users);//把100个User对象保存到数据库中
         createToken(users);//通过100个User对象，调用service方法，模拟登陆，创建100个token,然后存在磁盘文件中.(jmeter)
         return Result.success("");
     }
 
     private void createToken(List<User> users) throws Exception {
-        File file = new File("D:/tokens.txt");
+        File file = new File("/Users/zhushuangquan/Desktop/tokens.txt");
         if (file.exists()) {
             boolean delete = file.delete();
         }

@@ -1,7 +1,9 @@
 package com.seemygo.shop.cloud.service.impl;
 
 import com.seemygo.shop.cloud.mapper.SeckillGoodMapper;
+import com.seemygo.shop.cloud.redis.key.SeckillRedisKey;
 import com.seemygo.shop.cloud.service.ISeckillGoodService;
+import com.seemygo.shop.cloud.util.JSONUtil;
 import com.seemygo.shop.cloud.vo.SeckillGoodVo;
 import com.seemygo.shop.cloud.domain.Good;
 import com.seemygo.shop.cloud.domain.SeckillGood;
@@ -9,8 +11,10 @@ import com.seemygo.shop.cloud.resp.Result;
 import com.seemygo.shop.cloud.web.feign.GoodFeignApi;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -19,12 +23,13 @@ import java.util.*;
 public class SeckillGoodServiceImpl implements ISeckillGoodService {
 
     private final SeckillGoodMapper seckillGoodMapper;
-
     private final GoodFeignApi goodFeignApi;
+    private final StringRedisTemplate redisTemplate;
 
-    public SeckillGoodServiceImpl(SeckillGoodMapper seckillGoodMapper, GoodFeignApi goodFeignApi) {
+    public SeckillGoodServiceImpl(SeckillGoodMapper seckillGoodMapper, GoodFeignApi goodFeignApi, StringRedisTemplate redisTemplate) {
         this.seckillGoodMapper = seckillGoodMapper;
         this.goodFeignApi = goodFeignApi;
+        this.redisTemplate = redisTemplate;
     }
 
     @Override
@@ -40,6 +45,15 @@ public class SeckillGoodServiceImpl implements ISeckillGoodService {
         SeckillGood seckillGood = seckillGoodMapper.selectByPrimaryKey(seckillId);
         List<SeckillGoodVo> voList = join(Collections.singletonList(seckillGood));
         return CollectionUtils.isEmpty(voList) ? null : voList.get(0);
+    }
+
+    @Override
+    public SeckillGoodVo detailByCache(Long seckillId) {
+        String json = redisTemplate.opsForValue().get(SeckillRedisKey.SECKILL_GOODS_DETAIL.join(seckillId + ""));
+        if (!StringUtils.isEmpty(json)) {
+            return JSONUtil.parseObject(json, SeckillGoodVo.class);
+        }
+        return null;
     }
 
     @Override
