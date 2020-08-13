@@ -4,15 +4,18 @@
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
     <properties resource="druid.properties"/>
+
     <!-- 其他设置 -->
     <settings>
+        <!-- 数据库: my_first_name -> Java: myFirstName -->
         <setting name="mapUnderscoreToCamelCase" value="true"/>
     </settings>
 
     <!-- 别名 -->
     <typeAliases>
         <!-- 一旦设置了别名, 它是不区分大小写的 -->
-        <typeAlias type="com.sq.common.DruidDataSourceFactory" alias="druid"/>
+        <typeAlias type="com.sq.bean.Skill" alias="Skill"/>
+        <typeAlias type="com.sq.common.DruidDataSourceFactory" alias="DRUID"/>
     </typeAliases>
 
     <!-- 环境 -->
@@ -36,9 +39,11 @@
 
     <!-- 映射文件 -->
     <mappers>
-        <mapper resource="mappers/person.xml"/>
-        <mapper resource="mappers/idCard.xml"/>
-        <mapper resource="mappers/bankCard.xml"/>
-        <mapper resource="mappers/job.xml"/>
+        <!--<mapper class="com.sq.dao.SkillDao"/>-->
+        <!--<mapper class="com.sq.dao.PersonDao"/>-->
+        <!--<mapper class="com.sq.dao.IdCardDao"/>-->
+        <!--<mapper class="com.sq.dao.JobDao"/>-->
+        <!--<mapper class="com.sq.dao.BankCardDao"/>-->
+        <package name="com.sq.dao"/>
     </mappers>
 </configuration>

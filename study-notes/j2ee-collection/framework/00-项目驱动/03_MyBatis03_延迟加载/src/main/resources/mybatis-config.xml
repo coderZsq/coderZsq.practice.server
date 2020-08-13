@@ -9,12 +9,14 @@
         <setting name="mapUnderscoreToCamelCase" value="true"/>
         <!-- true代表所有设置了select属性的关联对象都延迟加载 -->
         <setting name="lazyLoadingEnabled" value="true"/>
+        <!-- true 激进的延迟加载, false: 不激进的延迟加载 -->
+        <setting name="aggressiveLazyLoading" value="false"/>
     </settings>
 
     <!-- 别名 -->
     <typeAliases>
         <!-- 一旦设置了别名, 它是不区分大小写的 -->
-        <typeAlias type="com.com.sq.common.DruidDataSourceFactory" alias="druid"/>
+        <typeAlias type="com.sq.common.DruidDataSourceFactory" alias="druid"/>
     </typeAliases>
 
     <!-- 环境 -->

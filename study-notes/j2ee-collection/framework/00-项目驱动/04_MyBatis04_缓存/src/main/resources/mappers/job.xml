@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="job">
-    <cache/>
+    <cache readOnly="true"/>
 
     <sql id="sqlListAll">
         SELECT * FROM job
