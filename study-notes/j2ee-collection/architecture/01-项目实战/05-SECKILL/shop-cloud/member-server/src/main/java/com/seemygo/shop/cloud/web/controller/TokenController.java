@@ -59,7 +59,7 @@ public class TokenController {
     }
 
     private void createToken(List<User> users) throws Exception {
-        File file = new File("/Users/zhushuangquan/Desktop/tokens.txt");
+        File file = new File("/Users/zhushuangquan/Codes/GitHub/coderZsq.practice.server/study-notes/j2ee-collection/architecture/01-项目实战/05-SECKILL/apache-jmeter-3.3/conf/tokens.txt");
         if (file.exists()) {
             boolean delete = file.delete();
         }

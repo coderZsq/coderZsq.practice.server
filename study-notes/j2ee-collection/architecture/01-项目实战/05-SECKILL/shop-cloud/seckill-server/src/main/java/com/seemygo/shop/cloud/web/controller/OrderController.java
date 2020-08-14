@@ -99,6 +99,4 @@ public class OrderController extends BaseController {
         String orderNo = orderInfoService.doSeckill(seckillId, user);
         return Result.success(orderNo);
     }
-
-
 }
