@@ -12,6 +12,10 @@ public enum SeckillRedisKey {
      */
     SECKILL_GOODS_DETAIL("seckillGoodsDetail:", 2, TimeUnit.DAYS),
     /**
+     * 秒杀库存数据: HASH
+     */
+    SECKILL_STOCK_COUNT_HASH("seckillStockCountHash"),
+    /**
      * 用户秒杀记录
      */
     SECKILL_USER_RECORD("seckillUserRecord:");

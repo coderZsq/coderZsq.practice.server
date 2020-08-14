@@ -16,6 +16,6 @@ public interface SeckillGoodMapper {
     @Select("select * from t_seckill_goods where id = #{seckillId}")
     SeckillGood selectByPrimaryKey(Long seckillId);
 
-    @Update("update t_seckill_goods set stock_count = stock_count - 1 where id = #{seckillId}")
+    @Update("update t_seckill_goods set stock_count = stock_count - 1 where id = #{seckillId} and stock_count > 0")
     int decrStockCount(Long seckillId);
 }

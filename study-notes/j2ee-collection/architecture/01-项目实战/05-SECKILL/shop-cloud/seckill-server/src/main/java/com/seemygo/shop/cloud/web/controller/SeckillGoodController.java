@@ -49,11 +49,18 @@ public class SeckillGoodController {
         // Redis 结构? string
         // key: {} --> 过期时间
         for (SeckillGoodVo vo : query) {
+            // 保存所有秒杀详情信息
             redisTemplate.opsForValue().set(
                     SeckillRedisKey.SECKILL_GOODS_DETAIL.join(vo.getId() + ""),
                     JSONUtil.toJSONString(vo),
                     SeckillRedisKey.SECKILL_GOODS_DETAIL.getExpireTime(),
                     SeckillRedisKey.SECKILL_GOODS_DETAIL.getUnit()
+            );
+            // 保存库存信息: 实现库存预减
+            redisTemplate.opsForHash().put(
+                    SeckillRedisKey.SECKILL_STOCK_COUNT_HASH.join(""),
+                    vo.getId() + "",
+                    vo.getStockCount() + ""
             );
         }
         return Result.success("success");
