@@ -15,6 +15,7 @@
     <typeAliases>
         <!-- 一旦设置了别名, 它是不区分大小写的 -->
         <typeAlias type="com.sq.bean.Skill" alias="Skill"/>
+        <typeAlias type="com.sq.bean.Person" alias="Person"/>
         <typeAlias type="com.sq.common.DruidDataSourceFactory" alias="DRUID"/>
     </typeAliases>
 
@@ -39,11 +40,12 @@
 
     <!-- 映射文件 -->
     <mappers>
-        <!--<mapper class="com.sq.dao.SkillDao"/>-->
+        <mapper class="com.sq.dao.SkillDao"/>
         <!--<mapper class="com.sq.dao.PersonDao"/>-->
-        <!--<mapper class="com.sq.dao.IdCardDao"/>-->
-        <!--<mapper class="com.sq.dao.JobDao"/>-->
-        <!--<mapper class="com.sq.dao.BankCardDao"/>-->
-        <package name="com.sq.dao"/>
+        <mapper class="com.sq.dao.IdCardDao"/>
+        <mapper class="com.sq.dao.JobDao"/>
+        <mapper class="com.sq.dao.BankCardDao"/>
+        <mapper resource="mappers/person.xml"/>
+        <!--<package name="com.sq.dao"/> -->
     </mappers>
 </configuration>

@@ -36,4 +36,6 @@ public interface PersonDao {
     // 引用id为get的@Results
     @ResultMap("get")
     List<Person> list();
+
+    Person testGet();
 }

@@ -5,7 +5,14 @@
 <mapper namespace="com.sq.dao.SkillDao">
     <sql id="sqlList">SELECT * FROM skill</sql>
 
-    <select id="get" parameterType="int" resultType="Skill">
+    <resultMap id="rmGet" type="Skill">
+        <constructor>
+            <arg name="name" column="name"/>
+            <arg name="level" column="level"/>
+        </constructor>
+    </resultMap>
+
+    <select id="get" parameterType="int" resultMap="rmGet">
         <include refid="sqlList"/> WHERE id = #{id}
     </select>
 

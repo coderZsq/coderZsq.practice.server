@@ -17,6 +17,14 @@ public class PersonTest {
     }
 
     @Test
+    public void testGet() {
+        try (SqlSession session = MyBatises.openSession()) {
+            PersonDao dao = session.getMapper(PersonDao.class);
+            Person person = dao.testGet();
+        }
+    }
+
+    @Test
     public void list() {
         try (SqlSession session = MyBatises.openSession()) {
             PersonDao dao = session.getMapper(PersonDao.class);

@@ -1,5 +1,7 @@
 package com.sq.bean;
 
+import org.apache.ibatis.annotations.Param;
+
 public class Skill extends Bean {
     private String name;
     private Integer level;
@@ -7,7 +9,12 @@ public class Skill extends Bean {
     public Skill() {
     }
 
-    public Skill(String name, Integer level) {
+    public Skill(@Param("name") String name, @Param("level") Integer level) {
+        this.name = name;
+        this.level = level;
+    }
+
+    public Skill(Integer level, String name) {
         this.name = name;
         this.level = level;
     }
