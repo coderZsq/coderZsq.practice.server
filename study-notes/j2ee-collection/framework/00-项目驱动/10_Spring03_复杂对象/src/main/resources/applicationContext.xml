@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!-- 静态工厂方法 (调用ConnectionFactory.getConn()) -->
+    <!--<bean id="conn" class="com.sq.obj.ConnectionFactory" factory-method="getConn"/>-->
+
+    <!-- 实例工厂方法 (调用factory.getConn()) -->
+    <!--<bean id="factory" class="com.sq.obj.ConnectionFactory">-->
+    <!--    <property name="driverClass" value="com.mysql.jdbc.Driver"/>-->
+    <!--    <property name="url" value="jdbc:mysql://localhost:3306/test_mybatis"/>-->
+    <!--    <property name="username" value="root"/>-->
+    <!--    <property name="password" value="root"/>-->
+    <!--</bean>-->
+    <!--<bean id="conn" factory-bean="factory" factory-method="getConn"/>-->
+
+    <!-- FactoryBean -->
+    <bean id="conn" class="com.sq.obj.ConnectionFactoryBean">
+        <property name="driverClass" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/test_mybatis"/>
+        <property name="username" value="root"/>
+        <property name="password" value="root"/>
+    </bean>
+</beans>

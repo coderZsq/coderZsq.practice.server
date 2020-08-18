@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.example</groupId>
-    <artifactId>08_Spring01_IoC容器</artifactId>
+    <artifactId>09_Spring02_依赖注入</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
@@ -18,6 +18,12 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>1.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

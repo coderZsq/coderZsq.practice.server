@@ -28,4 +28,8 @@ public class PersonServlet {
     public void remove() {
         service.remove(1);
     }
+
+    /*
+      IoC: Inversion of Control 控制反转. 对象创建的控制权转交给了Spring
+    */
 }
