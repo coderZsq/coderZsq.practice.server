@@ -37,7 +37,7 @@ public class OrderInfoServiceImpl implements IOrderInfoService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public String doSeckill(Long seckillId, User user) {
+    public String doSeckill(Long seckillId, Long userId) {
         // 1. 扣库存
         int rows = seckillGoodService.decrStockCount(seckillId);
         if (rows <= 0) {
@@ -45,10 +45,10 @@ public class OrderInfoServiceImpl implements IOrderInfoService {
         }
 
         // 2. 创建普通订单
-        String orderNo = this.createOrder(seckillId, user.getId());
+        String orderNo = this.createOrder(seckillId, userId);
         try {
             // 3. 创建秒杀订单
-            seckillOrderService.createSeckillOrder(seckillId, user.getId(), orderNo);
+            seckillOrderService.createSeckillOrder(seckillId, userId, orderNo);
         } catch (Exception e) {
             log.error("[秒杀操作] 创建秒杀订单失败", e);
             // 当重复下单时，重新抛出异常，触发事务回滚并且提示用户重复下单

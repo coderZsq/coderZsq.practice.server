@@ -11,4 +11,4 @@ spring:
         enabled: true
         service-id: config-server
       label: master
-      name: seckill-server,redis
+      name: seckill-server,redis,rocketmq-server

@@ -3,15 +3,22 @@ package com.seemygo.shop.cloud.web.controller;
 import com.seemygo.shop.cloud.domain.OrderInfo;
 import com.seemygo.shop.cloud.domain.User;
 import com.seemygo.shop.cloud.exception.BusinessException;
+import com.seemygo.shop.cloud.mq.MQConstants;
+import com.seemygo.shop.cloud.mq.MQLogSendCallback;
+import com.seemygo.shop.cloud.mq.msg.CreateSeckillOrderMsg;
 import com.seemygo.shop.cloud.redis.key.SeckillRedisKey;
 import com.seemygo.shop.cloud.resp.Result;
 import com.seemygo.shop.cloud.service.IOrderInfoService;
 import com.seemygo.shop.cloud.service.ISeckillGoodService;
 import com.seemygo.shop.cloud.service.ISeckillOrderService;
 import com.seemygo.shop.cloud.util.CookieUtil;
+import com.seemygo.shop.cloud.util.JSONUtil;
 import com.seemygo.shop.cloud.vo.SeckillGoodVo;
 import com.seemygo.shop.cloud.web.SeckillCodeMsg;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.client.producer.SendCallback;
+import org.apache.rocketmq.client.producer.SendResult;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,13 +35,15 @@ public class OrderController extends BaseController {
     private final ISeckillGoodService seckillGoodService;
     private final IOrderInfoService orderInfoService;
     private final ISeckillOrderService seckillOrderService;
+    private final RocketMQTemplate rocketMQTemplate;
     private final StringRedisTemplate redisTemplate;
 
-    public OrderController(ISeckillGoodService seckillGoodService, IOrderInfoService orderInfoService, ISeckillOrderService seckillOrderService, StringRedisTemplate redisTemplate) {
+    public OrderController(ISeckillGoodService seckillGoodService, IOrderInfoService orderInfoService, ISeckillOrderService seckillOrderService, StringRedisTemplate redisTemplate, RocketMQTemplate rocketMQTemplate) {
         this.seckillGoodService = seckillGoodService;
         this.orderInfoService = orderInfoService;
         this.seckillOrderService = seckillOrderService;
         this.redisTemplate = redisTemplate;
+        this.rocketMQTemplate = rocketMQTemplate;
     }
 
     @GetMapping("/{orderNo}")
@@ -112,7 +121,10 @@ public class OrderController extends BaseController {
             throw new BusinessException(SeckillCodeMsg.OUT_OF_STOCK_ERROR);
         }
         // 5. 创建秒杀订单
-        String orderNo = orderInfoService.doSeckill(seckillId, user);
-        return Result.success(orderNo);
+        // 同步调用, 创建订单
+        // String orderNo = orderInfoService.doSeckill(seckillId, user.getId());
+        // 使用RocketMQ 发送创建订单的消息
+        rocketMQTemplate.asyncSend(MQConstants.CREATE_ORDER_DEST, new CreateSeckillOrderMsg(seckillId, user.getId()), new MQLogSendCallback());
+        return Result.success("正在努力抢购中!");
     }
 }

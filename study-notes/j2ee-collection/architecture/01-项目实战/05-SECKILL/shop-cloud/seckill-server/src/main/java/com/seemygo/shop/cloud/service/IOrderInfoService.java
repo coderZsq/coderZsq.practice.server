@@ -9,10 +9,10 @@ public interface IOrderInfoService {
      * 秒杀接口
      *
      * @param seckillId 秒杀商品id
-     * @param user 下单用户
+     * @param userId 下单用户id
      * @return 创建的订单编号
      */
-    String doSeckill(Long seckillId, User user);
+    String doSeckill(Long seckillId, Long userId);
 
     /**
      * 根据订单编号查询订单信息

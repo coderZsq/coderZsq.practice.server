@@ -1,4 +1,4 @@
 rocketmq:
-  name-server: 127.0.0.1:9876
+  name-server: 172.16.21.175:9876
   producer:
     group:  SECKILL_ORDER_GROUP_PRODUCER
