@@ -34,6 +34,7 @@
         <module>seckill-api</module>
         <module>seckill-server</module>
         <module>shop-common</module>
+        <module>websocket-server</module>
     </modules>
 
     <dependencyManagement>

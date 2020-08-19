@@ -11,8 +11,7 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateSeckillOrderMsg implements Serializable {
-    private String uuid;
+public class DelayOrderMsg implements Serializable {
+    private String orderNo;
     private Long seckillId;
-    private Long userId;
 }

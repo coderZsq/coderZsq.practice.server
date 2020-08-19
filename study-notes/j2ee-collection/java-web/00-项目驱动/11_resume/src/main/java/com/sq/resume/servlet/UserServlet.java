@@ -116,7 +116,7 @@ public class UserServlet extends BaseServlet<User> {
             }
         }
 
-        Cookie cookie = new Cookie("JESSIONID", request.getSession().getId());
+        Cookie cookie = new Cookie("JSESSIONID", request.getSession().getId());
         cookie.setMaxAge(3600 * 24 * 7);
         response.addCookie(cookie);
 

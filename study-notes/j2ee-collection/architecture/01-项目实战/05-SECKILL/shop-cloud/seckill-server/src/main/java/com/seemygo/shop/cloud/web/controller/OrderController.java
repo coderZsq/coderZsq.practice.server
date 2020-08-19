@@ -20,6 +20,7 @@ import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -64,13 +65,14 @@ public class OrderController extends BaseController {
      *
      * @param seckillId
      * @param token
+     * @param uuid
      * @return
      */
     @PostMapping
-    public Result<String> doSeckill(Long seckillId, @CookieValue(CookieUtil.TOKEN_IN_COOKIE) String token) {
+    public Result<String> doSeckill(String uuid, Long seckillId, @CookieValue(CookieUtil.TOKEN_IN_COOKIE) String token) {
         User user = this.getCurrentUser(token);
         // 基础判断
-        if (seckillId == null || user == null) {
+        if (seckillId == null || StringUtils.isEmpty(uuid) || user == null) {
             throw new BusinessException(SeckillCodeMsg.OP_ERROR);
         }
 
@@ -124,7 +126,7 @@ public class OrderController extends BaseController {
         // 同步调用, 创建订单
         // String orderNo = orderInfoService.doSeckill(seckillId, user.getId());
         // 使用RocketMQ 发送创建订单的消息
-        rocketMQTemplate.asyncSend(MQConstants.CREATE_ORDER_DEST, new CreateSeckillOrderMsg(seckillId, user.getId()), new MQLogSendCallback());
+        rocketMQTemplate.asyncSend(MQConstants.CREATE_ORDER_DEST, new CreateSeckillOrderMsg(uuid, seckillId, user.getId()), new MQLogSendCallback());
         return Result.success("正在努力抢购中!");
     }
 }

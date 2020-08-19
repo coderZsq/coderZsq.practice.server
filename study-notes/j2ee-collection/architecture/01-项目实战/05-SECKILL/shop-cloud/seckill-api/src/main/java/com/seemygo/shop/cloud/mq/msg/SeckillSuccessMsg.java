@@ -7,12 +7,14 @@ import lombok.Setter;
 
 import java.io.Serializable;
 
+/**
+ * 秒杀成功消息
+ */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateSeckillOrderMsg implements Serializable {
+public class SeckillSuccessMsg implements Serializable {
     private String uuid;
-    private Long seckillId;
-    private Long userId;
+    private String orderNo;
 }

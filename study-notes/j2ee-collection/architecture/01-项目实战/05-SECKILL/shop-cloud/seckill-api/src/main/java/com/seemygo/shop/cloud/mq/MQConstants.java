@@ -23,4 +23,49 @@ public interface MQConstants {
      * 创建订单的消费者组
      */
     String CREATE_ORDER_CONSUMER_GROUP = "CREATE_ORDER_CONSUMER_GROUP";
+
+    /**
+     * 秒杀成功标签
+     */
+    String SECKILL_SUCCESS_TAG = "SECKILL_SUCCESS_TAG";
+
+    /**
+     * 秒杀成功消息目的地
+     */
+    String SECKILL_SUCCESS_DEST = SECKILL_ORDER_TOPIC + ":" + SECKILL_SUCCESS_TAG;
+
+    /**
+     * 秒杀成功的消费者组
+     */
+    String SECKILL_SUCCESS_CONSUMER_GROUP = "SECKILL_SUCCESS_CONSUMER_GROUP";
+
+    /**
+     * 秒杀失败标签
+     */
+    String SECKILL_FAILED_TAG = "SECKILL_FAILED_TAG";
+
+    /**
+     * 秒杀失败消息目的地
+     */
+    String SECKILL_FAILED_DEST = SECKILL_ORDER_TOPIC + ":" + SECKILL_FAILED_TAG;
+
+    /**
+     * 秒杀失败的消费者组
+     */
+    String SECKILL_FAILED_CONSUMER_GROUP = "SECKILL_FAILED_CONSUMER_GROUP";
+
+    /**
+     * 延迟订单标签
+     */
+    String DELAY_ORDER_TAG = "DELAY_ORDER_TAG";
+
+    /**
+     * 延迟订单消息目的地
+     */
+    String DELAY_ORDER_DEST = SECKILL_ORDER_TOPIC + ":" + DELAY_ORDER_TAG;
+
+    /**
+     * 延迟订单的消费者组
+     */
+    String DELAY_ORDER_CONSUMER_GROUP = "DELAY_ORDER_CONSUMER_GROUP";
 }
