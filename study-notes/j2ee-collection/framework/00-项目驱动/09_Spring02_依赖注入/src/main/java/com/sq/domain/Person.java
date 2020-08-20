@@ -1,5 +1,6 @@
 package com.sq.domain;
 
+import java.beans.ConstructorProperties;
 import java.math.BigDecimal;
 import java.util.Properties;
 import java.util.Set;
@@ -21,6 +22,7 @@ public class Person {
         System.out.println("Person(" + age + ")");
     }
 
+    @ConstructorProperties({"age", "name"})
     public Person(int age, String name) {
         this.age = age;
         this.name = name;

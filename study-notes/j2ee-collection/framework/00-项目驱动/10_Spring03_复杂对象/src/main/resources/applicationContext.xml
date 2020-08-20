@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
     <!-- 静态工厂方法 (调用ConnectionFactory.getConn()) -->
     <!--<bean id="conn" class="com.sq.obj.ConnectionFactory" factory-method="getConn"/>-->
 
@@ -14,11 +15,24 @@
     <!--</bean>-->
     <!--<bean id="conn" factory-bean="factory" factory-method="getConn"/>-->
 
+    <!--<context:property-placeholder location="classpath:db.properties"/>-->
+    <!-- 引用db.properties文件的内容 -->
+    <context:property-placeholder location="db.properties"/>
+
     <!-- FactoryBean -->
     <bean id="conn" class="com.sq.obj.ConnectionFactoryBean">
-        <property name="driverClass" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://localhost:3306/test_mybatis"/>
-        <property name="username" value="root"/>
-        <property name="password" value="root"/>
+        <property name="driverClass" value="${jdbc.driverClass}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+    </bean>
+
+    <bean id="dog" class="com.sq.domain.Dog"/>
+
+    <bean id="person" class="com.sq.domain.Person">
+        <property name="dog" value="#{dog}"/>
+        <property name="age" value="#{dog.testAge}"/>
+        <property name="name" value="#{dog.testName.bytes.length}"/>
+        <!--<property name="name" value="#{dog.getTestName()}"/>-->
     </bean>
 </beans>

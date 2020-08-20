@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.example</groupId>
-    <artifactId>10_Spring03_复杂对象</artifactId>
+    <artifactId>11_Spring04_scope</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
