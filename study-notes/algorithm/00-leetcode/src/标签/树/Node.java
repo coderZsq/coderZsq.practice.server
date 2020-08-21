@@ -2,7 +2,7 @@ package 标签.树;
 
 import java.util.List;
 
-class Node {
+public class Node {
     public int val;
     public List<Node> children;
 
@@ -16,4 +16,4 @@ class Node {
         val = _val;
         children = _children;
     }
-};
+}

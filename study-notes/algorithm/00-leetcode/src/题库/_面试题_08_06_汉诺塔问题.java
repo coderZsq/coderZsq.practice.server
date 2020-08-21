@@ -1,4 +1,4 @@
-package 刷题.待完成;
+package 题库;
 
 import java.util.List;
 
@@ -29,9 +29,24 @@ import java.util.List;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 
-// TODO 递归
-public class _面试题08_06_汉诺塔问题 {
+public class _面试题_08_06_汉诺塔问题 {
     public void hanota(List<Integer> A, List<Integer> B, List<Integer> C) {
+        hanoi(A.size(), A, B, C);
+    }
 
+    private void hanoi(int n, List<Integer> A, List<Integer> B, List<Integer> C) {
+        if (n == 1) {
+            move(A, C);
+            return;
+        }
+        hanoi(n - 1, A, C, B);
+        move(A, C);
+        hanoi(n - 1, B, A, C);
+    }
+
+    private void move(List<Integer> from, List<Integer> to) {
+        int idx = from.size() - 1;
+        to.add(from.get(idx));
+        from.remove(idx);
     }
 }

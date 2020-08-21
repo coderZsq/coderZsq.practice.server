@@ -1,4 +1,4 @@
-package 刷题.待完成;
+package 题库;
 
 /**
  * 一只青蛙一次可以跳上1级台阶，也可以跳上2级台阶。求该青蛙跳上一个 n 级的台阶总共有多少种跳法。
@@ -26,9 +26,22 @@ package 刷题.待完成;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 
-// TODO 递归
 public class _剑指Offer10_II_青蛙跳台阶问题 {
     public int numWays(int n) {
-        return 0;
+        if (n <= 2) return n;
+        int first = 1;
+        int second = 2;
+        for (int i = 3; i <= n; i++) {
+            second = (first + second);
+            first = second - first;
+        }
+        return second;
+    }
+}
+
+class _剑指Offer10_II_青蛙跳台阶问题2 {
+    public int numWays(int n) {
+        if (n <= 2) return n;
+        return numWays(n - 1) + numWays(n - 2);
     }
 }
