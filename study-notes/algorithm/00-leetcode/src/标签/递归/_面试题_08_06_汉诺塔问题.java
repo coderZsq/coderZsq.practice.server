@@ -45,8 +45,6 @@ public class _面试题_08_06_汉诺塔问题 {
     }
 
     private void move(List<Integer> from, List<Integer> to) {
-        int idx = from.size() - 1;
-        to.add(from.get(idx));
-        from.remove(idx);
+        to.add(from.remove(from.size() - 1));
     }
 }
