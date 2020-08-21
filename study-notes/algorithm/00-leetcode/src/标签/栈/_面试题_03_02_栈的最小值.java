@@ -5,7 +5,7 @@ package 标签.栈;
  *
  * @author zhushuangquan
  */
-public class 面试题_03_02_栈的最小值 {
+public class _面试题_03_02_栈的最小值 {
     class MinStack {
         private Node head;
 

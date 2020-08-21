@@ -5,10 +5,10 @@ package 标签.字符串;
  *
  * @author zhushuangquan
  */
-public class 面试题_01_09_字符串轮转 {
-    // kMP
+public class _面试题_01_09_字符串轮转 {
+    // KMP
     public static void main(String[] args) {
-        面试题_01_09_字符串轮转 o = new 面试题_01_09_字符串轮转();
+        _面试题_01_09_字符串轮转 o = new _面试题_01_09_字符串轮转();
         System.out.println(o.isFlipedString("cdab", "abdd"));
     }
 
