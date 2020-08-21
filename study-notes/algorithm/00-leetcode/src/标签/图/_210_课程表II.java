@@ -1,4 +1,7 @@
-package 刷题.待完成;
+package 标签.图;
+
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * 现在你总共有 n 门课需要选，记为 0 到 n-1。
@@ -34,9 +37,45 @@ package 刷题.待完成;
  * 链接：https://leetcode-cn.com/problems/course-schedule-ii
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
-// TODO DFS
+
 public class _210_课程表II {
     public int[] findOrder(int numCourses, int[][] prerequisites) {
-        return null;
+        if (numCourses == 0) return new int[0];
+        // 保存每个顶点的入度数
+        int[] ins = new int[numCourses];
+        for (int[] p : prerequisites) {
+            // p[0] = [1, 0][0] = 1
+            // 计算出每个顶点的入度
+            ins[p[0]]++;
+        }
+        Queue<Integer> queue = new LinkedList<>();
+        for (int i = 0; i < ins.length; i++) {
+            // 将入度为0的顶点加入队列
+            if (ins[i] == 0) queue.offer(i);
+        }
+
+        // 记录可以完成的数量
+        int count = 0;
+        // 保存返回列表
+        int[] res = new int[numCourses];
+
+        while (!queue.isEmpty()) {
+            // 取出队列中的定点
+            int vertex = queue.poll();
+            // 将定点加入到结果列表
+            res[count++] = vertex;
+            for (int[] p : prerequisites) {
+                // 找出入度是当前顶点的顶点
+                if (p[1] == vertex) {
+                    // 遍历到的顶点的入度-1
+                    ins[p[0]]--;
+                    // 将入度为0的顶点加入队列
+                    if (ins[p[0]] == 0) queue.offer(p[0]);
+                }
+            }
+        }
+        // 如果可以完成的数量 == 课程总数则返回
+        if (count == numCourses) return res;
+        return new int[0];
     }
 }
