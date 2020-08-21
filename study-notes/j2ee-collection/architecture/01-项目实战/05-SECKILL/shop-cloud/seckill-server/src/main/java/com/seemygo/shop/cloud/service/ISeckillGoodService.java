@@ -41,4 +41,10 @@ public interface ISeckillGoodService {
      * @return
      */
     SeckillGood findById(Long seckillId);
+
+    /**
+     * 增加库存
+     * @param seckillId
+     */
+    void incrStockCount(Long seckillId);
 }

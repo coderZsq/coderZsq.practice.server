@@ -31,7 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class OrderController extends BaseController {
 
-    private final ConcurrentHashMap<Long, Boolean> STOCK_COUNT_FLAG = new ConcurrentHashMap<>();
+    public static final ConcurrentHashMap<Long, Boolean> STOCK_COUNT_FLAG = new ConcurrentHashMap<>();
 
     private final ISeckillGoodService seckillGoodService;
     private final IOrderInfoService orderInfoService;

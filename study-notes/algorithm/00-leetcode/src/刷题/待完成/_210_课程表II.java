@@ -34,7 +34,7 @@ package 刷题.待完成;
  * 链接：https://leetcode-cn.com/problems/course-schedule-ii
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
-// TODO 图
+// TODO DFS
 public class _210_课程表II {
     public int[] findOrder(int numCourses, int[][] prerequisites) {
         return null;

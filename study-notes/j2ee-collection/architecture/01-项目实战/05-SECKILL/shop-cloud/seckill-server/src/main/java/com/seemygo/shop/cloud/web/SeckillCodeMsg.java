@@ -8,7 +8,7 @@ public class SeckillCodeMsg extends CodeMsg {
         super(code, msg);
     }
 
-    public static final SeckillCodeMsg OP_ERROR = new SeckillCodeMsg("A003001", "非法操作");
+    public static final SeckillCodeMsg OP_ERROR = new SeckillCodeMsg("A003001", "秒杀失败");
     public static final SeckillCodeMsg NOT_START_ERROR = new SeckillCodeMsg("A003002", "秒杀尚未开始");
     public static final SeckillCodeMsg END_ERROR = new SeckillCodeMsg("A003003", "秒杀已经结束");
     public static final SeckillCodeMsg REPATE_ERROR = new SeckillCodeMsg("A003004", "请不要重复下单");

@@ -68,4 +68,19 @@ public interface MQConstants {
      * 延迟订单的消费者组
      */
     String DELAY_ORDER_CONSUMER_GROUP = "DELAY_ORDER_CONSUMER_GROUP";
+
+    /**
+     * 清除本地标识标签
+     */
+    String CLEAR_STOCK_FLAG_TAG = "CLEAR_STOCK_FLAG_TAG";
+
+    /**
+     * 清除本地标识消息目的地
+     */
+    String CLEAR_STOCK_FLAG_DEST = SECKILL_ORDER_TOPIC + ":" + CLEAR_STOCK_FLAG_TAG;
+
+    /**
+     * 清除本地标识的消费者组
+     */
+    String CLEAR_STOCK_FLAG_CONSUMER_GROUP = "CLEAR_STOCK_FLAG_CONSUMER_GROUP";
 }

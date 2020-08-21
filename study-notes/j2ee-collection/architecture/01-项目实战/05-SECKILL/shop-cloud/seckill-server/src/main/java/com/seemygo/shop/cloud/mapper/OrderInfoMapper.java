@@ -1,10 +1,7 @@
 package com.seemygo.shop.cloud.mapper;
 
 import com.seemygo.shop.cloud.domain.OrderInfo;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface OrderInfoMapper {
@@ -13,4 +10,7 @@ public interface OrderInfoMapper {
 
     @Select("select * from t_order_info where order_no = #{orderNo} AND user_id = #{userId}")
     OrderInfo selectByPrimaryKey(@Param("orderNo") String orderNo, @Param("userId") Long userId);
+
+    @Update("update t_order_info set status = 3 where order_no = #{orderNo} and status = 0")
+    int updateTimeout(String orderNo);
 }

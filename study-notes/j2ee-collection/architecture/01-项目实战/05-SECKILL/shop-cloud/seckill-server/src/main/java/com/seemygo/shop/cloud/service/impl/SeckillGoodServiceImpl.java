@@ -66,6 +66,11 @@ public class SeckillGoodServiceImpl implements ISeckillGoodService {
         return seckillGoodMapper.selectByPrimaryKey(seckillId);
     }
 
+    @Override
+    public void incrStockCount(Long seckillId) {
+        seckillGoodMapper.incrStockCount(seckillId);
+    }
+
     private List<SeckillGoodVo> join(List<SeckillGood> seckillGoods) {
         // 2. 根据秒杀商品列表（Set），得到商品id
         Set<Long> idList = new HashSet<>(seckillGoods.size());

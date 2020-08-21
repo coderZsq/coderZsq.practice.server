@@ -18,4 +18,7 @@ public interface SeckillGoodMapper {
 
     @Update("update t_seckill_goods set stock_count = stock_count - 1 where id = #{seckillId} and stock_count > 0")
     int decrStockCount(Long seckillId);
+
+    @Update("update t_seckill_goods set stock_count = stock_count + 1 where id = #{seckillId}")
+    void incrStockCount(Long seckillId);
 }

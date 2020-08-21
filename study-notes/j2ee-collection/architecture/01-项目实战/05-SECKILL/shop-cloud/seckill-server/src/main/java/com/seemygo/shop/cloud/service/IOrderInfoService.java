@@ -22,4 +22,18 @@ public interface IOrderInfoService {
      * @return
      */
     OrderInfo findById(String orderNo, Long userId);
+
+    /**
+     * 检查订单是否超时, 如果超时需要进行回补, 清除本次售完标记
+     * @param orderNo
+     * @param seckillId
+     */
+    void checkTimeout(String orderNo, Long seckillId);
+
+    /**
+     * 当秒杀订单失败时进行回补Redis库存, 清除本地售完标记, 清除用户已下单标识
+     * @param seckillId
+     * @param userId
+     */
+    void seckillFailed(Long seckillId, Long userId);
 }
