@@ -2,8 +2,6 @@ package 刷题.待完成;
 
 import 标签.树.TreeNode;
 
-import java.util.Stack;
-
 /**
  * 根据一棵树的前序遍历与中序遍历构造二叉树。
  *

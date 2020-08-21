@@ -17,7 +17,7 @@ package 刷题.待完成;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 
-// TODO 高频题
+// TODO 刷题.高频题
 public class _371_两整数之和 {
     public int getSum(int a, int b) {
         return 0;
