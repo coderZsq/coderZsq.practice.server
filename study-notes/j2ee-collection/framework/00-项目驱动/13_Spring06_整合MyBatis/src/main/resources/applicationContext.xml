@@ -9,13 +9,29 @@
 
     <context:property-placeholder location="db.properties"/>
 
-    <!-- 数据源 -->
-    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+    <!-- 数据源 (Spring的DriverManagerDataSource) -->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="${jdbc.driverClass}"/>
         <property name="url" value="${jdbc.url}"/>
         <property name="username" value="${jdbc.username}"/>
         <property name="password" value="${jdbc.password}"/>
     </bean>
+
+    <!-- 数据源 (MyBatis的PooledDataSource) -->
+    <!--<bean id="dataSource" class="org.apache.ibatis.datasource.pooled.PooledDataSource">-->
+    <!--    <property name="driver" value="${jdbc.driverClass}"/>-->
+    <!--    <property name="url" value="${jdbc.url}"/>-->
+    <!--    <property name="username" value="${jdbc.username}"/>-->
+    <!--    <property name="password" value="${jdbc.password}"/>-->
+    <!--</bean>-->
+
+    <!-- 数据源 (Druid) -->
+    <!--<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">-->
+    <!--    <property name="driverClassName" value="${jdbc.driverClass}"/>-->
+    <!--    <property name="url" value="${jdbc.url}"/>-->
+    <!--    <property name="username" value="${jdbc.username}"/>-->
+    <!--    <property name="password" value="${jdbc.password}"/>-->
+    <!--</bean>-->
 
     <!-- 创建SqlSessionFactory -->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
@@ -25,9 +41,9 @@
         <property name="typeAliasesPackage" value="com.sq.domain"/>
         <!-- 映射文件的位置 -->
         <property name="mapperLocations">
-            <list>
+            <array>
                 <value>mappers/*.xml</value>
-            </list>
+            </array>
         </property>
     </bean>
 
