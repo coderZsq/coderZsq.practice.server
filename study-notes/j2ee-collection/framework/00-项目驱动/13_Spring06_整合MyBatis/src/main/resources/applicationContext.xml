@@ -54,4 +54,5 @@
         <!-- 设置dao的包 -->
         <property name="basePackage" value="com.sq.dao"/>
     </bean>
+
 </beans>
