@@ -2,7 +2,7 @@ package com.sq.service;
 
 public class SkillService {
     public boolean save(Object skill) {
-        System.out.println("SkillServiceImpl - save");
+        System.out.println("SkillService - save");
         return false;
     }
 }

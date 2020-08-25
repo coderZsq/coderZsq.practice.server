@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop https://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <bean id="userService" class="com.sq.service.impl.UserServiceImpl"/>
+    <bean id="personService" class="com.sq.service.impl.PersonServiceImpl"/>
+    <bean id="skillService" class="com.sq.service.SkillService"/>
+
+    <!-- 附加代码 -->
+    <!--<bean id="logAdvice" class="com.sq.aop.LogAdvice"/>-->
+    <bean id="logInterceptor" class="com.sq.aop.LogInterceptor"/>
+
+    <!-- 切面-->
+    <aop:config>
+        <!-- 切入点: 给哪些类的哪些方法增加附加代码? -->
+        <!-- execution(* *(..))代表所有类的所有方法都会被切入 -->
+        <aop:pointcut id="pc" expression="execution(* *(..))"/>
+        <!-- 附加代码 -->
+        <aop:advisor advice-ref="logInterceptor" pointcut-ref="pc"/>
+    </aop:config>
+</beans>

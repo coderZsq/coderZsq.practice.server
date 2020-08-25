@@ -1,5 +1,6 @@
 package com.sq;
 
+import com.sq.service.SkillService;
 import com.sq.service.UserService;
 import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -10,8 +11,11 @@ public class UserTest {
         // 创建容器
         ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
 
-        UserService service = ctx.getBean("userService", UserService.class);
-        service.login("123", "456");
+        // UserService service = ctx.getBean("userService", UserService.class);
+        // service.login("123", "456");
+
+        SkillService service = ctx.getBean("skillService", SkillService.class);
+        service.save(null);
 
         // 关闭容器
         ctx.close();

@@ -2,7 +2,7 @@ package com.sq.proxy;
 
 import com.sq.service.SkillService;
 
-public class SkillServiceProxy implements SkillService {
+public class SkillServiceProxy extends SkillService {
     private SkillService target;
 
     public void setTarget(SkillService target) {
@@ -11,7 +11,9 @@ public class SkillServiceProxy implements SkillService {
 
     @Override
     public boolean save(Object skill) {
-        System.out.println("SkillServiceProxy - save - ");
-        return target.save(skill);
+        System.out.println("SkillServiceProxy - 1");
+        boolean result = target.save(skill);
+        System.out.println("SkillServiceProxy - 2");
+        return result;
     }
 }
