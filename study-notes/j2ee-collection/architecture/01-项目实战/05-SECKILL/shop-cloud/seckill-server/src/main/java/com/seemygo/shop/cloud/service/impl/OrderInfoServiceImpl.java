@@ -91,6 +91,11 @@ public class OrderInfoServiceImpl implements IOrderInfoService {
         redisTemplate.delete(SeckillRedisKey.SECKILL_USER_RECORD.join(seckillId + "", userId + ""));
     }
 
+    @Override
+    public void updatePaySuccess(String orderNo) {
+        orderInfoMapper.updatePaySuccess(orderNo);
+    }
+
     private void redisRollbackAndClearFlag(Long seckillId) {
         // 3. 回补Redis库存
         SeckillGoodVo vo = seckillGoodService.detail(seckillId);

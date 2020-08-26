@@ -36,4 +36,10 @@ public interface IOrderInfoService {
      * @param userId
      */
     void seckillFailed(Long seckillId, Long userId);
+
+    /**
+     * 更新订单状态为支付成功
+     * @param orderNo
+     */
+    void updatePaySuccess(String orderNo);
 }

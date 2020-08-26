@@ -46,7 +46,7 @@ public class CreateOrderMQListener implements RocketMQListener<CreateSeckillOrde
                 rocketMQTemplate.asyncSend(MQConstants.SECKILL_SUCCESS_DEST, new SeckillSuccessMsg(message.getUuid(), orderNo), new MQLogSendCallback());
                 // 发送延迟消息, 用户检查15分钟后订单是否已支付
                 // 1s 5s 10s 30s 1m 2m 3m 4m 5m 6m 7m 8m 9m 10m 20m 30m 1h 2h
-                rocketMQTemplate.asyncSend(MQConstants.DELAY_ORDER_DEST, new GenericMessage<>(new DelayOrderMsg(orderNo, message.getSeckillId())), new MQLogSendCallback(), 1000000, 3);
+                rocketMQTemplate.asyncSend(MQConstants.DELAY_ORDER_DEST, new GenericMessage<>(new DelayOrderMsg(orderNo, message.getSeckillId())), new MQLogSendCallback(), 10000, 3);
             } catch (Exception e) {
                 e.printStackTrace();
             }

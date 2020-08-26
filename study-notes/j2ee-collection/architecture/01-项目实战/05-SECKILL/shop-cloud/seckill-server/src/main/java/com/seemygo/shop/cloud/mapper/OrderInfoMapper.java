@@ -13,4 +13,7 @@ public interface OrderInfoMapper {
 
     @Update("update t_order_info set status = 3 where order_no = #{orderNo} and status = 0")
     int updateTimeout(String orderNo);
+
+    @Update("update t_order_info set status = 1, pay_date = now() where order_no = #{orderNo}")
+    void updatePaySuccess(String orderNo);
 }
