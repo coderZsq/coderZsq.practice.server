@@ -8,15 +8,41 @@
     <bean id="skillService" class="com.sq.service.SkillService"/>
 
     <!-- 附加代码 -->
-    <!--<bean id="logAdvice" class="com.sq.aop.LogAdvice"/>-->
+    <bean id="logAdvice" class="com.sq.aop.LogAdvice"/>
     <bean id="logInterceptor" class="com.sq.aop.LogInterceptor"/>
 
     <!-- 切面-->
     <aop:config>
-        <!-- 切入点: 给哪些类的哪些方法增加附加代码? -->
-        <!-- execution(* *(..))代表所有类的所有方法都会被切入 -->
-        <aop:pointcut id="pc" expression="execution(* *(..))"/>
-        <!-- 附加代码 -->
+        <aop:pointcut id="pc"
+                      expression="execution(* com.sq.service.impl.UserServiceImpl.*(..)) &amp;&amp; args(String, String)"/>
         <aop:advisor advice-ref="logInterceptor" pointcut-ref="pc"/>
     </aop:config>
+
+    <!--<aop:config>-->
+    <!--    <aop:pointcut id="pc1" expression="within(com.sq.service.impl.UserServiceImpl)"/>-->
+    <!--    <aop:advisor advice-ref="logInterceptor" pointcut-ref="pc1"/>-->
+    <!--    <aop:advisor advice-ref="logAdvice" pointcut-ref="pc1"/>-->
+    <!--</aop:config>-->
+    <!--<aop:config>-->
+    <!--    <aop:pointcut id="pc2" expression="within(com.sq.service.SkillService)"/>-->
+    <!--    <aop:advisor advice-ref="logInterceptor" pointcut-ref="pc2"/>-->
+    <!--</aop:config>-->
+
+    <!--<aop:config>-->
+    <!--    <aop:pointcut id="pc1" expression="within(com.sq.service.impl.UserServiceImpl)"/>-->
+    <!--    <aop:pointcut id="pc2" expression="within(com.sq.service.SkillService)"/>-->
+
+    <!--    <aop:advisor advice-ref="logInterceptor" pointcut-ref="pc1"/>-->
+    <!--    <aop:advisor advice-ref="logInterceptor" pointcut-ref="pc2"/>-->
+    <!--    <aop:advisor advice-ref="logAdvice" pointcut-ref="pc1"/>-->
+    <!--</aop:config>-->
+
+    <!--<aop:config>-->
+    <!--    &lt;!&ndash; 切入点: 给哪些类的哪些方法增加附加代码? &ndash;&gt;-->
+    <!--    &lt;!&ndash; execution(* *(..))代表所有类的所有方法都会被切入 &ndash;&gt;-->
+    <!--    <aop:pointcut id="pc" expression="execution(* *(..))"/>-->
+    <!--    &lt;!&ndash;<aop:pointcut id="pc" expression="@annotation(com.sq.annotation.Log)"/>&ndash;&gt;-->
+    <!--    &lt;!&ndash; 附加代码 &ndash;&gt;-->
+    <!--    <aop:advisor advice-ref="logInterceptor" pointcut-ref="pc"/>-->
+    <!--</aop:config>-->
 </beans>

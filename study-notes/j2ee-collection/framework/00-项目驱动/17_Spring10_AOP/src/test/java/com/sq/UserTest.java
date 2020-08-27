@@ -19,10 +19,9 @@ public class UserTest {
 
         UserService userService = ctx.getBean("userService", UserService.class);
         userService.login(null, null);
-        userService.register(null, null);
+        userService.register(null);
 
         PersonService personService = ctx.getBean("personService", PersonService.class);
         personService.run();
-
     }
 }
