@@ -101,3 +101,14 @@ $ docker stop e9fbd94bc862
 $ docker run --name centos-demo centos:7 ping localhost
 $ docker logs centos-demo # 查看日志
 $ docker exec -it centos-demo /bin/bash
+
+# 集成jenkins
+$ docker run -u root -d -p 8080:8080 -p 50000:50000 -v jenkins-data:/var/jenkins_home -v /Library/Maven:/usr/local/maven-3.6.3 -v /var/run/docker.sock:/var/run/docker.sock -e MAVEN_HOME=/usr/local/maven-3.6.3 jenkinsci/blueocean
+
+# 查看进程
+$ docker ps
+# CONTAINER ID        IMAGE                 COMMAND                  CREATED             STATUS              PORTS                                              NAMES
+# 5ee089bcc65a        jenkinsci/blueocean   "/sbin/tini -- /usr/…"   11 seconds ago      Up 10 seconds       0.0.0.0:8080->8080/tcp, 0.0.0.0:50000->50000/tcp   gallant_kepler
+
+# 查看初始密码
+$ docker logs -f 5ee089bcc65a
