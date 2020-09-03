@@ -2,6 +2,7 @@ package com.sq;
 
 import com.sq.dao.SkillDao;
 import com.sq.domain.Skill;
+import com.sq.service.SkillService;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
@@ -12,22 +13,16 @@ import java.util.List;
 
 public class SkillTest {
     private ApplicationContext ctx;
-    private SkillDao skillDao;
+    private SkillService skillService;
 
     @Before
     public void before() {
         ctx = new AnnotationConfigApplicationContext("com.sq");
-        skillDao = ctx.getBean("skillDao", SkillDao.class);
+        skillService = ctx.getBean("skillService", SkillService.class);
     }
 
     @Test
-    public void list() {
-        List<Skill> skills = skillDao.list();
-        System.out.println(skills);
-    }
-
-    @Test
-    public void save() {
-        System.out.println(skillDao.save(new Skill("123", 456)));
+    public void save() throws Exception {
+        skillService.test(null);
     }
 }

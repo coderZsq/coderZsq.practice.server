@@ -5,7 +5,7 @@
 
     <bean id="userService" class="com.sq.service.impl.UserServiceImpl"/>
     <bean id="personService" class="com.sq.service.impl.PersonServiceImpl"/>
-    <bean id="skillService" class="com.sq.service.SkillService"/>
+    <bean id="skillService" class="com.sq.service.UserService"/>
 
     <!-- 附加代码 -->
     <bean id="logAdvice" class="com.sq.aop.LogAdvice"/>
@@ -24,13 +24,13 @@
     <!--    <aop:advisor advice-ref="logAdvice" pointcut-ref="pc1"/>-->
     <!--</aop:config>-->
     <!--<aop:config>-->
-    <!--    <aop:pointcut id="pc2" expression="within(com.sq.service.SkillService)"/>-->
+    <!--    <aop:pointcut id="pc2" expression="within(com.sq.service.UserService)"/>-->
     <!--    <aop:advisor advice-ref="logInterceptor" pointcut-ref="pc2"/>-->
     <!--</aop:config>-->
 
     <!--<aop:config>-->
     <!--    <aop:pointcut id="pc1" expression="within(com.sq.service.impl.UserServiceImpl)"/>-->
-    <!--    <aop:pointcut id="pc2" expression="within(com.sq.service.SkillService)"/>-->
+    <!--    <aop:pointcut id="pc2" expression="within(com.sq.service.UserService)"/>-->
 
     <!--    <aop:advisor advice-ref="logInterceptor" pointcut-ref="pc1"/>-->
     <!--    <aop:advisor advice-ref="logInterceptor" pointcut-ref="pc2"/>-->
