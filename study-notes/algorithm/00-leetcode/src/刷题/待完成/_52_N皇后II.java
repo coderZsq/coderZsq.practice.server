@@ -13,6 +13,7 @@ package 刷题.待完成;
  * 链接：https://leetcode-cn.com/problems/n-queens-ii
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
+// TODO 回溯
 public class _52_N皇后II {
     public int totalNQueens(int n) {
         return 0;
