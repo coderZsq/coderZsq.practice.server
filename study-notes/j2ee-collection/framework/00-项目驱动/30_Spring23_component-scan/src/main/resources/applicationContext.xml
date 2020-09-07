@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+    <context:component-scan base-package="com.sq" use-default-filters="false">
+        <!--<context:exclude-filter type="assignable" expression="com.sq.domain.Person"/>-->
+        <!--<context:exclude-filter type="assignable" expression="com.sq.domain.Dog"/>-->
+        
+        <!--<context:exclude-filter type="aspectj" expression="com.sq.service..*"/>-->
+        
+        <!--<context:exclude-filter type="regex" expression=".*My.*"/>-->
+
+        <!--<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>-->
+
+        <!--<context:exclude-filter type="custom" expression="com.sq.filter.MyTypeFilter"/>-->
+
+        <!--<context:include-filter type="assignable" expression="com.sq.domain.Person"/>-->
+        <!--<context:include-filter type="assignable" expression="com.sq.domain.Dog"/>-->
+
+        <context:include-filter type="custom" expression="com.sq.filter.MyTypeFilter"/>
+    </context:component-scan>
+</beans>
