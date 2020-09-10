@@ -10,10 +10,10 @@ import org.springframework.context.annotation.Configuration;
 import javax.sql.DataSource;
 
 @Configuration
-@MapperScan(basePackages = "com.sq.demo.xatransdemo.mapper.gonghang", sqlSessionFactoryRef = "ghSqlSessionFactory")
-public class GhMapperConfig {
+@MapperScan(basePackages = "com.sq.demo.xatransdemo.mapper.nonghang", sqlSessionFactoryRef = "nhSqlSessionFactory")
+public class NhMapperConfig {
     @Bean
-    public SqlSessionFactory ghSqlSessionFactory(@Qualifier("ghDataSource") DataSource dataSource) throws Exception {
+    public SqlSessionFactory nhSqlSessionFactory(@Qualifier("nhDataSource") DataSource dataSource) throws Exception {
         final SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(dataSource);
         return sqlSessionFactoryBean.getObject();
