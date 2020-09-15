@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    druid:
+      url: jdbc:mysql://192.168.48.102:3306/gonghang
+      username: root
+      password: WolfCode_2017
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      initial-size: 6
+server:
+  port: 7002
+rocketmq:
+  name-server: 192.168.48.102:9876
+  producer:
+    group: gonghang-group
+logging:
+  level:
+    com.gonghang: debug
