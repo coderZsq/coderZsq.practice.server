@@ -61,6 +61,7 @@ public class TransServiceImpl implements ITransService {
         map.put("transId", UUID.randomUUID().toString());
         final Message<Map<String, Object>> message = MessageBuilder.withPayload(map).build();
         //1 发送事务消息
+        // 最后一个参数: 需要在消息之外, 需要传递到本地事务执行的方法中
         rocketMQTemplate.sendMessageInTransaction("test001","nonghang-trans",message,null);
     }
 }

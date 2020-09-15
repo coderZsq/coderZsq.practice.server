@@ -24,5 +24,7 @@ public class TransServiceImpl implements ITransService {
         }else{
             throw  new RuntimeException("业务已经执行成功");
         }
+
+        // 接口: --> 定义一个对象在封装所有的信息
     }
 }

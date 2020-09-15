@@ -1,15 +1,15 @@
 spring:
   datasource:
     druid:
-      url: jdbc:mysql://192.168.48.102:3306/nonghang
+      url: jdbc:mysql://localhost:3306/nonghang
       username: root
-      password: WolfCode_2017
+      password: root
       driver-class-name: com.mysql.cj.jdbc.Driver
       initial-size: 6
 server:
   port: 7001
 rocketmq:
-  name-server: 192.168.48.102:9876
+  name-server: 172.16.21.175:9876
 
 logging:
   level:
