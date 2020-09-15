@@ -15,7 +15,7 @@ public class JspController2 {
 
     @RequestMapping("/jsp2")
     public ModelAndView jsp2() {
-        return new ModelAndView("jsp5");
+        return new ModelAndView("jsp7");
     }
 
     @RequestMapping("/jsp3")

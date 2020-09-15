@@ -12,7 +12,12 @@ public class MyView extends InternalResourceView {
         // 根据实际情况来返回
         // 存在: 返回true
         // 不存在: 返回false
-        String path = getServletContext().getRealPath("/") + getUrl();
+
+        // 项目部署的根路径 + /page/index.jsp
+        // String path = getServletContext().getRealPath("/") + getUrl();
+
+        // 项目部署的根路径 + /page/index.jsp
+        String path = getServletContext().getRealPath(getUrl());
         File file = new File(path);
         return file.exists();
     }

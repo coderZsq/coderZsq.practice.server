@@ -2,15 +2,25 @@ package com.sq.controller;
 
 import com.sq.domain.Dog;
 import com.sq.domain.Student;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
 
 @Controller
 public class JSONController {
+    // @RequestMapping(value = "/other/{test}")
+    // @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "你这个请求非常6")
+    // @ResponseBody
+    // public String wrong() {
+    //     return null;
+    // }
+
     @RequestMapping(value = "/json1", produces = "application/json; charset=UTF-8")
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ResponseBody
     public String json1() {
         // Person person = new Person();
