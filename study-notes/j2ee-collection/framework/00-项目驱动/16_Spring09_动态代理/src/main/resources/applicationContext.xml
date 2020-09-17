@@ -7,7 +7,7 @@
 
     <bean id="userService" class="com.sq.service.impl.UserServiceImpl"/>
     <!--<bean id="personService" class="com.sq.service.impl.PersonServiceImpl"/>-->
-    <!--<bean id="skillService" class="com.sq.service.UserService"/>-->
+    <!--<bean id="skillService" class="com.sq.service.SkillService"/>-->
 
     <!--<bean id="person" class="com.sq.domain.Person"/>-->
 </beans>

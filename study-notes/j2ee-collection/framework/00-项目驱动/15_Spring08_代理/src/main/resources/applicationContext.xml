@@ -12,7 +12,7 @@
 
     <bean id="skillService" class="com.sq.proxy.SkillServiceProxy">
         <property name="target">
-            <bean class="com.sq.service.UserService"/>
+            <bean class="com.sq.service.SkillService"/>
         </property>
     </bean>
 
