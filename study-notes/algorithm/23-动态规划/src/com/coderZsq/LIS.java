@@ -55,7 +55,7 @@ public class LIS {
                 // 牌顶 < num
                 j++;
             }
-            if (j == len) {
+            if (j == len) { // 新建一个牌堆
                 len++;
                 top[j] = num;
             }
