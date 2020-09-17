@@ -19,7 +19,19 @@
             <!--<mvc:exclude-mapping path="/**/*.html"/>-->
             <!--<mvc:exclude-mapping path="/**/*.png"/>-->
             <!--<mvc:exclude-mapping path="/**/*.js"/>-->
-            <bean class="com.sq.interceptor.MyInterceptor"/>
+            <bean class="com.sq.interceptor.MyInterceptor1"/>
+        </mvc:interceptor>
+
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/asset/**"/>
+            <bean class="com.sq.interceptor.MyInterceptor2"/>
+        </mvc:interceptor>
+
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/asset/**"/>
+            <bean class="com.sq.interceptor.MyInterceptor3"/>
         </mvc:interceptor>
     </mvc:interceptors>
 </beans>
