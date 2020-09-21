@@ -1,0 +1,29 @@
+spring:
+   datasource:
+      type: com.alibaba.druid.pool.DruidDataSource
+      url: jdbc:mysql://192.168.48.1:3306/order?useUnicode=true&characterEncoding=UTF-8
+      driver-class-name: com.mysql.jdbc.Driver
+      username: root
+      password: admin
+seata:
+   enabled: true
+   application-id: order-server
+   tx-service-group: my_test_tx_group
+   enable-auto-data-source-proxy: false
+   config:
+      type: nacos
+      nacos:
+         namespace:
+         serverAddr: 192.168.48.1:8848
+         group: SEATA_GROUP
+         username: "nacos"
+         password: "nacos"
+   registry:
+      type: nacos
+      nacos:
+         application: seata-server
+         server-addr: 192.168.48.1:8848
+         group: SEATA_GROUP
+         namespace:
+         username: "nacos"
+         password: "nacos"

@@ -1,0 +1,17 @@
+spring:
+   application:
+      name: account-server
+   main:
+      allow-bean-definition-overriding: true
+   cloud:
+      nacos:
+         discovery:
+            server-addr: 192.168.48.1:8848
+            username: "nacos"
+            password: "nacos"
+         config:
+            server-addr: 192.168.48.1:8848
+            username: "nacos"
+            password: "nacos"
+server:
+   port: 9000
