@@ -4,7 +4,7 @@ spring:
     driverClassName: com.mysql.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     username: root
-    password: admin
+    password: root
   application:
     name: gonghang-server
 server:
@@ -17,7 +17,8 @@ dubbo:
   application:
     name: gonghang-provider
   registry:
-    address: zookeeper://172.16.21.175:2181
+    address: nacos://127.0.0.1:8848
+    check: true
   protocol:
     name: dubbo
     port: 20880
@@ -32,7 +33,7 @@ seata:
     type: nacos
     nacos:
       namespace:
-      serverAddr: 172.16.21.175:8848
+      serverAddr: 127.0.0.1:8848
       group: SEATA_GROUP
       username: "nacos"
       password: "nacos"
@@ -40,7 +41,7 @@ seata:
     type: nacos
     nacos:
       application: seata-server
-      server-addr: 172.16.21.175:8848
+      server-addr: 127.0.0.1:8848
       group : "SEATA_GROUP"
       namespace:
       username: "nacos"
