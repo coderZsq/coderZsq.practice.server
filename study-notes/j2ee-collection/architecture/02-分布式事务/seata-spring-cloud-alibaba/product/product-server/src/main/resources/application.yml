@@ -1,7 +1,7 @@
 spring:
    datasource:
       type: com.alibaba.druid.pool.DruidDataSource
-      url: jdbc:mysql://192.168.48.1:3306/storage?useUnicode=true&characterEncoding=UTF-8
+      url: jdbc:mysql://127.0.0.1:3306/storage?useUnicode=true&characterEncoding=UTF-8
       driver-class-name: com.mysql.jdbc.Driver
       username: root
       password: admin
@@ -14,7 +14,7 @@ seata:
       type: nacos
       nacos:
          namespace:
-         serverAddr: 192.168.48.1:8848
+         serverAddr: 127.0.0.1:8848
          group: SEATA_GROUP
          username: "nacos"
          password: "nacos"
@@ -22,7 +22,7 @@ seata:
       type: nacos
       nacos:
          application: seata-server
-         server-addr: 192.168.48.1:8848
+         server-addr: 127.0.0.1:8848
          group: SEATA_GROUP
          namespace:
          username: "nacos"
