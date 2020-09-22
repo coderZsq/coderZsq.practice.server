@@ -21,14 +21,18 @@ public class NHAccountServiceImpl implements INHAccountService {
     private IGHAccountService ghAccountService;
 
 
+    // 资源参与者
     @Override
     @Transactional
     public void transOut(Long id, Integer amount) throws Exception {
+        // 业务处理, --> 提交到数据库
         nhAccountMapper.transOut(id, amount);
     }
 
 
     //转账服务 --事务发起者 开启全局事务
+    // TM
+    @Override
     @GlobalTransactional
     public void trans(Long outId, Long inId, Integer amount) throws Exception {
         //1 调用本地转出服务
