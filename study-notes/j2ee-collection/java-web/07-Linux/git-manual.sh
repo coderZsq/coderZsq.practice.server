@@ -396,3 +396,353 @@ $ git stash pop
 
 # 清除
 $ git stash clear
+
+# 查看暂存区数据
+$ git ls-files -s
+# 100644 a219aab546dba819fd10e2820fa3561ba2f47783 0	.gitignore
+# 100644 4f37670799715b48e31ab1be1c419f6ddbb19056 0	a.txt
+# 100644 e14dca8c1a652939cdde1e7b4da66563687fb1b7 0	testaaa.txt
+$ touch c.txt # ccc
+$ git add .
+$ git ls-files -s
+# 100644 a219aab546dba819fd10e2820fa3561ba2f47783 0	.gitignore
+# 100644 5330b1520aa1c73bf75a9eb467ac4462dd9fdc55 0	a.txt
+# 100644 2383bd587474492050db93523ca1bb4faf7773a0 0	c.txt
+# 100644 e14dca8c1a652939cdde1e7b4da66563687fb1b7 0	testaaa.txt
+$ git commit -m 'add c.txt'
+# [master 2e2047c] add c.txt
+#  2 files changed, 3 insertions(+), 1 deletion(-)
+#  create mode 100644 c.txt
+$ git ls-files -s
+# 100644 a219aab546dba819fd10e2820fa3561ba2f47783 0	.gitignore
+# 100644 5330b1520aa1c73bf75a9eb467ac4462dd9fdc55 0	a.txt
+# 100644 2383bd587474492050db93523ca1bb4faf7773a0 0	c.txt
+# 100644 e14dca8c1a652939cdde1e7b4da66563687fb1b7 0	testaaa.txt
+$ vi a.txt # 333
+$ git status
+# On branch master
+# Changes not staged for commit:
+#   (use "git add <file>..." to update what will be committed)
+#   (use "git restore <file>..." to discard changes in working directory)
+# 	modified:   a.txt
+
+# no changes added to commit (use "git add" and/or "git commit -a")
+$ git add a.txt
+$ git ls-files -s
+# 100644 a219aab546dba819fd10e2820fa3561ba2f47783 0	.gitignore
+# 100644 4f37670799715b48e31ab1be1c419f6ddbb19056 0	a.txt
+# 100644 2383bd587474492050db93523ca1bb4faf7773a0 0	c.txt
+# 100644 e14dca8c1a652939cdde1e7b4da66563687fb1b7 0	testaaa.txt
+$ git cat-file -p 4f37
+# 333
+$ git reflog
+# 2e2047c (HEAD -> master) HEAD@{0}: commit: add c.txt
+# 54e8ef5 HEAD@{1}: commit: fixbug2009
+# 9a7986a HEAD@{2}: reset: moving to HEAD
+# 9a7986a HEAD@{3}: commit: git ignore
+# 966c568 HEAD@{4}: commit: test3
+# 632ba38 HEAD@{5}: commit: test
+# c6b2df7 HEAD@{6}: commit: delete file
+# 54315db HEAD@{7}: commit: test2
+# 653162f HEAD@{8}: commit: test
+# 63ebc9e HEAD@{9}: reset: moving to 63ebc9e
+# 6f10aae HEAD@{10}: reset: moving to 6f10aae
+# 63ebc9e HEAD@{11}: commit: add d.txt
+# b6322dd HEAD@{12}: commit: add c.txt
+# 4dafb2b HEAD@{13}: commit: update a.txt
+# 6f10aae HEAD@{14}: commit (initial): init data
+$ git commit -m 'update'
+# [master ae3e8fd] update
+#  1 file changed, 1 insertion(+), 2 deletions(-)
+$ git cat-file -p ae3e8fd
+# tree 753ba4916c24794b5517ca4958632bbf234df232
+# parent 2e2047cff4b43db3bf1545fe7c094cbb64531b9b
+# author coderZsq <a13701777868@yahoo.com> 1600917109 +0800
+# committer coderZsq <a13701777868@yahoo.com> 1600917109 +0800
+
+# update
+
+# HEAD关联关系
+$ cat HEAD
+# ref: refs/heads/master
+$ cat master
+# ae3e8fd63ed4ecca84bfeca8656a8ce0f874955d
+
+# 手动创建分支并指向
+$ cd .git/refs/heads
+# 1. 创建分支dev
+$ touch dev
+# 2. 并且让dev分支指向指定commit
+$ vi dev # 2e2047cff4b43db3bf1545fe7c094cbb64531b9b
+# 3. 修改当前head指向dev分支
+$ vi HEAD # ref: refs/heads/dev
+$ git status
+# On branch dev
+# Changes to be committed:
+#   (use "git restore --staged <file>..." to unstage)
+# 	modified:   a.txt
+$ git ls-files -s
+# 100644 a219aab546dba819fd10e2820fa3561ba2f47783 0	.gitignore
+# 100644 4f37670799715b48e31ab1be1c419f6ddbb19056 0	a.txt
+# 100644 2383bd587474492050db93523ca1bb4faf7773a0 0	c.txt
+# 100644 e14dca8c1a652939cdde1e7b4da66563687fb1b7 0	testaaa.txt
+$ git cat-file -p 4f37
+# 333
+$ git reflog
+# ae3e8fd (master) HEAD@{0}: commit: update
+# 2e2047c (HEAD -> dev) HEAD@{1}: commit: add c.txt
+# 54e8ef5 HEAD@{2}: commit: fixbug2009
+# 9a7986a HEAD@{3}: reset: moving to HEAD
+# 9a7986a HEAD@{4}: commit: git ignore
+# 966c568 HEAD@{5}: commit: test3
+# 632ba38 HEAD@{6}: commit: test
+# c6b2df7 HEAD@{7}: commit: delete file
+# 54315db HEAD@{8}: commit: test2
+# 653162f HEAD@{9}: commit: test
+# 63ebc9e HEAD@{10}: reset: moving to 63ebc9e
+# 6f10aae HEAD@{11}: reset: moving to 6f10aae
+# 63ebc9e HEAD@{12}: commit: add d.txt
+# b6322dd HEAD@{13}: commit: add c.txt
+# 4dafb2b HEAD@{14}: commit: update a.txt
+# 6f10aae HEAD@{15}: commit (initial): init data
+$ git checkout dev
+# M	a.txt
+# Already on 'dev'
+$ git cat-file -p 2e2047c
+# tree 6283f154a6fb656ada570b5283aa01690eb321c7
+# parent 54e8ef55bae86fc52920fd3d4a35df68a009d01a
+# author coderZsq <a13701777868@yahoo.com> 1600916663 +0800
+# committer coderZsq <a13701777868@yahoo.com> 1600916663 +0800
+
+# add c.txt
+$ git cat-file -p 6283f1
+# 100644 blob a219aab546dba819fd10e2820fa3561ba2f47783	.gitignore
+# 100644 blob 5330b1520aa1c73bf75a9eb467ac4462dd9fdc55	a.txt
+# 100644 blob 2383bd587474492050db93523ca1bb4faf7773a0	c.txt
+# 100644 blob e14dca8c1a652939cdde1e7b4da66563687fb1b7	testaaa.txt
+$ git cat-file -p 5330b
+# 333
+# hello java
+$ git add .
+$ git commit -m 'test'
+# [dev e39a5f4] test
+#  1 file changed, 1 insertion(+), 2 deletions(-)
+
+# 分支管理
+# 查看分支
+$ git branch
+# * dev
+#   master
+# 切换分支
+$ git checkout master
+# Switched to branch 'master'
+# 创建分支
+$ git branch test
+# $ git branch -a
+#   dev
+# * master
+#   test
+# 创建并切换分支
+$ git checkout -b fixbug2009
+# Switched to a new branch 'fixbug2009'
+$ git branch -a
+#   dev
+# * fixbug2009
+#   master
+#   test
+# 删除分支
+$ git branch -D test
+# Deleted branch test (was ae3e8fd).
+$ git branch -D dev
+# Deleted branch dev (was e39a5f4).
+$ git branch -D fixbug2009
+# error: Cannot delete branch 'fixbug2009' checked out at '/Users/zhushuangquan/Desktop/project'
+$ git checkout master
+# Switched to branch 'master'
+$ git branch -D fixbug2009
+# Deleted branch fixbug2009 (was ae3e8fd).
+$ git branch -a
+# * master
+
+# 合并分支
+$ git branch dev
+$ git branch test
+$ git checkout dev
+# Switched to branch 'dev'
+$ touch dev.txt
+$ git add .
+$ git commit -m 'dev:add dev.txt'
+# [dev 9682ecc] dev:add dev.txt
+#  1 file changed, 0 insertions(+), 0 deletions(-)
+#  create mode 100644 dev.txt
+$ git checkout test
+# Switched to branch 'test'
+$ touch test.txt
+$ git add .
+$ git commit -m 'test.txt'
+# [test 81edccb] test.txt
+#  1 file changed, 0 insertions(+), 0 deletions(-)
+#  create mode 100644 test.txt
+$ git status
+# On branch test
+# nothing to commit, working tree clean
+$ git merge dev -m 'merge dev branch'
+# Merge made by the 'recursive' strategy.
+#  dev.txt | 0
+#  1 file changed, 0 insertions(+), 0 deletions(-)
+#  create mode 100644 dev.txt
+
+# 文件冲突合并
+$ git checkout master
+# Switched to branch 'master'
+$ git branch -D dev
+# Deleted branch dev (was 9682ecc).
+$ git branch -D test
+# Deleted branch test (was eecc09c).
+$ git branch dev
+$ git branch test
+$ git checkout dev
+# Switched to branch 'dev'
+$ vi a.txt # a1
+$ git add .
+$ git commit -m 'dev'
+# [dev 0d66ca0] dev
+#  1 file changed, 1 insertion(+), 1 deletion(-)
+$ git checkout test
+# Switched to branch 'test'
+$ vi a.txt # a2
+$ git add .
+$ git commit -m 'test'
+# [test 91107c3] test
+#  1 file changed, 1 insertion(+), 1 deletion(-)
+$ git status
+# On branch test
+# nothing to commit, working tree clean
+$ git merge dev -m 'merge dev'
+# Auto-merging a.txt
+# CONFLICT (content): Merge conflict in a.txt
+# Automatic merge failed; fix conflicts and then commit the result.
+$ cat a.txt
+# <<<<<<< HEAD
+# a2
+# =======
+# a1
+# >>>>>>> dev
+$ git status
+# On branch test
+# You have unmerged paths.
+#   (fix conflicts and run "git commit")
+#   (use "git merge --abort" to abort the merge)
+
+# Unmerged paths:
+#   (use "git add <file>..." to mark resolution)
+# 	both modified:   a.txt
+
+# no changes added to commit (use "git add" and/or "git commit -a")
+# 终止合并
+$ git merge --abort
+# 解决冲突
+$  git merge dev -m 'merge dev'
+# Auto-merging a.txt
+# CONFLICT (content): Merge conflict in a.txt
+# Automatic merge failed; fix conflicts and then commit the result.
+$ vi a.txt
+# a2
+# a1
+$ git add .
+$ git status
+# On branch test
+# All conflicts fixed but you are still merging.
+#   (use "git commit" to conclude merge)
+
+# Changes to be committed:
+# 	modified:   a.txt
+$ git commit -m 'fix both update'
+# [test b9dedf8] fix both update
+
+# 远程仓库
+$ git remote add origin https://github.com/coderZsq/project.git
+$ git push -u origin master
+# Enumerating objects: 36, done.
+# Counting objects: 100% (36/36), done.
+# Delta compression using up to 8 threads
+# Compressing objects: 100% (25/25), done.
+# Writing objects: 100% (36/36), 2.78 KiB | 949.00 KiB/s, done.
+# Total 36 (delta 7), reused 0 (delta 0)
+# remote: Resolving deltas: 100% (7/7), done.
+# To https://github.com/coderZsq/project.git
+#  * [new branch]      master -> master
+# Branch 'master' set up to track remote branch 'master' from 'origin'.
+$ mkdir repo
+$ cd repo
+# 克隆仓库
+$ git clone https://github.com/coderZsq/project.git
+# Cloning into 'project'...
+# remote: Enumerating objects: 36, done.
+# remote: Counting objects: 100% (36/36), done.
+# remote: Compressing objects: 100% (18/18), done.
+# remote: Total 36 (delta 7), reused 36 (delta 7), pack-reused 0
+# Unpacking objects: 100% (36/36), done.
+$ cd project
+$ git status
+# On branch master
+# Your branch is up to date with 'origin/master'.
+
+# nothing to commit, working tree clean
+
+# 推送
+$ touch b.txt
+$ git status
+# On branch test
+# Untracked files:
+#   (use "git add <file>..." to include in what will be committed)
+# 	b.txt
+
+# nothing added to commit but untracked files present (use "git add" to track)
+$ git add .
+$ git commit -m 'update'
+# [test 377b2df] update
+#  1 file changed, 0 insertions(+), 0 deletions(-)
+#  create mode 100644 b.txt
+$ git status
+# On branch master
+# Your branch is ahead of 'origin/master' by 1 commit.
+#   (use "git push" to publish your local commits)
+
+# nothing to commit, working tree clean
+$ git push
+# Enumerating objects: 4, done.
+# Counting objects: 100% (4/4), done.
+# Delta compression using up to 8 threads
+# Compressing objects: 100% (2/2), done.
+# Writing objects: 100% (3/3), 259 bytes | 259.00 KiB/s, done.
+# Total 3 (delta 1), reused 0 (delta 0)
+# remote: Resolving deltas: 100% (1/1), completed with 1 local object.
+# To https://github.com/coderZsq/project.git
+#    ae3e8fd..086aad2  master -> master
+
+# 拉取
+$ git pull
+# remote: Enumerating objects: 4, done.
+# remote: Counting objects: 100% (4/4), done.
+# remote: Compressing objects: 100% (1/1), done.
+# remote: Total 3 (delta 1), reused 3 (delta 1), pack-reused 0
+# Unpacking objects: 100% (3/3), done.
+# From https://github.com/coderZsq/project
+#    ae3e8fd..086aad2  master     -> origin/master
+# Updating ae3e8fd..086aad2
+# Fast-forward
+#  b.txt | 0
+#  1 file changed, 0 insertions(+), 0 deletions(-)
+#  create mode 100644 b.txt
+
+# 注释规范
+# Commit Message
+# Commit message could help reviewers better understand what is the purpose of submitted PR. It could help accelerate the code review procedure as well. We encourage contributors to use EXPLICIT commit message rather than ambiguous message. In general, we advocate the following commit message type:
+
+# docs: xxxx. For example, "docs: add docs about Seata cluster installation".
+# feature: xxxx.For example, "feature: support oracle in AT mode".
+# bugfix: xxxx. For example, "bugfix: fix panic when input nil parameter".
+# refactor: xxxx. For example, "refactor: simplify to make codes more readable".
+# test: xxx. For example, "test: add unit test case for func InsertIntoArray".
+# other readable and explicit expression ways.
