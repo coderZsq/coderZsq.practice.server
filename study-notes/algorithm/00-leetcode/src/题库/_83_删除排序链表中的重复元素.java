@@ -9,12 +9,12 @@ import 标签.链表.ListNode;
  */
 public class _83_删除排序链表中的重复元素 {
     public ListNode deleteDuplicates(ListNode head) {
-        ListNode current = head;
-        while (current != null && current.next != null) {
-            if (current.next.val == current.val) {
-                current.next = current.next.next;
+        ListNode cur = head;
+        while (cur != null && cur.next != null) {
+            if (cur.val == cur.next.val) {
+                cur.next = cur.next.next;
             } else {
-                current = current.next;
+                cur = cur.next;
             }
         }
         return head;

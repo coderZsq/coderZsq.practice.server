@@ -1,4 +1,6 @@
-package 标签.链表;
+package 刷题.准备题;
+
+import 标签.链表.ListNode;
 
 /**
  * https://leetcode-cn.com/problems/remove-duplicates-from-sorted-list/
