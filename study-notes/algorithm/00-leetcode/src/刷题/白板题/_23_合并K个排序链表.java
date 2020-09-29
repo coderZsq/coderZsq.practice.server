@@ -3,12 +3,23 @@ package 刷题.白板题;
 import 标签.链表.ListNode;
 
 /**
- * https://leetcode-cn.com/problems/merge-two-sorted-lists/
+ * https://leetcode-cn.com/problems/merge-k-sorted-lists/
  *
  * @author zhushuangquan
  */
-class _21_合并两个有序链表 {
-    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+public class _23_合并K个排序链表 {
+    public ListNode mergeKLists(ListNode[] lists) {
+        if (lists == null || lists.length == 0) return null;
+        return merge(lists, 0, lists.length);
+    }
+
+    private ListNode merge(ListNode[] lists, int l, int r) {
+        if (r - l < 2) return lists[l];
+        int mid = (l + r) >> 1;
+        return mergeTwoLists(merge(lists, l, mid), merge(lists, mid, r));
+    }
+
+    private ListNode mergeTwoLists(ListNode l1, ListNode l2) {
         if (l1 == null) return l2;
         if (l2 == null) return l1;
         ListNode dummyHead = new ListNode(0);
