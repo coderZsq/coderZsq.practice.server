@@ -1,3 +1,9 @@
+# ssh协议
+$ ps -ef | grep ssh
+  # 501  1069     1   0 21Sep20 ??         0:00.04 /usr/bin/ssh-agent -l
+  # 501 62155 62099   0 12:33PM ttys000    0:00.15 ssh CentOS
+  # 501 64427 64341   0  2:22PM ttys001    0:00.00 grep ssh
+
 # 查询命令
 $ ls
 # anaconda-ks.cfg  initial-setup-ks.cfg  logs  nohup.out  store
@@ -102,6 +108,9 @@ $ ls -alh
 # drwxr-xr-x.  6 root root  113 Jul 31 13:19 store
 # -rw-r--r--.  1 root root  129 Dec 29  2013 .tcshrc
 # -rw-------.  1 root root 6.3K Jun  1 13:28 .viminfo
+
+# 递归显示
+$ ls -R store/
 
 # 文件处理命令 
 # 查询所在目录位置 print working directory
@@ -241,3 +250,255 @@ $ grep -n core anaconda-ks.cfg
 
 # 排除指定字符串 -v
 $ grep -n core anaconda-ks.cfg | grep -v @
+
+# 命名别名
+$ alias
+# alias cp='cp -i'
+# alias egrep='egrep --color=auto'
+# alias fgrep='fgrep --color=auto'
+# alias grep='grep --color=auto'
+# alias l.='ls -d .* --color=auto'
+# alias ll='ls -l --color=auto'
+# alias ls='ls --color=auto'
+# alias mv='mv -i'
+# alias rm='rm -i'
+# alias which='alias | /usr/bin/which --tty-only --read-alias --show-dot --show-tilde'
+
+# 帮助命令
+$ man ls
+$ ls --help
+
+# 压缩与解压缩命令'
+# zip
+# 安装zip unzip
+$ yum install -y zip
+$ yum install -y unzip
+
+$ zip anaconda-ks.cfg.zip anaconda-ks.cfg
+  # adding: anaconda-ks.cfg (deflated 45%)
+$ ll
+# total 16
+# -rw-------. 1 root root 1834 Aug 10  2017 anaconda-ks.cfg
+# -rw-r--r--. 1 root root 1187 Sep 29 14:32 anaconda-ks.cfg.zip
+# -rw-r--r--. 1 root root    0 Sep 29 13:57 file.txt
+# -rw-r--r--. 1 root root 1862 Aug 10  2017 initial-setup-ks.cfg
+# drwxr-xr-x. 4 root root   45 Jun 22 13:30 logs
+# -rw-------. 1 root root 1542 Aug  5 11:37 nohup.out
+# drwxr-xr-x. 6 root root  113 Jul 31 13:19 store
+
+$ zip -r store.zip store/
+  # adding: store/ (stored 0%)
+  # adding: store/lock (stored 0%)
+  # adding: store/checkpoint (deflated 99%)
+  # adding: store/config/ (stored 0%)
+  # adding: store/config/consumerOffset.json.bak (deflated 73%)
+  # adding: store/config/consumerFilter.json.bak (stored 0%)
+  # adding: store/config/delayOffset.json.bak (stored 0%)
+  # adding: store/config/subscriptionGroup.json.bak (deflated 92%)
+  # adding: store/config/consumerFilter.json (stored 0%)
+  # adding: store/config/topics.json (deflated 90%)
+  # adding: store/config/consumerOffset.json (deflated 73%)
+  # adding: store/config/topics.json.bak (deflated 90%)
+  # adding: store/config/subscriptionGroup.json (deflated 92%)
+  # adding: store/config/delayOffset.json (stored 0%)
+  # adding: store/commitlog/ (stored 0%)
+  # adding: store/commitlog/00000000000000000000 (deflated 100%)
+  # ...
+
+$ ll
+# total 1956
+# -rw-------. 1 root root    1834 Aug 10  2017 anaconda-ks.cfg
+# -rw-r--r--. 1 root root    1187 Sep 29 14:32 anaconda-ks.cfg.zip
+# -rw-r--r--. 1 root root       0 Sep 29 13:57 file.txt
+# -rw-r--r--. 1 root root    1862 Aug 10  2017 initial-setup-ks.cfg
+# drwxr-xr-x. 4 root root      45 Jun 22 13:30 logs
+# -rw-------. 1 root root    1542 Aug  5 11:37 nohup.out
+# drwxr-xr-x. 6 root root     113 Jul 31 13:19 store
+# -rw-r--r--. 1 root root 1983555 Sep 29 14:34 store.zip
+
+$ unzip anaconda-ks.cfg.zip
+# Archive:  anaconda-ks.cfg.zip
+#   inflating: anaconda-ks.cfg
+$ unzip store.zip
+# Archive:  store.zip
+#    creating: store/
+#  extracting: store/lock
+#   inflating: store/checkpoint
+#    creating: store/config/
+#   inflating: store/config/consumerOffset.json.bak
+#  extracting: store/config/consumerFilter.json.bak
+#  extracting: store/config/delayOffset.json.bak
+#   inflating: store/config/subscriptionGroup.json.bak
+#  extracting: store/config/consumerFilter.json
+#   inflating: store/config/topics.json
+#   inflating: store/config/consumerOffset.json
+#   inflating: store/config/topics.json.bak
+#   inflating: store/config/subscriptionGroup.json
+#  extracting: store/config/delayOffset.json
+#    creating: store/commitlog/
+#   inflating: store/commitlog/00000000000000000000
+# ...
+
+
+# gzip 源文件
+# 压缩为.gz格式的压缩文件, 原文件会消失
+$ gzip anaconda-ks.cfg
+$ ll
+# total 1948
+# -rw-------. 1 root root    1041 Aug 10  2017 anaconda-ks.cfg.gz
+# -rw-r--r--. 1 root root    1187 Sep 29 14:32 anaconda-ks.cfg.zip
+# drwxr-xr-x. 6 root root     113 Jul 31 13:19 store
+# -rw-r--r--. 1 root root 1983555 Sep 29 14:34 store.zip
+
+# 解压
+$ gzip -d anaconda-ks.cfg.gz
+$ ll
+# total 1948
+# -rw-------. 1 root root    1834 Aug 10  2017 anaconda-ks.cfg
+# -rw-r--r--. 1 root root    1187 Sep 29 14:32 anaconda-ks.cfg.zip
+# drwxr-xr-x. 6 root root     113 Jul 31 13:19 store
+# -rw-r--r--. 1 root root 1983555 Sep 29 14:34 store.zip
+
+# 压缩目录下的所有子文件, 但是不能压缩目录
+$ gzip -r store
+
+# 将压缩的结果抽取的新的压缩文件中去
+$ gzip -c anaconda-ks.cfg > test.gz
+$ ll
+# total 1952
+# -rw-------. 1 root root    1834 Aug 10  2017 anaconda-ks.cfg
+# -rw-r--r--. 1 root root    1187 Sep 29 14:32 anaconda-ks.cfg.zip
+# drwxr-xr-x. 6 root root     122 Sep 29 14:45 store
+# -rw-r--r--. 1 root root 1983555 Sep 29 14:34 store.zip
+# -rw-r--r--. 1 root root    1041 Sep 29 14:46 test.gz
+
+# 打包命令
+# -c 打包
+# -v 显示过程
+# -f 指定打包后的文件名
+$ tar -cvf store.tar store
+$ tar -cf store.tar store
+$ ll
+# total 3972
+# -rw-------. 1 root root    1834 Aug 10  2017 anaconda-ks.cfg
+# -rw-r--r--. 1 root root    1187 Sep 29 14:32 anaconda-ks.cfg.zip
+# drwxr-xr-x. 6 root root     122 Sep 29 14:45 store
+# -rw-r--r--. 1 root root 2068480 Sep 29 14:51 store.tar
+# -rw-r--r--. 1 root root 1983555 Sep 29 14:34 store.zip
+# -rw-r--r--. 1 root root    1041 Sep 29 14:46 test.gz
+
+# 解打包命令
+$ tar -xvf store.tar
+$ tar -xf store.tar
+
+# tar.gz -z 表示压缩算法
+$ tar -zcvf store.tar.gz store
+$ tar -zxvf store.tar.gz
+
+# 查看系统运行级别
+$ runlevel
+# N 3
+$ cat /etc/inittab
+# inittab is no longer used when using systemd.
+#
+# ADDING CONFIGURATION HERE WILL HAVE NO EFFECT ON YOUR SYSTEM.
+#
+# Ctrl-Alt-Delete is handled by /usr/lib/systemd/system/ctrl-alt-del.target
+#
+# systemd uses 'targets' instead of runlevels. By default, there are two main targets:
+#
+# multi-user.target: analogous to runlevel 3
+# graphical.target: analogous to runlevel 5
+#
+# To view current default target, run:
+# systemctl get-default
+#
+# To set a default target, run:
+# systemctl set-default TARGET.target
+#
+
+# 其他命令
+# 查看用户登录信息
+$ w
+#  15:07:20 up 42 days, 22:21,  1 user,  load average: 0.00, 0.01, 0.05
+# USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
+# root     pts/0    58.246.70.114    15:05    0.00s  0.00s  0.00s w
+$ who
+# root     pts/0        2020-09-29 15:05 (58.246.70.114)
+$ last
+
+# 磁盘使用情况
+$ df
+# Filesystem     1K-blocks    Used Available Use% Mounted on
+# /dev/vda1       41151808 9058352  29980024  24% /
+# devtmpfs          932240       0    932240   0% /dev
+# tmpfs             941744       0    941744   0% /dev/shm
+# tmpfs             941744     308    941436   1% /run
+# tmpfs             941744       0    941744   0% /sys/fs/cgroup
+# tmpfs             188352       0    188352   0% /run/user/0
+
+$ df -h 
+# Filesystem      Size  Used Avail Use% Mounted on
+# /dev/vda1        40G  8.7G   29G  24% /
+# devtmpfs        911M     0  911M   0% /dev
+# tmpfs           920M     0  920M   0% /dev/shm
+# tmpfs           920M  308K  920M   1% /run
+# tmpfs           920M     0  920M   0% /sys/fs/cgroup
+# tmpfs           184M     0  184M   0% /run/user/0
+
+# 查看内存占用
+$ free -h
+#               total        used        free      shared  buff/cache   available
+# Mem:           1.8G        245M        490M        308K        1.1G        1.4G
+# Swap:            0B          0B          0B
+
+# 查看操作历史
+$ history
+
+# 在显示器输出内容
+$ echo $PATH
+/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/usr/local/jdk1.8.0_161/bin:/root/bin
+
+# 权限管理
+# 用户管理
+# 添加用户
+$ useradd user1
+$ useradd user2
+$ passwd user1
+$ passwd user2
+
+# 添加用户组
+$ groupadd group1
+
+# 修改用户组属性
+$ usermod -G group1 user1
+$ usermod -G group1 user2
+
+# 查看系统用户组
+$ cat /etc/group
+
+# 用户及用户组的删除
+$ userdel
+$ groupdel
+
+# 文件基本权限
+# rwx 所有者 rwx 所属组 rwx 其他用户
+$ ll
+# total 19124
+# drwxr-xr-x 5 root root     4096 Aug 28 17:34 apps
+# -rw-r--r-- 1 root root 19538485 Jul 17 16:08 mail-0.0.1-SNAPSHOT.jar
+# -rw------- 1 root root    30208 Jul 17 16:36 nohup.out
+# drwxr-xr-x 3 root root     4096 May 21 11:55 software
+
+# 修改文件所属组
+$ chown user1:group1 test.txt
+
+# 修改权限 
+# a 所有用户
+# g 所属组
+# u 当前用户
+# + 添加权限
+# - 减去权限
+# = 赋值权限
+$ chmod g+rx test.txt
+$ chmod 754 test.txt
