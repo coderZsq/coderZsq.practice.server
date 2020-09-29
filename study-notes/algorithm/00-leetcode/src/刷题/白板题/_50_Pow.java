@@ -1,4 +1,4 @@
-package 刷题.准备题;
+package 刷题.白板题;
 
 /**
  * https://leetcode-cn.com/problems/powx-n/

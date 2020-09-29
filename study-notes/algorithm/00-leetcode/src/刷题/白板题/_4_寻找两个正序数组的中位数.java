@@ -1,4 +1,4 @@
-package 刷题.准备题;
+package 刷题.白板题;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ import java.util.List;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class _4_寻找两个正序数组的中位数 {
-    public static double findMedianSortedArrays(int[] nums1, int[] nums2) {
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
         int len1 = nums1.length;
         int len2 = nums2.length;
         int totalLen = len1 + len2;
