@@ -46,7 +46,7 @@ public class _98_验证二叉搜索树 {
 }
 
 class _98_验证二叉搜索树2 {
-    public boolean isValidBST1(TreeNode root) {
+    public boolean isValidBST(TreeNode root) {
         return isValidBST(root, null, null);
     }
 
@@ -62,7 +62,7 @@ class _98_验证二叉搜索树2 {
 }
 
 class _98_验证二叉搜索树3 {
-    public boolean isValidBST2(TreeNode root) {
+    public boolean isValidBST(TreeNode root) {
         if (root == null) return true;
         Stack<TreeNode> stack = new Stack<>();
         Integer last = null;
@@ -86,15 +86,15 @@ class _98_验证二叉搜索树3 {
 class _98_验证二叉搜索树4 {
     private Integer last;
 
-    public boolean isValidBST3(TreeNode root) {
+    public boolean isValidBST(TreeNode root) {
         if (root == null) return true;
 
-        if (!isValidBST3(root.left)) return false;
+        if (!isValidBST(root.left)) return false;
 
         if (last != null && root.val <= last) return false;
         last = root.val;
 
-        if (!isValidBST3(root.right)) return false;
+        if (!isValidBST(root.right)) return false;
 
         return true;
     }
