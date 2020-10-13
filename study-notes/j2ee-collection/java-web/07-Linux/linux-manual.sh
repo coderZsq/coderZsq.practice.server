@@ -502,3 +502,30 @@ $ chown user1:group1 test.txt
 # = 赋值权限
 $ chmod g+rx test.txt
 $ chmod 754 test.txt
+
+$ chmod g+wx,o+x jdk.tar.gz
+$ chmod 675 /root/jdk.tar.gz
+
+# sudo权限
+$ cat /etc/sudoers
+$ visudo # 搜索 /root
+
+# 文件和目录权限区别
+$ vi hello.sh
+# #!/bin/bash
+# echo "hello"
+
+$ ll
+# -rw-r--r--. 1 root root   25 Oct 13 17:46 hello.sh
+$ ./hello.sh
+# -bash: ./hello.sh: Permission denied
+$ chmod a+x hello.sh
+$ ll
+# -rwxr-xr-x. 1 root root   25 Oct 13 17:46 hello.sh
+$ ./hello.sh
+# hello
+
+$ mkdir test
+# drwxr-xr-x. 2 root root    6 Oct 13 17:52 test
+$ chmod 000 test
+# d---------. 2 root root    6 Oct 13 17:52 test
