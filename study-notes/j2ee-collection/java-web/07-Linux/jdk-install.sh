@@ -9,6 +9,9 @@ cd jdk1.8.0_161/
 
 # 编辑jdk配置
 vi /etc/profile.d/jdk.sh
+# #! /bin/bash
+# export JAVA_HOME=/usr/local/jdk1.8
+# export PATH=$JAVA_HOME/bin:$PATH
 
 # 执行配置
 source /etc/profile

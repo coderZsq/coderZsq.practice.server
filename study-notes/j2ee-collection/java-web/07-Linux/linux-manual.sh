@@ -529,3 +529,105 @@ $ mkdir test
 # drwxr-xr-x. 2 root root    6 Oct 13 17:52 test
 $ chmod 000 test
 # d---------. 2 root root    6 Oct 13 17:52 test
+
+# 系统服务管理
+# 查看开机启动项
+$ systemctl list-unit-files | grep enabled
+# sshd.service                                  enabled
+
+# 查看服务状态
+$ systemctl status sshd
+# ● sshd.service - OpenSSH server daemon
+#    Loaded: loaded (/usr/lib/systemd/system/sshd.service; enabled; vendor preset: enabled)
+#    Active: active (running) since Fri 2020-07-31 13:18:10 CST; 2 months 15 days ago
+#      Docs: man:sshd(8)
+#            man:sshd_config(5)
+#  Main PID: 1341 (sshd)
+#     Tasks: 1
+#    CGroup: /system.slice/sshd.service
+#            └─1341 /usr/sbin/sshd -D
+
+# Aug 17 17:19:21 localhost.localdomain sshd[22263]: Accepted publickey for root from 172.16.21.222 port 52458 ssh2: RSA SHA256:CD3C1Lnlb8xSPBHiIzyZKIgH+jxs+gAjFCPsbWXI1Q8
+# Aug 18 19:39:33 localhost.localdomain sshd[23925]: Accepted publickey for root from 192.168.199.108 port 54544 ssh2: RSA SHA256:CD3C1Lnlb8xSPBHiIzyZKIgH+jxs+gAjFCPsbWXI1Q8
+# Aug 18 21:25:09 localhost.localdomain sshd[14175]: Accepted publickey for root from 172.16.21.222 port 62911 ssh2: RSA SHA256:CD3C1Lnlb8xSPBHiIzyZKIgH+jxs+gAjFCPsbWXI1Q8
+# Sep 15 16:03:21 localhost.localdomain sshd[1921]: Accepted publickey for root from 172.16.21.222 port 63026 ssh2: RSA SHA256:CD3C1Lnlb8xSPBHiIzyZKIgH+jxs+gAjFCPsbWXI1Q8
+# Sep 15 16:38:20 localhost.localdomain sshd[7529]: Accepted publickey for root from 172.16.21.222 port 56636 ssh2: RSA SHA256:CD3C1Lnlb8xSPBHiIzyZKIgH+jxs+gAjFCPsbWXI1Q8
+# Sep 28 17:19:38 localhost.localdomain sshd[27204]: Accepted publickey for root from 172.16.21.222 port 55943 ssh2: RSA SHA256:CD3C1Lnlb8xSPBHiIzyZKIgH+jxs+gAjFCPsbWXI1Q8
+# Sep 28 18:04:07 localhost.localdomain sshd[17494]: Accepted publickey for root from 172.16.21.222 port 63507 ssh2: RSA SHA256:CD3C1Lnlb8xSPBHiIzyZKIgH+jxs+gAjFCPsbWXI1Q8
+# Sep 29 15:05:01 localhost.localdomain sshd[7973]: Accepted publickey for root from 172.16.21.222 port 64238 ssh2: RSA SHA256:CD3C1Lnlb8xSPBHiIzyZKIgH+jxs+gAjFCPsbWXI1Q8
+# Sep 29 15:26:04 localhost.localdomain sshd[13933]: Accepted publickey for root from 172.16.21.222 port 60678 ssh2: RSA SHA256:CD3C1Lnlb8xSPBHiIzyZKIgH+jxs+gAjFCPsbWXI1Q8
+# Oct 15 16:22:20 localhost.localdomain sshd[14024]: Accepted publickey for root from 172.16.21.222 port 65259 ssh2: RSA SHA256:CD3C1Lnlb8xSPBHiIzyZKIgH+jxs+gAjFCPsbWXI1Q8
+
+# 查看服务状态
+$ systemctl status firewalld.service
+# ● firewalld.service - firewalld - dynamic firewall daemon
+#    Loaded: loaded (/usr/lib/systemd/system/firewalld.service; disabled; vendor preset: enabled)
+#    Active: inactive (dead)
+#      Docs: man:firewalld(1)
+
+# 关闭服务
+$ systemctl stop firewalld.service
+# 启动服务
+$ systemctl start firewalld.service
+# 重启服务
+$ systemctl restart firewalld.service
+
+# 禁止开机启动项
+$ systemctl disable firewalld
+# 添加开机启动项
+$ systemctl enable firewalld
+
+# 进程查看: ps
+$ ps -ef | grep tomcat
+
+# 杀死进程
+$ kill -9 pid
+
+# 网络管理
+$ ip addr
+# 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+#     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+#     inet 127.0.0.1/8 scope host lo
+#        valid_lft forever preferred_lft forever
+#     inet6 ::1/128 scope host
+#        valid_lft forever preferred_lft forever
+# 2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+#     link/ether 00:1c:42:17:a1:de brd ff:ff:ff:ff:ff:ff
+#     inet 172.16.21.175/24 brd 172.16.21.255 scope global noprefixroute dynamic eth0
+#        valid_lft 5470sec preferred_lft 5470sec
+#     inet6 fe80::d41a:a6de:73c6:70fd/64 scope link noprefixroute
+#        valid_lft forever preferred_lft forever
+# 3: virbr0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default qlen 1000
+#     link/ether 52:54:00:b9:2f:bb brd ff:ff:ff:ff:ff:ff
+#     inet 192.168.122.1/24 brd 192.168.122.255 scope global virbr0
+#        valid_lft forever preferred_lft forever
+# 4: virbr0-nic: <BROADCAST,MULTICAST> mtu 1500 qdisc pfifo_fast master virbr0 state DOWN group default qlen 1000
+#     link/ether 52:54:00:b9:2f:bb brd ff:ff:ff:ff:ff:ff
+
+$ cp /etc/sysconfig/network-scripts/ifcfg-eth0 /ifcfg-eth0.bak
+# TYPE=Ethernet 网卡类型
+# BOOTPROTO=dhcp 启动地址协议 --static:静态协议 --bootp协议 --dhcp协议
+# DEFROUTE=yes
+# PEERDNS=yes
+# PEERROUTES=yes
+# IPV4_FAILURE_FATAL=no
+# IPV6INIT=yes
+# IPV6_AUTOCONF=yes
+# IPV6_DEFROUTE=yes
+# IPV6_PEERDNS=yes
+# IPV6_PEERROUTES=yes
+# IPV6_FAILURE_FATAL=no
+# IPV6_ADDR_GEN_MODE=stable-privacy
+# NAME=eth0
+# UUID=9410076c-bee9-4886-af6c-537c17bcfee0
+# DEVICE=eth0
+# ONBOOT=yes
+# ZONE=public
+
+# IPADDR= 网卡IP地址
+# NETMASK= 网卡网络地址 子网掩码
+# GATEWAY= 网卡网关地址
+# DNS1= 网卡DNS地址
+# BROADCAST= 网卡广播地址
+
+# 防火墙
