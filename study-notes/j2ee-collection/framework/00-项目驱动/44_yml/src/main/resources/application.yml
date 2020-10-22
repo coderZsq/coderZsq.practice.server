@@ -1,0 +1,9 @@
+#VM options: -Dspring.profiles.active=prd,port --name=sq666
+#Program arguments: --spring.profiles.active=prd,port --name=sq666
+
+#spring:
+#  profiles:
+#    active:
+#      - dev
+#      - path
+#      - port
