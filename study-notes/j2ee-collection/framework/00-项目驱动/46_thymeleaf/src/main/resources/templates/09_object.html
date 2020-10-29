@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div th:text="${#dates.format(birthday, 'yyyy-MM-dd HH:mm:ss')}"></div>
+
+<div th:text="${#request.getAttribute('name')}"></div>
+<div th:text="${name}"></div>
+
+<div th:text="${#session.getAttribute('name')}"></div>
+<div th:text="${session.name}"></div>
+
+<div th:text="${#servletContext.getAttribute('name')}"></div>
+<div th:text="${application.name}"></div>
+
+</body>
+</html>

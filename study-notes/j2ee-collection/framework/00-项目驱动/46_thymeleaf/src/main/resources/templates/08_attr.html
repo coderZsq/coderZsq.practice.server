@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div th:attr="id='sq' + ${id}, class='abc test hehe' + ${id}"></div>
+
+<div>[[ ${id} + 'abc' + |m${id}k| ]]</div>
+<div>[[ ${name} ]]</div>
+
+<button onclick="click()">按钮</button>
+
+<script>
+    function click() {
+        console.log('[[ ${id} + ${name} ]]')
+    }
+</script>
+
+</body>
+</html>

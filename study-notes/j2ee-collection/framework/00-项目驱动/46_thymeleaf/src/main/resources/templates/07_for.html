@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<table>
+    <tr>
+        <th>row</th>
+        <th>id</th>
+        <th>name</th>
+    </tr>
+    <tr th:each="person, status : ${persons}">
+        <td th:text="${status.index}"></td>
+        <td th:text="${person.id}"></td>
+        <td th:text="${person.name}"></td>
+    </tr>
+</table>
+
+<div>
+    <!--/*/ <th:block th:each="person : ${persons}"> /*/-->
+        <div th:text="${person.id}"></div>
+        <div th:text="${person.name}"></div>
+    <!--/*/ </th:block> /*/-->
+</div>
+
+</body>
+</html>

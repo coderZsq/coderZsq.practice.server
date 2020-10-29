@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div>
+    <a th:href="@{/selection}">04_selection</a>
+</div>
+<div>
+    <a th:href="@{/i18n(age=20, name='coderZsq')}">05_i18n</a>
+</div>
+
+<div th:if="${id > 10}">id大于10</div>
+<div th:unless="${id > 10}">id不大于10</div>
+
+<div th:switch="${id > 10}">
+    <div th:case="true">id大于10</div>
+    <div th:case="*">id不大于10</div>
+</div>
+
+</body>
+</html>
