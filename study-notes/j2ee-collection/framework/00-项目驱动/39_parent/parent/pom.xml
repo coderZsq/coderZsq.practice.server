@@ -14,6 +14,7 @@
         <module>../../44_yml</module>
         <module>../../45_jsp</module>
         <module>../../46_thymeleaf</module>
+        <module>../../47_MyBatis</module>
     </modules>
 
     <parent>

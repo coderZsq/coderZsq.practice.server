@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Skill</title>
+</head>
+<body>
+
+<div>
+    <a th:href="@{/skills/get(id=1)}" target="_blank">单个</a>
+</div>
+
+<div>
+    <a th:href="@{/skills/list}" target="_blank">列表</a>
+</div>
+
+<div>
+    保存
+    <form th:action="@{/skills/save}" method="post">
+        <input name="id" placeholder="id">
+        <input name="name" placeholder="name">
+        <input name="level" placeholder="level">
+        <button type="submit">保存</button>
+    </form>
+</div>
+
+<div>
+    删除
+    <form th:action="@{/skills/remove}" method="post">
+        <input name="id" placeholder="id">
+        <button type="submit">删除</button>
+    </form>
+</div>
+
+</body>
+</html>
