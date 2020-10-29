@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .red {
+            color: red;
+        }
+
+        .blue {
+            color: blue;
+        }
+    </style>
+</head>
+<body>
+
+This is 03_literal.html
+
+<div th:text="Ilovecoding."></div>
+<div th:text="${name} + ' love coding.' + ${age}"></div>
+<div th:text="${name} + | love coding.|"></div>
+
+<div th:text="'${name} love coding.'"></div>
+<div th:text="|${name} love coding.|"></div>
+
+<div th:text="${age} % 2"></div>
+
+<hr>
+
+<div th:text="${name} ? '存在name' : '不存在name'"></div>
+
+<div th:with="id=10, salary=200, nickname='JJ'">
+    <div th:text="'id = ' + ${id}"></div>
+    <div th:text="'salary = ' + ${salary}"></div>
+    <div th:text="'nickname = ' + ${nickname}"></div>
+</div>
+
+<div th:class="${age % 2 == 0} ? 'blue' : 'red'">
+    div666
+</div>
+
+<div th:text="(${age == null} ? 'No Age' : null) != null"></div>
+<div th:text="${age} ?: 'No Age'"></div>
+
+</body>
+</html>
