@@ -40,6 +40,32 @@ package 标签.树;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class _129_求根到叶子节点数字之和 {
+    int sum = 0;
+
+    public int sumNumbers(TreeNode root) {
+        if (root == null) return 0;
+        helper(root, 0);
+        return sum;
+    }
+
+    private void helper(TreeNode node, int sub) {
+        // 最终操作 遍历到叶子节点
+        if (node.left == null && node.right == null) {
+            sum += sub * 10 + node.val;
+            return;
+        }
+        // 正常操作
+        if (node.left != null) {
+            helper(node.left, sub * 10 + node.val);
+        }
+        if (node.right != null) {
+            helper(node.right, sub * 10 + node.val);
+        }
+    }
+}
+
+
+class _129_求根到叶子节点数字之和2 {
     public int sumNumbers(TreeNode root) {
         return dfs(root, 0);
     }
