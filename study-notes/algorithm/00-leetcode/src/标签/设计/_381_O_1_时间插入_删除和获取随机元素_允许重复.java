@@ -1,4 +1,4 @@
-package 标签.哈希表;
+package 标签.设计;
 
 import java.util.*;
 
