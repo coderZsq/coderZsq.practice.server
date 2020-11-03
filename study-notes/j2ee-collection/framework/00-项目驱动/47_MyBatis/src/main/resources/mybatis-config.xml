@@ -5,6 +5,8 @@
 <configuration>
     <!-- 其他设置 -->
     <settings>
+        <!-- 使用新生成记录的主键 -->
+        <setting name="useGeneratedKeys" value="true"/>
         <!-- 数据库: my_first_name -> Java: myFirstName -->
         <setting name="mapUnderscoreToCamelCase" value="true"/>
     </settings>

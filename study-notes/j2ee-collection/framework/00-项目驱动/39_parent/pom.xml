@@ -18,6 +18,7 @@
         <module>service</module>
         <module>web</module>
         <module>parent</module>
+        <module>optional</module>
     </modules>
 
     <properties>

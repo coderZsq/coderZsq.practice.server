@@ -19,12 +19,29 @@
     </tr>
 </table>
 
+<hr>
+
 <div>
     <!--/*/ <th:block th:each="person : ${persons}"> /*/-->
         <div th:text="${person.id}"></div>
         <div th:text="${person.name}"></div>
     <!--/*/ </th:block> /*/-->
 </div>
+
+<hr>
+
+<table>
+    <tr>
+        <th>row</th>
+        <th>id</th>
+        <th>name</th>
+    </tr>
+    <tr th:each="person, status : ${persons}" th:object="${person}">
+        <td th:text="${status.index}"></td>
+        <td th:text="*{id}"></td>
+        <td th:text="*{name}"></td>
+    </tr>
+</table>
 
 </body>
 </html>

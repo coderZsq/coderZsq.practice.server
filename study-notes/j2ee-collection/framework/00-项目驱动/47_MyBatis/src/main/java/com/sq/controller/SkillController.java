@@ -35,7 +35,7 @@ public class SkillController {
         } else {
             msgs = new String[]{"添加成功", "添加失败"};
         }
-        return service.save(skill) ? msgs[0] : msgs[1];
+        return service.save(skill) ? msgs[0] + "_" + skill.getId() : msgs[1];
     }
 
     @PostMapping("/remove")
