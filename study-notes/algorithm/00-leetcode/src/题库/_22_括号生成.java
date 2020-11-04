@@ -14,6 +14,36 @@ public class _22_括号生成 {
         System.out.println(o.generateParenthesis(3));
     }
 
+    private List<String> result;
+
+    public List<String> generateParenthesis(int n) {
+        result = new ArrayList<>();
+        _generate(0, 0, n, "");
+        return result;
+    }
+
+    private void _generate(int left, int right, int n, String s) {
+        // terminator
+        if (left == n && right == n) {
+            result.add(s);
+            return;
+        }
+        // process current logic: left, right
+
+        // drill down
+        if (left < n) _generate(left + 1, right, n, s + "(");
+        if (left > right) _generate(left, right + 1, n, s + ")");
+
+        // reverse states
+    }
+}
+
+class _22_括号生成2 {
+    public static void main(String[] args) {
+        _22_括号生成2 o = new _22_括号生成2();
+        System.out.println(o.generateParenthesis(3));
+    }
+
     public List<String> generateParenthesis(int n) {
         List<String> list = new ArrayList<>();
         if (n < 0) return list;
