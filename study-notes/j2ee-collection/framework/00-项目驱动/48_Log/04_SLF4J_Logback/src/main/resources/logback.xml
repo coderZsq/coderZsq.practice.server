@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+    <!-- 抽取公共内容 -->
+    <property name="CONSOLE_PATTERN" value="%d{HH:mm:ss.SSS} [%highlight(%-5p)] %cyan(%c): %m%n"/>
+    <property name="FILE_PATTERN" value="%d{HH:mm:ss.SSS} [%-5p] %c: %m%n"/>
+    <property name="HTML_PATTERN" value="%d{HH:mm:ss.SSS}%-5p%c%m"/>
+    <property name="CHARSET" value="UTF-8"/>
+    <property name="BASE_PATH" value="/Users/zhushuangquan/Desktop"/>
+
+    <!-- appender -->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>${CHARSET}</charset>
+            <pattern>${CONSOLE_PATTERN}</pattern>
+        </encoder>
+        <!-- 只打印WARN级别的信息 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>WARN</level>
+            <!-- 当匹配: 接收 (开启打印) -->
+            <onMatch>ACCEPT</onMatch>
+            <!-- 当不匹配: 否定 (关闭打印) -->
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <appender name="file" class="ch.qos.logback.core.FileAppender">
+        <file>${BASE_PATH}/logback_file.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>${CHARSET}</charset>
+            <pattern>${FILE_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="htmlFile" class="ch.qos.logback.core.FileAppender">
+        <file>${BASE_PATH}/logback.html</file>
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <charset>${CHARSET}</charset>
+            <layout class="ch.qos.logback.classic.html.HTMLLayout">
+                <pattern>${HTML_PATTERN}</pattern>
+            </layout>
+        </encoder>
+    </appender>
+
+    <appender name="rollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${BASE_PATH}/logback_rolling.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>${CHARSET}</charset>
+            <pattern>${FILE_PATTERN}</pattern>
+        </encoder>
+        <!-- 基于时间的滚动策略 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 支持压缩 -->
+            <fileNamePattern>${BASE_PATH}/logback_rolling_%d{yyyy-MM-dd-HH-mm-ss}.log.gz</fileNamePattern>
+            <!-- 删除20秒以前的日志文件 (时间单位取决于fileNamePattern) -->
+            <maxHistory>20</maxHistory>
+            <!-- 总的日志大小限制 (超过了, 就删除最早的日志) -->
+            <totalSizeCap>10KB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="rollingFile2" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${BASE_PATH}/logback_rolling2.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>${CHARSET}</charset>
+            <pattern>${FILE_PATTERN}</pattern>
+        </encoder>
+        <!-- 基于文件大小和时间的滚动策略 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- 支持压缩 -->
+            <fileNamePattern>${BASE_PATH}/logback_rolling2_%d{HH-mm}_%i.log.gz</fileNamePattern>
+            <!-- 当日志文件大小超过1M, 就生成新的日志文件 -->
+            <maxFileSize>1MB</maxFileSize>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="async" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 阻塞队列的容量 -->
+        <param name="queueSize" value="512"/>
+        <!-- 当阻塞队列的剩余20%容量时, 会默认丢弃TRACE, DEBUG, INFO级别的日志 -->
+        <!-- discardingThreshold设置为0, 就不会丢弃. -->
+        <param name="discardingThreshold" value="0"/>
+        <appender-ref ref="file"/>
+    </appender>
+
+    <!-- logger -->
+    <root level="INFO">
+        <appender-ref ref="console"/>
+    </root>
+
+    <logger name="com.sq" level="TRACE" additivity="false">
+        <appender-ref ref="async"/>
+    </logger>
+</configuration>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration debug="true" scan="true" scanPeriod="5 seconds">
+    <!-- 抽取公共内容 -->
+    <property name="PATTERN" value="%d{HH:mm:ss.SSS} [%highlight(%-5p)] %red(%c): %m%n"/>
+    <property name="CHARSET" value="UTF-8"/>
+
+    <!-- appender -->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>${CHARSET}</charset>
+            <pattern>${PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- logger -->
+    <root level="INFO">
+        <appender-ref ref="console"/>
+    </root>
+
+    <logger name="com.sq" level="DEBUG" additivity="false">
+        <appender-ref ref="console"/>
+    </logger>
+</configuration>
