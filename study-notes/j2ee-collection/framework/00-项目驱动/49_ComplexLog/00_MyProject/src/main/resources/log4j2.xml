@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--<Configuration xmlns="http://logging.apache.org/log4j/2.0/config">-->
+<Configuration status="WARN" monitorInterval="500">
+    <Properties>
+        <Property name="PATTERN">d_log4j2_[%-5p] %c: %m %n</Property>
+        <Property name="CHARSET">UTF-8</Property>
+    </Properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${PATTERN}" charset="${CHARSET}"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Root level="TRACE">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</Configuration>

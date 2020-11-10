@@ -2,24 +2,21 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>parent</artifactId>
-        <groupId>org.example</groupId>
-        <version>1.0-SNAPSHOT</version>
-        <relativePath>../39_parent/parent/pom.xml</relativePath>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
 
     <artifactId>48_Log</artifactId>
+    <groupId>org.example</groupId>
+    <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
+
+    <modelVersion>4.0.0</modelVersion>
+
     <modules>
         <module>01_Log4j1</module>
         <module>02_JCL_Log4j1</module>
         <module>03_SLF4J_Log4j1</module>
         <module>04_SLF4J_Logback</module>
         <module>05_LogbackScan</module>
+        <module>06_Log4j2</module>
+        <module>07_SLF4J_Log4j2</module>
     </modules>
-
-
-
 </project>
