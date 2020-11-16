@@ -16,6 +16,7 @@
         <module>../../46_thymeleaf</module>
         <module>../../47_MyBatis</module>
         <module>../../48_Log</module>
+        <module>../../50_Log_SpringBoot</module>
     </modules>
 
     <parent>

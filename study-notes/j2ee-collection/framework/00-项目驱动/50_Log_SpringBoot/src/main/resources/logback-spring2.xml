@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration>
     <!-- 抽取公共内容 -->
-    <property name="PATTERN" value="666_myproject_logback_[%-5p] %c: %m%n"/>
+    <property name="PATTERN" value="%highlight([%-5p]) %red(%c{5}): %m%n"/>
     <property name="CHARSET" value="UTF-8"/>
 
     <!-- appender -->
@@ -12,7 +12,11 @@
         </encoder>
     </appender>
 
-    <root level="TRACE">
+    <root level="WARN">
         <appender-ref ref="console"/>
     </root>
+
+    <logger name="com.sq.controller" level="INFO" additivity="false">
+        <appender-ref ref="console"/>
+    </logger>
 </configuration>

@@ -2,7 +2,7 @@
 <!--<Configuration xmlns="http://logging.apache.org/log4j/2.0/config">-->
 <Configuration status="WARN" monitorInterval="500">
     <Properties>
-        <Property name="PATTERN">myproject_log4j2_[%-5p] %c: %m %n</Property>
+        <Property name="PATTERN">[%-5p] %c: %m %n</Property>
         <Property name="CHARSET">UTF-8</Property>
     </Properties>
     <Appenders>

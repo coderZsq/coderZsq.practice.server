@@ -12,43 +12,161 @@
     <artifactId>00_MyProject</artifactId>
 
     <dependencies>
+        <!-- 统一使用log4j 2.x -->
+        <!-- ProjectA -->
         <dependency>
             <groupId>org.example</groupId>
             <artifactId>01_ProjectA_Log4j1</artifactId>
             <version>1.0.0</version>
+            <!--<exclusions>-->
+            <!--    <exclusion>-->
+            <!--        <groupId>log4j</groupId>-->
+            <!--        <artifactId>log4j</artifactId>-->
+            <!--    </exclusion>-->
+            <!--</exclusions>-->
         </dependency>
+
+        <!-- ProjectB -->
         <dependency>
             <groupId>org.example</groupId>
             <artifactId>02_ProjectB_Log4j2</artifactId>
             <version>1.0.0</version>
         </dependency>
+
+        <!-- ProjectC -->
         <dependency>
             <groupId>org.example</groupId>
             <artifactId>03_ProjectC_Logback</artifactId>
             <version>1.0.0</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>ch.qos.logback</groupId>
-                    <artifactId>logback-classic</artifactId>
-                </exclusion>
-            </exclusions>
+            <!--<exclusions>-->
+            <!--    <exclusion>-->
+            <!--        <groupId>ch.qos.logback</groupId>-->
+            <!--        <artifactId>logback-classic</artifactId>-->
+            <!--    </exclusion>-->
+            <!--</exclusions>-->
         </dependency>
+
+        <!-- 给log4j一个不存在的版本号 -->
         <dependency>
-            <groupId>org.example</groupId>
-            <artifactId>04_ProjectD_SLF4J_Log4j1</artifactId>
-            <version>1.0.0</version>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>0.0.0</version>
         </dependency>
+
+        <!-- 给logback一个不存在的版本号 -->
         <dependency>
-            <groupId>org.example</groupId>
-            <artifactId>05_ProjectE_SLF4J_Log4j2</artifactId>
-            <version>1.0.0</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.logging.log4j</groupId>
-                    <artifactId>log4j-slf4j-impl</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>0.0.0</version>
         </dependency>
+
+        <!-- 实现了SLF4J, 内部会调用log4j 2.x -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>2.13.3</version>
+        </dependency>
+
+        <!-- log4j 1.x的盗版实现, 内部会调用Log4j 2.x -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-1.2-api</artifactId>
+            <version>2.14.0</version>
+        </dependency>
+
+        <!-- log4j 1.x的盗版实现, 内部会调用SLF4J -->
+        <!--<dependency>-->
+        <!--    <groupId>org.slf4j</groupId>-->
+        <!--    <artifactId>log4j-over-slf4j</artifactId>-->
+        <!--    <version>1.7.30</version>-->
+        <!--</dependency>-->
+
+        <!-- 统一使用logback -->
+        <!--&lt;!&ndash; ProjectA &ndash;&gt;-->
+        <!--<dependency>-->
+        <!--    <groupId>org.example</groupId>-->
+        <!--    <artifactId>01_ProjectA_Log4j1</artifactId>-->
+        <!--    <version>1.0.0</version>-->
+        <!--    <exclusions>-->
+        <!--        <exclusion>-->
+        <!--            <groupId>log4j</groupId>-->
+        <!--            <artifactId>log4j</artifactId>-->
+        <!--        </exclusion>-->
+        <!--    </exclusions>-->
+        <!--</dependency>-->
+
+        <!--&lt;!&ndash; ProjectB &ndash;&gt;-->
+        <!--<dependency>-->
+        <!--    <groupId>org.example</groupId>-->
+        <!--    <artifactId>02_ProjectB_Log4j2</artifactId>-->
+        <!--    <version>1.0.0</version>-->
+        <!--    <exclusions>-->
+        <!--        <exclusion>-->
+        <!--            <groupId>org.apache.logging.log4j</groupId>-->
+        <!--            <artifactId>log4j-core</artifactId>-->
+        <!--        </exclusion>-->
+        <!--    </exclusions>-->
+        <!--</dependency>-->
+
+        <!--&lt;!&ndash; ProjectC &ndash;&gt;-->
+        <!--<dependency>-->
+        <!--    <groupId>org.example</groupId>-->
+        <!--    <artifactId>03_ProjectC_Logback</artifactId>-->
+        <!--    <version>1.0.0</version>-->
+        <!--</dependency>-->
+
+        <!--&lt;!&ndash; log4j 1.x 转为调用 slf4j &ndash;&gt;-->
+        <!--<dependency>-->
+        <!--    <groupId>org.slf4j</groupId>-->
+        <!--    <artifactId>log4j-over-slf4j</artifactId>-->
+        <!--    <version>1.7.30</version>-->
+        <!--</dependency>-->
+
+        <!--&lt;!&ndash; log4j 2.x 转为调用 slf4j &ndash;&gt;-->
+        <!--<dependency>-->
+        <!--    <groupId>org.apache.logging.log4j</groupId>-->
+        <!--    <artifactId>log4j-to-slf4j</artifactId>-->
+        <!--    <version>2.13.3</version>-->
+        <!--</dependency>-->
+
+        <!-- 各版本 -->
+        <!--<dependency>-->
+        <!--    <groupId>org.example</groupId>-->
+        <!--    <artifactId>01_ProjectA_Log4j1</artifactId>-->
+        <!--    <version>1.0.0</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+        <!--    <groupId>org.example</groupId>-->
+        <!--    <artifactId>02_ProjectB_Log4j2</artifactId>-->
+        <!--    <version>1.0.0</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+        <!--    <groupId>org.example</groupId>-->
+        <!--    <artifactId>03_ProjectC_Logback</artifactId>-->
+        <!--    <version>1.0.0</version>-->
+        <!--    <exclusions>-->
+        <!--        <exclusion>-->
+        <!--            <groupId>ch.qos.logback</groupId>-->
+        <!--            <artifactId>logback-classic</artifactId>-->
+        <!--        </exclusion>-->
+        <!--    </exclusions>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+        <!--    <groupId>org.example</groupId>-->
+        <!--    <artifactId>04_ProjectD_SLF4J_Log4j1</artifactId>-->
+        <!--    <version>1.0.0</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+        <!--    <groupId>org.example</groupId>-->
+        <!--    <artifactId>05_ProjectE_SLF4J_Log4j2</artifactId>-->
+        <!--    <version>1.0.0</version>-->
+        <!--    <exclusions>-->
+        <!--        <exclusion>-->
+        <!--            <groupId>org.apache.logging.log4j</groupId>-->
+        <!--            <artifactId>log4j-slf4j-impl</artifactId>-->
+        <!--        </exclusion>-->
+        <!--    </exclusions>-->
+        <!--</dependency>-->
     </dependencies>
 
 </project>
