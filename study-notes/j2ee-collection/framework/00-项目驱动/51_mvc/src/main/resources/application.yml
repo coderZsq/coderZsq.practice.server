@@ -1,0 +1,18 @@
+spring:
+  mvc:
+    servlet:
+      load-on-startup: 0
+    format:
+      date: yyyy-MM-dd
+      date-time: yyyy-MM-dd HH:mm:ss
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+project:
+  upload:
+    base-path: /Users/zhushuangquan/Desktop/uploads/
+    image-path: img/
+    video-path: video/

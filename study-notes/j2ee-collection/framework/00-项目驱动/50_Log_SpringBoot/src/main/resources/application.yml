@@ -1,16 +1,16 @@
 logging:
   level:
 #    com.sq.dao: debug
-#    com.sq.controller: debug
+#    com.sq.mvc.controller: debug
     sq: debug
     com.sq.service: info
   group:
     sq:
       - com.sq.dao
-      - com.sq.controller
+      - com.sq.mvc.controller
 #  config: classpath:log4j2-spring2.xml
 
 #logging:
 #  level:
 #    root: debug
-#    com.sq.controller: warn
+#    com.sq.mvc.controller: warn
