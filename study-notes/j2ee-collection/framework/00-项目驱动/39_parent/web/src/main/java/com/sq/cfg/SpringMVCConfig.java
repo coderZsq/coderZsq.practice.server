@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-@ComponentScan("com.sq.mvc.controller")
+@ComponentScan("com.sq.controller")
 @EnableWebMvc
 public class SpringMVCConfig implements WebMvcConfigurer {
     @Override

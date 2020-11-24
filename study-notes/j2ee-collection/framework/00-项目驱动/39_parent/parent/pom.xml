@@ -17,7 +17,6 @@
         <module>../../47_MyBatis</module>
         <module>../../48_Log</module>
         <module>../../50_Log_SpringBoot</module>
-        <module>../../51_mvc</module>
     </modules>
 
     <parent>

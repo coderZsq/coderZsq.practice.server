@@ -19,7 +19,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-@ComponentScan({"com.sq.mvc.controller", "com.sq.interceptor"})
+@ComponentScan({"com.sq.controller", "com.sq.interceptor"})
 @EnableWebMvc
 public class SpringMVCConfig implements WebMvcConfigurer {
     @Autowired
