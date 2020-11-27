@@ -1,4 +1,4 @@
-package com.sq.demo;
+package com.sq.demo.jmm;
 
 import java.util.concurrent.TimeUnit;
 
