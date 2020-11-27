@@ -1,0 +1,43 @@
+$ netstat -n
+Active Internet connections
+Proto Recv-Q Send-Q  Local Address          Foreign Address        (state)
+tcp4       0      0  172.16.21.222.57984    111.161.111.119.443    ESTABLISHED
+tcp4       0      0  172.16.21.222.57983    138.91.136.108.443     ESTABLISHED
+tcp4       0      0  127.0.0.1.11085        127.0.0.1.57981        FIN_WAIT_2
+tcp4       0      0  127.0.0.1.57981        127.0.0.1.11085        CLOSE_WAIT
+tcp6       0      0  fe80::c37c:739b:.1024  fe80::46fc:6bf3:.1024  SYN_SENT
+tcp6       0      0  fe80::ab4e:72ca:.1024  fe80::4f33:9c53:.1024  SYN_SENT
+tcp4       0      0  172.16.21.222.57956    13.107.42.23.443       ESTABLISHED
+tcp4       0      0  172.16.21.222.57955    204.79.197.219.443     ESTABLISHED
+tcp4       0      0  172.16.21.222.57940    163.177.89.154.443     ESTABLISHED
+tcp4      31      0  172.16.21.222.57915    123.125.114.235.443    CLOSE_WAIT
+tcp4       0      0  172.16.21.222.57641    119.167.143.12.443     ESTABLISHED
+tcp4  306278      0  172.16.21.222.57627    119.167.143.12.443     ESTABLISHED
+tcp4       0      0  172.16.21.222.57598    202.108.23.113.80      ESTABLISHED
+tcp4       0      0  172.16.21.222.57452    140.82.113.26.443      ESTABLISHED
+tcp4       0      0  172.16.21.222.57276    157.255.243.106.80     CLOSE_WAIT
+tcp4       0      0  172.16.21.222.57265    17.57.145.102.5223     ESTABLISHED
+tcp4       0      0  172.16.21.222.56940    220.249.243.71.8080    ESTABLISHED
+tcp4       0      0  172.16.21.222.56887    220.249.243.71.8080    ESTABLISHED
+tcp4       0      0  172.16.21.222.56885    220.249.243.71.8080    ESTABLISHED
+tcp4       0      0  172.16.21.222.56866    116.128.133.101.80     ESTABLISHED
+tcp4       0      0  172.16.21.222.56787    40.119.211.203.443     ESTABLISHED
+tcp6       0      0  fe80::aede:48ff:.56754 fe80::aede:48ff:.61000 ESTABLISHED
+tcp6       0      0  fe80::aede:48ff:.56485 fe80::aede:48ff:.52032 ESTABLISHED
+tcp6       0      0  fe80::2d0e:4018:.1025  fe80::f684:ceac:.15667 ESTABLISHED
+tcp6       0      0  fe80::2d0e:4018:.1024  fe80::f684:ceac:.1024  ESTABLISHED
+tcp4       0      0  192.168.199.108.52007  104.16.21.35.443       ESTABLISHED
+tcp6       0      0  fe80::9058:7852:.40945 fe80::68c1:2466:.1025  ESTABLISHED
+tcp6       0      0  fe80::9058:7852:.1024  fe80::68c1:2466:.1024  ESTABLISHED
+tcp4       0      0  192.168.199.108.62763  104.16.23.35.443       ESTABLISHED
+tcp6       0      0  fe80::c725:5271:.1024  fe80::1674:bcfd:.1024  ESTABLISHED
+tcp6     301      0  fe80::890:3592:b.62981 fe80::1cdd:ef74:.62078 CLOSE_WAIT
+tcp6       0      0  fe80::d392:21a7:.55951 fe80::df0e:c8db:.1025  ESTABLISHED
+tcp6       0      0  fe80::d392:21a7:.1024  fe80::df0e:c8db:.1024  ESTABLISHED
+tcp4       0      0  172.16.21.222.57987    182.254.116.117.80     TIME_WAIT
+tcp4       0      0  172.16.21.222.57986    182.254.116.117.80     TIME_WAIT
+tcp4       0      0  172.16.21.222.57985    182.254.116.117.80     TIME_WAIT
+tcp4       0      0  172.16.21.222.57988    182.254.116.117.80     TIME_WAIT
+tcp4       0      0  172.16.21.222.57989    61.179.214.1.80        TIME_WAIT
+tcp4       0      0  172.16.21.222.57990    61.179.214.1.80        TIME_WAIT
+tcp4       0      0  172.16.21.222.57991    61.179.214.1.80        TIME_WAIT
