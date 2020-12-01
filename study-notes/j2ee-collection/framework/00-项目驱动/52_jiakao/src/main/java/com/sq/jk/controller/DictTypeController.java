@@ -1,14 +1,12 @@
 package com.sq.jk.controller;
 
-import com.sq.jk.pojo.po.DictType;
+import com.sq.jk.query.DictTypeQuery;
 import com.sq.jk.service.DictTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/dictTypes")
@@ -17,8 +15,10 @@ public class DictTypeController {
     private DictTypeService service;
 
     @GetMapping("/list")
-    @ResponseBody
-    public List<DictType> list() {
-        return service.list();
+    public String list(DictTypeQuery query, Model model) {
+        model.addAttribute("data", service.list(query));
+        // classpath:/templates/
+        // .ftlh
+        return "pages/dictType";
     }
 }
