@@ -5,7 +5,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * Lock api的基本使用
+ * LockDemo api的基本使用
  */
 public class Demo05 {
     private static Lock lock = new ReentrantLock();
@@ -17,7 +17,7 @@ public class Demo05 {
                 TimeUnit.SECONDS.sleep(5);
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }finally {
+            } finally {
                 lock.unlock();
             }
         }

@@ -4,7 +4,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * Lock 锁的编程方式
+ * LockDemo 锁的编程方式
  */
 public class Demo02 {
 
