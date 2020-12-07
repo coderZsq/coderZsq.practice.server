@@ -5,6 +5,6 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class KeywordQuery extends PageQuery {
+public class KeywordQuery<T> extends PageQuery<T> {
     private String keyword;
 }
