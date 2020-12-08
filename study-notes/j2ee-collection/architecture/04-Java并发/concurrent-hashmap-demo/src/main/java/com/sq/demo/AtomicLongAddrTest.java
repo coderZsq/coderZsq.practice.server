@@ -49,6 +49,7 @@ public class AtomicLongAddrTest {
         System.out.println("atomicLong values is: " + atomicLong.longValue());
     }
 
+    // count size()
     static void testLongAddr(int threadCount, int times) throws Exception {
         final LongAdder longAdder = new LongAdder();
         final ArrayList<Thread> threads = new ArrayList<>();
