@@ -1,0 +1,7 @@
+server:
+  port: 8080
+
+be:
+  cors-origins:
+    - http://localhost:63343
+    - http://localhost:63342
