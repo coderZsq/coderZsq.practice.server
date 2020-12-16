@@ -1,0 +1,25 @@
+##导入宏定义
+$!define
+
+##设置表后缀（宏定义）
+#setTableSuffix("Controller")
+
+##保存文件（宏定义）
+#save("/controller", "Controller.java")
+
+##包路径（宏定义）
+#setPackageSuffix("controller")
+
+##定义服务名
+#set($serviceName = $!tool.append($!tool.firstLowerCase($!tableInfo.name), "Service"))
+import org.springframework.beans.factory.annotation.Autowired;
+import $!{tableInfo.savePackageName}.service.$!{tableInfo.name}Service;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/$!tool.firstLowerCase($!tableInfo.name)s")
+public class $!{tableName} {
+    @Autowired
+    private $!{tableInfo.name}Service service;
+    
+}

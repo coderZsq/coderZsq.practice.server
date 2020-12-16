@@ -1,0 +1,21 @@
+##导入宏定义
+$!define
+
+##使用宏定义设置回调 (保存位置与文件后缀)
+#save("/pojo/po", ".java")
+
+##使用宏定义设置包后缀
+#setPackageSuffix("pojo.po")
+
+##使用全局变量实现默认包导入
+$!autoImport
+import lombok.Data;
+
+@Data
+public class $!{tableInfo.name} {
+#foreach($column in $tableInfo.fullColumn)
+    #if(${column.comment})//${column.comment}#end
+
+    private $!{tool.getClsNameByFullName($column.type)} $!{column.name};
+#end
+}

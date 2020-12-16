@@ -1,0 +1,8 @@
+tinyint(\(\d+\))?                                   java.lang.Byte
+tinyint(\(\d+\))? unsigned                          java.lang.Short
+smallint(\(\d+\))?                                  java.lang.Short
+smallint(\(\d+\))? unsigned                         java.lang.Integer
+mediumint(\(\d+\))?                                 java.lang.Integer
+mediumint(\(\d+\))? unsigned                        java.lang.Integer
+int(\(\d+\))? unsigned                              java.lang.Long
+bigint(\(\d+\))? unsigned                           java.math.BigInteger

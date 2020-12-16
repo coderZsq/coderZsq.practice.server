@@ -1,0 +1,141 @@
+{
+  "homeInfo": {
+    "title": "首页",
+    "href": "page/welcome.html"
+  },
+  "logoInfo": {
+    "title": "小码哥驾考",
+    "image": "images/logo.png",
+    "href": ""
+  },
+  "menuInfo": [
+    {
+      "title": "系统",
+      "icon": "fa fa-gears",
+      "child": [
+        {
+          "title": "内部",
+          "icon": "fa fa-sitemap",
+          "child": [
+            {
+              "title": "部门",
+              "href": "page/department.html",
+              "icon": "fa fa-suitcase"
+            },
+            {
+              "title": "员工",
+              "href": "page/employee.html",
+              "icon": "fa fa-user-circle"
+            }
+          ]
+        },
+        {
+          "title": "权限",
+          "icon": "fa fa-lock",
+          "child": [
+            {
+              "title": "角色",
+              "href": "page/role.html",
+              "icon": "fa fa-user"
+            },
+            {
+              "title": "资源",
+              "href": "page/resource.html",
+              "icon": "fa fa-key"
+            }
+          ]
+        },
+        {
+          "title": "元数据",
+          "icon": "fa fa-newspaper-o",
+          "child": [
+            {
+              "title": "省份",
+              "href": "page/metadata/province/list.html",
+              "icon": "fa fa-map-marker"
+            },
+            {
+              "title": "城市",
+              "href": "page/metadata/city/list.html",
+              "icon": "fa fa-location-arrow"
+            },
+            {
+              "title": "数据字典类型",
+              "href": "page/metadata/dictType/list.html",
+              "icon": "fa fa-cube"
+            },
+            {
+              "title": "数据字典条目",
+              "href": "page/metadata/dictItem/list.html",
+              "icon": "fa fa-cubes"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "考试",
+      "icon": "fa fa-mortar-board",
+      "child": [
+        {
+          "title": "考场",
+          "href": "page/exam/examPlace/list.html",
+          "icon": "fa fa-car"
+        },
+        {
+          "title": "科1科4",
+          "href": "page/exam/k1k4/list.html",
+          "icon": "fa fa-pencil"
+        },
+        {
+          "title": "科2科3",
+          "href": "page/exam/k2k3/list.html",
+          "icon": "fa fa-video-camera"
+        }
+      ]
+    },
+    {
+      "title": "客户",
+      "icon": "fa fa-user-secret",
+      "child": [
+        {
+          "title": "人群",
+          "icon": "fa fa-users",
+          "child": [
+            {
+              "title": "驾校",
+              "href": "page/school.html",
+              "icon": "fa fa-university"
+            },
+            {
+              "title": "教练",
+              "href": "page/coach.html",
+              "icon": "fa fa-male"
+            },
+            {
+              "title": "学员",
+              "href": "page/student.html",
+              "icon": "fa fa-child"
+            }
+          ]
+        },
+        {
+          "title": "交易",
+          "icon": "fa fa-money",
+          "child": [
+            {
+              "title": "提现",
+              "href": "page/withdraw.html",
+              "icon": "fa fa-cny"
+            },
+            {
+              "title": "订单",
+              "href": "page/order.html",
+              "icon": "fa fa-ticket"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
