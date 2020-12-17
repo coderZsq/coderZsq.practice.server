@@ -5,42 +5,30 @@
   },
   "logoInfo": {
     "title": "小码哥驾考",
-    "image": "images/logo.png",
-    "href": ""
+    "image": "images/logo.png"
   },
   "menuInfo": [
     {
-      "title": "系统",
+      "title": "菜单列表",
       "icon": "fa fa-gears",
       "child": [
         {
-          "title": "内部",
-          "icon": "fa fa-sitemap",
-          "child": [
-            {
-              "title": "部门",
-              "href": "page/department.html",
-              "icon": "fa fa-suitcase"
-            },
-            {
-              "title": "员工",
-              "href": "page/employee.html",
-              "icon": "fa fa-user-circle"
-            }
-          ]
-        },
-        {
-          "title": "权限",
+          "title": "系统",
           "icon": "fa fa-lock",
           "child": [
             {
+              "title": "用户",
+              "href": "page/sys/user/list.html",
+              "icon": "fa fa-user-circle"
+            },
+            {
               "title": "角色",
-              "href": "page/role.html",
+              "href": "page/sys/role/list.html",
               "icon": "fa fa-user"
             },
             {
               "title": "资源",
-              "href": "page/resource.html",
+              "href": "page/sys/resource/list.html",
               "icon": "fa fa-key"
             }
           ]
@@ -70,36 +58,30 @@
               "icon": "fa fa-cubes"
             }
           ]
-        }
-      ]
-    },
-    {
-      "title": "考试",
-      "icon": "fa fa-mortar-board",
-      "child": [
-        {
-          "title": "考场",
-          "href": "page/exam/examPlace/list.html",
-          "icon": "fa fa-car"
         },
         {
-          "title": "科1科4",
-          "href": "page/exam/k1k4/list.html",
-          "icon": "fa fa-pencil"
+          "title": "考试",
+          "icon": "fa fa-mortar-board",
+          "child": [
+            {
+              "title": "考场",
+              "href": "page/exam/examPlace/list.html",
+              "icon": "fa fa-car"
+            },
+            {
+              "title": "科1科4",
+              "href": "page/exam/k1k4/list.html",
+              "icon": "fa fa-pencil"
+            },
+            {
+              "title": "科2科3",
+              "href": "page/exam/k2k3/list.html",
+              "icon": "fa fa-video-camera"
+            }
+          ]
         },
         {
-          "title": "科2科3",
-          "href": "page/exam/k2k3/list.html",
-          "icon": "fa fa-video-camera"
-        }
-      ]
-    },
-    {
-      "title": "客户",
-      "icon": "fa fa-user-secret",
-      "child": [
-        {
-          "title": "人群",
+          "title": "客户",
           "icon": "fa fa-users",
           "child": [
             {

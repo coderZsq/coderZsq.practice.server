@@ -221,3 +221,11 @@ i.imageinput-exists {
 .layui-table-cell {
     height: auto;
 }
+
+.layuimini-header-menu .layui-nav-item,
+.layui-breadcrumb a:nth-of-type(1),
+.layui-breadcrumb span:nth-of-type(1),
+.layui-breadcrumb a:nth-of-type(2),
+.layui-breadcrumb span:nth-of-type(2) {
+    display: none;
+}

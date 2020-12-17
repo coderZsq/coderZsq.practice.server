@@ -53,8 +53,10 @@ class Ajaxs {
                     return
                 }
                 // 如果传的是其他对象
-                Layers.msgSuccess(data.msg || cfg.success.title, () => {
-                    cfg.success.after && cfg.success.after(data)
+                const subtitle = cfg.success && cfg.success.title
+                const title = data.msg || subtitle || '操作成功'
+                Layers.msgSuccess(title, () => {
+                    cfg.success && cfg.success.after && cfg.success.after(data)
                 })
             },
             error: (req) => {
@@ -62,15 +64,17 @@ class Ajaxs {
                     cfg.error(req)
                     return
                 }
+                const title = req.responseJSON && req.responseJSON.msg
                 // 如果传的是字符串
                 if (Commons.isString(cfg.error)) {
-                    Layers.alertError(req.responseJSON.msg || cfg.error)
+                    Layers.alertError(title || cfg.error)
                     return
                 }
                 // 如果传的是其他对象
-                const idx = Layers.alertError(req.responseJSON.msg || cfg.error.title, () => {
+                const subtitle = cfg.error && cfg.error.title
+                const idx = Layers.alertError(title || subtitle || '操作失败', () => {
                     Layers.close(idx)
-                    cfg.error.after && cfg.error.after(req)
+                    cfg.error && cfg.error.after && cfg.error.after(req)
                 })
             },
             complete: (req) => {
@@ -144,6 +148,10 @@ class Layers {
     // open
     static openUri(uri, cfg) {
         const content = layui.miniPage.getHrefContent(uri)
+        return this.open(content, cfg)
+    }
+
+    static open(content, cfg) {
         const openWH = layui.miniPage.getOpenWidthHeight()
         const openCfg = {
             type: 1,
@@ -206,7 +214,7 @@ class Select extends Module {
         this._$select.empty()
     }
 
-    setData(data, build) {
+    data(data, build) {
         this._data = data
         this._$options = []
         // 清空
@@ -217,7 +225,11 @@ class Select extends Module {
             obj.$option = $('<option>')
             obj.index = i
             obj.data = data[i]
-            build(obj)
+            const value = build(obj)
+            if (value) {
+                obj.$option.val(value.val)
+                obj.$option.text(value.text)
+            }
             this._$select.append(obj.$option)
             this._$options.push(obj.$option)
         }
@@ -258,7 +270,52 @@ class Select extends Module {
     }
 }
 
+class Transfer extends Module {
+    // id/selector/title/parseData
+    constructor(cfg) {
+        super(cfg)
+
+        layui.transfer.render({
+            id: cfg.id,
+            elem: cfg.selector,
+            title: cfg.title,
+            height: 300
+        })
+    }
+
+    data(data, build) {
+        this._data = data
+
+        layui.transfer.reload(this._cfg.id, {
+            data,
+            parseData: (item) => {
+                const value = build(item)
+                return {
+                    title: value.text,
+                    value: value.val
+                }
+            }
+        })
+    }
+
+    val(value) {
+        layui.transfer.reload(this._cfg.id, {
+            data: this._data,
+            value: value
+        })
+    }
+
+    selectedData() {
+        return layui.transfer.getData(this._cfg.id)
+    }
+
+    selectedValue() {
+        return this.selectedData().map((r) => r.value)
+    }
+}
+
 class Form extends Module {
+    // selector
     constructor(cfg) {
         super(cfg)
         this._$form = $(cfg.selector)
@@ -327,7 +384,7 @@ class Table extends Module {
             return
         }
         const options = {}
-        if (cfg.page) {
+        if (this._cfg.page !== false && cfg.page) {
             if (cfg.page < 0) {
                 cfg.page += this._page
             }
@@ -365,12 +422,6 @@ class Table extends Module {
         // 公共设置
         layui.table.set({
             defaultToolbar: ['filter', 'exports', 'print'],
-            limits: [10, 20, 50, 100],
-            limit: 10,
-            page: true,
-            request: {
-                limitName: 'size'
-            },
             done: (res, curr, count) => {
                 this._page = curr
                 if (count !== 0) return
@@ -382,6 +433,17 @@ class Table extends Module {
                 $('.laytable-cell-checkbox').hide()
             }
         })
+
+        if (this._cfg.page !== false) { // 如果需要分页
+            layui.table.set({
+                limits: [10, 20, 50, 100],
+                limit: 10,
+                page: true,
+                request: {
+                    limitName: 'size'
+                }
+            })
+        }
 
         this._cfg.url = Commons.url(this._cfg.uri)
         layui.table.render(this._cfg)
@@ -401,10 +463,8 @@ class ListPage extends Page {
     constructor(cfg) {
         super(cfg)
 
-        layui.use(['form', 'table'], () => {
-            this._initSearchForm()
-            this._initTable()
-        })
+        this._initSearchForm()
+        this._initTable()
     }
 
     _initSearchForm() {
@@ -477,20 +537,21 @@ class ListPage extends Page {
     }
 
     _add() {
-        this._save('添加', () => {
+        this._save('添加', this._cfg.savePageUri, () => {
             Page.refresh()
         })
     }
 
     _edit(obj) {
-        this._save('编辑', () => {
+        const uri = this._cfg.updatePageUri || this._cfg.savePageUri
+        this._save('编辑', uri, () => {
             this._table.reload()
         }, obj.data)
     }
 
-    _save(action, end, editData) {
+    _save(action, uri, end, editData) {
         this._editData = editData
-        Layers.openUri(this._cfg.savePageUri, {
+        Layers.openUri(uri, {
             title: action + this._cfg.title,
             success: () => { // 弹框后
                 this._initSaveForm()
@@ -517,7 +578,7 @@ class ListPage extends Page {
     }
 
     _remove(obj) {
-        const title = '确定要删除【' + obj.data.name + '】么？'
+        const title = '确定要删除【' + this._removeTitle(obj.data) + '】么？'
         Layers.confirm(title, () => {
             this._removeLoadPost(obj.data.id, this._table.count() === 1)
         })
@@ -551,6 +612,9 @@ class ListPage extends Page {
             filter: 'save-form'
         })
 
+        // 自动聚焦
+        this._saveForm.find('input[autofocus]').focus()
+
         // 设置数据
         this._editData && this._saveForm.val(this._editData)
         this._saveSuccess = false
@@ -560,7 +624,9 @@ class ListPage extends Page {
 
         // 监听提交
         this._saveForm.submit('save-btn', (data) => {
-            let formData = data.field
+            const field = this._onSumbit(data.field)
+            if (!field) return
+            let formData = field
             let processData
             let contentType
             if (this._saveForm.find('input[type=file]').length > 0) {
@@ -587,6 +653,14 @@ class ListPage extends Page {
             })
             return false
         })
+    }
+
+    _onSumbit(field) {
+        return field
+    }
+
+    _removeTitle(data) {
+        return data.name
     }
 }
 
