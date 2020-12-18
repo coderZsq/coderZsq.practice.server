@@ -5,10 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * 1 使用多线程的方式 读取指定文件夹里面所有的txt文件, 统计每个单词出现的数量
@@ -29,11 +26,14 @@ public class CountDownLatchDemo02 {
         // 获取到所有文件
         final File[] files = dir.listFiles();
         final int count = files.length;
+        // 5 定义个计数器
+        final CountDownLatch countDownLatch = new CountDownLatch(count);
         for (int i = 0; i < count; i++) {
-            executor.execute(new TaskInfo(files[i], list));
+            executor.execute(new TaskInfo(files[i], list, countDownLatch));
         }
-
+        executor.shutdown();
         // 汇总结果
+        countDownLatch.await();
         final HashMap<String, Integer> total = new HashMap<>();
         for (HashMap<String, Integer> hashMap : list) {
             for (String key : hashMap.keySet()) {
@@ -50,10 +50,12 @@ public class CountDownLatchDemo02 {
         File file = null;
         HashMap<String, Integer> hashMap = new HashMap<String, Integer>();
         ConcurrentLinkedDeque<HashMap<String, Integer>> list = null;
+        CountDownLatch countDownLatch = null;
 
-        public TaskInfo(File file, ConcurrentLinkedDeque<HashMap<String, Integer>> list) {
+        public TaskInfo(File file, ConcurrentLinkedDeque<HashMap<String, Integer>> list, CountDownLatch countDownLatch) {
             this.file = file;
             this.list = list;
+            this.countDownLatch = countDownLatch;
         }
 
         @Override
@@ -74,6 +76,8 @@ public class CountDownLatchDemo02 {
                 list.add(hashMap);
             } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                countDownLatch.countDown();
             }
         }
     }
