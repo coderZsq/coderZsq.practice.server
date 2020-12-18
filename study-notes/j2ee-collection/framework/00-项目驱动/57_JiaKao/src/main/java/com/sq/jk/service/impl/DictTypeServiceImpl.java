@@ -1,11 +1,11 @@
 package com.sq.jk.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.sq.jk.enhance.MpPage;
+import com.sq.jk.enhance.MpQueryWrapper;
 import com.sq.jk.mapper.DictTypeMapper;
 import com.sq.jk.pojo.po.DictType;
+import com.sq.jk.pojo.query.DictTypeQuery;
 import com.sq.jk.service.DictTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,15 +19,18 @@ public class DictTypeServiceImpl extends ServiceImpl<DictTypeMapper, DictType> i
     private DictTypeMapper mapper;
 
     @Override
-    public IPage<DictType> list(long page, long limit, String keyword) {
-        Page<DictType> mpPage = new Page<>(page, limit);
-        LambdaQueryWrapper<DictType> wrapper = new LambdaQueryWrapper<>();
-        if (!StringUtils.isEmpty(keyword)) {
+    public void list(DictTypeQuery query) {
+        // 查询条件
+        MpQueryWrapper<DictType> wrapper = new MpQueryWrapper<>();
+        if (!StringUtils.isEmpty(query.getKeyword())) {
+            String keyword = query.getKeyword();
             wrapper.like(DictType::getName, keyword).or()
                     .like(DictType::getValue, keyword).or()
                     .like(DictType::getIntro, keyword);
         }
-        wrapper.orderByDesc(DictType::getId);
-        return mapper.selectPage(mpPage, wrapper);
+        wrapper.orderByDesc(DictType::getId); // 按照id降序
+
+        // 分页查询
+        mapper.selectPage(new MpPage<>(query), wrapper).updateQuery(query);
     }
 }
