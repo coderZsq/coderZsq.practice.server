@@ -35,7 +35,7 @@ public class _88_合并两个有序数组 {
             // 5. 倒序比较往后放
             if (i1 >= 0 && nums1[i1] > nums2[i2]) {
                 nums1[cur--] = nums1[i1--];
-            } else {
+            } else { // 6. 当nums1遍历结束, 合并num2数组
                 nums1[cur--] = nums2[i2--];
             }
         }
