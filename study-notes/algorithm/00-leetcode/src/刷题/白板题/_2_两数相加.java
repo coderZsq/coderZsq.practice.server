@@ -11,8 +11,10 @@ public class _2_两数相加 {
     public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
         if (l1 == null) return l2;
         if (l2 == null) return l1;
+
         ListNode dummyHead = new ListNode(0);
         ListNode cur = dummyHead;
+
         int curry = 0;
         while (l1 != null || l2 != null) {
             int v1 = 0;
@@ -27,10 +29,9 @@ public class _2_两数相加 {
             }
             int sum = v1 + v2 + curry;
             curry = sum / 10;
-            cur.next = new ListNode(sum % 10);
-            cur = cur.next;
+            cur = cur.next = new ListNode(sum % 10);
         }
-        if (curry > 0) {
+        if (curry == 1) {
             cur.next = new ListNode(curry);
         }
         return dummyHead.next;

@@ -9,7 +9,6 @@ import 标签.链表.ListNode;
  */
 public class _203_移除链表元素 {
     public ListNode removeElements(ListNode head, int val) {
-        if (head == null) return null;
         ListNode dummyHead = new ListNode(0);
         ListNode cur = dummyHead;
         while (head != null) {
