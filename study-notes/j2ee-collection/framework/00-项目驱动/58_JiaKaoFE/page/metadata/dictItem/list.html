@@ -1,0 +1,94 @@
+<div class="layuimini-container layuimini-page-anim">
+    <div class="layuimini-main">
+        <div>
+            <form id="search-form"
+                  class="layui-form layui-form-pane"
+                  lay-filter="search-form">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <input type="text" name="keyword"
+                                   placeholder="名称、值"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <select name="typeId">
+                                <option value>所有类型</option>
+                                <option value="13">职业</option>
+                                <option value="14">用户类型</option>
+                                <option value="15">哈哈13</option>
+                                <option value="16">哈哈14</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <button type="button"
+                                id="reset-btn"
+                                class="layui-btn layui-btn-warm">
+                            <i class="layui-icon layui-icon-refresh"></i> 重 置 </button>
+                        <button type="submit"
+                                id="search-btn"
+                                class="layui-btn layui-btn-normal"
+                                lay-submit lay-filter="search-btn">
+                            <i class="layui-icon layui-icon-search"></i> 搜 索 </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <table class="layui-hide" id="data-table" lay-filter="data-table"></table>
+
+        <script type="text/html" id="data-toolbar">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn"
+                        lay-event="add" id="add-btn"> 添加 </button>
+                <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn layui-btn-disabled"
+                        lay-event="remove" id="remove-btn"> 删除 </button>
+            </div>
+        </script>
+
+        <script type="text/html" id="data-tool">
+            <a class="layui-btn layui-btn-normal layui-btn-xs"
+               lay-event="edit">编辑</a>
+            <a class="layui-btn layui-btn-xs layui-btn-danger"
+               lay-event="remove">删除</a>
+        </script>
+    </div>
+</div>
+
+<script>
+    class DictItemPage extends ListPage {
+        constructor() {
+            super({
+                title: '数据字典条目',
+                uri: 'dictItems',
+                cols: [[
+                    {type: 'checkbox', align: 'center'},
+                    {field: 'name', title: '名称', align: 'center'},
+                    {field: 'value', title: '值', align: 'center'},
+                    {field: 'sn', title: '序号', align: 'center'},
+                    {field: 'disabled', title: '启用', align: 'center',
+                        templet: (d) => {
+                            const status = d.disabled ? '' : 'checked'
+                            return `<input type="checkbox" disabled lay-skin="switch" ${status}>`
+                        }
+                    },
+                    {title: '操作', minWidth: 150, toolbar: '#data-tool', align: "center"}
+                ]],
+                saveUri: 'dictItems/save',
+                removeUri: 'dictItems/remove',
+                savePageUri: 'page/metadata/dictItem/save.html',
+            });
+        }
+
+        _initSearchForm() {
+            super._initSearchForm()
+
+            layui.form.render()
+        }
+    }
+
+    new DictItemPage()
+</script>

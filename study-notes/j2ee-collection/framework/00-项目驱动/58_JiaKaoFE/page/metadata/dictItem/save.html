@@ -1,0 +1,55 @@
+<div class="layuimini-main">
+    <form id="save-form">
+        <div class="layui-form layuimini-form" lay-filter="save-form">
+            <input type="hidden" name="id">
+            <div class="layui-form-item">
+                <label class="layui-form-label required">名称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="name"
+                           lay-verify="required" lay-reqtext="名称不能为空"
+                           placeholder="请输入名称" class="layui-input" autofocus>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label required">值</label>
+                <div class="layui-input-block">
+                    <input type="text" name="value"
+                           lay-verify="required" lay-reqtext="值不能为空"
+                           placeholder="请输入值" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label required">序号</label>
+                <div class="layui-input-block">
+                    <input type="number" name="sn" value="0"
+                           placeholder="请输入序号" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">启用</label>
+                <div class="layui-input-block">
+                    <select name="disabled">
+                        <option value="0">启用</option>
+                        <option value="1">禁用</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label required">类型</label>
+                <div class="layui-input-block">
+                    <select name="typeId">
+                        <option value="13">职业</option>
+                        <option value="14">用户类型</option>
+                        <option value="15">哈哈13</option>
+                        <option value="16">哈哈14</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button type="button" class="layui-btn layui-btn-normal" lay-submit lay-filter="save-btn">保存</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

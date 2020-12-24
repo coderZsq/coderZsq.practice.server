@@ -28,6 +28,6 @@ public class DictTypeServiceImpl extends ServiceImpl<DictTypeMapper, DictType> i
         wrapper.orderByDesc(DictType::getId);
 
         // 分页查询
-        baseMapper.selectPage(new MpPage<>(query), wrapper).updateQuery(query);
+        baseMapper.selectPage(new MpPage<>(query), wrapper).updateQuery();
     }
 }
