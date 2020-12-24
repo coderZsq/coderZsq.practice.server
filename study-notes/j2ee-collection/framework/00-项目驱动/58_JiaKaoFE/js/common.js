@@ -365,22 +365,26 @@ class Table extends Module {
         this._init()
     }
 
+    _layuiTable() {
+        return layui.table
+    }
+
     toolbar(fn) {
-        layui.table.on('toolbar(' + this._cfg.id + ')', fn)
+        this._layuiTable().on('toolbar(' + this._cfg.id + ')', fn)
     }
 
     tool(fn) {
-        layui.table.on('tool(' + this._cfg.id + ')', fn)
+        this._layuiTable().on('tool(' + this._cfg.id + ')', fn)
     }
 
     checkbox(fn) {
-        layui.table.on('checkbox(' + this._cfg.id + ')', fn)
+        this._layuiTable().on('checkbox(' + this._cfg.id + ')', fn)
     }
 
     reload(cfg) {
         if (!cfg) {
             // 重新加载当前页（自动附带搜索参数）
-            layui.table.reload(this._cfg.id)
+            this._layuiTable().reload(this._cfg.id)
             return
         }
         const options = {}
@@ -395,11 +399,11 @@ class Table extends Module {
         if (cfg.where !== undefined) {
             options.where = cfg.where
         }
-        layui.table.reload(this._cfg.id, options)
+        this._layuiTable().reload(this._cfg.id, options)
     }
 
     data() {
-        return layui.table.cache[this._cfg.id]
+        return this._layuiTable().cache[this._cfg.id]
     }
 
     count() {
@@ -407,7 +411,7 @@ class Table extends Module {
     }
 
     checkedStatus() {
-        return layui.table.checkStatus(this._cfg.id)
+        return this._layuiTable().checkStatus(this._cfg.id)
     }
 
     checkedData() {
@@ -418,9 +422,9 @@ class Table extends Module {
         return this.checkedData().length
     }
 
-    _init() {
+    _commonCfg() {
         // 公共设置
-        layui.table.set({
+        const cfg = {
             defaultToolbar: ['filter', 'exports', 'print'],
             done: (res, curr, count) => {
                 this._page = curr
@@ -432,10 +436,10 @@ class Table extends Module {
                 // 隐藏checkbox
                 $('.laytable-cell-checkbox').hide()
             }
-        })
+        }
 
         if (this._cfg.page !== false) { // 如果需要分页
-            layui.table.set({
+            $.extend(cfg, {
                 limits: [10, 20, 50, 100],
                 limit: 10,
                 page: true,
@@ -445,8 +449,77 @@ class Table extends Module {
             })
         }
 
-        this._cfg.url = Commons.url(this._cfg.uri)
-        layui.table.render(this._cfg)
+        return cfg
+    }
+
+    _init() {
+        const cfg = this._commonCfg()
+        cfg.url = Commons.url(this._cfg.uri)
+        $.extend(cfg, this._cfg)
+        this._innerTable = this._layuiTable().render(cfg)
+        this._cfg = cfg
+    }
+}
+
+class TreeTable extends Table {
+    _layuiTable() {
+        return layui.treeTable
+    }
+
+    _commonCfg() {
+        return  {
+            defaultToolbar: ['filter', 'exports', 'print'],
+            done: (res) => {
+                this._data = res
+                if (res && res.length) {
+                    $('#expand-btn').removeClass('layui-btn-disabled')
+                    $('#fold-btn').removeClass('layui-btn-disabled')
+                    return
+                }
+                // 隐藏checkbox
+                $('.laytable-cell-checkbox').hide()
+            },
+            error: () => {
+                // 隐藏checkbox
+                $('.laytable-cell-checkbox').hide()
+            }
+        }
+    }
+
+    foldAll() {
+        this._innerTable.foldAll()
+    }
+
+    expandAll() {
+        this._innerTable.expandAll()
+    }
+
+    checkedStatus() {
+        return this._innerTable.checkStatus(false)
+    }
+
+    checkedData() {
+        return this._innerTable.checkStatus(false)
+    }
+
+    checkedCount() {
+        return this.checkedData().length
+    }
+
+    data() {
+        return this._data
+    }
+
+    count() {
+        return this.data().length
+    }
+
+    filterData(data) {
+        this._innerTable.filterData(data)
+    }
+
+    clearFilter() {
+        this._innerTable.clearFilter()
     }
 }
 
@@ -474,15 +547,24 @@ class ListPage extends Page {
         })
         // 搜索
         this._searchForm.submit('search-btn', (data) => {
-            this._table.reload({
-                page: 1,
-                where: data.field
-            })
+            if (this._cfg.tree) {
+                this._table.filterData(data.field.keyword)
+            } else {
+                this._table.reload({
+                    page: 1,
+                    where: data.field
+                })
+            }
             return false
         })
         // 重置
         this._searchForm.find('#reset-btn').click(() => {
-            Page.refresh()
+            if (this._cfg.tree) {
+                this._searchForm.reset()
+                this._table.clearFilter()
+            } else {
+                Page.refresh()
+            }
         })
     }
 
@@ -493,7 +575,11 @@ class ListPage extends Page {
             toolbar: '#data-toolbar',
         }
         $.extend(cfg, this._cfg)
-        this._table = new Table(cfg)
+        if (cfg.tree) {
+            this._table = new TreeTable(cfg)
+        } else {
+            this._table = new Table(cfg)
+        }
 
         // 监听表格复选框选择
         this._table.checkbox((obj) => {
@@ -513,10 +599,18 @@ class ListPage extends Page {
 
     _checkbox(obj) {
         const $removeBtn = $('#remove-btn')
-        if (this._table.checkedCount() > 0) {
-            $removeBtn.removeClass('layui-btn-disabled')
+        if (obj.type === 'all') { // treetable - 全选\全不选，特殊处理
+            if (obj.checked) {
+                $removeBtn.removeClass('layui-btn-disabled')
+            } else {
+                $removeBtn.addClass('layui-btn-disabled')
+            }
         } else {
-            $removeBtn.addClass('layui-btn-disabled')
+            if (this._table.checkedCount() > 0) {
+                $removeBtn.removeClass('layui-btn-disabled')
+            } else {
+                $removeBtn.addClass('layui-btn-disabled')
+            }
         }
     }
 
@@ -525,6 +619,10 @@ class ListPage extends Page {
             this._add()
         } else if (obj.event === 'remove') { // 监听删除操作
             this._batchRemove()
+        } else if (obj.event === 'fold') {
+            this._table.foldAll()
+        } else if (obj.event === 'expand') {
+            this._table.expandAll()
         }
     }
 
@@ -565,33 +663,40 @@ class ListPage extends Page {
     }
 
     _batchRemove() {
-        const status = this._table.checkedStatus()
-        const data = status.data
+        const data = this._table.checkedData()
         const title = '确定要删除选中的【' + data.length + '】条数据么？'
         Layers.confirm(title, () => {
             let ids = data[0].id
             for (let i = 1; i < data.length; i++) {
                 ids += ',' + data[i].id
             }
-            this._removeLoadPost(ids, status.isAll)
+            let prev = false
+            if (!this._cfg.tree) { // 不是treeTable
+                prev = this._table.checkedStatus().isAll
+            }
+            this._removeLoadPost(ids, prev)
         })
     }
 
     _remove(obj) {
         const title = '确定要删除【' + this._removeTitle(obj.data) + '】么？'
         Layers.confirm(title, () => {
-            this._removeLoadPost(obj.data.id, this._table.count() === 1)
+            let prev = false
+            if (!this._cfg.tree) { // 不是treeTable
+                prev = this._table.count() === 1
+            }
+            this._removeLoadPost(obj.data.id, prev)
         })
     }
 
-    _removeLoadPost(id, laodPrevPage) {
+    _removeLoadPost(id, loadPrevPage) {
         Ajaxs.loadPost({
             uri: this._cfg.removeUri,
             data: {id},
             success: {
                 title: '删除成功',
                 after: () => {
-                    if (laodPrevPage) {
+                    if (loadPrevPage) {
                         this._table.reload({
                             page: -1
                         })

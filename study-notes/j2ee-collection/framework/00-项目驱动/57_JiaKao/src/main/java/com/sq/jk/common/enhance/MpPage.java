@@ -1,4 +1,4 @@
-package com.sq.jk.enhance;
+package com.sq.jk.common.enhance;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sq.jk.pojo.query.PageQuery;

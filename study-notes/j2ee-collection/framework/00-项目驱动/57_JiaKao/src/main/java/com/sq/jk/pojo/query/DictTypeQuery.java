@@ -1,5 +1,10 @@
 package com.sq.jk.pojo.query;
 
-public class DictTypeQuery extends KeywordQuery {
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
+@Data
+public class DictTypeQuery extends KeywordQuery {
+    private Integer id;
 }

@@ -1,4 +1,4 @@
-package com.sq.jk.prop;
+package com.sq.jk.common.prop;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

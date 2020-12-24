@@ -1,7 +1,10 @@
 package com.sq.jk.controller;
 
+import com.sq.jk.common.exception.CommonException;
+import com.sq.jk.common.util.Rs;
 import com.sq.jk.pojo.po.DictType;
 import com.sq.jk.pojo.query.DictTypeQuery;
+import com.sq.jk.pojo.result.R;
 import com.sq.jk.service.DictTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/dictTypes")
@@ -20,40 +21,26 @@ public class DictTypeController {
     private DictTypeService service;
 
     @GetMapping
-    public Map<String, Object> list(DictTypeQuery query) {
+    public R list(DictTypeQuery query) {
         service.list(query);
-        Map<String, Object> map = new HashMap<>();
-        map.put("code", 0);
-        map.put("msg", "");
-        map.put("count", query.getCount());
-        map.put("data", query.getData());
-        return map;
+        return Rs.ok(query);
     }
 
     @PostMapping("/remove")
-    public Map<String, Object> remove(String id) {
-        // id = "20"
-        // id = "10,11,15,20"
-        // ["10", "11", "15", "20"]
+    public R remove(String id) {
         if (service.removeByIds(Arrays.asList(id.split(",")))) {
-            Map<String, Object> map = new HashMap<>();
-            map.put("code", 0);
-            map.put("msg", "删除成功");
-            return map;
+            return Rs.ok("删除成功");
         } else {
-            throw new RuntimeException("删除失败");
+            throw new CommonException("删除失败");
         }
     }
 
     @PostMapping("/save")
-    public Map<String, Object> save(DictType dictType) {
+    public R save(DictType dictType) {
         if (service.saveOrUpdate(dictType)) {
-            Map<String, Object> map = new HashMap<>();
-            map.put("code", 0);
-            map.put("msg", "保存成功");
-            return map;
+            return Rs.ok("保存成功");
         } else {
-            throw new RuntimeException("保存失败");
+            throw new CommonException("保存失败");
         }
     }
 }

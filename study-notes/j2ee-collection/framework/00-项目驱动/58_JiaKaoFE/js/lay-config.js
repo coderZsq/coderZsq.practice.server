@@ -19,7 +19,7 @@ layui.config({
     miniTheme: "layuimini/miniTheme", // layuimini 主题扩展
     miniTongji: "layuimini/miniTongji", // layuimini 统计扩展
     step: 'step-lay/step', // 分步表单扩展
-    treetable: 'treetable-lay/treetable', //table树形扩展
+    treeTable: 'treetable-lay/treeTable', //table树形扩展
     echarts: 'echarts/echarts', // echarts图表扩展
     echartsTheme: 'echarts/echartsTheme' // echarts图表主题扩展
 })
