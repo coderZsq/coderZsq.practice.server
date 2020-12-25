@@ -8,7 +8,7 @@
                     <div class="layui-inline">
                         <div class="layui-input-inline">
                             <input type="text" name="keyword"
-                                   placeholder="名称、车牌"
+                                   placeholder="名称、车牌、拼音"
                                    autocomplete="off" class="layui-input">
                         </div>
                     </div>
@@ -50,15 +50,15 @@
 <script>
     new ListPage({
         title: '省份',
-        uri: 'provinces',
+        uri: 'plateRegions/provinces',
         cols: [[
             {type: 'checkbox', align: 'center'},
             {field: 'name', title: '名称', align: 'center'},
             {field: 'plate', title: '车牌', align: 'center'},
             {title: '操作', minWidth: 150, toolbar: '#data-tool', align: "center"}
         ]],
-        saveUri: 'provinces/save',
-        removeUri: 'provinces/remove',
+        saveUri: 'plateRegions/save',
+        removeUri: 'plateRegions/remove',
         savePageUri: 'page/metadata/province/save.html',
     })
 </script>

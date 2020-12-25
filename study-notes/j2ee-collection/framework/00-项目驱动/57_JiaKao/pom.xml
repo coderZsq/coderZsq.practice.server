@@ -18,12 +18,20 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <druid.version>1.2.1</druid.version>
         <mybatis-plus.version>3.4.1</mybatis-plus.version>
+        <tinypinyin.version>2.0.3</tinypinyin.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- 拼音 -->
+        <dependency>
+            <groupId>com.github.promeg</groupId>
+            <artifactId>tinypinyin</artifactId>
+            <version>${tinypinyin.version}</version>
         </dependency>
 
         <!-- 数据库 -->

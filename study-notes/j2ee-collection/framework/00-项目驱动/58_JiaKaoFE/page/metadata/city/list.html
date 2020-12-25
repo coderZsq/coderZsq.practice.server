@@ -8,13 +8,13 @@
                     <div class="layui-inline">
                         <div class="layui-input-inline">
                             <input type="text" name="keyword"
-                                   placeholder="名称、值"
+                                   placeholder="名称、车牌、拼音"
                                    autocomplete="off" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-inline">
                         <div class="layui-input-inline">
-                            <select name="typeId"></select>
+                            <select name="parentId"></select>
                         </div>
                     </div>
                     <div class="layui-inline">
@@ -53,52 +53,43 @@
 </div>
 
 <script>
-    class DictItemPage extends ListPage {
-        constructor() {
+    class CityPage extends ListPage {
+        constructor(props) {
             super({
-                title: '数据字典条目',
-                uri: 'dictItems',
+                title: '城市',
+                uri: 'plateRegions/cities',
                 cols: [[
                     {type: 'checkbox', align: 'center'},
                     {field: 'name', title: '名称', align: 'center'},
-                    {field: 'value', title: '值', align: 'center'},
-                    {field: 'sn', title: '序号', align: 'center'},
-                    {field: 'disabled', title: '启用', align: 'center',
-                        templet: (d) => {
-                            const status = d.disabled ? '' : 'checked'
-                            return `<input type="checkbox" disabled lay-skin="switch" ${status}>`
-                        }
-                    },
+                    {field: 'plate', title: '车牌', align: 'center'},
                     {title: '操作', minWidth: 150, toolbar: '#data-tool', align: "center"}
                 ]],
-                saveUri: 'dictItems/save',
-                removeUri: 'dictItems/remove',
-                savePageUri: 'page/metadata/dictItem/save.html',
+                saveUri: 'plateRegions/save',
+                removeUri: 'plateRegions/remove',
+                savePageUri: 'page/metadata/city/save.html',
             });
         }
 
         _initSearchForm() {
             super._initSearchForm()
-
-            this._loadDictTypes(this._searchForm)
+            this._loadProvinces(this._searchForm)
         }
 
         _initSaveForm() {
             super._initSaveForm();
-
-            this._loadDictTypes(this._saveForm)
+            this._loadProvinces(this._saveForm)
         }
 
-        _loadDictTypes(form) {
-            if (this._dictTypes) {
-                this._initDictTypes(form)
+        _loadProvinces(form) {
+            if (this._provinces) {
+                this._initProvinces(form)
                 return
             }
             Ajaxs.get({
-                uri: 'dictTypes/list',
+                uri: 'plateRegions/provinces/list',
                 success: (response) => {
-                    this._dictTypes = response.data
-                    this._initDictTypes(form)
+                    this._provinces = response.data
+                    this._initProvinces(form)
                 }
             })
         }
@@ -106,19 +97,19 @@
         /**
          * 初始化下拉列表
          */
-        _initDictTypes(form) {
+        _initProvinces(form) {
             // 初始化下拉空间
             const select = new Select({
-                name: 'typeId',
+                name: 'parentId',
                 form
             })
 
             // 处理数据
-            let data = this._dictTypes
+            let data = this._provinces
             if (form === this._searchForm) { // 列表页面
                 data = Commons.deepCopy(data)
                 data.unshift({
-                    name: '所有类型'
+                    name: '所有省份'
                 })
             }
 
@@ -126,16 +117,18 @@
             select.data(data, (o) => {
                 return {
                     val: o.data.id,
-                    text: o.data.name
+                    text: o.data.plate
+                        ? `[${o.data.plate}]-${o.data.name}`
+                        : o.data.name
                 }
             })
 
             // 编辑
             if (this._editData) {
-                select.val(this._editData.typeId)
+                select.val(this._editData.parentId)
             }
         }
     }
 
-    new DictItemPage()
+    new CityPage()
 </script>

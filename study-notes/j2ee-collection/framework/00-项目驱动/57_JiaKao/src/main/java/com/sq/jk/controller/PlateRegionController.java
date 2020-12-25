@@ -24,6 +24,11 @@ public class PlateRegionController extends BaseController<PlateRegion> {
         return Rs.ok(query);
     }
 
+    @GetMapping("/provinces/list")
+    public R listProvinces() {
+        return Rs.ok(service.listProvinces());
+    }
+
     @GetMapping("/cities")
     public R listCities(CityQuery query) {
         service.listCities(query);
