@@ -23,6 +23,11 @@ public class DictTypeController extends BaseController<DictType> {
         return Rs.ok(query);
     }
 
+    @GetMapping("/list")
+    public R list() {
+        return Rs.ok(service.list());
+    }
+
     @Override
     protected IService<DictType> getService() {
         return service;

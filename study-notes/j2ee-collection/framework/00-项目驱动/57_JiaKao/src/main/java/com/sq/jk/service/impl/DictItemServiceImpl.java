@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class DictItemServiceImpl extends ServiceImpl<DictItemMapper, DictItem> implements DictItemService {
 
     @Override
+    @Transactional(readOnly = true)
     public void list(DictItemQuery query) {
         // 查询条件
         MpQueryWrapper<DictItem> wrapper = new MpQueryWrapper<>();

@@ -1,5 +1,6 @@
 package com.sq.jk.pojo.result;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sq.jk.common.enhance.Jsonable;
 
 import java.util.HashMap;
@@ -14,22 +15,34 @@ public class R extends HashMap<String, Object> implements Jsonable {
     private static final int CODE_SUCCESS = 0;
     private static final int CODE_ERROR_DEFAULT = CodeMsg.BAD_REQUEST.getCode();
 
-    public R setSuccess(boolean success) {
-        return success ? setCode(CODE_SUCCESS) : setCode(CODE_ERROR_DEFAULT);
+    public R() {
+        this(true);
     }
 
-    public R setCode(int code) {
+    public R(boolean success) {
+        this(success, null);
+    }
+
+    public R(boolean success, String msg) {
+        this(success ? CODE_SUCCESS : CODE_ERROR_DEFAULT, msg);
+    }
+
+    public R(int code, String msg) {
         put(K_CODE, code);
-        return this;
-    }
-
-    public R setMsg(String msg) {
         put(K_MSG, msg);
-        return this;
     }
 
-    public R setData(Object data) {
+    public R(CodeMsg codeMsg) {
+        this(codeMsg.getCode(), codeMsg.getMsg());
+    }
+
+    public R(String msg, Object data) {
+        this(data);
+        put(K_MSG, msg);
+    }
+
+    public R(Object data) {
+        put(K_CODE, CODE_SUCCESS);
         put(K_DATA, data);
-        return this;
     }
 }

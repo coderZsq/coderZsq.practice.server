@@ -11,7 +11,7 @@ public class CommonException extends RuntimeException {
     private int code;
 
     public CommonException() {
-        this(null);
+        this(CODE_DEFAULT, null);
     }
 
     public CommonException(String msg) {
@@ -29,6 +29,10 @@ public class CommonException extends RuntimeException {
     public CommonException(int code, String msg, Throwable cause) {
         super(msg, cause);
         this.code = code;
+    }
+
+    public CommonException(CodeMsg codeMsg) {
+        this(codeMsg, null);
     }
 
     public CommonException(CodeMsg codeMsg, Throwable cause) {

@@ -4,6 +4,8 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   profiles:
     active: dev
+  jackson:
+    default-property-inclusion: non_null
 
 mybatis-plus:
   type-aliases-package: com.sq.jk.pojo
