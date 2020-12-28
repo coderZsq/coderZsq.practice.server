@@ -11,16 +11,24 @@ public class _234_回文链表 {
     public boolean isPalindrome(ListNode head) {
         if (head == null) return true;
         ListNode mid = middleNode(head);
-        ListNode rHead = reverseList(mid);
-        ListNode lHead = head;
+        ListNode rHead = reverseNode(mid);
         while (rHead != null) {
-            if (lHead.val != rHead.val) {
-                return false;
-            }
-            lHead = lHead.next;
+            if (head.val != rHead.val) return false;
+            head = head.next;
             rHead = rHead.next;
         }
         return true;
+    }
+
+    private ListNode reverseNode(ListNode head) {
+        ListNode newHead = null;
+        while (head != null) {
+            ListNode tmp = head.next;
+            head.next = newHead;
+            newHead = head;
+            head = tmp;
+        }
+        return newHead;
     }
 
     private ListNode middleNode(ListNode head) {
@@ -31,16 +39,5 @@ public class _234_回文链表 {
             fast = fast.next.next;
         }
         return slow;
-    }
-
-    private ListNode reverseList(ListNode head) {
-        ListNode newHead = null;
-        while (head != null) {
-            ListNode tmp = head.next;
-            head.next = newHead;
-            newHead = head;
-            head = tmp;
-        }
-        return newHead;
     }
 }
