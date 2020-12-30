@@ -12,7 +12,7 @@ public class _7_整数反转 {
         while (x != 0) {
             int prevRes = res;
             int mod = x % 10;
-            res = prevRes * 10 + mod;
+            res = res * 10 + mod;
             if ((res - mod) / 10 != prevRes) return 0;
             x /= 10;
         }
