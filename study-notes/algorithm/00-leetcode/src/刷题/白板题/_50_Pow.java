@@ -6,11 +6,17 @@ package 刷题.白板题;
  * @author zhushuangquan
  */
 public class _50_Pow {
-    static public double myPow(double x, int n) {
-        if (n == 0) return 1;
-        if (n == -1) return 1 / x;
-        double half = myPow(x, n >> 1);
-        half *= half;
-        return (n & 1) == 1 ? half * x : half;
+    public double myPow(double x, int n) {
+        boolean neg = n < 0;
+        long y = neg ? -(long)n : n;
+        double res = 1.0;
+        while (y > 0) {
+            if ((y & 1) == 1) {
+                res *= x;
+            }
+            x *= x;
+            y >>= 1;
+        }
+        return neg ? 1 / res : res;
     }
 }
