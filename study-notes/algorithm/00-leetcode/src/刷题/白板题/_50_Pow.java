@@ -8,9 +8,9 @@ package 刷题.白板题;
 public class _50_Pow {
     public double myPow(double x, int n) {
         boolean neg = n < 0;
-        long y = neg ? -(long)n : n;
         double res = 1.0;
-        while (y > 0) {
+        long y = neg ? -(long)n : n;
+        while (y != 0) {
             if ((y & 1) == 1) {
                 res *= x;
             }
