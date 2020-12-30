@@ -31,41 +31,29 @@ import java.util.List;
  */
 public class _4_寻找两个正序数组的中位数 {
     public static double findMedianSortedArrays(int[] nums1, int[] nums2) {
-        int len1 = nums1.length;
-        int len2 = nums2.length;
-        int totalLens = len1 + len2;
-        int midIdx = totalLens >> 1;
-        boolean odd = (totalLens & 1) == 1;
-
         List<Integer> list = new ArrayList<>();
-        int i1 = 0;
-        int i2 = 0;
-        while (i1 < nums1.length && i2 < nums2.length && list.size() < midIdx + 1) {
-            if (nums1[i1] < nums2[i2]) {
-                list.add(nums1[i1++]);
+        int len = nums1.length + nums2.length;
+        int mid = len >> 1;
+        int i = 0;
+        int j = 0;
+        while (i < nums1.length && j < nums2.length) {
+            if (nums1[i] < nums2[j]) {
+                list.add(nums1[i]);
+                i++;
             } else {
-                list.add(nums2[i2++]);
+                list.add(nums2[j]);
+                j++;
             }
         }
-
-        if (i1 == len1) {
-            while (i2 < len2 && list.size() < midIdx + 1) {
-                list.add(nums2[i2++]);
+        if (i == nums1.length) {
+            for (int i1 = j; i1 < nums2.length; i1++) {
+                list.add(nums2[i1]);
             }
-        } else if (i2 == len2) {
-            while (i1 < len1 && list.size() < midIdx + 1) {
-                list.add(nums1[i1++]);
-            }
-        }
-
-        if (odd) {
-            return (double) list.get(midIdx);
         } else {
-            return  (list.get(midIdx) + list.get(midIdx - 1)) * 0.5;
+            for (int i1 = i; i1 < nums1.length; i1++) {
+                list.add(nums1[i1]);
+            }
         }
-    }
-
-    public static void main(String[] args) {
-        System.out.println(findMedianSortedArrays(new int[]{1, 3}, new int[]{4, 5}));
+        return (len & 1) == 1 ? list.get(mid) : ((list.get(mid) + list.get(mid - 1))) * 0.5;
     }
 }
