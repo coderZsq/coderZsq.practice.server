@@ -72,3 +72,18 @@ class _20_有效的括号3 {
         return s.isEmpty();
     }
 }
+
+class _20_有效的括号4 {
+    public boolean isValid(String s) {
+        if (s == null || s.length() == 0) return false;
+        char[] chars = new char[s.length()];
+        int i = -1;
+        for (char c : s.toCharArray()) {
+            if (c == '(') chars[++i] = ')';
+            else if (c == '[') chars[++i] = ']';
+            else if (c == '{') chars[++i] = '}';
+            else if (i == -1 || chars[i--] != c) return false;
+        }
+        return i == -1;
+    }
+}
