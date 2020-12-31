@@ -5,7 +5,7 @@ package 刷题.字节跳动;
  *
  * @author zhushuangquan
  */
-public class _11_盛最多水的容器 {
+public class _08_11_盛最多水的容器 {
     public int maxArea(int[] height) {
         return 0;
     }

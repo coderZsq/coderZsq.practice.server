@@ -1,7 +1,5 @@
 package 刷题.字节跳动;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -9,7 +7,7 @@ import java.util.List;
  *
  * @author zhushuangquan
  */
-public class _15_三数之和 {
+public class _09_15_三数之和 {
     public List<List<Integer>> threeSum(int[] nums) {
         return null;
     }

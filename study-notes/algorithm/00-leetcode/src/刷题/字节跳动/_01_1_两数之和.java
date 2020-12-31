@@ -5,7 +5,7 @@ package 刷题.字节跳动;
  *
  * @author zhushuangquan
  */
-public class _1_两数之和 {
+public class _01_1_两数之和 {
     public int[] twoSum(int[] nums, int target) {
         return null;
     }

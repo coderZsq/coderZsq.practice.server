@@ -8,7 +8,7 @@ import java.util.Stack;
  *
  * @author zhushuangquan
  */
-public class _20_有效的括号 {
+public class _17_20_有效的括号 {
     public boolean isValid(String s) {
         return false;
     }

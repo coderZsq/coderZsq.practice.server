@@ -5,8 +5,7 @@ package 刷题.字节跳动;
  *
  * @author zhushuangquan
  */
-
-public class _7_整数反转 {
+public class _20_7_整数反转 {
     public int reverse(int x) {
         return 0;
     }

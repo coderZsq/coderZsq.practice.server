@@ -1,14 +1,11 @@
 package 刷题.字节跳动;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * https://leetcode-cn.com/problems/lru-cache/
  *
  * @author zhushuangquan
  */
-public class _146_LRU缓存机制 {
+public class _12_146_LRU缓存机制 {
     static class LRUCache {
         public LRUCache(int capacity) {
 

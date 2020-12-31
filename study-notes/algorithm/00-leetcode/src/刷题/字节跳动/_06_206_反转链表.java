@@ -7,7 +7,7 @@ import 标签.链表.ListNode;
  *
  * @author zhushuangquan
  */
-class _206_反转链表 {
+class _06_206_反转链表 {
     public ListNode reverseList(ListNode head) {
         return null;
     }

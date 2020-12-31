@@ -5,7 +5,7 @@ package 刷题.字节跳动;
  *
  * @author zhushuangquan
  */
-public class _42_接雨水 {
+public class _05_42_接雨水 {
     public int trap(int[] height) {
         return 0;
     }

@@ -5,7 +5,7 @@ package 刷题.字节跳动;
  *
  * @author zhushuangquan
  */
-public class _4_寻找两个正序数组的中位数 {
+public class _07_4_寻找两个正序数组的中位数 {
     public double findMedianSortedArrays(int[] nums1, int[] nums2) {
         return 0;
     }
