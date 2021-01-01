@@ -7,6 +7,16 @@ package 刷题.待面试;
  */
 public class _14_121_买卖股票的最佳时机 {
     public int maxProfit(int[] prices) {
-        return 0;
+        if (prices == null || prices.length == 0) return 0;
+        int minValue = prices[0];
+        int maxPorfit = 0;
+        for (int i = 1; i < prices.length; i++) {
+            if (prices[i] < minValue) {
+                minValue = prices[i];
+            } else {
+                maxPorfit = Math.max(maxPorfit, prices[i] - minValue);
+            }
+        }
+        return maxPorfit;
     }
 }
