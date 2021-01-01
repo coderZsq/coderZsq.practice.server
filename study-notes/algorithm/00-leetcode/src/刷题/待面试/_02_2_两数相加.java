@@ -13,7 +13,6 @@ public class _02_2_两数相加 {
         if (l2 == null) return l1;
         ListNode dummyHead = new ListNode(0);
         ListNode cur = dummyHead;
-
         int curry = 0;
         while (l1 != null || l2 != null) {
             int v1 = 0;

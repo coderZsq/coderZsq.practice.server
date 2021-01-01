@@ -32,6 +32,6 @@ public class _07_4_寻找两个正序数组的中位数 {
                 list.add(nums1[k]);
             }
         }
-        return ((nums1.length + nums2.length) & 1) == 1 ? list.get(mid) : (list.get(mid) + list.get(mid - 1)) * 0.5;
+        return ((nums1.length + nums2.length) & 1) == 1 ? list.get(mid) : (list.get(mid + 1) + list.get(mid)) * 0.5;
     }
 }

@@ -29,7 +29,6 @@ class _10_21_合并两个有序链表 {
         } else {
             cur.next = l1;
         }
-
         return dummyHead.next;
     }
 }

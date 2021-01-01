@@ -62,8 +62,8 @@ public class _12_146_LRU缓存机制 {
         static class Node {
             private int key;
             private int value;
-            private Node prev;
-            private Node next;
+            Node prev;
+            Node next;
 
             public Node(int key, int value) {
                 this.key = key;

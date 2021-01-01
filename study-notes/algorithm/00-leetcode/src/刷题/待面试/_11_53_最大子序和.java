@@ -11,7 +11,7 @@ public class _11_53_最大子序和 {
         int dp = nums[0];
         int max = dp;
         for (int i = 1; i < nums.length; i++) {
-            if (dp <= 0) {
+            if (dp < 0) {
                 dp = nums[i];
             } else {
                 dp += nums[i];

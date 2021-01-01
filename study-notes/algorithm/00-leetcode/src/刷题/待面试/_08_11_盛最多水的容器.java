@@ -12,13 +12,14 @@ public class _08_11_盛最多水的容器 {
         int r = height.length - 1;
         int max = 0;
         while (l < r) {
+            int len = r - l;
             if (height[l] < height[r]) {
                 int minH = height[l];
-                max = Math.max(max, (r - l) * minH);
+                max = Math.max(max, minH * len);
                 while (l < r && height[l] <= minH) l++;
             } else {
                 int minH = height[r];
-                max = Math.max(max, (r - l) * minH);
+                max = Math.max(max, minH * len);
                 while (l < r && height[r] <= minH) r--;
             }
         }
