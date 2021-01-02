@@ -11,9 +11,9 @@ import java.util.List;
 public class _07_4_寻找两个正序数组的中位数 {
     public double findMedianSortedArrays(int[] nums1, int[] nums2) {
         List<Integer> list = new ArrayList<>();
-        int mid = (nums1.length + nums2.length) >> 1;
         int i = 0;
         int j = 0;
+        int mid = (nums1.length + nums2.length) >> 1;
         while (i < nums1.length && j < nums2.length) {
             if (nums1[i] < nums2[j]) {
                 list.add(nums1[i]);
@@ -32,6 +32,6 @@ public class _07_4_寻找两个正序数组的中位数 {
                 list.add(nums1[k]);
             }
         }
-        return ((nums1.length + nums2.length) & 1) == 1 ? list.get(mid) : (list.get(mid + 1) + list.get(mid)) * 0.5;
+        return ((nums1.length + nums2.length) & 1) == 1 ? list.get(mid) : (list.get(mid) + list.get(mid - 1)) * 0.5;
     }
 }

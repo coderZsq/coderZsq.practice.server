@@ -9,14 +9,14 @@ public class _14_121_买卖股票的最佳时机 {
     public int maxProfit(int[] prices) {
         if (prices == null || prices.length == 0) return 0;
         int minValue = prices[0];
-        int maxPorfit = 0;
+        int maxProfit = 0;
         for (int i = 1; i < prices.length; i++) {
-            if (prices[i] < minValue) {
+            if (minValue > prices[i]) {
                 minValue = prices[i];
             } else {
-                maxPorfit = Math.max(maxPorfit, prices[i] - minValue);
+                maxProfit = Math.max(maxProfit, prices[i] - minValue);
             }
         }
-        return maxPorfit;
+        return maxProfit;
     }
 }

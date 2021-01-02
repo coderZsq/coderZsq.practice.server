@@ -58,12 +58,11 @@ public class _12_146_LRU缓存机制 {
             }
             addAfterFirst(node);
         }
-
         static class Node {
             private int key;
             private int value;
-            Node prev;
-            Node next;
+            private Node prev;
+            private Node next;
 
             public Node(int key, int value) {
                 this.key = key;

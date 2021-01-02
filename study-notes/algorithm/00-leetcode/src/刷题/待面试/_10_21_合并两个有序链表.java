@@ -24,6 +24,7 @@ class _10_21_合并两个有序链表 {
                 l2 = l2.next;
             }
         }
+
         if (l1 == null) {
             cur.next = l2;
         } else {

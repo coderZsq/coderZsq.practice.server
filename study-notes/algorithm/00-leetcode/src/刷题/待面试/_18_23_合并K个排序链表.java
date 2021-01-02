@@ -16,12 +16,13 @@ public class _18_23_合并K个排序链表 {
     private ListNode merge(ListNode[] lists, int l, int r) {
         if (r - l < 2) return lists[l];
         int mid = ((r - l) >> 1) + l;
-        return mergeTwoList(merge(lists, l, mid), merge(lists, mid, r));
+        return mergeTwoLists(merge(lists, l, mid), merge(lists, mid, r));
     }
 
-    private ListNode mergeTwoList(ListNode l1, ListNode l2) {
+    private ListNode mergeTwoLists(ListNode l1, ListNode l2) {
         if (l1 == null) return l2;
         if (l2 == null) return l1;
+
         ListNode dummyHead = new ListNode(0);
         ListNode cur = dummyHead;
         while (l1 != null && l2 != null) {

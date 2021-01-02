@@ -11,7 +11,7 @@ public class _16_33_搜索旋转排序数组 {
         int l = 0;
         int r = nums.length - 1;
         while (l <= r) {
-            int mid = ((r  - l) >> 1) + l;
+            int mid = ((r - l) >> 1) + l;
             if (nums[mid] == target) return mid;
             if (nums[l] <= nums[mid]) {
                 if (nums[l] <= target && target < nums[mid]) {
@@ -26,7 +26,7 @@ public class _16_33_搜索旋转排序数组 {
                     r = mid - 1;
                 }
             }
-         }
+        }
         return -1;
     }
 }

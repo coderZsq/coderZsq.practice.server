@@ -10,11 +10,11 @@ import java.util.PriorityQueue;
 class _23_215_数组中的第K个最大元素 {
     public int findKthLargest(int[] nums, int k) {
         if (nums == null || nums.length == 0) return 0;
-        PriorityQueue<Integer> queue = new PriorityQueue<>(k);
+        PriorityQueue<Integer> queue = new PriorityQueue<>();
         for (int i = 0; i < nums.length; i++) {
             if (queue.size() < k) {
                 queue.offer(nums[i]);
-            } else if (nums[i] > queue.peek()) {
+            } else if (queue.peek() < nums[i]) {
                 queue.poll();
                 queue.offer(nums[i]);
             }

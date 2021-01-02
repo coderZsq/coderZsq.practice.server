@@ -15,7 +15,7 @@ public class _04_5_最长回文子串 {
         for (int i = chars.length - 1; i >= 0; i--) {
             for (int j = i; j < chars.length; j++) {
                 int len = j - i + 1;
-                dp[i][j] = (chars[i] == chars[j] && (len <= 2 || dp[i + 1][j - 1]));
+                dp[i][j] = ((chars[i] == chars[j]) && ((len <= 2) || dp[i + 1][j - 1]));
                 if (dp[i][j] && len > maxLen) {
                     maxLen = len;
                     begin = i;
