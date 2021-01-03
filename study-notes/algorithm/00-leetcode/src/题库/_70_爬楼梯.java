@@ -35,13 +35,13 @@ public class _70_爬楼梯 {
 
         int first = 1;
         // 2. 如果只有两阶, 则只有两种选择, 不进入循环
-        int second = 2;
+        int second = 1;
         // 3. 循环从第三阶开始, 到第n阶结束(包括n)
-        for (int i = 3; i <= n; i++) {
+        for (int i = 2; i <= n; i++) {
             // 4. 斐波那契
-            int sum = first + second;
+            int third = first + second;
             first = second;
-            second = sum;
+            second = third;
         }
         return second;
     }

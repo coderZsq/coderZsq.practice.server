@@ -12,8 +12,8 @@ public class _25_19_删除链表的倒数第N个节点 {
         if (head == null) return null;
         ListNode dummyHead = new ListNode(0);
         dummyHead.next = head;
-        ListNode fast = dummyHead;
         ListNode slow = dummyHead;
+        ListNode fast = dummyHead;
         while (n >= 0) {
             fast = fast.next;
             n--;
