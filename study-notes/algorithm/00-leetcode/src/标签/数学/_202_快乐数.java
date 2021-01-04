@@ -43,7 +43,7 @@ public class _202_快乐数 {
     public boolean isHappy(int n) {
         // 8. 使用快慢指针判断是否有环
         int slow = n;
-        int fast = next(n);
+        int fast = n;
         // 9. 退出条件 快指针 == 1 为快乐数, 或者指针相遇有环退出, 不为快乐数
         while (fast != 1 && fast != slow) {
             // 10. 快慢指针赛跑
