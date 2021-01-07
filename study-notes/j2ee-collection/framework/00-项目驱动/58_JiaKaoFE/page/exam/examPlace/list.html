@@ -14,7 +14,7 @@
                     </div>
                     <div class="layui-inline">
                         <div class="layui-input-inline">
-                            <select name="provinceId"></select>
+                            <select name="provinceId" lay-filter="searchProvinceId"></select>
                         </div>
                     </div>
                     <div class="layui-inline">
@@ -75,6 +75,101 @@
                 removeUri: 'examPlaces/remove',
                 savePageUri: 'page/exam/examPlace/save.html',
             });
+        }
+
+        _initSearchForm() {
+            super._initSearchForm();
+
+            this._loadRegions(this._searchForm)
+        }
+
+        _initSaveForm() {
+            super._initSaveForm();
+
+            this._loadRegions(this._saveForm)
+        }
+
+        _loadRegions(form) {
+            if (this._regions) {
+                this._initRegions(form)
+                return
+            }
+            Ajaxs.get({
+                uri: 'plateRegions/regions',
+                success: (response) => {
+                    this._regions = response.data
+                    this._initRegions(form)
+                }
+            })
+        }
+
+        _initRegions(form) {
+            // 数据初始化函数
+            const build = (o) => {
+                return {
+                    val: o.data.id,
+                    text: o.data.plate
+                        ? `[${o.data.plate}] ${o.data.name}`
+                        : o.data.name
+                }
+            }
+
+            // 城市
+            const citySelect = new Select({
+                name: 'cityId',
+                form: form
+            })
+
+            // 省份
+            const provinceSelect = new Select({
+                name: 'provinceId',
+                form: form,
+                change: (o) => { // 切换省份
+                    // 设置当前省份对应的城市数据
+                    citySelect.data(o.data.children, build)
+                }
+            })
+
+            // 数据的提前处理
+            let data = this._regions
+            if (form === this._searchForm) {
+                data = Commons.deepCopy(data)
+                data.unshift({
+                    name: '所有省份',
+                    children: []
+                })
+                // 往每个省份的children前面插入一个[所有城市]
+                for (const province of data) {
+                    province.children.unshift({
+                        name: '所有城市'
+                    })
+                }
+
+                /*
+                data = [
+                    {name: '所有省份', children: [
+                        {name: '所有城市'}
+                    ]},
+                    {id: 11, name: '广东', plate: '粤', children: [{
+                        {name: '所有城市'},
+                        {id: 22, name: '广州', plate: 'A'}
+                    }]},
+                    {id: 11, name: '广东', plate: '粤', children: [{
+                        {name: '所有城市'},
+                        {id: 22, name: '广州', plate: 'A'}
+                    }]}
+                ]
+                */
+            }
+
+            // 设置省份数据
+            provinceSelect.data(data, build)
+
+            // 编辑
+            if (this._editData) {
+                provinceSelect.val(this._editData.provinceId)
+                citySelect.val(this._editData.cityId)
+            }
         }
     }
 

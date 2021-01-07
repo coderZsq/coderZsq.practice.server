@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sq.jk.mapper.PlateRegionMapper">
+    <resultMap id="rmSelectRegions" type="ProvinceDto">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="plate" property="plate"/>
+        <collection property="children" ofType="CityDto">
+            <id column="city_id" property="id"/>
+            <result column="city_name" property="name"/>
+            <result column="city_plate" property="plate"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectRegions"
+            resultMap="rmSelectRegions">
+        SELECT p.id,
+               p.name,
+               p.plate,
+               c.id    city_id,
+               c.name  city_name,
+               c.plate city_plate
+        FROM plate_region p
+                 JOIN plate_region c ON c.parent_id = p.id
+        WHERE p.parent_id = 0
+        ORDER BY p.pinyin, c.plate
+    </select>
+</mapper>

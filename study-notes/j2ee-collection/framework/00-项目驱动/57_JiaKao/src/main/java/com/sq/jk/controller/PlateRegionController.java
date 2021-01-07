@@ -18,6 +18,11 @@ public class PlateRegionController extends BaseController<PlateRegion> {
     @Autowired
     private PlateRegionService service;
 
+    @GetMapping("/regions")
+    public R listRegions() {
+        return Rs.ok(service.listRegions());
+    }
+
     @GetMapping("/provinces")
     public R listProvinces(ProvinceQuery query) {
         service.listProvinces(query);

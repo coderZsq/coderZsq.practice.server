@@ -5,6 +5,7 @@ import com.github.promeg.pinyinhelper.Pinyin;
 import com.sq.jk.common.enhance.MpPage;
 import com.sq.jk.common.enhance.MpQueryWrapper;
 import com.sq.jk.mapper.PlateRegionMapper;
+import com.sq.jk.pojo.dto.ProvinceDto;
 import com.sq.jk.pojo.po.PlateRegion;
 import com.sq.jk.pojo.query.CityQuery;
 import com.sq.jk.pojo.query.ProvinceQuery;
@@ -12,6 +13,7 @@ import com.sq.jk.service.PlateRegionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -36,6 +38,21 @@ public class PlateRegionServiceImpl extends ServiceImpl<PlateRegionMapper, Plate
 
         region.setPinyin(Pinyin.toPinyin(name, "_"));
     }
+
+    @Override
+    public List<ProvinceDto> listRegions() {
+        return baseMapper.selectRegions();
+    }
+
+    // @Override
+    // public List<ProvinceDto> listRegions() {
+    //     List<PlateRegion> dbRegions = baseMapper.selectList(null);
+    //     List<ProvinceDto> regions = new ArrayList<>();
+    //     for (PlateRegion dbRegion : dbRegions) {
+    //
+    //     }
+    //     return regions;
+    // }
 
     @Override
     @Transactional(readOnly = true)

@@ -1,6 +1,7 @@
 package com.sq.jk.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.sq.jk.pojo.dto.ProvinceDto;
 import com.sq.jk.pojo.po.PlateRegion;
 import com.sq.jk.pojo.query.CityQuery;
 import com.sq.jk.pojo.query.ProvinceQuery;
@@ -8,6 +9,7 @@ import com.sq.jk.pojo.query.ProvinceQuery;
 import java.util.List;
 
 public interface PlateRegionService extends IService<PlateRegion> {
+    List<ProvinceDto> listRegions();
 
     void listProvinces(ProvinceQuery query);
 

@@ -10,18 +10,40 @@
                            placeholder="请输入名称" class="layui-input" autofocus>
                 </div>
             </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label required">车牌</label>
-                <div class="layui-input-block">
-                    <input type="text" name="plate"
-                           lay-verify="required" lay-reqtext="车牌不能为空"
-                           placeholder="请输入车牌" class="layui-input">
-                </div>
-            </div>
             <div class="layui-form-item layui-form-text">
                 <label class="layui-form-label required">省份</label>
                 <div class="layui-input-block">
-                    <select name="parentId"></select>
+                    <select name="provinceId" lay-filter="saveProvinceId"></select>
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label required">城市</label>
+                <div class="layui-input-block">
+                    <select name="cityId"></select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">经度</label>
+                <div class="layui-input-block">
+                    <input type="number" name="longitude"
+                           step="0.0000001"
+                           min="0"
+                           placeholder="请输入经度" class="layui-input" autofocus>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">纬度</label>
+                <div class="layui-input-block">
+                    <input type="number" name="latitude"
+                           step="0.0000001"
+                           min="0"
+                           placeholder="请输入纬度" class="layui-input" autofocus>
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">地址</label>
+                <div class="layui-input-block">
+                    <textarea name="address" class="layui-textarea" placeholder="请输入地址"></textarea>
                 </div>
             </div>
             <div class="layui-form-item">
