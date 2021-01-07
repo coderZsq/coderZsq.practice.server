@@ -1,0 +1,82 @@
+<div class="layuimini-container layuimini-page-anim">
+    <div class="layuimini-main">
+        <div>
+            <form id="search-form"
+                  class="layui-form layui-form-pane"
+                  lay-filter="search-form">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <input type="text" name="keyword"
+                                   placeholder="名称、车牌、拼音"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <select name="provinceId"></select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <select name="cityId"></select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <button type="button"
+                                id="reset-btn"
+                                class="layui-btn layui-btn-warm">
+                            <i class="layui-icon layui-icon-refresh"></i> 重 置 </button>
+                        <button type="submit"
+                                id="search-btn"
+                                class="layui-btn layui-btn-normal"
+                                lay-submit lay-filter="search-btn">
+                            <i class="layui-icon layui-icon-search"></i> 搜 索 </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <table class="layui-hide" id="data-table" lay-filter="data-table"></table>
+
+        <script type="text/html" id="data-toolbar">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn"
+                        lay-event="add" id="add-btn"> 添加 </button>
+                <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn layui-btn-disabled"
+                        lay-event="remove" id="remove-btn"> 删除 </button>
+            </div>
+        </script>
+
+        <script type="text/html" id="data-tool">
+            <a class="layui-btn layui-btn-xs"
+               lay-event="route">路线图</a>
+            <a class="layui-btn layui-btn-normal layui-btn-xs"
+               lay-event="edit">编辑</a>
+            <a class="layui-btn layui-btn-xs layui-btn-danger"
+               lay-event="remove">删除</a>
+        </script>
+    </div>
+</div>
+
+<script>
+    class ExamPlacePage extends ListPage {
+        constructor(props) {
+            super({
+                title: '考场',
+                uri: 'examPlaces',
+                cols: [[
+                    {type: 'checkbox', align: 'center'},
+                    {field: 'name', title: '名称', align: 'center'},
+                    {field: 'address', title: '地址', align: 'center'},
+                    {title: '操作', minWidth: 150, toolbar: '#data-tool', align: "center"}
+                ]],
+                saveUri: 'examPlaces/save',
+                removeUri: 'examPlaces/remove',
+                savePageUri: 'page/exam/examPlace/save.html',
+            });
+        }
+    }
+
+    new ExamPlacePage()
+</script>
