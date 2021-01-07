@@ -1,5 +1,6 @@
 package com.sq.jk.pojo.po;
 
+import com.sq.jk.common.foreign.anno.ForeignField;
 import lombok.Data;
 
 @Data
@@ -12,6 +13,6 @@ public class PlateRegion {
     private String plate;
     //拼音
     private String pinyin;
-
+    @ForeignField(PlateRegion.class)
     private Integer parentId;
 }

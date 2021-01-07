@@ -2,7 +2,10 @@ package com.sq.jk.common.util;
 
 import com.sq.jk.common.exception.CommonException;
 import com.sq.jk.pojo.query.PageQuery;
+import com.sq.jk.pojo.result.CodeMsg;
 import com.sq.jk.pojo.result.R;
+
+import javax.servlet.http.PushBuilder;
 
 public class Rs {
     public static final String K_COUNT = "count";
@@ -26,6 +29,10 @@ public class Rs {
         return r;
     }
 
+    public static R ok(CodeMsg msg) {
+        return new R(true, msg.getMsg());
+    }
+
     public static R ok(String msg) {
         return new R(true, msg);
     }
@@ -36,5 +43,13 @@ public class Rs {
 
     public static R ok() {
         return new R();
+    }
+
+    public static R raise(String msg) throws CommonException {
+        throw new CommonException(msg);
+    }
+
+    public static R raise(CodeMsg codeMsg) throws CommonException {
+        throw new CommonException(codeMsg);
     }
 }
