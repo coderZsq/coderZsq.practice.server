@@ -7,11 +7,10 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class CommonException extends RuntimeException {
-    private static final int CODE_DEFAULT = CodeMsg.BAD_REQUEST.getCode();
     private int code;
 
     public CommonException() {
-        this(CODE_DEFAULT, null);
+        this(CodeMsg.BAD_REQUEST.getCode(), null);
     }
 
     public CommonException(String msg) {
@@ -23,7 +22,7 @@ public class CommonException extends RuntimeException {
     }
 
     public CommonException(String msg, Throwable cause) {
-        this(CODE_DEFAULT, msg, cause);
+        this(CodeMsg.BAD_REQUEST.getCode(), msg, cause);
     }
 
     public CommonException(int code, String msg, Throwable cause) {

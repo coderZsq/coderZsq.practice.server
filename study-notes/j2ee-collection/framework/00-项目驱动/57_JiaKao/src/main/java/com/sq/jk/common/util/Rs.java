@@ -4,8 +4,12 @@ import com.sq.jk.common.exception.CommonException;
 import com.sq.jk.pojo.query.PageQuery;
 import com.sq.jk.pojo.result.CodeMsg;
 import com.sq.jk.pojo.result.R;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.BindException;
+import org.springframework.validation.ObjectError;
 
-import javax.servlet.http.PushBuilder;
+import java.util.List;
+
 
 public class Rs {
     public static final String K_COUNT = "count";
@@ -14,12 +18,22 @@ public class Rs {
         return new R(false, msg);
     }
 
+    public static R error() {
+        return new R(false);
+    }
+
     public static R error(Throwable t) {
         if (t instanceof CommonException) {
-            CommonException e = (CommonException) t;
-            return new R(e.getCode(), e.getMessage());
-        } else {
-            return error(t.getMessage());
+            CommonException ce = (CommonException) t;
+            return new R(ce.getCode(), ce.getMessage());
+        } else if (t instanceof BindException) {
+            BindException be = (BindException) t;
+            List<ObjectError> errors = be.getBindingResult().getAllErrors();
+            String msg = StringUtils.collectionToDelimitedString(errors, ", ");
+            return error(msg);
+        } else { // 其他异常
+            // return error(t.getMessage());
+            return error();
         }
     }
 

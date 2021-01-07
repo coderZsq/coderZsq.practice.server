@@ -14,11 +14,9 @@ import com.sq.jk.common.util.Strings;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.ResourcePatternResolver;
@@ -35,7 +33,7 @@ import java.util.List;
 
 @Aspect
 @Component
-public class ForeignAspect implements InitializingBean, ApplicationContextAware {
+public class ForeignAspect implements InitializingBean {
     private static final String FOREIGN_SCAN = "classpath*:com/sq/jk/pojo/po/**/*.class";
     @Autowired
     private ApplicationContext ctx;
@@ -190,10 +188,5 @@ public class ForeignAspect implements InitializingBean, ApplicationContextAware 
         // 对象之间的关系
         subFieldInfo.addMainField(mainFieldInfo);
         mainFieldInfo.addSubField(subFieldInfo);
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        ctx = applicationContext;
     }
 }

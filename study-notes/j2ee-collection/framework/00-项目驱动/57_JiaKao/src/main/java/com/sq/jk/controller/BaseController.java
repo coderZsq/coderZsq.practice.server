@@ -1,12 +1,12 @@
 package com.sq.jk.controller;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.sq.jk.common.exception.CommonException;
 import com.sq.jk.common.util.Rs;
 import com.sq.jk.pojo.result.CodeMsg;
 import com.sq.jk.pojo.result.R;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.validation.Valid;
 import java.util.Arrays;
 
 public abstract class BaseController<T> {
@@ -22,7 +22,7 @@ public abstract class BaseController<T> {
     }
 
     @PostMapping("/save")
-    public R save(T entity) {
+    public R save(@Valid T entity) {
         if (getService().saveOrUpdate(entity)) {
             return Rs.ok(CodeMsg.SAVE_SUCCESS);
         } else {

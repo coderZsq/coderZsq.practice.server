@@ -12,7 +12,7 @@ public class R extends HashMap<String, Object> implements Jsonable {
     private static final String K_CODE = "code";
     private static final String K_MSG = "msg";
     private static final String K_DATA = "data";
-    private static final int CODE_SUCCESS = 0;
+    private static final int CODE_SUCCESS = CodeMsg.OPERATE_SUCCESS.getCode();
     private static final int CODE_ERROR_DEFAULT = CodeMsg.BAD_REQUEST.getCode();
 
     public R() {
