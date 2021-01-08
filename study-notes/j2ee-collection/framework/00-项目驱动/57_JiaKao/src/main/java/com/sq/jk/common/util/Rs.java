@@ -8,7 +8,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
 
-import java.util.ArrayList;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,14 +33,21 @@ public class Rs {
             BindException be = (BindException) t;
             List<ObjectError> errors = be.getBindingResult().getAllErrors();
             // 函数式编程的方式: stream
-            List<String> defaultMsgs = errors.stream()
-                    .map(ObjectError::getDefaultMessage)
+            List<String> defaultMsgs = errors
+                    .stream().map(ObjectError::getDefaultMessage)
                     .collect(Collectors.toList());
             // List<String> defaultMsgs = new ArrayList<>(errors.size());
             // for (ObjectError error : errors) {
             //     defaultMsgs.add(error.getDefaultMessage());
             // }
             String msg = StringUtils.collectionToDelimitedString(defaultMsgs, ", ");
+            return error(msg);
+        } else if (t instanceof ConstraintViolationException) {
+            ConstraintViolationException cve = (ConstraintViolationException) t;
+            List<String> msgs = cve.getConstraintViolations()
+                    .stream().map(ConstraintViolation::getMessage)
+                    .collect(Collectors.toList());
+            String msg = StringUtils.collectionToDelimitedString(msgs, ", ");
             return error(msg);
         } else { // 其他异常
             // return error(t.getMessage());

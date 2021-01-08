@@ -77,6 +77,14 @@
             });
         }
 
+        _tool(obj) {
+            if (obj.event === 'route') {
+                console.log(obj);
+            } else {
+                super._tool(obj);
+            }
+        }
+
         _initSearchForm() {
             super._initSearchForm();
 
