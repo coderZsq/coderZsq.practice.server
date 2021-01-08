@@ -7,6 +7,7 @@ import com.sq.jk.pojo.query.CityQuery;
 import com.sq.jk.pojo.query.ProvinceQuery;
 import com.sq.jk.pojo.result.R;
 import com.sq.jk.service.PlateRegionService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/plateRegions")
+@Api(tags = "省份/城市")
 public class PlateRegionController extends BaseController<PlateRegion> {
     @Autowired
     private PlateRegionService service;

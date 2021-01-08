@@ -1,37 +1,93 @@
 package com.sq.jk.common.cfg;
 
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 @Configuration
 @EnableSwagger2
-public class SwaggerCfg {
+public class SwaggerCfg implements InitializingBean {
+    @Autowired
+    private Environment environment;
+    private boolean enable;
+
     @Bean
-    public Docket docket(Environment environment) {
-        boolean enable = environment.acceptsProfiles(Profiles.of("dev", "test"));
-        return new Docket(DocumentationType.SWAGGER_2)
-                .enable(enable)
-                .apiInfo(apiInfo());
+    public Docket examDocket(Environment environment) {
+        return groupDocket(
+                "考试",
+                "/(exam.*)",
+                "考试模块文档",
+                "考场, 科1科4, 科2科3");
     }
 
-    private ApiInfo apiInfo() {
+    @Bean
+    public Docket metadataDocket(Environment environment) {
+        return groupDocket(
+                "元数据",
+                "/(dict.*|plate.*)",
+                "元数据模块文档",
+                "数据字典类型, 数据字典条目, 省份, 城市");
+    }
+
+    private Docket groupDocket(String group,
+                               String regex,
+                               String title,
+                               String description) {
+        return basicDocket()
+                .groupName(group)
+                .apiInfo(apiInfo(title, description))
+                .select()
+                .paths(PathSelectors.regex(regex))
+                .build();
+    }
+
+    private Docket basicDocket() {
+        // Parameter token = new ParameterBuilder()
+        //         .name("token")
+        //         .description("用户登录令牌")
+        //         .parameterType("header")
+        //         .modelRef(new ModelRef("String"))
+        //         .build();
+        return new Docket(DocumentationType.SWAGGER_2)
+                // .globalOperationParameters(List.of(token))
+                .ignoredParameterTypes(
+                        HttpSession.class,
+                        HttpServletRequest.class,
+                        HttpServletResponse.class)
+                .enable(enable);
+    }
+
+    private ApiInfo apiInfo(String title, String description) {
         return new ApiInfoBuilder()
-                .title("小码哥驾考系统接口文档")
-                .description("这是一份比较详细的接口文档")
+                .title(title)
+                .description(description)
                 .version("1.0.0")
                 .build();
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        enable = environment.acceptsProfiles(Profiles.of("dev", "test"));
     }
     // @Bean
     // public Docket docket() {
     //     Docket docket = new Docket(DocumentationType.SWAGGER_2);
     //     docket.apiInfo(apiInfo());
+    //     ApiSelectorBuilder builder = docket.select();
+    //     builder.paths(PathSelectors.ant("/dictItems/**"));
     //     return docket;
     // }
     //
