@@ -7,6 +7,7 @@ import com.sq.jk.pojo.query.DictTypeQuery;
 import com.sq.jk.pojo.result.R;
 import com.sq.jk.service.DictTypeService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,7 @@ public class DictTypeController extends BaseController<DictType> {
     private DictTypeService service;
 
     @GetMapping
+    @ApiOperation("分页查询")
     public R list(DictTypeQuery query) {
         service.list(query);
         return Rs.ok(query);

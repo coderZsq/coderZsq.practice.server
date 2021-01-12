@@ -24,20 +24,12 @@ public class DictItemController extends BaseController<DictItem> {
 
     @GetMapping("/get")
     @ApiOperation("根据id查询对应的数据字典条目")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "请求成功", response = DictItem.class),
-            @ApiResponse(code = 400, message = "出现错误", response = SwaggerErrorR.class)
-    })
     public DictItem get(@ApiParam(required = true, value = "id") @RequestParam Integer id) {
         return service.getById(id);
     }
 
     @GetMapping
     @ApiOperation(value = "分页查询", notes = "可以传入页码、每页大小等参数")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "请求成功", response = SwaggerR.class),
-            @ApiResponse(code = 400, message = "出现错误", response = SwaggerErrorR.class)
-    })
     public R list(DictItemQuery query) {
         service.list(query);
         return Rs.ok(query);

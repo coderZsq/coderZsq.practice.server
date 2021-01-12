@@ -1,5 +1,6 @@
 package com.sq.jk.common.cfg;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -8,7 +9,11 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.builders.RequestParameterBuilder;
 import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.ParameterType;
+import springfox.documentation.service.RequestParameter;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -16,6 +21,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.lang.reflect.Parameter;
+import java.util.List;
 
 @Configuration
 @EnableSwagger2
@@ -27,7 +34,7 @@ public class SwaggerCfg implements InitializingBean {
     @Bean
     public Docket examDocket(Environment environment) {
         return groupDocket(
-                "考试",
+                "02_考试",
                 "/(exam.*)",
                 "考试模块文档",
                 "考场, 科1科4, 科2科3");
@@ -36,7 +43,7 @@ public class SwaggerCfg implements InitializingBean {
     @Bean
     public Docket metadataDocket(Environment environment) {
         return groupDocket(
-                "元数据",
+                "01_元数据",
                 "/(dict.*|plate.*)",
                 "元数据模块文档",
                 "数据字典类型, 数据字典条目, 省份, 城市");
@@ -50,19 +57,19 @@ public class SwaggerCfg implements InitializingBean {
                 .groupName(group)
                 .apiInfo(apiInfo(title, description))
                 .select()
+                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
                 .paths(PathSelectors.regex(regex))
                 .build();
     }
 
     private Docket basicDocket() {
-        // Parameter token = new ParameterBuilder()
+        // RequestParameter token = new RequestParameterBuilder()
         //         .name("token")
         //         .description("用户登录令牌")
-        //         .parameterType("header")
-        //         .modelRef(new ModelRef("String"))
+        //         .in(ParameterType.HEADER)
         //         .build();
         return new Docket(DocumentationType.SWAGGER_2)
-                // .globalOperationParameters(List.of(token))
+                // .globalRequestParameters(List.of(token))
                 .ignoredParameterTypes(
                         HttpSession.class,
                         HttpServletRequest.class,
