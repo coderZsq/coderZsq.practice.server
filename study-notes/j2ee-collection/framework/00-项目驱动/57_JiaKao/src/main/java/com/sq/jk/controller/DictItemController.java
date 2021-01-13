@@ -6,6 +6,7 @@ import com.sq.jk.common.util.Rs;
 import com.sq.jk.pojo.po.DictItem;
 import com.sq.jk.pojo.query.DictItemQuery;
 import com.sq.jk.pojo.result.R;
+import com.sq.jk.pojo.result.SwaggerDictItemR;
 import com.sq.jk.pojo.result.SwaggerErrorR;
 import com.sq.jk.pojo.result.SwaggerR;
 import com.sq.jk.service.DictItemService;
@@ -28,8 +29,17 @@ public class DictItemController extends BaseController<DictItem> {
         return service.getById(id);
     }
 
+    @GetMapping("/abc")
+    @ApiOperation("测试")
+    public SwaggerDictItemR abc() {
+        return null;
+    }
+
     @GetMapping
     @ApiOperation(value = "分页查询", notes = "可以传入页码、每页大小等参数")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "成功", response = SwaggerDictItemR.class)
+    })
     public R list(DictItemQuery query) {
         service.list(query);
         return Rs.ok(query);

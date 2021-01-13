@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class ExamPlaceCource {
+public class ExamPlaceCourse {
     //主键
     private Integer id;
 
