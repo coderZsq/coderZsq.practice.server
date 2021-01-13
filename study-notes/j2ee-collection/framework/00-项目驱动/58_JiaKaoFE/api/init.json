@@ -75,7 +75,7 @@
             },
             {
               "title": "科2科3",
-              "href": "page/exam/k2k3/list.html",
+              "href": "page/exam/examPlaceCourse/list.html",
               "icon": "fa fa-video-camera"
             }
           ]

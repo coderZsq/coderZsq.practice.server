@@ -4,12 +4,15 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.sq.jk.common.enhance.MpPage;
 import com.sq.jk.common.enhance.MpQueryWrapper;
 import com.sq.jk.mapper.ExamPlaceMapper;
+import com.sq.jk.pojo.dto.ProvinceDto;
 import com.sq.jk.pojo.po.DictItem;
 import com.sq.jk.pojo.po.ExamPlace;
 import com.sq.jk.pojo.query.ExamPlaceQuery;
 import com.sq.jk.service.ExamPlaceService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional
@@ -36,5 +39,10 @@ public class ExamPlaceServiceImpl extends ServiceImpl<ExamPlaceMapper, ExamPlace
 
         // 查询
         baseMapper.selectPage(new MpPage<>(query), wrapper).updateQuery();
+    }
+
+    @Override
+    public List<ProvinceDto> listRegionExamPlaces() {
+        return baseMapper.selectRegionExamPlaces();
     }
 }

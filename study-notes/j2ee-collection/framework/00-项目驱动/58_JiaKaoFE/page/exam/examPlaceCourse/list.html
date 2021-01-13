@@ -1,0 +1,223 @@
+<div class="layuimini-container layuimini-page-anim">
+    <div class="layuimini-main">
+        <div>
+            <form id="search-form"
+                  class="layui-form layui-form-pane"
+                  lay-filter="search-form">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <input type="text" name="keyword"
+                                   placeholder="名称、简介"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <select name="type" lay-search>
+                                <option value>所有类型</option>
+                                <option value="0">合集</option>
+                                <option value="2">科目2</option>
+                                <option value="3">科目3</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <select name="provinceId" lay-filter="searchProvinceId" lay-search></select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <select name="cityId" lay-filter="searchCityId" lay-search></select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <select name="placeId" lay-search></select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <button type="button"
+                                id="reset-btn"
+                                class="layui-btn layui-btn-warm">
+                            <i class="layui-icon layui-icon-refresh"></i> 重 置 </button>
+                        <button type="submit"
+                                id="search-btn"
+                                class="layui-btn layui-btn-normal"
+                                lay-submit lay-filter="search-btn">
+                            <i class="layui-icon layui-icon-search"></i> 搜 索 </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <table class="layui-hide" id="data-table" lay-filter="data-table"></table>
+
+        <script type="text/html" id="data-toolbar">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn"
+                        lay-event="add" id="add-btn"> 添加 </button>
+                <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn layui-btn-disabled"
+                        lay-event="remove" id="remove-btn"> 删除 </button>
+            </div>
+        </script>
+
+        <script type="text/html" id="data-tool">
+            <a class="layui-btn layui-btn-xs"
+               lay-event="video">视频</a>
+            <a class="layui-btn layui-btn-normal layui-btn-xs"
+               lay-event="edit">编辑</a>
+            <a class="layui-btn layui-btn-xs layui-btn-danger"
+               lay-event="remove">删除</a>
+        </script>
+    </div>
+</div>
+
+<script>
+    class ExamPlacePageCourse extends ListPage {
+        constructor(props) {
+            super({
+                title: '科2科3',
+                uri: 'examPlaceCourses',
+                cols: [[
+                    {type: 'checkbox', align: 'center'},
+                    {field: 'name', title: '名称', align: 'center'},
+                    {field: 'price', title: '价格', align: 'center'},
+                    {field: 'cover', title: '封面', align: 'center'},
+                    {field: 'type', title: '类型', align: 'center'},
+                    {field: 'intro', title: '简介', align: 'center'},
+                    {title: '操作', minWidth: 150, toolbar: '#data-tool', align: "center"}
+                ]],
+                saveUri: 'examPlaceCourses/save',
+                removeUri: 'examPlaceCourses/remove',
+                savePageUri: 'page/exam/examPlaceCourse/save.html',
+            });
+        }
+
+        _tool(obj) {
+            if (obj.event === 'video') {
+                console.log(obj);
+            } else {
+                super._tool(obj);
+            }
+        }
+
+        _initSearchForm() {
+            super._initSearchForm();
+
+            this._loadExamPlaces(this._searchForm)
+        }
+
+        _initSaveForm() {
+            super._initSaveForm();
+
+            this._loadExamPlaces(this._saveForm)
+        }
+
+        _loadExamPlaces(form) {
+            if (this._examPlaces) {
+                this._initExamPlaces(form)
+                return
+            }
+            Ajaxs.get({
+                uri: 'examPlaces/regionExamPlaces',
+                success: (response) => {
+                    this._examPlaces = response.data
+                    this._initExamPlaces(form)
+                }
+            })
+        }
+
+        _initExamPlaces(form) {
+            const buildRegion = (o) =>  {
+                return {
+                    val: o.data.id,
+                    text: o.data.plate
+                        ? `[${o.data.plate}]${o.data.name}`
+                        : o.data.name
+                }
+            }
+
+            const placeSelect = new Select({
+                name: 'placeId',
+                form
+            })
+
+            const citySelect = new Select({
+                name: 'cityId',
+                form,
+                change: (o) => {
+                    placeSelect.data(o.data.children, (p) => {
+                        return {
+                            val: p.data.id,
+                            text: p.data.name
+                        }
+                    })
+                }
+            })
+
+            const provinceSelect = new Select({
+                name: 'provinceId',
+                form,
+                change: (o) => {
+                    citySelect.data(o.data.children, buildRegion)
+                }
+            })
+
+            // 对数据进行提前处理
+            let data = this._examPlaces
+            if (form === this._searchForm) {
+                data = Commons.deepCopy(data)
+                data.unshift({
+                    name: '所有省份',
+                    children: []
+                })
+                // 给所有省份的children前面插入一个{name: '所有城市'}
+                for (const province of data) {
+                    province.children.unshift({
+                        name: '所有城市',
+                        children: []
+                    })
+
+                    // 给所有城市的children前面插入一个{name: '所有考场'}
+                    for (const city of province.children) {
+                        city.children.unshift({
+                            name: '所有考场'
+                        })
+                    }
+                }
+                /*
+                 data = [
+                    {name: '所有省份', children: [
+                        {name: '所有城市', children: [
+                            {name: '所有考场'}
+                        ]}
+                    ]},
+                    {id: 11, name: '广东', plate: '粤', children: [
+                            {name: '所有城市', children: [{name: '所有考场'}]},
+                            {id: 22, name: '广州', plate: 'A', children: [
+                                {name: '所有考场'},
+                                {id: 33, name: 'xx考场'}
+                            ]}
+                        ]
+                    },
+                    {id: 11, name: '广东', plate: '粤', children: [
+                            {name: '所有城市', children: [{name: '所有考场'}]},
+                            {id: 22, name: '广州', plate: 'A', children: [
+                                {name: '所有考场'},
+                                {id: 33, name: 'xx考场'}
+                            ]}
+                        ]
+                    }
+                 ]
+                 */
+            }
+
+            // 设置省份数据
+            provinceSelect.data(data, buildRegion)
+        }
+    }
+
+    new ExamPlacePageCourse()
+</script>

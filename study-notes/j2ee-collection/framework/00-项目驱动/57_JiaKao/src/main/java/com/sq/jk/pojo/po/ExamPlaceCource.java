@@ -1,5 +1,6 @@
 package com.sq.jk.pojo.po;
 
+import com.sq.jk.common.foreign.anno.ForeignField;
 import lombok.Data;
 
 import java.util.Date;
@@ -23,5 +24,6 @@ public class ExamPlaceCource {
     //封面
     private String cover;
     //考场
+    @ForeignField(ExamPlace.class)
     private Integer placeId;
 }
