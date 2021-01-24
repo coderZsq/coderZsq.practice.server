@@ -3,9 +3,13 @@ package com.sq.jk.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.sq.jk.common.enhance.MpPage;
 import com.sq.jk.common.enhance.MpQueryWrapper;
+import com.sq.jk.common.mapStruct.MapStructs;
+import com.sq.jk.common.util.Streams;
 import com.sq.jk.mapper.DictTypeMapper;
 import com.sq.jk.pojo.po.DictType;
-import com.sq.jk.pojo.query.DictTypeQuery;
+import com.sq.jk.pojo.vo.PageVo;
+import com.sq.jk.pojo.vo.list.DictTypeVo;
+import com.sq.jk.pojo.vo.req.page.DictTypePageReqVo;
 import com.sq.jk.service.DictTypeService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class DictTypeServiceImpl extends ServiceImpl<DictTypeMapper, DictType> implements DictTypeService {
     @Override
     @Transactional(readOnly = true)
-    public void list(DictTypeQuery query) {
+    public PageVo<DictTypeVo> list(DictTypePageReqVo query) {
         // 查询条件
         MpQueryWrapper<DictType> wrapper = new MpQueryWrapper<>();
 
@@ -29,6 +33,8 @@ public class DictTypeServiceImpl extends ServiceImpl<DictTypeMapper, DictType> i
         wrapper.orderByDesc(DictType::getId);
 
         // 分页查询
-        baseMapper.selectPage(new MpPage<>(query), wrapper).updateQuery();
+        return baseMapper
+                .selectPage(new MpPage<>(query), wrapper)
+                .buildVo(MapStructs.INSTANCE::po2vo);
     }
 }

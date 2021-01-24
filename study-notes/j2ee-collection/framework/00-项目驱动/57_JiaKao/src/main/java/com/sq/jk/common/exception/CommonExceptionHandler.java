@@ -1,7 +1,7 @@
 package com.sq.jk.common.exception;
 
-import com.sq.jk.common.util.Rs;
-import com.sq.jk.pojo.result.R;
+import com.sq.jk.common.util.JsonVos;
+import com.sq.jk.pojo.vo.JsonVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class CommonExceptionHandler {
     @ExceptionHandler(Throwable.class)
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-    public R handle(Throwable t) {
+    public JsonVo handle(Throwable t) {
         log.error("handle", t);
-        return Rs.error(t);
+        return JsonVos.error(t);
     }
 
     // @ExceptionHandler(Throwable.class)

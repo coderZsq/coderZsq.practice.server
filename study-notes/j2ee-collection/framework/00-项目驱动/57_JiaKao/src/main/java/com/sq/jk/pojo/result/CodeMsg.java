@@ -7,9 +7,9 @@ public enum CodeMsg {
     NOT_FOUND(404, "资源不存在"),
     INTERNAL_SERVER_ERROR(500, "服务器内部错误"),
 
-    OPERATE_SUCCESS(0, "操作成功"),
-    SAVE_SUCCESS(0, "保存成功"),
-    REMOVE_SUCCESS(0, "删除成功"),
+    OPERATE_OK(0, "操作成功"),
+    SAVE_OK(0, "保存成功"),
+    REMOVE_OK(0, "删除成功"),
 
     OPERATE_ERROR(40001, "操作失败"),
     SAVE_ERROR(40002, "保存失败"),

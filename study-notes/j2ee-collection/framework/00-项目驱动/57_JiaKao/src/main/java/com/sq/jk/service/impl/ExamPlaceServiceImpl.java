@@ -3,11 +3,13 @@ package com.sq.jk.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.sq.jk.common.enhance.MpPage;
 import com.sq.jk.common.enhance.MpQueryWrapper;
+import com.sq.jk.common.mapStruct.MapStructs;
 import com.sq.jk.mapper.ExamPlaceMapper;
-import com.sq.jk.pojo.dto.ProvinceDto;
-import com.sq.jk.pojo.po.DictItem;
 import com.sq.jk.pojo.po.ExamPlace;
-import com.sq.jk.pojo.query.ExamPlaceQuery;
+import com.sq.jk.pojo.vo.PageVo;
+import com.sq.jk.pojo.vo.list.ExamPlaceVo;
+import com.sq.jk.pojo.vo.list.ProvinceVo;
+import com.sq.jk.pojo.vo.req.page.ExamPlacePageReqVo;
 import com.sq.jk.service.ExamPlaceService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +22,7 @@ public class ExamPlaceServiceImpl extends ServiceImpl<ExamPlaceMapper, ExamPlace
 
     @Override
     @Transactional(readOnly = true)
-    public void list(ExamPlaceQuery query) {
+    public PageVo<ExamPlaceVo> list(ExamPlacePageReqVo query) {
         // 查询条件
         MpQueryWrapper<ExamPlace> wrapper = new MpQueryWrapper<>();
         wrapper.like(query.getKeyword(), ExamPlace::getName, ExamPlace::getAddress);
@@ -38,11 +40,13 @@ public class ExamPlaceServiceImpl extends ServiceImpl<ExamPlaceMapper, ExamPlace
         wrapper.orderByDesc(ExamPlace::getId);
 
         // 查询
-        baseMapper.selectPage(new MpPage<>(query), wrapper).updateQuery();
+        return baseMapper
+                .selectPage(new MpPage<>(query), wrapper)
+                .buildVo(MapStructs.INSTANCE::po2vo);
     }
 
     @Override
-    public List<ProvinceDto> listRegionExamPlaces() {
+    public List<ProvinceVo> listRegionExamPlaces() {
         return baseMapper.selectRegionExamPlaces();
     }
 }

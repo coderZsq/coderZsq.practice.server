@@ -3,6 +3,7 @@ package com.sq.jk.pojo.po;
 import com.sq.jk.common.foreign.anno.ForeignField;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -14,7 +15,7 @@ public class ExamPlaceCourse {
     //名称
     private String name;
     //价格
-    private Double price;
+    private BigDecimal price;
     //课程类型: 0是课程类型, 2是科目2, 3是科目3
     private Short type;
 

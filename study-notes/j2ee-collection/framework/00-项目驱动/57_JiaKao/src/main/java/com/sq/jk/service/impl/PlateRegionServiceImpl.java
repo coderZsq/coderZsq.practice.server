@@ -4,16 +4,19 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.promeg.pinyinhelper.Pinyin;
 import com.sq.jk.common.enhance.MpPage;
 import com.sq.jk.common.enhance.MpQueryWrapper;
+import com.sq.jk.common.mapStruct.MapStructs;
+import com.sq.jk.common.util.Streams;
 import com.sq.jk.mapper.PlateRegionMapper;
-import com.sq.jk.pojo.dto.ProvinceDto;
 import com.sq.jk.pojo.po.PlateRegion;
-import com.sq.jk.pojo.query.CityQuery;
-import com.sq.jk.pojo.query.ProvinceQuery;
+import com.sq.jk.pojo.vo.PageVo;
+import com.sq.jk.pojo.vo.list.PlateRegionVo;
+import com.sq.jk.pojo.vo.list.ProvinceVo;
+import com.sq.jk.pojo.vo.req.page.CityPageReqVo;
+import com.sq.jk.pojo.vo.req.page.ProvincePageReqVo;
 import com.sq.jk.service.PlateRegionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -40,7 +43,7 @@ public class PlateRegionServiceImpl extends ServiceImpl<PlateRegionMapper, Plate
     }
 
     @Override
-    public List<ProvinceDto> listRegions() {
+    public List<ProvinceVo> listRegions() {
         return baseMapper.selectRegions();
     }
 
@@ -56,7 +59,7 @@ public class PlateRegionServiceImpl extends ServiceImpl<PlateRegionMapper, Plate
 
     @Override
     @Transactional(readOnly = true)
-    public void listProvinces(ProvinceQuery query) {
+    public PageVo<PlateRegionVo> listProvinces(ProvincePageReqVo query) {
         MpQueryWrapper<PlateRegion> wrapper = new MpQueryWrapper<>();
         wrapper.like(query.getKeyword(),
                 PlateRegion::getName,
@@ -65,12 +68,14 @@ public class PlateRegionServiceImpl extends ServiceImpl<PlateRegionMapper, Plate
         // 所有省份
         wrapper.eq(PlateRegion::getParentId, 0);
         wrapper.orderByDesc(PlateRegion::getId);
-        baseMapper.selectPage(new MpPage<>(query), wrapper).updateQuery();
+        return baseMapper
+                .selectPage(new MpPage<>(query), wrapper)
+                .buildVo(MapStructs.INSTANCE::po2vo);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public void listCities(CityQuery query) {
+    public PageVo<PlateRegionVo> listCities(CityPageReqVo query) {
         MpQueryWrapper<PlateRegion> wrapper = new MpQueryWrapper<>();
         wrapper.like(query.getKeyword(),
                 PlateRegion::getName,
@@ -83,15 +88,17 @@ public class PlateRegionServiceImpl extends ServiceImpl<PlateRegionMapper, Plate
             wrapper.ne(PlateRegion::getParentId, 0);
         }
         wrapper.orderByDesc(PlateRegion::getId);
-        baseMapper.selectPage(new MpPage<>(query), wrapper).updateQuery();
+        return baseMapper
+                .selectPage(new MpPage<>(query), wrapper)
+                .buildVo(MapStructs.INSTANCE::po2vo);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<PlateRegion> listProvinces() {
+    public List<PlateRegionVo> listProvinces() {
         MpQueryWrapper<PlateRegion> wrapper = new MpQueryWrapper<>();
         wrapper.eq(PlateRegion::getParentId, 0);
         wrapper.orderByAsc(PlateRegion::getPinyin);
-        return baseMapper.selectList(wrapper);
+        return Streams.map(baseMapper.selectList(wrapper), MapStructs.INSTANCE::po2vo);
     }
 }

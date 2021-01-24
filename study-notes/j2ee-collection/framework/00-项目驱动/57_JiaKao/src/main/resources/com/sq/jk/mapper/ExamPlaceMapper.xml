@@ -3,15 +3,15 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sq.jk.mapper.ExamPlaceMapper">
-    <resultMap id="rmSelectRegionExamPlaces" type="ProvinceDto">
+    <resultMap id="rmSelectRegionExamPlaces" type="ProvinceVo">
         <id column="id" property="id"/>
         <result column="name" property="name"/>
         <result column="plate" property="plate"/>
-        <collection property="children" ofType="CityDto">
+        <collection property="children" ofType="CityVo">
             <id column="city_id" property="id"/>
             <result column="city_name" property="name"/>
             <result column="city_plate" property="plate"/>
-            <collection property="children" ofType="ExamPlace">
+            <collection property="children" ofType="ExamPlaceVo">
                 <id column="exam_place_id" property="id"/>
                 <result column="exam_place_name" property="name"/>
             </collection>
