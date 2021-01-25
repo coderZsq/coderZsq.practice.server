@@ -2,9 +2,8 @@ package com.sq.jk.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.sq.jk.common.enhance.MpPage;
-import com.sq.jk.common.enhance.MpQueryWrapper;
+import com.sq.jk.common.enhance.MpLambdaQueryWrapper;
 import com.sq.jk.common.mapStruct.MapStructs;
-import com.sq.jk.common.util.Streams;
 import com.sq.jk.mapper.DictTypeMapper;
 import com.sq.jk.pojo.po.DictType;
 import com.sq.jk.pojo.vo.PageVo;
@@ -21,7 +20,7 @@ public class DictTypeServiceImpl extends ServiceImpl<DictTypeMapper, DictType> i
     @Transactional(readOnly = true)
     public PageVo<DictTypeVo> list(DictTypePageReqVo query) {
         // 查询条件
-        MpQueryWrapper<DictType> wrapper = new MpQueryWrapper<>();
+        MpLambdaQueryWrapper<DictType> wrapper = new MpLambdaQueryWrapper<>();
 
         // 根据关键字查询
         wrapper.like(query.getKeyword(),

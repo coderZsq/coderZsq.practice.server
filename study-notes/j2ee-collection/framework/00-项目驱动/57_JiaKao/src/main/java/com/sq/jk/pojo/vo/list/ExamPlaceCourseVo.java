@@ -28,4 +28,10 @@ public class ExamPlaceCourseVo {
 
     @ApiModelProperty("考场id")
     private Integer placeId;
+
+    @ApiModelProperty("省份id")
+    private Integer provinceId;
+
+    @ApiModelProperty("城市id")
+    private Integer cityId;
 }

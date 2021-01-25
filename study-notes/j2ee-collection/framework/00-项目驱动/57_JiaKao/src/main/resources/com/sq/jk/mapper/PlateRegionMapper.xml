@@ -3,11 +3,11 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sq.jk.mapper.PlateRegionMapper">
-    <resultMap id="rmSelectRegions" type="ProvinceVo">
+    <resultMap id="rmSelectRegions" type="com.sq.jk.pojo.vo.list.ProvinceVo">
         <id column="id" property="id"/>
         <result column="name" property="name"/>
         <result column="plate" property="plate"/>
-        <collection property="children" ofType="CityVo">
+        <collection property="children" ofType="com.sq.jk.pojo.vo.list.CityVo">
             <id column="city_id" property="id"/>
             <result column="city_name" property="name"/>
             <result column="city_plate" property="plate"/>

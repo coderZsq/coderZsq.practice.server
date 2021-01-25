@@ -5,6 +5,7 @@ import com.sq.jk.common.util.Streams;
 import com.sq.jk.pojo.vo.PageVo;
 import com.sq.jk.pojo.vo.req.page.PageReqVo;
 
+import java.util.List;
 import java.util.function.Function;
 
 public class MpPage<T> extends Page<T> {
@@ -15,14 +16,22 @@ public class MpPage<T> extends Page<T> {
         this.reqVo = reqVo;
     }
 
-    public <R> PageVo<R> buildVo(Function<T, R> function) {
+    private <N> PageVo<N> commonBuildVo(List<N> data) {
         reqVo.setPage(getCurrent());
         reqVo.setSize(getSize());
 
-        PageVo<R> pageVo = new PageVo<>();
+        PageVo<N> pageVo = new PageVo<>();
         pageVo.setCount(getTotal());
         pageVo.setPages(getPages());
-        pageVo.setData(Streams.map(getRecords(), function));
+        pageVo.setData(data);
         return pageVo;
+    }
+
+    public PageVo<T> buildVo() {
+        return commonBuildVo(getRecords());
+    }
+
+    public <R> PageVo<R> buildVo(Function<T, R> function) {
+        return commonBuildVo(Streams.map(getRecords(), function));
     }
 }

@@ -3,7 +3,7 @@ package com.sq.jk.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.promeg.pinyinhelper.Pinyin;
 import com.sq.jk.common.enhance.MpPage;
-import com.sq.jk.common.enhance.MpQueryWrapper;
+import com.sq.jk.common.enhance.MpLambdaQueryWrapper;
 import com.sq.jk.common.mapStruct.MapStructs;
 import com.sq.jk.common.util.Streams;
 import com.sq.jk.mapper.PlateRegionMapper;
@@ -60,7 +60,7 @@ public class PlateRegionServiceImpl extends ServiceImpl<PlateRegionMapper, Plate
     @Override
     @Transactional(readOnly = true)
     public PageVo<PlateRegionVo> listProvinces(ProvincePageReqVo query) {
-        MpQueryWrapper<PlateRegion> wrapper = new MpQueryWrapper<>();
+        MpLambdaQueryWrapper<PlateRegion> wrapper = new MpLambdaQueryWrapper<>();
         wrapper.like(query.getKeyword(),
                 PlateRegion::getName,
                 PlateRegion::getPlate,
@@ -76,7 +76,7 @@ public class PlateRegionServiceImpl extends ServiceImpl<PlateRegionMapper, Plate
     @Override
     @Transactional(readOnly = true)
     public PageVo<PlateRegionVo> listCities(CityPageReqVo query) {
-        MpQueryWrapper<PlateRegion> wrapper = new MpQueryWrapper<>();
+        MpLambdaQueryWrapper<PlateRegion> wrapper = new MpLambdaQueryWrapper<>();
         wrapper.like(query.getKeyword(),
                 PlateRegion::getName,
                 PlateRegion::getPlate,
@@ -96,7 +96,7 @@ public class PlateRegionServiceImpl extends ServiceImpl<PlateRegionMapper, Plate
     @Override
     @Transactional(readOnly = true)
     public List<PlateRegionVo> listProvinces() {
-        MpQueryWrapper<PlateRegion> wrapper = new MpQueryWrapper<>();
+        MpLambdaQueryWrapper<PlateRegion> wrapper = new MpLambdaQueryWrapper<>();
         wrapper.eq(PlateRegion::getParentId, 0);
         wrapper.orderByAsc(PlateRegion::getPinyin);
         return Streams.map(baseMapper.selectList(wrapper), MapStructs.INSTANCE::po2vo);

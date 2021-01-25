@@ -2,7 +2,7 @@ package com.sq.jk.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.sq.jk.common.enhance.MpPage;
-import com.sq.jk.common.enhance.MpQueryWrapper;
+import com.sq.jk.common.enhance.MpLambdaQueryWrapper;
 import com.sq.jk.common.mapStruct.MapStructs;
 import com.sq.jk.mapper.ExamPlaceMapper;
 import com.sq.jk.pojo.po.ExamPlace;
@@ -24,7 +24,7 @@ public class ExamPlaceServiceImpl extends ServiceImpl<ExamPlaceMapper, ExamPlace
     @Transactional(readOnly = true)
     public PageVo<ExamPlaceVo> list(ExamPlacePageReqVo query) {
         // 查询条件
-        MpQueryWrapper<ExamPlace> wrapper = new MpQueryWrapper<>();
+        MpLambdaQueryWrapper<ExamPlace> wrapper = new MpLambdaQueryWrapper<>();
         wrapper.like(query.getKeyword(), ExamPlace::getName, ExamPlace::getAddress);
 
         // 城市
