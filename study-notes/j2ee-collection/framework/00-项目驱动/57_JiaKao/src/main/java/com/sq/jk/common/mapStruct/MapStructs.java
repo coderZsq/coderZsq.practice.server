@@ -36,5 +36,5 @@ public interface MapStructs {
     ExamPlaceCourse reqVo2po(ExamPlaceCourseReqVo reqVo);
     SysUser reqVo2po(SysUserReqVo reqVo);
     SysRole reqVo2po(SysRoleReqVo reqVo);
-    SysResource reqVo2po(SysResourceVo reqVo);
+    SysResource reqVo2po(SysResourceReqVo reqVo);
 }

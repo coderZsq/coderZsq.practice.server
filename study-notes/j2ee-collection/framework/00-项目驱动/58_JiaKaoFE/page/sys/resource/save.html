@@ -1,0 +1,69 @@
+<div class="layuimini-main">
+    <form id="save-form">
+        <div class="layui-form layuimini-form" lay-filter="save-form">
+            <input type="hidden" name="id">
+            <div class="layui-form-item">
+                <label class="layui-form-label required">名称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="name"
+                           lay-verify="required" lay-reqtext="名称不能为空"
+                           placeholder="请输入名称" class="layui-input" autofocus>
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label required">类型</label>
+                <div class="layui-input-block">
+                    <select name="type">
+                        <option value="0">目录</option>
+                        <option value="1">菜单</option>
+                        <option value="2">按钮</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">uri</label>
+                <div class="layui-input-block">
+                    <input type="text" name="uri"
+                           placeholder="请输入uri" class="layui-input" autofocus>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">权限</label>
+                <div class="layui-input-block">
+                    <input type="text" name="permission"
+                           placeholder="请输入权限" class="layui-input" autofocus>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">图标</label>
+                <div class="layui-input-block">
+                    <input type="text" name="icon"
+                           placeholder="请输入图标" class="layui-input" autofocus>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">序号</label>
+                <div class="layui-input-block">
+                    <input type="number" name="sn" value="0"
+                           placeholder="请输入序号" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">父资源</label>
+                <div class="layui-input-block">
+                    <select name="parentId">
+                        <option value>无父资源</option>
+                        <option value="1">123</option>
+                        <option value="2">4324324</option>
+                        <option value="3">5435435</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button type="button" class="layui-btn layui-btn-normal" lay-submit lay-filter="save-btn">保存</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
