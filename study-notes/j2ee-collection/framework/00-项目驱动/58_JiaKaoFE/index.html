@@ -119,8 +119,18 @@
         layui.miniAdmin.render(Page.adminOptions);
 
         $('.login-out').click(() => {
-            Layers.msgSuccess('退出登录成功', function () {
-                window.location = 'page/login.html';
+            // 发送请求给服务器: 退出登录
+            Ajaxs.loadPost({
+                uri: 'sysUsers/logout',
+                success: () => {
+                    // 清除客户端
+                    Datas.remove('user')
+
+                    // 提示
+                    Layers.msgSuccess('退出登录成功', () => {
+                        location.href = 'page/login.html';
+                    })
+                }
             })
         })
     })

@@ -11,8 +11,11 @@ public class LoginVo {
     private Integer id;
 
     @ApiModelProperty("昵称")
-    private Integer nickname;
+    private String nickname;
 
     @ApiModelProperty("用户名")
-    private Integer username;
+    private String username;
+
+    @ApiModelProperty("登录令牌")
+    private String token;
 }

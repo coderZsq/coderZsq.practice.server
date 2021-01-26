@@ -76,7 +76,8 @@
                 uri: 'sysUsers/login',
                 data: data.field,
                 success: (response) => {
-                    console.log(response.data)
+                    Datas.save(DataKey.USER, response.data)
+
                     location.href = '../index.html'
                 },
                 xhrFields: { // 需要跨域带上cookie

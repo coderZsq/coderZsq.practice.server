@@ -1,5 +1,6 @@
 package com.sq.jk.pojo.po;
 
+import com.sq.jk.common.foreign.anno.ForeignField;
 import lombok.Data;
 
 @Data
@@ -19,5 +20,6 @@ public class SysResource {
     //序号
     private Short sn;
     //父资源id
+    @ForeignField(SysResource.class)
     private Short parentId;
 }

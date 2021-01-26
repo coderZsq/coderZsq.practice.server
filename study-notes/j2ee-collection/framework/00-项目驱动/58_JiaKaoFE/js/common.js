@@ -127,7 +127,7 @@ class Ajaxs {
 
     static ajax(cfg) {
         cfg.url = Commons.url(cfg.uri)
-        // Commons._addTokenHeader(cfg)
+        Commons._addTokenHeader(cfg)
         $.ajax(cfg)
     }
 }
@@ -521,7 +521,7 @@ class Table extends Module {
         $.extend(cfg, this._cfg)
         cfg.elem = cfg.selector
 
-        // Commons._addTokenHeader(cfg)
+        Commons._addTokenHeader(cfg)
 
         this._innerTable = this._layuiTable().render(cfg)
         this._cfg = cfg
