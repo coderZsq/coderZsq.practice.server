@@ -85,7 +85,15 @@
                     {field: 'name', title: '名称', align: 'center'},
                     {field: 'price', title: '价格', align: 'center'},
                     {field: 'cover', title: '封面', align: 'center'},
-                    {field: 'type', title: '类型', align: 'center'},
+                    {field: 'type', title: '类型', align: 'center',
+                        templet: (d) => {
+                            switch (d.type) {
+                                case 0: return '合集'
+                                case 2: return '科目2'
+                                case 3: return '科目3'
+                            }
+                        }
+                    },
                     {field: 'intro', title: '简介', align: 'center'},
                     {title: '操作', minWidth: 150, toolbar: '#data-tool', align: "center"}
                 ]],

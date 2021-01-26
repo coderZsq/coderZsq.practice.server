@@ -22,5 +22,5 @@ public class SysUserVo {
     private Short status;
 
     @ApiModelProperty("最后一次登录的时间")
-    private Date loginTime;
+    private Long loginTime;
 }

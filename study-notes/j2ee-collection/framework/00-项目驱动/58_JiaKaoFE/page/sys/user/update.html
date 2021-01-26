@@ -1,0 +1,44 @@
+<div class="layuimini-main">
+    <form id="save-form">
+        <div class="layui-form layuimini-form" lay-filter="save-form">
+            <input type="hidden" name="id">
+            <div class="layui-form-item">
+                <label class="layui-form-label required">昵称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="nickname"
+                           lay-verify="required" lay-reqtext="昵称不能为空"
+                           placeholder="请输入昵称" class="layui-input" autofocus>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label required">用户名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="username"
+                           lay-verify="required" lay-reqtext="用户名不能为空"
+                           placeholder="请输入用户名" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">新密码</label>
+                <div class="layui-input-block">
+                    <input type="text" name="password"
+                           placeholder="若不想修改密码, 请不要填写此项" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">状态</label>
+                <div class="layui-input-block">
+                    <select name="status">
+                        <option value="0">正常</option>
+                        <option value="1">锁定</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button type="button" class="layui-btn layui-btn-normal" lay-submit lay-filter="save-btn">保存</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

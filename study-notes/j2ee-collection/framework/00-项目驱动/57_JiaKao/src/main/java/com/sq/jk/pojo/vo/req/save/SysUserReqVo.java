@@ -20,8 +20,7 @@ public class SysUserReqVo {
     @ApiModelProperty(value = "用户名 [不能为空]", required = true)
     private String username;
 
-    @NotBlank(message = "密码不能为空")
-    @ApiModelProperty(value = "密码 [不能为空]", required = true)
+    @ApiModelProperty(value = "密码 [如果为空, 说明不修改密码]")
     private String password;
 
     @Range(min = 0, max = 1, message = "状态只能是0和1")
