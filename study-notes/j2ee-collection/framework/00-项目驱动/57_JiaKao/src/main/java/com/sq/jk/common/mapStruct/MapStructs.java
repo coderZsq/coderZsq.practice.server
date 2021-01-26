@@ -1,6 +1,7 @@
 package com.sq.jk.common.mapStruct;
 
 import com.sq.jk.pojo.po.*;
+import com.sq.jk.pojo.vo.LoginVo;
 import com.sq.jk.pojo.vo.list.*;
 import com.sq.jk.pojo.vo.req.save.*;
 import org.mapstruct.Mapper;
@@ -26,6 +27,7 @@ public interface MapStructs {
             target = "loginTime",
             qualifiedBy = MapStructFormatter.Date2Millis.class)
     SysUserVo po2vo(SysUser po);
+    LoginVo po2loginVo(SysUser po);
     SysRoleVo po2vo(SysRole po);
     SysResourceVo po2vo(SysResource po);
 

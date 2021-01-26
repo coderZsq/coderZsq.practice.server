@@ -1,6 +1,5 @@
 package com.sq.jk.pojo.vo;
 
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -16,6 +15,4 @@ public class LoginVo {
 
     @ApiModelProperty("用户名")
     private Integer username;
-
-    // 1.57.43
 }

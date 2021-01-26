@@ -62,6 +62,29 @@
         window.jQuery = layui.$
         window.$ = layui.$
 
+        $('#captcha').click(function () {
+            $(this).attr('src', Commons.url('sysUsers/captcha?v=' + new Date().getTime()))
+        }).click()
+
+        new Form({
+            selector: '#login-form',
+            filter: 'login-form'
+        }).submit('login-btn', (data) => {
+            data.field.password = md5(data.field.password)
+
+            Ajaxs.loadPost({
+                uri: 'sysUsers/login',
+                data: data.field,
+                success: (response) => {
+                    console.log(response.data)
+                    location.href = '../index.html'
+                },
+                xhrFields: { // 需要跨域带上cookie
+                    withCredentials: true
+                }
+            })
+            return false
+        })
     })
 </script>
 </body>

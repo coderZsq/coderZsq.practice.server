@@ -12,6 +12,7 @@ import com.sq.jk.pojo.po.SysUser;
 import com.sq.jk.pojo.po.SysUserRole;
 import com.sq.jk.pojo.result.CodeMsg;
 import com.sq.jk.pojo.vo.JsonVo;
+import com.sq.jk.pojo.vo.LoginVo;
 import com.sq.jk.pojo.vo.PageVo;
 import com.sq.jk.pojo.vo.list.SysUserVo;
 import com.sq.jk.pojo.vo.req.LoginReqVo;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import springfox.documentation.spring.web.json.Json;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -73,7 +75,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public SysUserVo login(LoginReqVo reqVo) {
+    public LoginVo login(LoginReqVo reqVo) {
         // 根据用户名查询用户
         MpLambdaQueryWrapper<SysUser> wrapper = new MpLambdaQueryWrapper<>();
         wrapper.eq(SysUser::getUsername, reqVo.getUsername());
@@ -94,6 +96,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             return JsonVos.raise(CodeMsg.USER_LOCKED);
         }
 
-        return MapStructs.INSTANCE.po2vo(po);
+        // 更新登录时间
+        po.setLoginTime(new Date());
+        baseMapper.updateById(po);
+
+        return MapStructs.INSTANCE.po2loginVo(po);
     }
 }

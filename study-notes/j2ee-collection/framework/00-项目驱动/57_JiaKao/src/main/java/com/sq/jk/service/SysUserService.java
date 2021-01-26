@@ -3,6 +3,7 @@ package com.sq.jk.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.sq.jk.pojo.po.SysUser;
 import com.sq.jk.pojo.vo.DataJsonVo;
+import com.sq.jk.pojo.vo.LoginVo;
 import com.sq.jk.pojo.vo.PageVo;
 import com.sq.jk.pojo.vo.list.SysUserVo;
 import com.sq.jk.pojo.vo.req.LoginReqVo;
@@ -14,5 +15,5 @@ public interface SysUserService extends IService<SysUser> {
 
     boolean saveOrUpdate(SysUserReqVo reqVo);
 
-    SysUserVo login(LoginReqVo reqVo);
+    LoginVo login(LoginReqVo reqVo);
 }
