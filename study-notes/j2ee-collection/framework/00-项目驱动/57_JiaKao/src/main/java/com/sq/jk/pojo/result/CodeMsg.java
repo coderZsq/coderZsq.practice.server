@@ -16,7 +16,8 @@ public enum CodeMsg {
     REMOVE_ERROR(40003, "删除失败"),
 
     WRONG_USERNAME(50001, "用户名不存在"),
-    WRONG_PASSWORD(50002, "密码错误");
+    WRONG_PASSWORD(50002, "密码错误"),
+    USER_LOCKED(50003, "用户被锁定, 无法正常登录");
 
     private final int code;
     private final String msg;
