@@ -73,11 +73,11 @@
                     },
                     {title: '操作', minWidth: 150, toolbar: '#data-tool', align: "center"}
                 ]],
-                saveUri: 'sysUsers/save',
+                saveUri: 'sysUsers/saveUser',
                 removeUri: 'sysUsers/remove',
                 savePageUri: 'page/sys/user/save.html',
                 updatePageUri: 'page/sys/user/update.html'
-            });
+            })
         }
 
         _removeTitle(data) {
@@ -85,13 +85,62 @@
         }
 
         _onSumbit(field) {
+            // 密码
             if (field.password) { // 非空串
                 // MD5加密
                 field.password = md5(field.password)
             } else {
                 field.password = undefined
             }
-            return field;
+
+            // 角色
+            field.roleIds = this._roleTransfer.selectedValue().join(',')
+            return field
+        }
+
+        _initSaveForm() {
+            super._initSaveForm()
+
+            this._loadRoles()
+        }
+
+        _loadRoles() {
+            if (this._roles) {
+                this._buildRoles()
+                return
+            }
+            Ajaxs.get({
+                uri: 'sysRoles/list',
+                success: (response) => {
+                    this._roles = response.data
+                    this._buildRoles()
+                }
+            })
+        }
+
+        _buildRoles() {
+            this._roleTransfer = new Transfer({
+                selector: '#role-transfer',
+                title: ['所有角色', '拥有角色'],
+                height: '300px'
+            })
+            this._roleTransfer.data(this._roles, (o) => {
+                return {
+                    val: o.id,
+                    text: o.name
+                }
+            })
+            if (this._editData) { // 编辑页面
+                Ajaxs.get({
+                    uri: 'sysRoles/ids',
+                    data: {
+                        userId: this._editData.id
+                    },
+                    success: (response) => {
+                        this._roleTransfer.val(response.data)
+                    }
+                })
+            }
         }
     }
 

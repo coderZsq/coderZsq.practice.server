@@ -16,6 +16,40 @@ class Commons {
         const newObj = (obj.constructor === Array) ? [] : {}
         return $.extend(true, newObj, obj)
     }
+
+    static _addTokenHeader(cfg) {
+        // 取出token
+        const token = Datas.get(DataKey.USER, DataKey.TOKEN)
+        if (token) {
+            if (!cfg.headers) {
+                cfg.headers = {}
+            }
+            // 将token放到请求头
+            cfg.headers[DataKey.TOKEN_HEADER] = token
+        }
+    }
+}
+
+/********************* 数据 ***********************/
+class Datas {
+    static TABLE = 'table'
+
+    static save(key, value) {
+        layui.data(this.TABLE, {key, value})
+    }
+
+    static get() {
+        let ret = layui.data(this.TABLE)
+        for (let i = 0; i < arguments.length; i++) {
+            if (!ret) return null
+            ret = ret[arguments[i]]
+        }
+        return ret
+    }
+
+    static remove(key) {
+        layui.data(this.TABLE, {key, value: null})
+    }
 }
 
 /********************* 请求 ***********************/
@@ -34,54 +68,51 @@ class Ajaxs {
         // 弹框
         const loadIdx = Layers.load()
 
-        // 请求
-        this.ajax({
-            type: cfg.type,
-            uri: cfg.uri,
-            data: cfg.data,
-            processData: cfg.processData,
-            contentType: cfg.contentType,
-            success: (data) => {
-                // 完全自定义success
-                if ($.isFunction(cfg.success)) {
-                    cfg.success(data)
-                    return
-                }
-                // 如果传的是字符串
-                if (Commons.isString(cfg.success)) {
-                    Layers.msgSuccess(data.msg || cfg.success)
-                    return
-                }
-                // 如果传的是其他对象
-                const subtitle = cfg.success && cfg.success.title
-                const title = data.msg || subtitle || '操作成功'
-                Layers.msgSuccess(title, () => {
-                    cfg.success && cfg.success.after && cfg.success.after(data)
-                })
-            },
-            error: (req) => {
-                if ($.isFunction(cfg.error)) {
-                    cfg.error(req)
-                    return
-                }
-                const title = req.responseJSON && req.responseJSON.msg
-                // 如果传的是字符串
-                if (Commons.isString(cfg.error)) {
-                    Layers.alertError(title || cfg.error)
-                    return
-                }
-                // 如果传的是其他对象
-                const subtitle = cfg.error && cfg.error.title
-                const idx = Layers.alertError(title || subtitle || '操作失败', () => {
-                    Layers.close(idx)
-                    cfg.error && cfg.error.after && cfg.error.after(req)
-                })
-            },
-            complete: (req) => {
-                Layers.close(loadIdx)
-                cfg.complete && cfg.complete(req)
+        // 配置
+        const newCfg = $.extend({}, cfg)
+        newCfg.success = (data) => {
+            // 完全自定义success
+            if ($.isFunction(cfg.success)) {
+                cfg.success(data)
+                return
             }
-        })
+            // 如果传的是字符串
+            if (Commons.isString(cfg.success)) {
+                Layers.msgSuccess(data.msg || cfg.success)
+                return
+            }
+            // 如果传的是其他对象
+            const subtitle = cfg.success && cfg.success.title
+            const title = data.msg || subtitle || '操作成功'
+            Layers.msgSuccess(title, () => {
+                cfg.success && cfg.success.after && cfg.success.after(data)
+            })
+        }
+        newCfg.error = (req) => {
+            if ($.isFunction(cfg.error)) {
+                cfg.error(req)
+                return
+            }
+            const title = req.responseJSON && req.responseJSON.msg
+            // 如果传的是字符串
+            if (Commons.isString(cfg.error)) {
+                Layers.alertError(title || cfg.error)
+                return
+            }
+            // 如果传的是其他对象
+            const subtitle = cfg.error && cfg.error.title
+            const idx = Layers.alertError(title || subtitle || '操作失败', () => {
+                Layers.close(idx)
+                cfg.error && cfg.error.after && cfg.error.after(req)
+            })
+        }
+        newCfg.complete = (req) => {
+            Layers.close(loadIdx)
+            cfg.complete && cfg.complete(req)
+        }
+
+        // 请求
+        this.ajax(newCfg)
     }
 
     static get(cfg) {
@@ -96,6 +127,7 @@ class Ajaxs {
 
     static ajax(cfg) {
         cfg.url = Commons.url(cfg.uri)
+        // Commons._addTokenHeader(cfg)
         $.ajax(cfg)
     }
 }
@@ -104,6 +136,7 @@ class Ajaxs {
 class Layers {
     static _MSG_TIME = 1000
     static _SHADE = [0.5, '#fff']
+    static _pageCache = {}
 
     static index() {
         return layui.layer.index
@@ -147,7 +180,11 @@ class Layers {
 
     // open
     static openUri(uri, cfg) {
-        const content = layui.miniPage.getHrefContent(uri)
+        let content = this._pageCache[uri]
+        if (!content) {
+            content = layui.miniPage.getHrefContent(uri)
+            this._pageCache[uri] = content
+        }
         return this.open(content, cfg)
     }
 
@@ -270,17 +307,41 @@ class Select extends Module {
     }
 }
 
+class Tree extends Module {
+    // selector/data/showCheckbox
+    constructor(cfg) {
+        super(cfg)
+
+        this._cfg.id = cfg.selector
+        layui.tree.render({
+            elem: cfg.selector,
+            id: cfg.selector,
+            data: cfg.data,
+            showCheckbox: cfg.showCheckbox || false
+        })
+    }
+
+    selectedData() {
+        return layui.tree.getChecked(this._cfg.id)
+    }
+
+    val(selectedIds) {
+        layui.tree.setChecked(this._cfg.id, selectedIds)
+    }
+}
+
 class Transfer extends Module {
-    // id/selector/title/parseData
+    // selector/title/height
     constructor(cfg) {
         super(cfg)
 
         layui.transfer.render({
-            id: cfg.id,
+            id: cfg.selector,
             elem: cfg.selector,
             title: cfg.title,
             height: 300
         })
+        this._cfg.id = cfg.selector
     }
 
     data(data, build) {
@@ -315,7 +376,7 @@ class Transfer extends Module {
 }
 
 class Form extends Module {
-    // selector
+    // selector/filter
     constructor(cfg) {
         super(cfg)
         this._$form = $(cfg.selector)
@@ -432,9 +493,11 @@ class Table extends Module {
                 // 隐藏checkbox
                 $('.laytable-cell-checkbox').hide()
             },
-            error: () => {
+            error: (error) => {
                 // 隐藏checkbox
                 $('.laytable-cell-checkbox').hide()
+                const title = error.responseJSON.msg || '操作失败'
+                Layers.alertError(title)
             }
         }
 
@@ -456,6 +519,10 @@ class Table extends Module {
         const cfg = this._commonCfg()
         cfg.url = Commons.url(this._cfg.uri)
         $.extend(cfg, this._cfg)
+        cfg.elem = cfg.selector
+
+        // Commons._addTokenHeader(cfg)
+
         this._innerTable = this._layuiTable().render(cfg)
         this._cfg = cfg
     }
@@ -477,11 +544,11 @@ class TreeTable extends Table {
                     return
                 }
                 // 隐藏checkbox
-                $('.laytable-cell-checkbox').hide()
+                $('.ew-tree-table-cell-content .layui-form-checkbox').hide()
             },
             error: () => {
                 // 隐藏checkbox
-                $('.laytable-cell-checkbox').hide()
+                $('.ew-tree-table-cell-content .layui-form-checkbox').hide()
             }
         }
     }
@@ -571,8 +638,8 @@ class ListPage extends Page {
     _initTable() {
         const cfg = {
             id: 'data-table',
-            elem: '#data-table',
-            toolbar: '#data-toolbar',
+            selector: '#data-table',
+            toolbar: '#data-toolbar'
         }
         $.extend(cfg, this._cfg)
         if (cfg.tree) {
@@ -742,8 +809,12 @@ class ListPage extends Page {
                 processData = false
                 contentType = false
             }
+            let uri = this._cfg.saveUri
+            if (this._editData && this._cfg.updateUri) {
+                uri = this._cfg.updateUri
+            }
             Ajaxs.loadPost({
-                uri: this._cfg.saveUri,
+                uri,
                 data: formData,
                 processData,
                 contentType,
@@ -864,7 +935,7 @@ class ImageInput extends Module {
         this._$container.attr('data-provides', 'imageinput')
 
         const $placeholderBox = $('<div class="imageinput-new thumbnail">')
-        this._$placeholder = $('<img src="images/noimage.png">')
+        this._$placeholder = $(`<img src="${this._cfg.placeholderSrc}">`)
         $placeholderBox.append(this._$placeholder)
 
         this._$container.append($placeholderBox)

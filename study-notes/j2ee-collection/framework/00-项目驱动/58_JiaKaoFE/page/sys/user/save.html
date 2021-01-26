@@ -19,11 +19,10 @@
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label required">密码</label>
+                <label class="layui-form-label">新密码</label>
                 <div class="layui-input-block">
                     <input type="text" name="password"
-                           lay-verify="required" lay-reqtext="密码不能为空"
-                           placeholder="请输入密码" class="layui-input">
+                           placeholder="若不想修改密码，请不要填写此项" class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item layui-form-text">
@@ -33,6 +32,12 @@
                         <option value="0">正常</option>
                         <option value="1">锁定</option>
                     </select>
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">角色</label>
+                <div class="layui-input-block">
+                    <div id="role-transfer"></div>
                 </div>
             </div>
             <div class="layui-form-item">

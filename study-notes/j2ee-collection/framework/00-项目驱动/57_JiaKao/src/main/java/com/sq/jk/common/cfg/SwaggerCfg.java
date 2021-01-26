@@ -32,21 +32,30 @@ public class SwaggerCfg implements InitializingBean {
     private boolean enable;
 
     @Bean
-    public Docket examDocket(Environment environment) {
+    public Docket sysDocket(Environment environment) {
         return groupDocket(
-                "02_考试",
-                "/(exam.*)",
-                "考试模块文档",
-                "考场, 科1科4, 科2科3");
+                "01_系统",
+                "/(sys.*)",
+                "系统模块文档",
+                "用户, 角色, 资源");
     }
 
     @Bean
     public Docket metadataDocket(Environment environment) {
         return groupDocket(
-                "01_元数据",
+                "02_元数据",
                 "/(dict.*|plate.*)",
                 "元数据模块文档",
                 "数据字典类型, 数据字典条目, 省份, 城市");
+    }
+
+    @Bean
+    public Docket examDocket(Environment environment) {
+        return groupDocket(
+                "03_考试",
+                "/(exam.*)",
+                "考试模块文档",
+                "考场, 科1科4, 科2科3");
     }
 
     private Docket groupDocket(String group,

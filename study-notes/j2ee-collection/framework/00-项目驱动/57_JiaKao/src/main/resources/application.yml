@@ -9,6 +9,8 @@ spring:
 
 mybatis-plus:
   type-aliases-package: com.sq.jk.pojo
+  configuration:
+    use-generated-keys: true
   global-config:
     db-config:
       id-type: auto

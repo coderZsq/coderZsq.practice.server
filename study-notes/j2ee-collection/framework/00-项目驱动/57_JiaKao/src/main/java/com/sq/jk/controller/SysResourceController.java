@@ -11,6 +11,7 @@ import com.sq.jk.pojo.vo.req.page.SysResourcePageReqVo;
 import com.sq.jk.pojo.vo.req.page.SysUserPageReqVo;
 import com.sq.jk.pojo.vo.req.save.SysResourceReqVo;
 import com.sq.jk.service.SysResourceService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,7 @@ import java.util.function.Function;
 
 @RestController
 @RequestMapping("/sysResources")
+@Api(tags = "资源")
 public class SysResourceController extends BaseController<SysResource, SysResourceReqVo> {
     @Autowired
     private SysResourceService service;

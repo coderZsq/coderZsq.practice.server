@@ -26,4 +26,7 @@ public class SysUserReqVo {
     @Range(min = 0, max = 1, message = "状态只能是0和1")
     @ApiModelProperty("状态 [0是正常, 1是锁定, 默认0]")
     private Short status;
+
+    @ApiModelProperty("角色id [多个id之间用逗号, 隔开]")
+    private String roleIds;
 }
