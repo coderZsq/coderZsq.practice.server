@@ -26,7 +26,7 @@
             p.province_id,
             p.city_id
         FROM exam_place_course c
-            LEFT JOIN exam_place p ON p.id = c.place_id
+            JOIN exam_place p ON p.id = c.place_id
         ${ew.customSqlSegment}
 </select>
 </mapper>

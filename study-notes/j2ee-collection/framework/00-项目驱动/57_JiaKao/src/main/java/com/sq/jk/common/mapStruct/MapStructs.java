@@ -19,10 +19,16 @@ public interface MapStructs {
     ExamPlaceVo po2vo(ExamPlace po);
     PlateRegionVo po2vo(PlateRegion po);
     ExamPlaceCourseVo po2vo(ExamPlaceCourse po);
+    SysUserVo po2vo(SysUser po);
+    SysRoleVo po2vo(SysRole po);
+    SysResourceVo po2vo(SysResource po);
 
     DictItem reqVo2po(DictItemReqVo reqVo);
     DictType reqVo2po(DictTypeReqVo reqVo);
     ExamPlace reqVo2po(ExamPlaceReqVo reqVo);
     PlateRegion reqVo2po(PlateRegionReqVo reqVo);
     ExamPlaceCourse reqVo2po(ExamPlaceCourseReqVo reqVo);
+    SysUser reqVo2po(SysUserReqVo reqVo);
+    SysRole reqVo2po(SysRoleReqVo reqVo);
+    SysResource reqVo2po(SysResourceVo reqVo);
 }

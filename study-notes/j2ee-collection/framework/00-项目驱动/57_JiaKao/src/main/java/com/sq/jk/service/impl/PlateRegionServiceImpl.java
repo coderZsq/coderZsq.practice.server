@@ -43,6 +43,7 @@ public class PlateRegionServiceImpl extends ServiceImpl<PlateRegionMapper, Plate
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ProvinceVo> listRegions() {
         return baseMapper.selectRegions();
     }

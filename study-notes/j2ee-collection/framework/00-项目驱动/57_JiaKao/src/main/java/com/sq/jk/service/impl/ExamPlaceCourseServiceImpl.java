@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ExamPlaceCourseServiceImpl extends ServiceImpl<ExamPlaceCourseMapper, ExamPlaceCourse> implements ExamPlaceCourseService {
 
     @Override
+    @Transactional(readOnly = true)
     public PageVo<ExamPlaceCourseVo> list(ExamPlaceCoursePageReqVo query) {
         MpQueryWrapper<ExamPlaceCourseVo> wrapper = new MpQueryWrapper<>();
         Integer placeId = query.getPlaceId();
@@ -26,15 +27,15 @@ public class ExamPlaceCourseServiceImpl extends ServiceImpl<ExamPlaceCourseMappe
         Short type = query.getType();
         // 类型
         if (type != null && type >= 0) {
-            wrapper.eq("type", type);
+            wrapper.eq("c.type", type);
         }
         // 考场 -> 城市 -> 省份
         if (placeId != null && placeId > 0) {
-            wrapper.eq("place_id", placeId);
+            wrapper.eq("c.place_id", placeId);
         } else if (cityId != null && cityId > 0) {
-            wrapper.eq("city_id", cityId);
+            wrapper.eq("p.city_id", cityId);
         } else if (provinceId != null && provinceId > 0) {
-            wrapper.eq("province_id", provinceId);
+            wrapper.eq("p.province_id", provinceId);
         }
         // 关键词
         wrapper.like(query.getKeyword(), "c.name", "c.intro");
