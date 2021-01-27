@@ -6,14 +6,6 @@ import com.sq.jk.pojo.vo.DataJsonVo;
 import com.sq.jk.pojo.vo.JsonVo;
 import com.sq.jk.pojo.vo.PageJsonVo;
 import com.sq.jk.pojo.vo.PageVo;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.BindException;
-import org.springframework.validation.ObjectError;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import java.util.List;
-import java.util.stream.Collectors;
 
 
 public class JsonVos {
@@ -21,39 +13,47 @@ public class JsonVos {
         return new JsonVo(false, msg);
     }
 
+    public static JsonVo error(CodeMsg msg) {
+        return new JsonVo(msg);
+    }
+
+    public static JsonVo error(int code, String msg) {
+        return new JsonVo(code, msg);
+    }
+
     public static JsonVo error() {
         return new JsonVo(false);
     }
 
-    public static JsonVo error(Throwable t) {
-        if (t instanceof CommonException) {
-            CommonException ce = (CommonException) t;
-            return new JsonVo(ce.getCode(), ce.getMessage());
-        } else if (t instanceof BindException) {
-            BindException be = (BindException) t;
-            List<ObjectError> errors = be.getBindingResult().getAllErrors();
-            // 函数式编程的方式: stream
-            List<String> defaultMsgs = errors
-                    .stream().map(ObjectError::getDefaultMessage)
-                    .collect(Collectors.toList());
-            // List<String> defaultMsgs = new ArrayList<>(errors.size());
-            // for (ObjectError error : errors) {
-            //     defaultMsgs.add(error.getDefaultMessage());
-            // }
-            String msg = StringUtils.collectionToDelimitedString(defaultMsgs, ", ");
-            return error(msg);
-        } else if (t instanceof ConstraintViolationException) {
-            ConstraintViolationException cve = (ConstraintViolationException) t;
-            List<String> msgs = cve.getConstraintViolations()
-                    .stream().map(ConstraintViolation::getMessage)
-                    .collect(Collectors.toList());
-            String msg = StringUtils.collectionToDelimitedString(msgs, ", ");
-            return error(msg);
-        } else { // 其他异常
-            // return error(t.getMessage());
-            return error();
-        }
-    }
+    // public static JsonVo error(Throwable t) {
+    //     if (t instanceof CommonException) {
+    //         CommonException ce = (CommonException) t;
+    //         return new JsonVo(ce.getCode(), ce.getMessage());
+    //     } else if (t instanceof BindException) {
+    //         BindException be = (BindException) t;
+    //         List<ObjectError> errors = be.getBindingResult().getAllErrors();
+    //         // 函数式编程的方式: stream
+    //         List<String> defaultMsgs = errors
+    //                 .stream().map(ObjectError::getDefaultMessage)
+    //                 .collect(Collectors.toList());
+    //         // List<String> defaultMsgs = new ArrayList<>(errors.size());
+    //         // for (ObjectError error : errors) {
+    //         //     defaultMsgs.add(error.getDefaultMessage());
+    //         // }
+    //         String msg = StringUtils.collectionToDelimitedString(defaultMsgs, ", ");
+    //         return error(msg);
+    //     } else if (t instanceof ConstraintViolationException) {
+    //         ConstraintViolationException cve = (ConstraintViolationException) t;
+    //         List<String> msgs = cve.getConstraintViolations()
+    //                 .stream().map(ConstraintViolation::getMessage)
+    //                 .collect(Collectors.toList());
+    //         String msg = StringUtils.collectionToDelimitedString(msgs, ", ");
+    //         return error(msg);
+    //     } else { // 其他异常
+    //         // return error(t.getMessage());
+    //         return error();
+    //     }
+    // }
 
     public static JsonVo ok(CodeMsg msg) {
         return new JsonVo(msg);

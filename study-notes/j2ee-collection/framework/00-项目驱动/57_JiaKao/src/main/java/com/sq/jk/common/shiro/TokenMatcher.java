@@ -7,6 +7,6 @@ import org.apache.shiro.authc.credential.CredentialsMatcher;
 public class TokenMatcher implements CredentialsMatcher {
     @Override
     public boolean doCredentialsMatch(AuthenticationToken token, AuthenticationInfo info) {
-        return false;
+        return true;
     }
 }

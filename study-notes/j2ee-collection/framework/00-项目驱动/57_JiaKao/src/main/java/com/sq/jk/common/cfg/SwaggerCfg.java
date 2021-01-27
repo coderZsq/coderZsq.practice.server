@@ -1,5 +1,6 @@
 package com.sq.jk.common.cfg;
 
+import com.sq.jk.common.shiro.TokenFilter;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,7 +74,7 @@ public class SwaggerCfg implements InitializingBean {
 
     private Docket basicDocket() {
         RequestParameter token = new RequestParameterBuilder()
-                .name("Token")
+                .name(TokenFilter.HEADER_TOKEN)
                 .description("用户登录令牌")
                 .in(ParameterType.HEADER)
                 .build();

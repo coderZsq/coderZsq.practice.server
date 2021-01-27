@@ -3,6 +3,7 @@ package com.sq.jk.controller;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.sq.jk.common.cache.Caches;
 import com.sq.jk.common.mapStruct.MapStructs;
+import com.sq.jk.common.shiro.TokenFilter;
 import com.sq.jk.common.util.JsonVos;
 import com.sq.jk.pojo.po.SysUser;
 import com.sq.jk.pojo.result.CodeMsg;
@@ -18,6 +19,7 @@ import com.sq.jk.service.SysUserService;
 import com.wf.captcha.utils.CaptchaUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,7 +52,7 @@ public class SysUserController extends BaseController<SysUser, SysUserReqVo> {
 
     @PostMapping("/logout")
     @ApiOperation("退出登录")
-    public JsonVo logout(@RequestHeader("Token") String token) {
+    public JsonVo logout(@RequestHeader(TokenFilter.HEADER_TOKEN) String token) {
         Caches.removeToken(token);
         return JsonVos.ok();
     }
@@ -68,6 +70,7 @@ public class SysUserController extends BaseController<SysUser, SysUserReqVo> {
 
     @GetMapping
     @ApiOperation(value = "分页查询")
+    @RequiresPermissions("sysUser:list")
     public PageJsonVo<SysUserVo> list(SysUserPageReqVo reqVo) {
         return JsonVos.ok(service.list(reqVo));
     }

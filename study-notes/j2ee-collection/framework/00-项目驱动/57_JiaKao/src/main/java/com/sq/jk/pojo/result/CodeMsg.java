@@ -18,7 +18,11 @@ public enum CodeMsg {
     WRONG_USERNAME(50001, "用户名不存在"),
     WRONG_PASSWORD(50002, "密码错误"),
     USER_LOCKED(50003, "用户被锁定, 无法正常登录"),
-    WRONG_CAPTCHA(50004, "验证码错误");
+    WRONG_CAPTCHA(50004, "验证码错误"),
+
+    NO_TOKEN(60001, "没有Token, 请登录"),
+    TOKEN_EXPIRED(60002, "Token过期, 请重新登录"),
+    NO_PERMISSION(60003, "没有相关的操作权限");
 
     private final int code;
     private final String msg;

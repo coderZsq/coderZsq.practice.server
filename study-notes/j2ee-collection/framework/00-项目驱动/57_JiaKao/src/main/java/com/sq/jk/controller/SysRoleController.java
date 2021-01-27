@@ -15,6 +15,7 @@ import com.sq.jk.pojo.vo.req.save.SysRoleReqVo;
 import com.sq.jk.service.SysRoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,6 +45,7 @@ public class SysRoleController extends BaseController<SysRole, SysRoleReqVo> {
 
     @GetMapping
     @ApiOperation(value = "分页查询")
+    @RequiresPermissions("sysRole:list")
     public PageJsonVo<SysRoleVo> list(SysRolePageReqVo reqVo) {
         return JsonVos.ok(service.list(reqVo));
     }

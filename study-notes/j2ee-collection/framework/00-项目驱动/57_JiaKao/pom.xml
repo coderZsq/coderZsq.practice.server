@@ -128,11 +128,5 @@
             <artifactId>spring-boot-devtools</artifactId>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.example</groupId>
-            <artifactId>52_oldjiakao</artifactId>
-            <version>1.0.0</version>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
 </project>
