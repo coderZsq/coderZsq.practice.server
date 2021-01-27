@@ -2,13 +2,38 @@ package com.sq;
 
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 
+import java.util.List;
+
 public class CustomRealm extends AuthorizingRealm {
+    /**
+     * 当主体 (subject) 要进行权限\角色判断时, 就会调用
+     *
+     * 开发者需要在这个方法中干啥? [一般]
+     * 根据用户名查询用户的角色\权限信息
+     *
+     * @return 用户的角色\权限信息
+     */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        return null;
+        String username = (String) principals.getPrimaryPrincipal();
+
+        SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+
+        List<String> roles = Dbs.getRoles(username);
+        if (roles != null) {
+            info.addRoles(roles);
+        }
+
+        List<String> permissions = Dbs.getPermissions(username);
+        if (permissions != null) {
+            info.addStringPermissions(permissions);
+        }
+
+        return info;
     }
 
     /**
@@ -18,7 +43,7 @@ public class CustomRealm extends AuthorizingRealm {
      * 根据用户名查询用户的具体信息 (用户名, 密码)
      *
      * @param token subject.login()登录时传进来的token
-     * @return 用户名的具体信息
+     * @return 用户名的具体信息 (用户名, 密码)
      */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
