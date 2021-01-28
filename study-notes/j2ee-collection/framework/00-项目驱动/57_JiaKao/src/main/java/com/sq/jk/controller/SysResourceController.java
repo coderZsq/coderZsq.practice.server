@@ -7,6 +7,7 @@ import com.sq.jk.common.util.Streams;
 import com.sq.jk.pojo.po.SysResource;
 import com.sq.jk.pojo.vo.DataJsonVo;
 import com.sq.jk.pojo.vo.PageJsonVo;
+import com.sq.jk.pojo.vo.list.SysResourceTreeVo;
 import com.sq.jk.pojo.vo.list.SysResourceVo;
 import com.sq.jk.pojo.vo.req.page.SysResourcePageReqVo;
 import com.sq.jk.pojo.vo.req.save.SysResourceReqVo;
@@ -40,7 +41,14 @@ public class SysResourceController extends BaseController<SysResource, SysResour
         return JsonVos.ok(Streams.map(service.list(), MapStructs.INSTANCE::po2vo));
     }
 
+    @GetMapping("/listTree")
+    @ApiOperation("查询所有 (树状结构展示)")
+    public DataJsonVo<List<SysResourceTreeVo>> listTree() {
+        return JsonVos.ok(service.listTree());
+    }
+
     @GetMapping("/listParents")
+    @ApiOperation("查询所有的父资源 (目录, 菜单)")
     public DataJsonVo<List<SysResourceVo>> listParents() {
         return JsonVos.ok(service.listParents());
     }

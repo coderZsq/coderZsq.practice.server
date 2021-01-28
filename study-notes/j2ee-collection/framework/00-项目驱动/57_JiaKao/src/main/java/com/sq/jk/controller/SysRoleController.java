@@ -5,7 +5,9 @@ import com.sq.jk.common.mapStruct.MapStructs;
 import com.sq.jk.common.util.JsonVos;
 import com.sq.jk.common.util.Streams;
 import com.sq.jk.pojo.po.SysRole;
+import com.sq.jk.pojo.result.CodeMsg;
 import com.sq.jk.pojo.vo.DataJsonVo;
+import com.sq.jk.pojo.vo.JsonVo;
 import com.sq.jk.pojo.vo.PageJsonVo;
 import com.sq.jk.pojo.vo.list.SysRoleVo;
 import com.sq.jk.pojo.vo.list.SysUserVo;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.function.Function;
 
@@ -48,6 +51,15 @@ public class SysRoleController extends BaseController<SysRole, SysRoleReqVo> {
     @RequiresPermissions("sysRole:list")
     public PageJsonVo<SysRoleVo> list(SysRolePageReqVo reqVo) {
         return JsonVos.ok(service.list(reqVo));
+    }
+
+    @Override
+    public JsonVo save(SysRoleReqVo reqVo) {
+        if (service.saveOrUpdate(reqVo)) {
+            return JsonVos.ok(CodeMsg.SAVE_OK);
+        } else {
+            return JsonVos.raise(CodeMsg.SAVE_ERROR);
+        }
     }
 
     @Override

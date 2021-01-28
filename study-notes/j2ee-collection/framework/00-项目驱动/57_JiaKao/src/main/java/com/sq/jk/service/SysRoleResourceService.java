@@ -5,4 +5,5 @@ import com.sq.jk.pojo.po.SysRoleResource;
 
 public interface SysRoleResourceService extends IService<SysRoleResource> {
 
+    boolean removeByRoleId(Short roleId);
 }

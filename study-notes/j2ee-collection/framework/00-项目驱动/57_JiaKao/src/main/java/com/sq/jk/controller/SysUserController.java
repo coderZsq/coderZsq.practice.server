@@ -57,10 +57,8 @@ public class SysUserController extends BaseController<SysUser, SysUserReqVo> {
         return JsonVos.ok();
     }
 
-    @PostMapping("/saveUser")
-    @ApiOperation("添加或更新 [包含角色信息]")
-
-    public JsonVo saveUser(SysUserReqVo reqVo) {
+    @Override
+    public JsonVo save(SysUserReqVo reqVo) {
         if (service.saveOrUpdate(reqVo)) {
             return JsonVos.ok(CodeMsg.SAVE_OK);
         } else {

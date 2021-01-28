@@ -63,6 +63,85 @@
                 savePageUri: 'page/sys/role/save.html',
             });
         }
+
+        _initSaveForm() {
+            super._initSaveForm();
+
+            this._loadResources()
+        }
+
+        _loadResources() {
+            if (this._resources) {
+                this._buildResources()
+                return
+            }
+            Ajaxs.get({
+                uri: 'sysResources/listTree',
+                success: (response) => {
+                    this._resources = response.data
+                    this._buildResources()
+                }
+            })
+        }
+
+        _buildResources() {
+            /*
+             [
+                {
+                   id: 1,
+                   title: '一级1',
+                   checked: true,
+                   spread: true,
+                   children: [
+                       {
+                          id: 1,
+                          title: '一级1',
+                          checked: true,
+                          spread: true,
+                          children: [
+                          ]
+                       },
+                       {
+                          id: 1,
+                          title: '一级1',
+                          checked: true,
+                          spread: true
+                       },
+                   ]
+                },
+                {
+
+                }
+             ]
+             */
+            this._tree = new Tree({
+                selector: '#resource-tree',
+                data: this._resources,
+                showCheckbox: true
+            })
+
+            if (this._editData) {
+                // TODO this._tree.val()
+            }
+        }
+
+        _onSumbit(field) {
+            const resourceIds = []
+            for (const dir of this._tree.selectedData()) {
+                for (const menu of dir.children) {
+                    for (const btn of menu.children) {
+                        resourceIds.push(btn.id)
+                    }
+                }
+            }
+            const newField = {
+                name: field.name
+            }
+
+            newField.resourceIds = resourceIds.join(",")
+
+            return newField
+        }
     }
 
     new SysRolePage()

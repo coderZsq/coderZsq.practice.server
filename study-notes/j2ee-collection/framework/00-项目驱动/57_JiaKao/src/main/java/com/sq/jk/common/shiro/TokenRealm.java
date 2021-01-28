@@ -33,6 +33,7 @@ public class TokenRealm extends AuthorizingRealm {
 
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         info.addStringPermission("sysUser:list");
+        info.addStringPermission("sysRole:list");
         return info;
     }
 

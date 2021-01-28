@@ -121,14 +121,25 @@
                 form: this._saveForm,
                 name: 'parentId'
             })
-            select.data(this._parents, (o) => {
-                const type = o.data.type === 0 ? '目录' : '菜单'
+            const data = Commons.deepCopy(this._parents)
+            data.unshift({
+                name: '无父资源'
+            })
+            select.data(data, (o) => {
+                let text = o.data.name
+                if (o.data.id) {
+                    const type = o.data.type === ResourceType.DIR ? '目录' : '菜单'
+                    text = `[${type}]` + o.data.name
+                }
                 return {
-                    text: `[${type}]` + o.data.name,
+                    text,
                     val: o.data.id
                 }
             })
-            console.log(this._parents)
+
+            if (this._editData) {
+                select.val(this._editData.parentId)
+            }
         }
     }
 
