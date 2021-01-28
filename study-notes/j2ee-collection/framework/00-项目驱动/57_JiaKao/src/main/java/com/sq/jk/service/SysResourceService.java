@@ -6,6 +6,10 @@ import com.sq.jk.pojo.vo.PageVo;
 import com.sq.jk.pojo.vo.list.SysResourceVo;
 import com.sq.jk.pojo.vo.req.page.SysResourcePageReqVo;
 
+import java.util.List;
+
 public interface SysResourceService extends IService<SysResource> {
     PageVo<SysResourceVo> list(SysResourcePageReqVo reqVo);
+
+    List<SysResourceVo> listParents();
 }

@@ -5,4 +5,10 @@ public class Constants {
         public static final int NORMAL = 0;
         public static final int LOCKED = 1;
     }
+
+    public static class SysResourceType {
+        public static final int DIR = 0;
+        public static final int MENU = 1;
+        public static final int BTN = 2;
+    }
 }

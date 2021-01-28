@@ -6,6 +6,7 @@ import com.sq.jk.pojo.result.CodeMsg;
 import com.sq.jk.pojo.vo.JsonVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.AuthorizationException;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;

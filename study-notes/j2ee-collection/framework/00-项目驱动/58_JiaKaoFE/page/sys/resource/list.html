@@ -35,6 +35,10 @@
                         lay-event="add" id="add-btn"> 添加 </button>
                 <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn layui-btn-disabled"
                         lay-event="remove" id="remove-btn"> 删除 </button>
+                <button class="layui-btn layui-btn-sm data-add-btn layui-btn-disabled"
+                        lay-event="fold" id="fold-btn"> 折叠全部 </button>
+                <button class="layui-btn layui-btn-sm data-add-btn layui-btn-disabled"
+                        lay-event="expand" id="expand-btn"> 展开全部 </button>
             </div>
         </script>
 
@@ -52,23 +56,34 @@
         constructor() {
             super({
                 title: '资源',
-                uri: 'sysResources',
+                uri: 'sysResources/list',
+                tree: {
+                    iconIndex: 1,
+                    isPidData: true,
+                    idName: 'id',
+                    pidName: 'parentId'
+                },
                 cols: [[
                     {type: 'checkbox', align: 'center'},
-                    {field: 'name', title: '名称', align: 'center'},
+                    {field: 'name', title: '名称', align: 'left'},
                     {field: 'uri', title: 'uri', align: 'center'},
                     {field: 'permission', title: '权限', align: 'center'},
-                    {field: 'icon', title: '图标', align: 'center',
+                    {
+                        field: 'icon', title: '图标', align: 'center',
                         templet: (d) => {
                             return d.icon ? `<i class="${d.icon}"></i>` : ''
                         }
                     },
-                    {field: 'type', title: '类型', align: 'center',
+                    {
+                        field: 'type', title: '类型', align: 'center',
                         templet: (d) => {
                             switch (d.type) {
-                                case 0: return '<span class="layui-badge layui-bg-black">目录</span>'
-                                case 1: return '<span class="layui-badge-rim">菜单</span>'
-                                case 2: return '<span class="layui-badge layui-bg-gray">按钮</span>'
+                                case 0:
+                                    return '<span class="layui-badge layui-bg-black">目录</span>'
+                                case 1:
+                                    return '<span class="layui-badge-rim">菜单</span>'
+                                case 2:
+                                    return '<span class="layui-badge layui-bg-gray">按钮</span>'
                             }
                         }
                     },
@@ -79,6 +94,41 @@
                 removeUri: 'sysResources/remove',
                 savePageUri: 'page/sys/resource/save.html',
             });
+        }
+
+        _initSaveForm() {
+            super._initSaveForm()
+
+            this._loadParents()
+        }
+
+        _loadParents() {
+            if (this._parents) {
+                this._buildParents()
+                return
+            }
+            Ajaxs.get({
+                uri: 'sysResources/listParents',
+                success: (response) => {
+                    this._parents = response.data
+                    this._buildParents()
+                }
+            })
+        }
+
+        _buildParents() {
+            const select = new Select({
+                form: this._saveForm,
+                name: 'parentId'
+            })
+            select.data(this._parents, (o) => {
+                const type = o.data.type === 0 ? '目录' : '菜单'
+                return {
+                    text: `[${type}]` + o.data.name,
+                    val: o.data.id
+                }
+            })
+            console.log(this._parents)
         }
     }
 

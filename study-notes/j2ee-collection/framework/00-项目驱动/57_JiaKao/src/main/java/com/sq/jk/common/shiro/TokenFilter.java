@@ -31,7 +31,7 @@ public class TokenFilter extends AccessControlFilter {
         // // 放行所有的OPTIONS请求
         // return "OPTIONS".equals(request.getMethod());
 
-        log.debug("isAccessAllowed - " + request.getRequestURI());
+        log.debug("TokenFilter - isAccessAllowed - " + request.getRequestURI());
         return false;
     }
 
@@ -45,7 +45,7 @@ public class TokenFilter extends AccessControlFilter {
     @Override
     protected boolean onAccessDenied(ServletRequest servletRequest, ServletResponse servletResponse) throws Exception {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
-        log.debug("onAccessDenied - " + request.getRequestURI());
+        log.debug("TokenFilter - onAccessDenied - " + request.getRequestURI());
 
         // 取出Token
         String token = request.getHeader(HEADER_TOKEN);
@@ -60,7 +60,7 @@ public class TokenFilter extends AccessControlFilter {
             return JsonVos.raise(CodeMsg.TOKEN_EXPIRED);
         }
 
-        log.debug("onAccessDenied - " + token);
+        log.debug("TokenFilter - onAccessDenied - " + token);
 
         // 鉴权 (进入Realm)
         // 这里调用login, 并不是"登录"的意思, 是为了触发Realm的相应方法去加载用户的角色, 权限信息, 以便鉴权

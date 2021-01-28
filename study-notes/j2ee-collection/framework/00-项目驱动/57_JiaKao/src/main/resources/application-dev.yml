@@ -9,7 +9,7 @@ server:
 
 logging:
   level:
-    com.sq.jk.mapper: debug
+    com.sq.jk: debug
 
 jk:
   cfg:
