@@ -1,0 +1,28 @@
+server:
+  port: 9999
+
+spring:
+  datasource:
+    username: root
+    password: root
+    url: jdbc:mysql://localhost:3306/logic_delete?serverTimezone=GMT%2B8
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jackson:
+    default-property-inclusion: non_null
+
+mybatis-plus:
+  global-config:
+    db-config:
+      id-type: auto
+      # 全局配置
+      # 逻辑删除字段
+      logic-delete-field: deleted
+      # 代表已删除的字段值
+      logic-delete-value: 1
+      # 代表未删除的字段值
+      logic-not-delete-value: 0
+
+logging:
+  level:
+    com.sq: debug
