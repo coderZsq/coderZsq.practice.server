@@ -22,6 +22,19 @@
             <tti unit="days">7</tti>
             <!--<tti unit="seconds">5</tti>-->
         </expiry>
+        <listeners>
+            <listener>
+                <class>com.sq.jk.common.cache.TokenCacheListener</class>
+                <!--异步回调-->
+                <event-firing-mode>ASYNCHRONOUS</event-firing-mode>
+                <!--不用按顺序处理事件-->
+                <event-ordering-mode>UNORDERED</event-ordering-mode>
+                <!--哪些操作会触发监听器: 添加, 过期, 删除-->
+                <events-to-fire-on>CREATED</events-to-fire-on>
+                <events-to-fire-on>EXPIRED</events-to-fire-on>
+                <events-to-fire-on>REMOVED</events-to-fire-on>
+            </listener>
+        </listeners>
     </cache>
 
     <!-- 默认缓存: 永不过期 -->

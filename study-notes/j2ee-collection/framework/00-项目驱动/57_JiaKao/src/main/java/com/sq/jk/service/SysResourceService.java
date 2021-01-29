@@ -18,5 +18,5 @@ public interface SysResourceService extends IService<SysResource> {
 
     List<Short> listIds(Integer roleId);
 
-    List<SysResourceVo> listByRoleIds(List<Short> roleIds);
+    List<SysResource> listByRoleIds(List<Short> roleIds);
 }

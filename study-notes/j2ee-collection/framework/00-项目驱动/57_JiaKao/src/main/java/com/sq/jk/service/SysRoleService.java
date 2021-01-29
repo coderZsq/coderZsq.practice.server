@@ -16,5 +16,5 @@ public interface SysRoleService extends IService<SysRole> {
 
     boolean saveOrUpdate(SysRoleReqVo reqVo);
 
-    List<SysRoleVo> listByUserId(Integer uesrId);
+    List<SysRole> listByUserId(Integer uesrId);
 }

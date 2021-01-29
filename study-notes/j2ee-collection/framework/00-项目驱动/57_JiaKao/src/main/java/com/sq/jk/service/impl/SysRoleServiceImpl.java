@@ -1,6 +1,7 @@
 package com.sq.jk.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.sq.jk.common.cache.Caches;
 import com.sq.jk.common.enhance.MpLambdaQueryWrapper;
 import com.sq.jk.common.enhance.MpPage;
 import com.sq.jk.common.mapStruct.MapStructs;
@@ -22,6 +23,7 @@ import com.sq.jk.service.SysUserRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +69,22 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         // 保存角色信息
         if (!saveOrUpdate(po)) return false;
 
+        Short id = reqVo.getId();
+        if (id != null && id > 0) {
+            MpLambdaQueryWrapper<SysUserRole> wrapper = new MpLambdaQueryWrapper<>();
+            wrapper.select(SysUserRole::getUserId);
+            wrapper.eq(SysUserRole::getRoleId, id);
+            List<Object> userIds = userRoleMapper.selectObjs(wrapper);
+            if (!CollectionUtils.isEmpty(userIds)) {
+                for (Object userId : userIds) {
+                    // 将拥有这个角色的用户从缓存中移除 (让token失效, 用户必须重新登录)
+                    Caches.removeToken(Caches.get(userId));
+                }
+            }
+
+            // 删除当前角色的所有资源信息
+            roleResourceService.removeByRoleId(id);
+        }
         // 删除当前角色的所有资源信息
         roleResourceService.removeByRoleId(reqVo.getId());
 
@@ -88,12 +106,16 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
 
     @Override
     @Transactional(readOnly = true)
-    public List<SysRoleVo> listByUserId(Integer userId) {
+    public List<SysRole> listByUserId(Integer userId) {
+        if (userId == null || userId <= 0) return null;
+        List<Short> ids = listIds(userId);
+        if (CollectionUtils.isEmpty(ids)) return null;
+
         MpLambdaQueryWrapper<SysRole> wrapper = new MpLambdaQueryWrapper<>();
-        wrapper.in(SysRole::getId, listIds(userId));
+        wrapper.in(SysRole::getId, ids);
         // String sql = "SELECT role_id FROM sys_user_role WHERE user_id = " + userId;
         // wrapper.inSql(SysRole::getId, sql);
-        return Streams.map(baseMapper.selectList(wrapper), MapStructs.INSTANCE::po2vo);
+        return baseMapper.selectList(wrapper);
     }
 
     @Override

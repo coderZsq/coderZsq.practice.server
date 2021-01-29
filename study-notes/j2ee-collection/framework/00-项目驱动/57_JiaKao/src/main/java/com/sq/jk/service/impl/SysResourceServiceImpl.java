@@ -14,11 +14,11 @@ import com.sq.jk.pojo.vo.PageVo;
 import com.sq.jk.pojo.vo.list.SysResourceTreeVo;
 import com.sq.jk.pojo.vo.list.SysResourceVo;
 import com.sq.jk.pojo.vo.req.page.SysResourcePageReqVo;
-import com.sq.jk.pojo.vo.req.save.SysResourceReqVo;
 import com.sq.jk.service.SysResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 
@@ -123,10 +123,15 @@ public class SysResourceServiceImpl extends ServiceImpl<SysResourceMapper, SysRe
     }
 
     @Override
-    public List<SysResourceVo> listByRoleIds(List<Short> roleIds) {
+    public List<SysResource> listByRoleIds(List<Short> roleIds) {
+        if (CollectionUtils.isEmpty(roleIds)) return null;
+
+        List<Short> ids = listIds(roleIds);
+        if (CollectionUtils.isEmpty(ids)) return null;
+
         MpLambdaQueryWrapper<SysResource> wrapper = new MpLambdaQueryWrapper<>();
-        wrapper.in(SysResource::getId, listIds(roleIds));
-        return Streams.map(baseMapper.selectList(wrapper), MapStructs.INSTANCE::po2vo);
+        wrapper.in(SysResource::getId, ids);
+        return baseMapper.selectList(wrapper);
     }
 
     private SysResourceTreeVo po2treeVo(SysResource po) {

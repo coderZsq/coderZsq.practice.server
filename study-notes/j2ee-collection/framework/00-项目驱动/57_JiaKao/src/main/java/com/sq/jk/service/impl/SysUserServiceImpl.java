@@ -7,24 +7,30 @@ import com.sq.jk.common.enhance.MpPage;
 import com.sq.jk.common.mapStruct.MapStructs;
 import com.sq.jk.common.util.Constants;
 import com.sq.jk.common.util.JsonVos;
+import com.sq.jk.common.util.Streams;
 import com.sq.jk.common.util.Strings;
 import com.sq.jk.mapper.SysUserMapper;
+import com.sq.jk.pojo.dto.SysUserDto;
+import com.sq.jk.pojo.po.SysResource;
+import com.sq.jk.pojo.po.SysRole;
 import com.sq.jk.pojo.po.SysUser;
 import com.sq.jk.pojo.po.SysUserRole;
 import com.sq.jk.pojo.result.CodeMsg;
-import com.sq.jk.pojo.vo.JsonVo;
 import com.sq.jk.pojo.vo.LoginVo;
 import com.sq.jk.pojo.vo.PageVo;
 import com.sq.jk.pojo.vo.list.SysUserVo;
 import com.sq.jk.pojo.vo.req.LoginReqVo;
 import com.sq.jk.pojo.vo.req.page.SysUserPageReqVo;
 import com.sq.jk.pojo.vo.req.save.SysUserReqVo;
+import com.sq.jk.service.SysResourceService;
+import com.sq.jk.service.SysRoleService;
 import com.sq.jk.service.SysUserRoleService;
 import com.sq.jk.service.SysUserService;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import springfox.documentation.spring.web.json.Json;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,9 +40,14 @@ import java.util.UUID;
 @Service
 @Transactional
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements SysUserService {
-
     @Autowired
     private SysUserRoleService userRoleService;
+
+    @Autowired
+    private SysRoleService roleService;
+
+    @Autowired
+    private SysResourceService resourceService;
 
     @Override
     @Transactional(readOnly = true)
@@ -57,8 +68,15 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         // 保存用户信息
         if (!saveOrUpdate(po)) return false;
 
-        // 删除当前用户的所有角色信息
-        userRoleService.removeByUserId(reqVo.getId());
+        Integer id = reqVo.getId();
+
+        if (id != null && id > 0) { // 如果是做更新
+            // 将更新成功的用户从缓存中移除 (让token失效, 用户必须重新登录)
+            Caches.removeToken(Caches.get(id));
+
+            // 删除当前用户的所有角色信息
+            userRoleService.removeByUserId(reqVo.getId());
+        }
 
         // 保存角色信息
         String roleIdsStr = reqVo.getRoleIds();
@@ -102,11 +120,27 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         po.setLoginTime(new Date());
         baseMapper.updateById(po);
 
+        SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+
         // 生成Token, 发送Token给用户
         String token = UUID.randomUUID().toString();
 
         // 存储token到缓存中
-        Caches.putToken(token, po);
+        SysUserDto dto = new SysUserDto();
+        dto.setUser(po);
+        // 根据用户id查询所有的角色: sys_role, sys_user_role
+        List<SysRole> roles = roleService.listByUserId(po.getId());
+
+        // 根据角色id查询所有的资源: sys_resource, sys_role_resource
+        if (!CollectionUtils.isEmpty(roles)) {
+            dto.setRoles(roles);
+
+            List<Short> roleIds = Streams.map(roles, SysRole::getId);
+            List<SysResource> resources = resourceService.listByRoleIds(roleIds);
+            dto.setResources(resources);
+        }
+
+        Caches.putToken(token, dto);
 
         // 返回给客户端的具体数据
         LoginVo vo = MapStructs.INSTANCE.po2loginVo(po);

@@ -26,14 +26,17 @@ public class Caches {
     }
 
     public static void put(Object key, Object value) {
+        if (key == null || value == null) return;
         DEFAULT_CACHE.put(key, value);
     }
 
     public static void remove(Object key) {
+        if (key == null) return;
         DEFAULT_CACHE.remove(key);
     }
 
     public static <T> T get(Object key) {
+        if (key == null) return null;
         return (T) DEFAULT_CACHE.get(key);
     }
 
@@ -42,14 +45,17 @@ public class Caches {
     }
 
     public static void putToken(Object key, Object value) {
+        if (key == null || value == null) return;
         TOKEN_CACHE.put(key, value);
     }
 
     public static void removeToken(Object key) {
+        if (key == null) return;
         TOKEN_CACHE.remove(key);
     }
 
     public static <T> T getToken(Object key) {
+        if (key == null) return null;
         return (T) TOKEN_CACHE.get(key);
     }
 
