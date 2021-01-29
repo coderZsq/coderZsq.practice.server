@@ -7,24 +7,26 @@ import com.sq.jk.common.mapStruct.MapStructs;
 import com.sq.jk.common.util.Constants;
 import com.sq.jk.common.util.Streams;
 import com.sq.jk.mapper.SysResourceMapper;
+import com.sq.jk.mapper.SysRoleResourceMapper;
 import com.sq.jk.pojo.po.SysResource;
+import com.sq.jk.pojo.po.SysRoleResource;
 import com.sq.jk.pojo.vo.PageVo;
 import com.sq.jk.pojo.vo.list.SysResourceTreeVo;
 import com.sq.jk.pojo.vo.list.SysResourceVo;
 import com.sq.jk.pojo.vo.req.page.SysResourcePageReqVo;
 import com.sq.jk.pojo.vo.req.save.SysResourceReqVo;
 import com.sq.jk.service.SysResourceService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Transactional
 public class SysResourceServiceImpl extends ServiceImpl<SysResourceMapper, SysResource> implements SysResourceService {
+    @Autowired
+    private SysRoleResourceMapper roleResourceMapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -96,6 +98,35 @@ public class SysResourceServiceImpl extends ServiceImpl<SysResourceMapper, SysRe
         // }
 
         return vos;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Short> listIds(Integer roleId) {
+        if (roleId == null || roleId <= 0) return null;
+
+        MpLambdaQueryWrapper<SysRoleResource> wrapper = new MpLambdaQueryWrapper<>();
+        wrapper.select(SysRoleResource::getResourceId);
+        wrapper.eq(SysRoleResource::getRoleId, roleId);
+
+        List<Object> ids = roleResourceMapper.selectObjs(wrapper);
+        return Streams.map(ids, (id) -> ((Integer) id).shortValue());
+    }
+
+    private List<Short> listIds(List<Short> roleIds) {
+        MpLambdaQueryWrapper<SysRoleResource> wrapper = new MpLambdaQueryWrapper<>();
+        wrapper.select(SysRoleResource::getResourceId);
+        wrapper.in(SysRoleResource::getRoleId, roleIds);
+
+        List<Object> ids = roleResourceMapper.selectObjs(wrapper);
+        return Streams.map(new HashSet<>(ids), (id) -> ((Integer) id).shortValue());
+    }
+
+    @Override
+    public List<SysResourceVo> listByRoleIds(List<Short> roleIds) {
+        MpLambdaQueryWrapper<SysResource> wrapper = new MpLambdaQueryWrapper<>();
+        wrapper.in(SysResource::getId, listIds(roleIds));
+        return Streams.map(baseMapper.selectList(wrapper), MapStructs.INSTANCE::po2vo);
     }
 
     private SysResourceTreeVo po2treeVo(SysResource po) {

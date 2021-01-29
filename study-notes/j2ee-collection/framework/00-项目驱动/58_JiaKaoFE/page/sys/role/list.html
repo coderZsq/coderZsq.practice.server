@@ -85,35 +85,6 @@
         }
 
         _buildResources() {
-            /*
-             [
-                {
-                   id: 1,
-                   title: '一级1',
-                   checked: true,
-                   spread: true,
-                   children: [
-                       {
-                          id: 1,
-                          title: '一级1',
-                          checked: true,
-                          spread: true,
-                          children: [
-                          ]
-                       },
-                       {
-                          id: 1,
-                          title: '一级1',
-                          checked: true,
-                          spread: true
-                       },
-                   ]
-                },
-                {
-
-                }
-             ]
-             */
             this._tree = new Tree({
                 selector: '#resource-tree',
                 data: this._resources,
@@ -121,7 +92,15 @@
             })
 
             if (this._editData) {
-                // TODO this._tree.val()
+                Ajaxs.get({
+                    uri: 'sysResources/ids',
+                    data: {
+                        roleId: this._editData.id
+                    },
+                    success: (response) => {
+                        this._tree.val(response.data)
+                    }
+                })
             }
         }
 
@@ -129,12 +108,14 @@
             const resourceIds = []
             for (const dir of this._tree.selectedData()) {
                 for (const menu of dir.children) {
+                    if (!menu.children) continue
                     for (const btn of menu.children) {
                         resourceIds.push(btn.id)
                     }
                 }
             }
             const newField = {
+                id: field.id,
                 name: field.name
             }
 

@@ -2,6 +2,7 @@ package com.sq.jk.controller;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.sq.jk.common.mapStruct.MapStructs;
+import com.sq.jk.common.util.Constants;
 import com.sq.jk.common.util.JsonVos;
 import com.sq.jk.common.util.Streams;
 import com.sq.jk.pojo.po.SysRole;
@@ -17,6 +18,7 @@ import com.sq.jk.pojo.vo.req.save.SysRoleReqVo;
 import com.sq.jk.service.SysRoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,30 +38,42 @@ public class SysRoleController extends BaseController<SysRole, SysRoleReqVo> {
 
     @GetMapping("/ids")
     @ApiOperation("根据用户id获取角色id")
+    @RequiresPermissions(Constants.Permission.SYS_ROLE_LIST)
     public DataJsonVo<List<Short>> ids(Integer userId) {
         return JsonVos.ok(service.listIds(userId));
     }
 
     @GetMapping("/list")
     @ApiOperation("查询所有")
+    @RequiresPermissions(Constants.Permission.SYS_ROLE_LIST)
     public DataJsonVo<List<SysRoleVo>> list() {
         return JsonVos.ok(Streams.map(service.list(), MapStructs.INSTANCE::po2vo));
     }
 
     @GetMapping
     @ApiOperation(value = "分页查询")
-    @RequiresPermissions("sysRole:list")
+    @RequiresPermissions(Constants.Permission.SYS_ROLE_LIST)
     public PageJsonVo<SysRoleVo> list(SysRolePageReqVo reqVo) {
         return JsonVos.ok(service.list(reqVo));
     }
 
     @Override
+    @RequiresPermissions(value = {
+            Constants.Permission.SYS_ROLE_ADD,
+            Constants.Permission.SYS_ROLE_UPDATE
+    }, logical = Logical.AND)
     public JsonVo save(SysRoleReqVo reqVo) {
         if (service.saveOrUpdate(reqVo)) {
             return JsonVos.ok(CodeMsg.SAVE_OK);
         } else {
             return JsonVos.raise(CodeMsg.SAVE_ERROR);
         }
+    }
+
+    @Override
+    @RequiresPermissions(Constants.Permission.SYS_ROLE_REMOVE)
+    public JsonVo remove(String id) {
+        return super.remove(id);
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.sq.jk.common.cache.Caches;
 import com.sq.jk.common.mapStruct.MapStructs;
 import com.sq.jk.common.shiro.TokenFilter;
+import com.sq.jk.common.util.Constants;
 import com.sq.jk.common.util.JsonVos;
 import com.sq.jk.pojo.po.SysUser;
 import com.sq.jk.pojo.result.CodeMsg;
@@ -19,12 +20,14 @@ import com.sq.jk.service.SysUserService;
 import com.wf.captcha.utils.CaptchaUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotBlank;
 import java.util.function.Function;
 
 @RestController
@@ -58,6 +61,10 @@ public class SysUserController extends BaseController<SysUser, SysUserReqVo> {
     }
 
     @Override
+    @RequiresPermissions(value = {
+            Constants.Permission.SYS_USER_ADD,
+            Constants.Permission.SYS_USER_UPDATE
+    }, logical = Logical.AND)
     public JsonVo save(SysUserReqVo reqVo) {
         if (service.saveOrUpdate(reqVo)) {
             return JsonVos.ok(CodeMsg.SAVE_OK);
@@ -66,9 +73,15 @@ public class SysUserController extends BaseController<SysUser, SysUserReqVo> {
         }
     }
 
+    @Override
+    @RequiresPermissions(Constants.Permission.SYS_USER_REMOVE)
+    public JsonVo remove(String id) {
+        return super.remove(id);
+    }
+
     @GetMapping
     @ApiOperation(value = "分页查询")
-    @RequiresPermissions("sysUser:list")
+    @RequiresPermissions(Constants.Permission.SYS_USER_LIST)
     public PageJsonVo<SysUserVo> list(SysUserPageReqVo reqVo) {
         return JsonVos.ok(service.list(reqVo));
     }

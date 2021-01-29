@@ -88,6 +88,16 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
 
     @Override
     @Transactional(readOnly = true)
+    public List<SysRoleVo> listByUserId(Integer userId) {
+        MpLambdaQueryWrapper<SysRole> wrapper = new MpLambdaQueryWrapper<>();
+        wrapper.in(SysRole::getId, listIds(userId));
+        // String sql = "SELECT role_id FROM sys_user_role WHERE user_id = " + userId;
+        // wrapper.inSql(SysRole::getId, sql);
+        return Streams.map(baseMapper.selectList(wrapper), MapStructs.INSTANCE::po2vo);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<SysRole> list() {
         MpLambdaQueryWrapper<SysRole> wrapper = new MpLambdaQueryWrapper<>();
         wrapper.orderByDesc(SysRole::getId);
