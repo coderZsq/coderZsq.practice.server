@@ -79,10 +79,28 @@
 
         _tool(obj) {
             if (obj.event === 'route') {
-                console.log(obj);
+                this._route(obj)
             } else {
                 super._tool(obj);
             }
+        }
+
+        _route(obj) {
+            Layers.openUri('page/common/fileInput.html', {
+                title: '路线图',
+                success: () => {
+                    console.log('打开成功', obj)
+
+                    // 初始化上传组件
+                    new FileInput({
+                        selector: '#upload-file',
+                        name: 'files',
+                        accept: 'image/*',
+                        multiple: true,
+                        preview: []
+                    })
+                }
+            })
         }
 
         _initSearchForm() {

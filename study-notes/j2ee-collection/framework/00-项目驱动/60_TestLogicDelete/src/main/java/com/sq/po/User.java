@@ -17,7 +17,7 @@ public class User {
 
     @ApiModelProperty(hidden = true)
     // 逻辑删除的局部配置
-    @TableLogic(value = "0", delval = "1")
+    // @TableLogic(value = "0", delval = "1")
     // 不要查询这个字段
     @TableField(select = false)
     private Short deleted;

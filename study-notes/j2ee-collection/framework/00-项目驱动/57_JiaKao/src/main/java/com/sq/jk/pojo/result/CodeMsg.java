@@ -14,6 +14,7 @@ public enum CodeMsg {
     OPERATE_ERROR(40001, "操作失败"),
     SAVE_ERROR(40002, "保存失败"),
     REMOVE_ERROR(40003, "删除失败"),
+    UPLOAD_IMG_ERROR(40004, "图片上传失败"),
 
     WRONG_USERNAME(50001, "用户名不存在"),
     WRONG_PASSWORD(50002, "密码错误"),

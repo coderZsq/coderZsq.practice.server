@@ -915,7 +915,7 @@ class FileInput extends Module {
 }
 
 class ImageInput extends Module {
-    // selector,name,fileName
+    // selector,name,fileName,placeholderSrc
     constructor(cfg) {
         super(cfg)
 

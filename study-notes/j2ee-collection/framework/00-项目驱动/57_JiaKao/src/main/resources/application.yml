@@ -6,6 +6,13 @@ spring:
     active: dev
   jackson:
     default-property-inclusion: non_null
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+  resources:
+    static-locations:
+      - file:///${jk.upload.base-path}
 
 mybatis-plus:
   type-aliases-package: com.sq.jk.pojo

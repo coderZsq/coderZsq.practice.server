@@ -1,5 +1,6 @@
 package com.sq.jk.common.shiro;
 
+import com.sq.jk.common.prop.JkProperties;
 import com.sq.jk.filter.ErrorFilter;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
@@ -26,7 +27,7 @@ public class ShiroCfg {
      * 2. 每个URL需要进行哪些filter
      */
     @Bean
-    public ShiroFilterFactoryBean shiroFilterFactoryBean(Realm realm) {
+    public ShiroFilterFactoryBean shiroFilterFactoryBean(Realm realm, JkProperties properties) {
         ShiroFilterFactoryBean filterBean = new ShiroFilterFactoryBean();
 
         // 安全管理器
@@ -48,6 +49,8 @@ public class ShiroCfg {
         urlMap.put("/v2/api-docs/**", "anon");
         // 全局Filter的异常处理
         urlMap.put(ErrorFilter.ERROR_URI, "anon");
+        // 上传的内容 (/upload/**)
+        urlMap.put("/" + properties.getUpload().getUploadPath() + "**", "anon");
         // 其他
         urlMap.put("/**", "token");
         filterBean.setFilterChainDefinitionMap(urlMap);

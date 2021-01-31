@@ -84,7 +84,11 @@
                     {type: 'checkbox', align: 'center'},
                     {field: 'name', title: '名称', align: 'center'},
                     {field: 'price', title: '价格', align: 'center'},
-                    {field: 'cover', title: '封面', align: 'center'},
+                    {field: 'cover', title: '封面', align: 'center',
+                        templet: (d) => {
+                            return d.cover ? `<img src="${Commons.url(d.cover)}">` : '无封面'
+                        }
+                    },
                     {field: 'type', title: '类型', align: 'center',
                         templet: (d) => {
                             switch (d.type) {
@@ -121,6 +125,17 @@
             super._initSaveForm();
 
             this._loadExamPlaces(this._saveForm)
+            // 封面上传
+            const input = new ImageInput({
+                selector: '#cover',
+                name: 'cover', // 旧图片的路径
+                fileName: 'coverFile', // 新上传的图片数据
+                placeholderSrc: 'images/noimage.png'
+            })
+
+            if (this._editData) {
+                input.setImageUri(this._editData.cover)
+            }
         }
 
         _loadExamPlaces(form) {

@@ -2,6 +2,7 @@ package com.sq.jk.pojo.vo.req.save;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -30,4 +31,10 @@ public class ExamPlaceCourseReqVo {
     @NotNull
     @ApiModelProperty(value = "考场id", required = true)
     private Integer placeId;
+
+    @ApiModelProperty("封面")
+    private MultipartFile coverFile;
+
+    @ApiModelProperty("旧封面的路径")
+    private String cover;
 }

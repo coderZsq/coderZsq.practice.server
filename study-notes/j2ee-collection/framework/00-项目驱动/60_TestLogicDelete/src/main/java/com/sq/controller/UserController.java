@@ -7,10 +7,7 @@ import com.sq.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -33,6 +30,12 @@ public class UserController {
         JsonVo jsonVo = new JsonVo();
         jsonVo.setMsg(service.saveOrUpdate(user) ? "保存成功" : "保存失败");
         return jsonVo;
+    }
+
+    @PostMapping("/json")
+    @ApiOperation("测试")
+    public DataJsonVo<User> json(@RequestBody User user) {
+        return new DataJsonVo<>(user);
     }
 
     @PostMapping("/remove")

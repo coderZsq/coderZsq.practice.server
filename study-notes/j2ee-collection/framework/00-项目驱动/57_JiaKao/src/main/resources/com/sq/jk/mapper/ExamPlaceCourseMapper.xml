@@ -12,6 +12,7 @@
         <result property="placeId" column="place_id"/>
         <result property="provinceId" column="province_id"/>
         <result property="cityId" column="city_id"/>
+        <result property="cover" column="cover"/>
     </resultMap>
 
     <select id="selectPageVos"
@@ -23,10 +24,12 @@
             c.type,
             c.intro,
             c.place_id,
+            c.cover,
             p.province_id,
             p.city_id
         FROM exam_place_course c
             JOIN exam_place p ON p.id = c.place_id
+            ORDER BY c.id DESC
         ${ew.customSqlSegment}
 </select>
 </mapper>

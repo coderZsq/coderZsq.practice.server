@@ -34,4 +34,7 @@ public class ExamPlaceCourseVo {
 
     @ApiModelProperty("城市id")
     private Integer cityId;
+
+    @ApiModelProperty("封面")
+    private String cover;
 }
