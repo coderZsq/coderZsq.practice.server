@@ -1,0 +1,2 @@
+   OGCMN       OGCMX        OGC         OC       YGC   FGC    FGCT    CGC    CGCT     GCT   
+        0.0   4194304.0     54272.0     54272.0    18     0    0.000     4    0.019    0.126

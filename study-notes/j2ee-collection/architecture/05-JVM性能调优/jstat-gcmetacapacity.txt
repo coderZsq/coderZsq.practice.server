@@ -1,0 +1,2 @@
+   MCMN       MCMX        MC       CCSMN      CCSMX       CCSC     YGC   FGC    FGCT    CGC    CGCT     GCT   
+       0.0  1087488.0    43036.0        0.0  1048576.0     5792.0    18     0    0.000     4    0.019    0.126

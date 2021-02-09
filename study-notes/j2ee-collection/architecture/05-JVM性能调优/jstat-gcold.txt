@@ -1,0 +1,2 @@
+   MC       MU      CCSC     CCSU       OC          OU       YGC    FGC    FGCT    CGC    CGCT     GCT   
+ 43036.0  41797.1   5792.0   5326.6     54272.0     21373.5     18     0    0.000     4    0.019    0.126
