@@ -530,6 +530,7 @@ public class StandardService extends LifecycleMBeanBase implements Service {
 
         super.initInternal();
 
+        // 初始化引擎 (容器)
         if (engine != null) {
             engine.init();
         }
@@ -542,6 +543,7 @@ public class StandardService extends LifecycleMBeanBase implements Service {
             executor.init();
         }
 
+        // Host -> Context
         // Initialize mapper listener
         mapperListener.init();
 

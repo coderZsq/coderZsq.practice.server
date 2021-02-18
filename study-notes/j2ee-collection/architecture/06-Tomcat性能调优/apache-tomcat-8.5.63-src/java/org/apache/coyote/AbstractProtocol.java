@@ -606,6 +606,7 @@ public abstract class AbstractProtocol<S> implements ProtocolHandler,
             getLog().info(sm.getString("abstractProtocolHandler.start", getName()));
         }
 
+        // http 服务器, 优化 tomcat 都是围绕endpoint进行的
         endpoint.start();
 
         // Start timeout thread

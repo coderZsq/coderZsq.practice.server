@@ -248,6 +248,7 @@ public final class Bootstrap {
      */
     public void init() throws Exception {
 
+        // 初始化类加载器
         initClassLoaders();
 
         Thread.currentThread().setContextClassLoader(catalinaLoader);
@@ -469,6 +470,7 @@ public final class Bootstrap {
                 daemon.stop();
             } else if (command.equals("start")) {
                 daemon.setAwait(true);
+                // Catalina -> load -> StandardServer -> init -> StandardService
                 daemon.load(args);
                 daemon.start();
                 if (null == daemon.getServer()) {
