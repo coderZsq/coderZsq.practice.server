@@ -57,7 +57,7 @@ final class StandardEngineValve extends ValveBase {
      */
     @Override
     public final void invoke(Request request, Response response)
-        throws IOException, ServletException {
+            throws IOException, ServletException {
 
         // Select the Host to be used for this Request
         Host host = request.getHost();
@@ -75,6 +75,7 @@ final class StandardEngineValve extends ValveBase {
         }
 
         // Ask this Host to process this request
+        // TODO 调用 Host 的阀门
         host.getPipeline().getFirst().invoke(request, response);
     }
 }

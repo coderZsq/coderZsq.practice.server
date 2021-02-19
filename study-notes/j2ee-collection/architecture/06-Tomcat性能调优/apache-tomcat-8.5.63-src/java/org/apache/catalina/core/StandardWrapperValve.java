@@ -49,7 +49,7 @@ import org.apache.tomcat.util.res.StringManager;
  * @author Craig R. McClanahan
  */
 final class StandardWrapperValve
-    extends ValveBase {
+        extends ValveBase {
 
     //------------------------------------------------------ Constructor
     public StandardWrapperValve() {
@@ -73,7 +73,7 @@ final class StandardWrapperValve
      * The string manager for this package.
      */
     private static final StringManager sm =
-        StringManager.getManager(Constants.Package);
+            StringManager.getManager(Constants.Package);
 
 
     // --------------------------------------------------------- Public Methods
@@ -91,7 +91,7 @@ final class StandardWrapperValve
      */
     @Override
     public final void invoke(Request request, Response response)
-        throws IOException, ServletException {
+            throws IOException, ServletException {
 
         // Initialize local variables we may need
         boolean unavailable = false;
@@ -99,14 +99,16 @@ final class StandardWrapperValve
         // This should be a Request attribute...
         long t1=System.currentTimeMillis();
         requestCount.incrementAndGet();
+        // TODO 获取当前的 Wrapper 对象
         StandardWrapper wrapper = (StandardWrapper) getContainer();
         Servlet servlet = null;
+        // TODO 获取父容器对象（上下文对象）
         Context context = (Context) wrapper.getParent();
 
         // Check for the application being marked unavailable
         if (!context.getState().isAvailable()) {
             response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE,
-                           sm.getString("standardContext.isUnavailable"));
+                    sm.getString("standardContext.isUnavailable"));
             unavailable = true;
         }
 
@@ -130,6 +132,7 @@ final class StandardWrapperValve
 
         // Allocate a servlet instance to process this request
         try {
+            // TODO 分配一个 Servlet 实例来处理当前请求
             if (!unavailable) {
                 servlet = wrapper.allocate();
             }
@@ -141,22 +144,22 @@ final class StandardWrapperValve
             if ((available > 0L) && (available < Long.MAX_VALUE)) {
                 response.setDateHeader("Retry-After", available);
                 response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE,
-                           sm.getString("standardWrapper.isUnavailable",
-                                        wrapper.getName()));
+                        sm.getString("standardWrapper.isUnavailable",
+                                wrapper.getName()));
             } else if (available == Long.MAX_VALUE) {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND,
-                           sm.getString("standardWrapper.notFound",
-                                        wrapper.getName()));
+                        sm.getString("standardWrapper.notFound",
+                                wrapper.getName()));
             }
         } catch (ServletException e) {
             container.getLogger().error(sm.getString("standardWrapper.allocateException",
-                             wrapper.getName()), StandardWrapper.getRootCause(e));
+                    wrapper.getName()), StandardWrapper.getRootCause(e));
             throwable = e;
             exception(request, response, e);
         } catch (Throwable e) {
             ExceptionUtils.handleThrowable(e);
             container.getLogger().error(sm.getString("standardWrapper.allocateException",
-                             wrapper.getName()), e);
+                    wrapper.getName()), e);
             throwable = e;
             exception(request, response, e);
             servlet = null;
@@ -169,10 +172,12 @@ final class StandardWrapperValve
         request.setAttribute(Globals.DISPATCHER_REQUEST_PATH_ATTR,
                 requestPathMB);
         // Create the filter chain for this request
+        // TODO 创建过滤器链，先执行完过滤器链以后才会执行 Servlet
         ApplicationFilterChain filterChain =
                 ApplicationFilterFactory.createFilterChain(request, wrapper, servlet);
 
         // Call the filter chain for this request
+        // TODO 调用过滤器链处理当前请求，过滤器链执行完成后会执行对应的 Servlet 的 service 方法
         // NOTE: This also calls the servlet's service() method
         try {
             if ((servlet != null) && (filterChain != null)) {
@@ -183,6 +188,7 @@ final class StandardWrapperValve
                         if (request.isAsyncDispatching()) {
                             request.getAsyncContextInternal().doInternalDispatch();
                         } else {
+                            // TODO 执行过滤器链
                             filterChain.doFilter(request.getRequest(),
                                     response.getResponse());
                         }
@@ -196,8 +202,9 @@ final class StandardWrapperValve
                     if (request.isAsyncDispatching()) {
                         request.getAsyncContextInternal().doInternalDispatch();
                     } else {
+                        // TODO 执行过滤器链
                         filterChain.doFilter
-                            (request.getRequest(), response.getResponse());
+                                (request.getRequest(), response.getResponse());
                     }
                 }
 
@@ -227,12 +234,12 @@ final class StandardWrapperValve
             if ((available > 0L) && (available < Long.MAX_VALUE)) {
                 response.setDateHeader("Retry-After", available);
                 response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE,
-                           sm.getString("standardWrapper.isUnavailable",
-                                        wrapper.getName()));
+                        sm.getString("standardWrapper.isUnavailable",
+                                wrapper.getName()));
             } else if (available == Long.MAX_VALUE) {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND,
-                            sm.getString("standardWrapper.notFound",
-                                        wrapper.getName()));
+                        sm.getString("standardWrapper.notFound",
+                                wrapper.getName()));
             }
             // Do not save exception in 'throwable', because we
             // do not want to do exception(request, response, e) processing
@@ -255,6 +262,7 @@ final class StandardWrapperValve
             exception(request, response, e);
         } finally {
             // Release the filter chain (if any) for this request
+            // TODO 当 Servlet 执行完成后会释放过滤器链
             if (filterChain != null) {
                 filterChain.release();
             }
@@ -262,12 +270,13 @@ final class StandardWrapperValve
             // Deallocate the allocated servlet instance
             try {
                 if (servlet != null) {
+                    // TODO 当 Servlet 执行完成后会释放之前分配 Servlet 的资源
                     wrapper.deallocate(servlet);
                 }
             } catch (Throwable e) {
                 ExceptionUtils.handleThrowable(e);
                 container.getLogger().error(sm.getString("standardWrapper.deallocateException",
-                                 wrapper.getName()), e);
+                        wrapper.getName()), e);
                 if (throwable == null) {
                     throwable = e;
                     exception(request, response, e);
@@ -278,13 +287,13 @@ final class StandardWrapperValve
             // unload it and release this instance
             try {
                 if ((servlet != null) &&
-                    (wrapper.getAvailable() == Long.MAX_VALUE)) {
+                        (wrapper.getAvailable() == Long.MAX_VALUE)) {
                     wrapper.unload();
                 }
             } catch (Throwable e) {
                 ExceptionUtils.handleThrowable(e);
                 container.getLogger().error(sm.getString("standardWrapper.unloadException",
-                                 wrapper.getName()), e);
+                        wrapper.getName()), e);
                 if (throwable == null) {
                     exception(request, response, e);
                 }

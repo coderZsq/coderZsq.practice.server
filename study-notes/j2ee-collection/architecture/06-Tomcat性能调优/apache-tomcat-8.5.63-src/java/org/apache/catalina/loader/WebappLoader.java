@@ -61,7 +61,7 @@ import org.apache.tomcat.util.res.StringManager;
  * @author Remy Maucherat
  */
 public class WebappLoader extends LifecycleMBeanBase
-    implements Loader, PropertyChangeListener {
+        implements Loader, PropertyChangeListener {
 
 
     // ----------------------------------------------------------- Constructors
@@ -137,7 +137,7 @@ public class WebappLoader extends LifecycleMBeanBase
      * The string manager for this package.
      */
     protected static final StringManager sm =
-        StringManager.getManager(Constants.Package);
+            StringManager.getManager(Constants.Package);
 
 
     /**
@@ -220,7 +220,7 @@ public class WebappLoader extends LifecycleMBeanBase
         boolean oldDelegate = this.delegate;
         this.delegate = delegate;
         support.firePropertyChange("delegate", Boolean.valueOf(oldDelegate),
-                                   Boolean.valueOf(this.delegate));
+                Boolean.valueOf(this.delegate));
     }
 
 
@@ -262,8 +262,8 @@ public class WebappLoader extends LifecycleMBeanBase
         boolean oldReloadable = this.reloadable;
         this.reloadable = reloadable;
         support.firePropertyChange("reloadable",
-                                   Boolean.valueOf(oldReloadable),
-                                   Boolean.valueOf(this.reloadable));
+                Boolean.valueOf(oldReloadable),
+                Boolean.valueOf(this.reloadable));
     }
 
 
@@ -289,17 +289,19 @@ public class WebappLoader extends LifecycleMBeanBase
      */
     @Override
     public void backgroundProcess() {
+        // TODO 在上下文配置时是否启用了 reloadable 以及检测是否有资源变动
+        // TODO server.xml -> <Context docBase="project/path" reloadable="true">
         if (reloadable && modified()) {
             try {
                 Thread.currentThread().setContextClassLoader
-                    (WebappLoader.class.getClassLoader());
+                        (WebappLoader.class.getClassLoader());
                 if (context != null) {
                     context.reload();
                 }
             } finally {
                 if (context != null && context.getLoader() != null) {
                     Thread.currentThread().setContextClassLoader
-                        (context.getLoader().getClassLoader());
+                            (context.getLoader().getClassLoader());
                 }
             }
         }
@@ -414,7 +416,7 @@ public class WebappLoader extends LifecycleMBeanBase
                     classLoader.getClass().getSimpleName() + ",host=" +
                     context.getParent().getName() + ",context=" + contextName);
             Registry.getRegistry(null, null)
-                .registerComponent(classLoader, cloname, null);
+                    .registerComponent(classLoader, cloname, null);
 
         } catch (Throwable t) {
             t = ExceptionUtils.unwrapInvocationTargetException(t);
@@ -493,10 +495,10 @@ public class WebappLoader extends LifecycleMBeanBase
         if (event.getPropertyName().equals("reloadable")) {
             try {
                 setReloadable
-                    ( ((Boolean) event.getNewValue()).booleanValue() );
+                        ( ((Boolean) event.getNewValue()).booleanValue() );
             } catch (NumberFormatException e) {
                 log.error(sm.getString("webappLoader.reloadable",
-                                 event.getNewValue().toString()));
+                        event.getNewValue().toString()));
             }
         }
     }
@@ -508,7 +510,7 @@ public class WebappLoader extends LifecycleMBeanBase
      * Create associated classLoader.
      */
     private WebappClassLoaderBase createClassLoader()
-        throws Exception {
+            throws Exception {
 
         Class<?> clazz = Class.forName(loaderClass);
         WebappClassLoaderBase classLoader = null;
@@ -542,22 +544,22 @@ public class WebappLoader extends LifecycleMBeanBase
 
         // Assigning permissions for the work directory
         File workDir =
-            (File) servletContext.getAttribute(ServletContext.TEMPDIR);
+                (File) servletContext.getAttribute(ServletContext.TEMPDIR);
         if (workDir != null) {
             try {
                 String workDirPath = workDir.getCanonicalPath();
                 classLoader.addPermission
-                    (new FilePermission(workDirPath, "read,write"));
+                        (new FilePermission(workDirPath, "read,write"));
                 classLoader.addPermission
-                    (new FilePermission(workDirPath + File.separator + "-",
-                                        "read,write,delete"));
+                        (new FilePermission(workDirPath + File.separator + "-",
+                                "read,write,delete"));
             } catch (IOException e) {
                 // Ignore
             }
         }
 
         for (URL url : context.getResources().getBaseUrls()) {
-           classLoader.addPermission(url);
+            classLoader.addPermission(url);
         }
     }
 

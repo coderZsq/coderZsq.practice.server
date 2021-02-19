@@ -192,7 +192,8 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
     /**
      * The string manager for this package.
      */
-    protected static final StringManager sm = StringManager.getManager(WebappClassLoaderBase.class);
+    protected static final StringManager sm =
+            StringManager.getManager(Constants.Package);
 
 
     // ----------------------------------------------------------- Constructors
@@ -394,12 +395,6 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
      * loader from ThreadLocals?
      */
     private boolean clearReferencesThreadLocals = true;
-
-    /**
-     * Should Tomcat skip the memory leak checks when the web application is
-     * stopped as part of the process of shutting down the JVM?
-     */
-    private boolean skipMemoryLeakChecksOnJvmShutdown = false;
 
     /**
      * Holds the class file transformers decorating this class loader. The
@@ -610,7 +605,7 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
     public void setClearReferencesLogFactoryRelease(
             boolean clearReferencesLogFactoryRelease) {
         this.clearReferencesLogFactoryRelease =
-            clearReferencesLogFactoryRelease;
+                clearReferencesLogFactoryRelease;
     }
 
 
@@ -632,7 +627,7 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
     public void setClearReferencesHttpClientKeepAliveThread(
             boolean clearReferencesHttpClientKeepAliveThread) {
         this.clearReferencesHttpClientKeepAliveThread =
-            clearReferencesHttpClientKeepAliveThread;
+                clearReferencesHttpClientKeepAliveThread;
     }
 
 
@@ -654,16 +649,6 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
 
     public void setClearReferencesThreadLocals(boolean clearReferencesThreadLocals) {
         this.clearReferencesThreadLocals = clearReferencesThreadLocals;
-    }
-
-
-    public boolean getSkipMemoryLeakChecksOnJvmShutdown() {
-        return skipMemoryLeakChecksOnJvmShutdown;
-    }
-
-
-    public void setSkipMemoryLeakChecksOnJvmShutdown(boolean skipMemoryLeakChecksOnJvmShutdown) {
-        this.skipMemoryLeakChecksOnJvmShutdown = skipMemoryLeakChecksOnJvmShutdown;
     }
 
 
@@ -740,6 +725,7 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
         if (log.isDebugEnabled())
             log.debug("modified()");
 
+        // TODO 检查资源文件是否有更新，根据最新的更新时间与记录的最后一次更新时间做对比
         for (Entry<String,ResourceEntry> entry : resourceEntries.entrySet()) {
             long cachedLastModified = entry.getValue().lastModified;
             long lastModified = resources.getClassLoaderResource(
@@ -755,6 +741,7 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
         }
 
         // Check if JARs have been added or removed
+        // TODO 检查 /WEB-INF/lib 包中的 jar 包是否有新增或更新
         WebResource[] jars = resources.listResources("/WEB-INF/lib");
         // Filter out non-JAR resources
 
@@ -765,12 +752,14 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
                 Long recordedLastModified = jarModificationTimes.get(jar.getName());
                 if (recordedLastModified == null) {
                     // Jar has been added
+                    // TODO 有 Jar 新增了
                     log.info(sm.getString("webappClassLoader.jarsAdded",
                             resources.getContext().getName()));
                     return true;
                 }
                 if (recordedLastModified.longValue() != jar.getLastModified()) {
                     // Jar has been changed
+                    // 有 Jar 被更新了
                     log.info(sm.getString("webappClassLoader.jarsModified",
                             resources.getContext().getName()));
                     return true;
@@ -778,6 +767,7 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
             }
         }
 
+        // TODO 有 Jar 被删除了
         if (jarCount < jarModificationTimes.size()){
             log.info(sm.getString("webappClassLoader.jarsRemoved",
                     resources.getContext().getName()));
@@ -819,7 +809,7 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
 
     // Note: exposed for use by tests
     protected final Class<?> doDefineClass(String name, byte[] b, int off, int len,
-            ProtectionDomain protectionDomain) {
+                                           ProtectionDomain protectionDomain) {
         return super.defineClass(name, b, off, len, protectionDomain);
     }
 
@@ -840,6 +830,7 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
         checkStateForClassLoading(name);
 
         // (1) Permission to define this class when using a SecurityManager
+        // TODO 检查包权限，避免复写 Java 或 tomcat 的核心类
         if (securityManager != null) {
             int i = name.lastIndexOf('.');
             if (i >= 0) {
@@ -864,14 +855,15 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
             try {
                 if (securityManager != null) {
                     PrivilegedAction<Class<?>> dp =
-                        new PrivilegedFindClassByName(name);
+                            new PrivilegedFindClassByName(name);
                     clazz = AccessController.doPrivileged(dp);
                 } else {
+                    // TODO 先从当前 WEB 应用目录下找类
                     clazz = findClassInternal(name);
                 }
             } catch(AccessControlException ace) {
-                log.warn(sm.getString("webappClassLoader.securityException", name,
-                        ace.getMessage()), ace);
+                log.warn("WebappClassLoader.findClassInternal(" + name
+                        + ") security exception: " + ace.getMessage(), ace);
                 throw new ClassNotFoundException(name, ace);
             } catch (RuntimeException e) {
                 if (log.isTraceEnabled())
@@ -880,10 +872,11 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
             }
             if ((clazz == null) && hasExternalRepositories) {
                 try {
+                    // TODO 如果 WEB 项目本地目录没找到，交给父类去找
                     clazz = super.findClass(name);
                 } catch(AccessControlException ace) {
-                    log.warn(sm.getString("webappClassLoader.securityException", name,
-                            ace.getMessage()), ace);
+                    log.warn("WebappClassLoader.findClassInternal(" + name
+                            + ") security exception: " + ace.getMessage(), ace);
                     throw new ClassNotFoundException(name, ace);
                 } catch (RuntimeException e) {
                     if (log.isTraceEnabled())
@@ -892,6 +885,7 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
                 }
             }
             if (clazz == null) {
+                // TODO 如果父类也没找到，抛出 ClassNotFoundException
                 if (log.isDebugEnabled())
                     log.debug("    --> Returning ClassNotFoundException");
                 throw new ClassNotFoundException(name);
@@ -910,7 +904,7 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
             ClassLoader cl;
             if (Globals.IS_SECURITY_ENABLED){
                 cl = AccessController.doPrivileged(
-                    new PrivilegedGetClassLoader(clazz));
+                        new PrivilegedGetClassLoader(clazz));
             } else {
                 cl = clazz.getClassLoader();
             }
@@ -1233,6 +1227,7 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
             checkStateForClassLoading(name);
 
             // (0) Check our previously loaded local class cache
+            // TODO 先从本地缓存中查找是否已经加载过该类
             clazz = findLoadedClass0(name);
             if (clazz != null) {
                 if (log.isDebugEnabled())
@@ -1243,6 +1238,7 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
             }
 
             // (0.1) Check our previously loaded class cache
+            // TODO 从系统类加载器的缓存中找是否加载过该类
             clazz = findLoadedClass(name);
             if (clazz != null) {
                 if (log.isDebugEnabled())
@@ -1257,6 +1253,7 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
             //       SRV.10.7.2
             String resourceName = binaryNameToPath(name, false);
 
+            // TODO 尝试用 ExtClassLoader 类加载器类加载
             ClassLoader javaseLoader = getJavaseClassLoader();
             boolean tryLoadingFromJavaseLoader;
             try {
@@ -1307,7 +1304,8 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
                     try {
                         securityManager.checkPackageAccess(name.substring(0,i));
                     } catch (SecurityException se) {
-                        String error = sm.getString("webappClassLoader.restrictedPackage", name);
+                        String error = "Security Violation, attempt to use " +
+                                "Restricted Class: " + name;
                         log.info(error, se);
                         throw new ClassNotFoundException(error, se);
                     }
@@ -1321,6 +1319,7 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
                 if (log.isDebugEnabled())
                     log.debug("  Delegating to parent classloader1 " + parent);
                 try {
+                    // TODO 使用 AppClassLoader, App=Tomcat
                     clazz = Class.forName(name, false, parent);
                     if (clazz != null) {
                         if (log.isDebugEnabled())
@@ -1338,6 +1337,7 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
             if (log.isDebugEnabled())
                 log.debug("  Searching local repositories");
             try {
+                // TODO 从本地仓库中找, 当前WEB应用的 WEB-INF/classes
                 clazz = findClass(name);
                 if (clazz != null) {
                     if (log.isDebugEnabled())
@@ -1355,6 +1355,7 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
                 if (log.isDebugEnabled())
                     log.debug("  Delegating to parent classloader at end: " + parent);
                 try {
+                    // TODO 尝试用 Tomcat 应用类加载器(也就是 AppClassLoader)来加载
                     clazz = Class.forName(name, false, parent);
                     if (clazz != null) {
                         if (log.isDebugEnabled())
@@ -1606,21 +1607,6 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
      */
     protected void clearReferences() {
 
-        // If the JVM is shutting down, skip the memory leak checks
-        if (skipMemoryLeakChecksOnJvmShutdown
-            && !resources.getContext().getParent().getState().isAvailable()) {
-            // During reloading / redeployment the parent is expected to be
-            // available. Parent is not available so this might be a JVM
-            // shutdown.
-            try {
-                Thread dummyHook = new Thread();
-                Runtime.getRuntime().addShutdownHook(dummyHook);
-                Runtime.getRuntime().removeShutdownHook(dummyHook);
-            } catch (IllegalStateException ise) {
-                return;
-            }
-        }
-
         // De-register any remaining JDBC drivers
         clearReferencesJdbc();
 
@@ -1642,7 +1628,7 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
             clearReferencesRmiTargets();
         }
 
-         // Clear the IntrospectionUtils cache.
+        // Clear the IntrospectionUtils cache.
         IntrospectionUtils.clear();
 
         // Clear the classloader reference in common-logging
@@ -1695,8 +1681,8 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
                 read = is.read(classBytes, offset, classBytes.length-offset);
             }
             Class<?> lpClass =
-                defineClass("org.apache.catalina.loader.JdbcLeakPrevention",
-                    classBytes, 0, offset, this.getClass().getProtectionDomain());
+                    defineClass("org.apache.catalina.loader.JdbcLeakPrevention",
+                            classBytes, 0, offset, this.getClass().getProtectionDomain());
             Object obj = lpClass.getConstructor().newInstance();
             @SuppressWarnings("unchecked")
             List<String> driverNames = (List<String>) obj.getClass().getMethod(
@@ -1808,9 +1794,8 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
                                 usingExecutor = true;
                             }
                         }
-                    } catch (NoSuchFieldException | IllegalAccessException | RuntimeException e) {
-                        // InaccessibleObjectException is only available in Java 9+,
-                        // swapped for RuntimeException
+                    } catch (SecurityException | NoSuchFieldException | IllegalArgumentException |
+                            IllegalAccessException e) {
                         log.warn(sm.getString("webappClassLoader.stopThreadFail",
                                 thread.getName(), getContextName()), e);
                     }
@@ -1901,7 +1886,7 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
 
             try {
                 Field newTasksMayBeScheduledField =
-                    thread.getClass().getDeclaredField("newTasksMayBeScheduled");
+                        thread.getClass().getDeclaredField("newTasksMayBeScheduled");
                 newTasksMayBeScheduledField.setAccessible(true);
                 Field queueField = thread.getClass().getDeclaredField("queue");
                 queueField.setAccessible(true);
@@ -1947,10 +1932,10 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
             // Make the fields in the Thread class that store ThreadLocals
             // accessible
             Field threadLocalsField =
-                Thread.class.getDeclaredField("threadLocals");
+                    Thread.class.getDeclaredField("threadLocals");
             threadLocalsField.setAccessible(true);
             Field inheritableThreadLocalsField =
-                Thread.class.getDeclaredField("inheritableThreadLocals");
+                    Thread.class.getDeclaredField("inheritableThreadLocals");
             inheritableThreadLocalsField.setAccessible(true);
             // Make the underlying array of ThreadLoad.ThreadLocalMap.Entry objects
             // accessible
@@ -2002,7 +1987,7 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
      * call to this method.
      */
     private void checkThreadLocalMapForLeaks(Object map,
-            Field internalTableField) throws IllegalAccessException,
+                                             Field internalTableField) throws IllegalAccessException,
             NoSuchFieldException {
         if (map != null) {
             Object[] table = (Object[]) internalTableField.get(map);
@@ -2180,7 +2165,7 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
             // Need access to the ccl field of sun.rmi.transport.Target to find
             // the leaks
             Class<?> objectTargetClass =
-                Class.forName("sun.rmi.transport.Target");
+                    Class.forName("sun.rmi.transport.Target");
             Field cclField = objectTargetClass.getDeclaredField("ccl");
             cclField.setAccessible(true);
             // Need access to the stub field to report the leaks
@@ -2428,8 +2413,8 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
                     }
                     if (!sealCheck)
                         throw new SecurityException
-                            ("Sealing violation loading " + name + " : Package "
-                             + packageName + " is sealed.");
+                                ("Sealing violation loading " + name + " : Package "
+                                        + packageName + " is sealed.");
                 }
 
             }
@@ -2440,8 +2425,8 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
             } catch (UnsupportedClassVersionError ucve) {
                 throw new UnsupportedClassVersionError(
                         ucve.getLocalizedMessage() + " " +
-                        sm.getString("webappClassLoader.wrongVersion",
-                                name));
+                                sm.getString("webappClassLoader.wrongVersion",
+                                        name));
             }
             entry.loadedClass = clazz;
         }
@@ -2565,9 +2550,9 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
                     return false;
                 }
                 if (name.startsWith("el.", 6) ||
-                    name.startsWith("servlet.", 6) ||
-                    name.startsWith("websocket.", 6) ||
-                    name.startsWith("security.auth.message.", 6)) {
+                        name.startsWith("servlet.", 6) ||
+                        name.startsWith("websocket.", 6) ||
+                        name.startsWith("security.auth.message.", 6)) {
                     return true;
                 }
             } else if (!isClassName && ch == '/') {
@@ -2576,9 +2561,9 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
                     return false;
                 }
                 if (name.startsWith("el/", 6) ||
-                    name.startsWith("servlet/", 6) ||
-                    name.startsWith("websocket/", 6) ||
-                    name.startsWith("security/auth/message/", 6)) {
+                        name.startsWith("servlet/", 6) ||
+                        name.startsWith("websocket/", 6) ||
+                        name.startsWith("security/auth/message/", 6)) {
                     return true;
                 }
             }
@@ -2596,12 +2581,12 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
                         return false;
                     }
                     if (name.startsWith("el.", 11) ||
-                        name.startsWith("catalina.", 11) ||
-                        name.startsWith("jasper.", 11) ||
-                        name.startsWith("juli.", 11) ||
-                        name.startsWith("tomcat.", 11) ||
-                        name.startsWith("naming.", 11) ||
-                        name.startsWith("coyote.", 11)) {
+                            name.startsWith("catalina.", 11) ||
+                            name.startsWith("jasper.", 11) ||
+                            name.startsWith("juli.", 11) ||
+                            name.startsWith("tomcat.", 11) ||
+                            name.startsWith("naming.", 11) ||
+                            name.startsWith("coyote.", 11)) {
                         return true;
                     }
                 }
@@ -2613,12 +2598,12 @@ public abstract class WebappClassLoaderBase extends URLClassLoader
                         return false;
                     }
                     if (name.startsWith("el/", 11) ||
-                        name.startsWith("catalina/", 11) ||
-                        name.startsWith("jasper/", 11) ||
-                        name.startsWith("juli/", 11) ||
-                        name.startsWith("tomcat/", 11) ||
-                        name.startsWith("naming/", 11) ||
-                        name.startsWith("coyote/", 11)) {
+                            name.startsWith("catalina/", 11) ||
+                            name.startsWith("jasper/", 11) ||
+                            name.startsWith("juli/", 11) ||
+                            name.startsWith("tomcat/", 11) ||
+                            name.startsWith("naming/", 11) ||
+                            name.startsWith("coyote/", 11)) {
                         return true;
                     }
                 }

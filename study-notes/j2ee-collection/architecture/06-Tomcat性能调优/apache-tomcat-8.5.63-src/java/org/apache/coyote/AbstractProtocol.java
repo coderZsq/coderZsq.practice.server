@@ -341,14 +341,14 @@ public abstract class AbstractProtocol<S> implements ProtocolHandler,
         endpoint.setAcceptorThreadCount(threadCount);
     }
     public int getAcceptorThreadCount() {
-      return endpoint.getAcceptorThreadCount();
+        return endpoint.getAcceptorThreadCount();
     }
 
     public void setAcceptorThreadPriority(int threadPriority) {
         endpoint.setAcceptorThreadPriority(threadPriority);
     }
     public int getAcceptorThreadPriority() {
-      return endpoint.getAcceptorThreadPriority();
+        return endpoint.getAcceptorThreadPriority();
     }
 
 
@@ -606,7 +606,7 @@ public abstract class AbstractProtocol<S> implements ProtocolHandler,
             getLog().info(sm.getString("abstractProtocolHandler.start", getName()));
         }
 
-        // http 服务器, 优化 tomcat 都是围绕endpoint进行的
+        // http 服务器，优化 tomcat 都是围绕endpoint进行的
         endpoint.start();
 
         // Start timeout thread
@@ -751,8 +751,8 @@ public abstract class AbstractProtocol<S> implements ProtocolHandler,
             // unnecessary processing.
             if (SocketEvent.TIMEOUT == status &&
                     (processor == null ||
-                    !processor.isAsync() && !processor.isUpgrade() ||
-                    processor.isAsync() && !processor.checkAsyncTimeoutGeneration())) {
+                            !processor.isAsync() && !processor.isUpgrade() ||
+                            processor.isAsync() && !processor.checkAsyncTimeoutGeneration())) {
                 // This is effectively a NO-OP
                 return SocketState.OPEN;
             }
@@ -829,15 +829,14 @@ public abstract class AbstractProtocol<S> implements ProtocolHandler,
 
                 SocketState state = SocketState.CLOSED;
                 do {
+                    // TODO 找到 HTTP/1.1 处理器来对 socket 进行处理
                     state = processor.process(wrapper, status);
 
                     if (state == SocketState.UPGRADING) {
                         // Get the HTTP upgrade handler
                         UpgradeToken upgradeToken = processor.getUpgradeToken();
-                        // Restore leftover input to the wrapper so the upgrade
-                        // processor can process it.
+                        // Retrieve leftover input
                         ByteBuffer leftOverInput = processor.getLeftoverInput();
-                        wrapper.unRead(leftOverInput);
                         if (upgradeToken == null) {
                             // Assume direct HTTP/2 connection
                             UpgradeProtocol upgradeProtocol = getProtocol().getUpgradeProtocol("h2c");
@@ -846,13 +845,14 @@ public abstract class AbstractProtocol<S> implements ProtocolHandler,
                                 release(processor);
                                 // Create the upgrade processor
                                 processor = upgradeProtocol.getProcessor(wrapper, getProtocol().getAdapter());
+                                wrapper.unRead(leftOverInput);
                                 // Associate with the processor with the connection
                                 connections.put(socket, processor);
                             } else {
                                 if (getLog().isDebugEnabled()) {
                                     getLog().debug(sm.getString(
-                                        "abstractConnectionHandler.negotiatedProcessor.fail",
-                                        "h2c"));
+                                            "abstractConnectionHandler.negotiatedProcessor.fail",
+                                            "h2c"));
                                 }
                                 // Exit loop and trigger appropriate clean-up
                                 state = SocketState.CLOSED;
@@ -867,6 +867,7 @@ public abstract class AbstractProtocol<S> implements ProtocolHandler,
                                 getLog().debug(sm.getString("abstractConnectionHandler.upgradeCreate",
                                         processor, wrapper));
                             }
+                            wrapper.unRead(leftOverInput);
                             // Associate with the processor with the connection
                             connections.put(socket, processor);
                             // Initialise the upgrade handler (which may trigger
@@ -1062,14 +1063,14 @@ public abstract class AbstractProtocol<S> implements ProtocolHandler,
                     try {
                         long count = registerCount.incrementAndGet();
                         RequestInfo rp =
-                            processor.getRequest().getRequestProcessor();
+                                processor.getRequest().getRequestProcessor();
                         rp.setGlobalProcessor(global);
                         ObjectName rpName = new ObjectName(
                                 getProtocol().getDomain() +
-                                ":type=RequestProcessor,worker="
-                                + getProtocol().getName() +
-                                ",name=" + getProtocol().getProtocolName() +
-                                "Request" + count);
+                                        ":type=RequestProcessor,worker="
+                                        + getProtocol().getName() +
+                                        ",name=" + getProtocol().getProtocolName() +
+                                        "Request" + count);
                         if (getLog().isDebugEnabled()) {
                             getLog().debug("Register [" + processor + "] as [" + rpName + "]");
                         }
@@ -1197,7 +1198,7 @@ public abstract class AbstractProtocol<S> implements ProtocolHandler,
                 }
                 long now = System.currentTimeMillis();
                 for (Processor processor : waitingProcessors) {
-                   processor.timeoutAsync(now);
+                    processor.timeoutAsync(now);
                 }
 
                 // Loop if endpoint is paused

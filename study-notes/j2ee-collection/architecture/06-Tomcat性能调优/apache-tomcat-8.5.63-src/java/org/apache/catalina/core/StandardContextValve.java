@@ -61,19 +61,22 @@ final class StandardContextValve extends ValveBase {
      */
     @Override
     public final void invoke(Request request, Response response)
-        throws IOException, ServletException {
+            throws IOException, ServletException {
 
         // Disallow any direct access to resources under WEB-INF or META-INF
+        // TODO 禁止直接访问 WEB-INF 或 META-INF 下面的资源
         MessageBytes requestPathMB = request.getRequestPathMB();
         if ((requestPathMB.startsWithIgnoreCase("/META-INF/", 0))
                 || (requestPathMB.equalsIgnoreCase("/META-INF"))
                 || (requestPathMB.startsWithIgnoreCase("/WEB-INF/", 0))
                 || (requestPathMB.equalsIgnoreCase("/WEB-INF"))) {
+            // TODO 直接响应 404
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
 
         // Select the Wrapper to be used for this Request
+        // TODO 获取该请求对应的 Servlet，如果找不到直接响应 404
         Wrapper wrapper = request.getWrapper();
         if (wrapper == null || wrapper.isUnavailable()) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -94,6 +97,7 @@ final class StandardContextValve extends ValveBase {
         if (request.isAsyncSupported()) {
             request.setAsyncSupported(wrapper.getPipeline().isAsyncSupported());
         }
+        // TODO 执行 Wrapper 的 Valve
         wrapper.getPipeline().getFirst().invoke(request, response);
     }
 }

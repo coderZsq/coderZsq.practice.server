@@ -236,7 +236,7 @@ public abstract class ContainerBase extends LifecycleMBeanBase
      * The string manager for this package.
      */
     protected static final StringManager sm =
-        StringManager.getManager(Constants.Package);
+            StringManager.getManager(Constants.Package);
 
 
     /**
@@ -380,7 +380,7 @@ public abstract class ContainerBase extends LifecycleMBeanBase
                 name = "/" + name;
             }
             loggerName = "[" + name + "]"
-                + ((loggerName != null) ? ("." + loggerName) : "");
+                    + ((loggerName != null) ? ("." + loggerName) : "");
             current = current.getParent();
         }
         logName = ContainerBase.class.getName() + "." + loggerName;
@@ -446,7 +446,7 @@ public abstract class ContainerBase extends LifecycleMBeanBase
 
             // Stop the old component if necessary
             if (getState().isAvailable() && (oldCluster != null) &&
-                (oldCluster instanceof Lifecycle)) {
+                    (oldCluster instanceof Lifecycle)) {
                 try {
                     ((Lifecycle) oldCluster).stop();
                 } catch (LifecycleException e) {
@@ -459,7 +459,7 @@ public abstract class ContainerBase extends LifecycleMBeanBase
                 cluster.setContainer(this);
 
             if (getState().isAvailable() && (cluster != null) &&
-                (cluster instanceof Lifecycle)) {
+                    (cluster instanceof Lifecycle)) {
                 try {
                     ((Lifecycle) cluster).start();
                 } catch (LifecycleException e) {
@@ -594,7 +594,7 @@ public abstract class ContainerBase extends LifecycleMBeanBase
         ClassLoader oldParentClassLoader = this.parentClassLoader;
         this.parentClassLoader = parent;
         support.firePropertyChange("parentClassLoader", oldParentClassLoader,
-                                   this.parentClassLoader);
+                this.parentClassLoader);
 
     }
 
@@ -660,7 +660,7 @@ public abstract class ContainerBase extends LifecycleMBeanBase
 
             // Stop the old component if necessary
             if (getState().isAvailable() && (oldRealm != null) &&
-                (oldRealm instanceof Lifecycle)) {
+                    (oldRealm instanceof Lifecycle)) {
                 try {
                     ((Lifecycle) oldRealm).stop();
                 } catch (LifecycleException e) {
@@ -672,7 +672,7 @@ public abstract class ContainerBase extends LifecycleMBeanBase
             if (realm != null)
                 realm.setContainer(this);
             if (getState().isAvailable() && (realm != null) &&
-                (realm instanceof Lifecycle)) {
+                    (realm instanceof Lifecycle)) {
                 try {
                     ((Lifecycle) realm).start();
                 } catch (LifecycleException e) {
@@ -713,7 +713,7 @@ public abstract class ContainerBase extends LifecycleMBeanBase
     public void addChild(Container child) {
         if (Globals.IS_SECURITY_ENABLED) {
             PrivilegedAction<Void> dp =
-                new PrivilegedAddChild(child);
+                    new PrivilegedAddChild(child);
             AccessController.doPrivileged(dp);
         } else {
             addChildInternal(child);
@@ -727,8 +727,8 @@ public abstract class ContainerBase extends LifecycleMBeanBase
         synchronized(children) {
             if (children.get(child.getName()) != null)
                 throw new IllegalArgumentException("addChild:  Child name '" +
-                                                   child.getName() +
-                                                   "' is not unique");
+                        child.getName() +
+                        "' is not unique");
             child.setParent(this);  // May throw IAE
             children.put(child.getName(), child);
         }
@@ -811,7 +811,7 @@ public abstract class ContainerBase extends LifecycleMBeanBase
     @Override
     public ContainerListener[] findContainerListeners() {
         ContainerListener[] results =
-            new ContainerListener[0];
+                new ContainerListener[0];
         return listeners.toArray(results);
     }
 
@@ -918,6 +918,7 @@ public abstract class ContainerBase extends LifecycleMBeanBase
         }
 
         // Start our child containers, if any
+        // Host/Context
         Container children[] = findChildren();
         List<Future<Void>> results = new ArrayList<>();
         for (Container child : children) {
@@ -952,6 +953,7 @@ public abstract class ContainerBase extends LifecycleMBeanBase
         setState(LifecycleState.STARTING);
 
         // Start our thread
+        // TODO 创建容器后台处理进程，主要负责检测web项目的热加载与热部署
         threadStart();
     }
 
@@ -1052,7 +1054,7 @@ public abstract class ContainerBase extends LifecycleMBeanBase
      */
     @Override
     public void logAccess(Request request, Response response, long time,
-            boolean useDefault) {
+                          boolean useDefault) {
 
         boolean logged = false;
 
@@ -1129,7 +1131,7 @@ public abstract class ContainerBase extends LifecycleMBeanBase
 
         if (!getState().isAvailable())
             return;
-
+        // TODO 1.执行容器中Cluster组件的周期性任务
         Cluster cluster = getClusterInternal();
         if (cluster != null) {
             try {
@@ -1139,6 +1141,7 @@ public abstract class ContainerBase extends LifecycleMBeanBase
                         cluster), e);
             }
         }
+        // TODO 2.执行容器中 Realm 组件的周期性任务
         Realm realm = getRealmInternal();
         if (realm != null) {
             try {
@@ -1147,6 +1150,7 @@ public abstract class ContainerBase extends LifecycleMBeanBase
                 log.warn(sm.getString("containerBase.backgroundProcess.realm", realm), e);
             }
         }
+        // TODO 3.执行容器中 Valve 组件的周期性任务
         Valve current = pipeline.getFirst();
         while (current != null) {
             try {
@@ -1156,6 +1160,7 @@ public abstract class ContainerBase extends LifecycleMBeanBase
             }
             current = current.getNext();
         }
+        // TODO 4. 触发容器的"周期事件"，Host 容器的监听器 HostConfig 就靠它来调用
         fireLifecycleEvent(Lifecycle.PERIODIC_EVENT, null);
     }
 
@@ -1391,7 +1396,7 @@ public abstract class ContainerBase extends LifecycleMBeanBase
             } finally {
                 if (container instanceof Context) {
                     ((Context) container).unbind(false, originalClassLoader);
-               }
+                }
             }
         }
     }
