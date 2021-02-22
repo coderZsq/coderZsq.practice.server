@@ -1,0 +1,553 @@
+# ik分词器
+cp -r elasticsearch-analysis-ik-6.5.4/ /usr/share/elasticsearch/plugins/
+systemctl restart elasticsearch
+http://192.168.199.164:9200/_cat/plugins
+
+# kibana 中 dev tool
+PUT /shop_product
+#! Deprecation: the default number of shards will change from [5] to [1] in 7.0.0; if you wish to continue using the default of [5] shards, you must manage this on the create index request or with an index template
+{
+  "acknowledged" : true,
+  "shards_acknowledged" : true,
+  "index" : "shop_product"
+}
+
+GET /shop_product/_analyze
+{
+  "text": "I am coderZsq"
+}
+
+{
+  "tokens" : [
+    {
+      "token" : "i",
+      "start_offset" : 0,
+      "end_offset" : 1,
+      "type" : "<ALPHANUM>",
+      "position" : 0
+    },
+    {
+      "token" : "am",
+      "start_offset" : 2,
+      "end_offset" : 4,
+      "type" : "<ALPHANUM>",
+      "position" : 1
+    },
+    {
+      "token" : "coderzsq",
+      "start_offset" : 5,
+      "end_offset" : 13,
+      "type" : "<ALPHANUM>",
+      "position" : 2
+    }
+  ]
+}
+
+GET /shop_product/_analyze
+{
+  "text": "中国你好， 祖国强大"
+}
+
+{
+  "tokens" : [
+    {
+      "token" : "中",
+      "start_offset" : 0,
+      "end_offset" : 1,
+      "type" : "<IDEOGRAPHIC>",
+      "position" : 0
+    },
+    {
+      "token" : "国",
+      "start_offset" : 1,
+      "end_offset" : 2,
+      "type" : "<IDEOGRAPHIC>",
+      "position" : 1
+    },
+    {
+      "token" : "你",
+      "start_offset" : 2,
+      "end_offset" : 3,
+      "type" : "<IDEOGRAPHIC>",
+      "position" : 2
+    },
+    {
+      "token" : "好",
+      "start_offset" : 3,
+      "end_offset" : 4,
+      "type" : "<IDEOGRAPHIC>",
+      "position" : 3
+    },
+    {
+      "token" : "祖",
+      "start_offset" : 6,
+      "end_offset" : 7,
+      "type" : "<IDEOGRAPHIC>",
+      "position" : 4
+    },
+    {
+      "token" : "国",
+      "start_offset" : 7,
+      "end_offset" : 8,
+      "type" : "<IDEOGRAPHIC>",
+      "position" : 5
+    },
+    {
+      "token" : "强",
+      "start_offset" : 8,
+      "end_offset" : 9,
+      "type" : "<IDEOGRAPHIC>",
+      "position" : 6
+    },
+    {
+      "token" : "大",
+      "start_offset" : 9,
+      "end_offset" : 10,
+      "type" : "<IDEOGRAPHIC>",
+      "position" : 7
+    }
+  ]
+}
+
+GET /shop_product/_analyze
+{
+  "text": "中国你好， 祖国强大",
+  "analyzer": "ik_smart"
+}
+
+{
+  "tokens" : [
+    {
+      "token" : "中国",
+      "start_offset" : 0,
+      "end_offset" : 2,
+      "type" : "CN_WORD",
+      "position" : 0
+    },
+    {
+      "token" : "你好",
+      "start_offset" : 2,
+      "end_offset" : 4,
+      "type" : "CN_WORD",
+      "position" : 1
+    },
+    {
+      "token" : "祖国",
+      "start_offset" : 6,
+      "end_offset" : 8,
+      "type" : "CN_WORD",
+      "position" : 2
+    },
+    {
+      "token" : "强大",
+      "start_offset" : 8,
+      "end_offset" : 10,
+      "type" : "CN_WORD",
+      "position" : 3
+    }
+  ]
+}
+
+GET /shop_product/_analyze
+{
+  "text": "中国你好， 祖国强大",
+  "analyzer": "ik_max_word"
+}
+
+{
+  "tokens" : [
+    {
+      "token" : "中国",
+      "start_offset" : 0,
+      "end_offset" : 2,
+      "type" : "CN_WORD",
+      "position" : 0
+    },
+    {
+      "token" : "你好",
+      "start_offset" : 2,
+      "end_offset" : 4,
+      "type" : "CN_WORD",
+      "position" : 1
+    },
+    {
+      "token" : "祖国",
+      "start_offset" : 6,
+      "end_offset" : 8,
+      "type" : "CN_WORD",
+      "position" : 2
+    },
+    {
+      "token" : "国强",
+      "start_offset" : 7,
+      "end_offset" : 9,
+      "type" : "CN_WORD",
+      "position" : 3
+    },
+    {
+      "token" : "强大",
+      "start_offset" : 8,
+      "end_offset" : 10,
+      "type" : "CN_WORD",
+      "position" : 4
+    }
+  ]
+}
+
+GET /shop_product/_analyze
+{
+  "text": "朱双泉你好",
+  "analyzer": "ik_smart"
+}
+
+{
+  "tokens" : [
+    {
+      "token" : "朱",
+      "start_offset" : 0,
+      "end_offset" : 1,
+      "type" : "CN_CHAR",
+      "position" : 0
+    },
+    {
+      "token" : "双",
+      "start_offset" : 1,
+      "end_offset" : 2,
+      "type" : "CN_CHAR",
+      "position" : 1
+    },
+    {
+      "token" : "泉",
+      "start_offset" : 2,
+      "end_offset" : 3,
+      "type" : "CN_CHAR",
+      "position" : 2
+    },
+    {
+      "token" : "你好",
+      "start_offset" : 3,
+      "end_offset" : 5,
+      "type" : "CN_WORD",
+      "position" : 3
+    }
+  ]
+}
+
+# 添加自定义分词
+$ cd /usr/share/elasticsearch/plugins/elasticsearch-analysis-ik-6.5.4/config
+$ less main.dic
+shift+g
+朱双泉
+$ systemctl restart elasticsearch
+
+GET /shop_product/_analyze
+{
+  "text": "朱双泉你好",
+  "analyzer": "ik_smart"
+}
+
+{
+  "tokens" : [
+    {
+      "token" : "朱双泉",
+      "start_offset" : 0,
+      "end_offset" : 3,
+      "type" : "CN_WORD",
+      "position" : 0
+    },
+    {
+      "token" : "你好",
+      "start_offset" : 3,
+      "end_offset" : 5,
+      "type" : "CN_WORD",
+      "position" : 1
+    }
+  ]
+}
+
+# 建立索引
+PUT /aaa
+#! Deprecation: the default number of shards will change from [5] to [1] in 7.0.0; if you wish to continue using the default of [5] shards, you must manage this on the create index request or with an index template
+{
+  "acknowledged" : true,
+  "shards_acknowledged" : true,
+  "index" : "aaa"
+}
+
+PUT /bbb 
+{
+  "settings": {
+    "number_of_shards": 2, // 分片
+    "number_of_replicas": 2 // 备份
+  }
+}
+
+{
+  "acknowledged" : true,
+  "shards_acknowledged" : true,
+  "index" : "bbb"
+}
+
+# 删除索引
+DELETE /aaa
+{
+  "acknowledged" : true
+}
+
+DELETE /bbb
+{
+  "acknowledged" : true
+}
+
+# 建立映射
+DELETE /shop_product
+PUT /shop_product 
+{
+  "mappings": {
+    "shop_product": {
+      "properties": {
+        "id": {"type": "long"},
+        "name": {"type": "text", "analyzer": "ik_smart", "search_analyzer": "ik_smart"},
+        "price": {"type": "double"}
+      }
+    }
+  }
+}
+
+#! Deprecation: the default number of shards will change from [5] to [1] in 7.0.0; if you wish to continue using the default of [5] shards, you must manage this on the create index request or with an index template
+{
+  "acknowledged" : true,
+  "shards_acknowledged" : true,
+  "index" : "shop_product"
+}
+
+# 查询映射
+GET /shop_product/_mapping
+{
+  "shop_product" : {
+    "mappings" : {
+      "shop_product" : {
+        "properties" : {
+          "id" : {
+            "type" : "long"
+          },
+          "name" : {
+            "type" : "text",
+            "analyzer" : "ik_smart"
+          },
+          "price" : {
+            "type" : "double"
+          }
+        }
+      }
+    }
+  }
+}
+
+# 新增和替换文档
+# ES 里面的数据 --> MySQL, MongoDB, HBase
+# "_version" : 1 解决并发的乐观锁
+PUT /shop_product/shop_product/1
+{
+  "id": 1,
+  "name": "小米手机",
+  "price": 1699
+}
+
+{
+  "_index" : "shop_product",
+  "_type" : "shop_product",
+  "_id" : "1",
+  "_version" : 1,
+  "result" : "created",
+  "_shards" : {
+    "total" : 2,
+    "successful" : 1,
+    "failed" : 0
+  },
+  "_seq_no" : 0,
+  "_primary_term" : 1
+}
+
+PUT /shop_product/shop_product/1
+{
+  "id": 1,
+  "name": "小米手机",
+  "price": 999
+}
+
+{
+  "_index" : "shop_product",
+  "_type" : "shop_product",
+  "_id" : "1",
+  "_version" : 2,
+  "result" : "updated",
+  "_shards" : {
+    "total" : 2,
+    "successful" : 1,
+    "failed" : 0
+  },
+  "_seq_no" : 1,
+  "_primary_term" : 1
+}
+
+# 查询文档
+GET /shop_product/shop_product/1
+{
+  "_index" : "shop_product",
+  "_type" : "shop_product",
+  "_id" : "1",
+  "_version" : 2,
+  "found" : true,
+  "_source" : {
+    "id" : 1,
+    "name" : "小米手机",
+    "price" : 999
+  }
+}
+
+GET /shop_product/shop_product/_search
+{
+  "took" : 48,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 5,
+    "successful" : 5,
+    "skipped" : 0,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : 1,
+    "max_score" : 1.0,
+    "hits" : [
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "1",
+        "_score" : 1.0,
+        "_source" : {
+          "id" : 1,
+          "name" : "小米手机",
+          "price" : 999
+        }
+      }
+    ]
+  }
+}
+
+PUT /shop_product/shop_product/2
+{
+  "id": 2,
+  "name": "华为手机",
+  "price": 6000
+}
+
+{
+  "_index" : "shop_product",
+  "_type" : "shop_product",
+  "_id" : "2",
+  "_version" : 1,
+  "result" : "created",
+  "_shards" : {
+    "total" : 2,
+    "successful" : 1,
+    "failed" : 0
+  },
+  "_seq_no" : 0,
+  "_primary_term" : 1
+}
+
+GET /shop_product/shop_product/_search
+{
+  "took" : 48,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 5,
+    "successful" : 5,
+    "skipped" : 0,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : 2,
+    "max_score" : 1.0,
+    "hits" : [
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "2",
+        "_score" : 1.0,
+        "_source" : {
+          "id" : 2,
+          "name" : "华为手机",
+          "price" : 6000
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "1",
+        "_score" : 1.0,
+        "_source" : {
+          "id" : 1,
+          "name" : "小米手机",
+          "price" : 999
+        }
+      }
+    ]
+  }
+}
+
+# 删除文档
+DELETE /shop_product/shop_product/2
+{
+  "_index" : "shop_product",
+  "_type" : "shop_product",
+  "_id" : "2",
+  "_version" : 2,
+  "result" : "deleted",
+  "_shards" : {
+    "total" : 2,
+    "successful" : 1,
+    "failed" : 0
+  },
+  "_seq_no" : 1,
+  "_primary_term" : 1
+}
+
+PUT /shop_product/shop_product/2
+{
+  "id": 2,
+  "name": "华为手机",
+  "price": 5555
+}
+
+{
+  "_index" : "shop_product",
+  "_type" : "shop_product",
+  "_id" : "2",
+  "_version" : 3,
+  "result" : "created",
+  "_shards" : {
+    "total" : 2,
+    "successful" : 1,
+    "failed" : 0
+  },
+  "_seq_no" : 2,
+  "_primary_term" : 1
+}
+
+GET /shop_product/shop_product/2
+{
+  "_index" : "shop_product",
+  "_type" : "shop_product",
+  "_id" : "2",
+  "_version" : 3,
+  "found" : true,
+  "_source" : {
+    "id" : 2,
+    "name" : "华为手机",
+    "price" : 5555
+  }
+}
+
+# 高级查询
