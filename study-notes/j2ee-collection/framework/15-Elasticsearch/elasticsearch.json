@@ -551,3 +551,1436 @@ GET /shop_product/shop_product/2
 }
 
 # 高级查询
+DELETE /shop_product/
+{
+  "acknowledged" : true
+}
+
+PUT /shop_product
+{
+  "mappings": {
+    "shop_product": {
+      "properties": {
+        "id": {
+	  "type": "long"
+	},
+        "title": {
+          "type": "text", 
+          "analyzer": "ik_smart", 
+          "search_analyzer": "ik_smart",
+          "fields": {
+          "keyword": {
+          "type": "keyword",
+            "ignore_above": 256
+            }  
+          }
+        },
+        "price": {"type": "integer"},
+        "intro": {
+          "type": "text", 
+          "analyzer": "ik_smart", 
+          "search_analyzer": "ik_smart",
+          "fields": {
+            "keyword": {
+              "type": "keyword",
+              "ignore_above": 256
+            }  
+          }
+        },
+      	"brand": {
+      	  "type": "keyword" 
+      	}
+      }
+    }
+  }
+}
+
+POST /shop_product/shop_product/_bulk
+{"create":{"_id": 1}}
+{"id":1,"title":"Apple iPhone XR (A2108) 128GB 白色 移动联通电信4G手机 双卡双待","price":5299,"intro":"【iPhoneXR限时特惠！】6.1英寸视网膜显示屏，A12仿生芯片，面容识别，无线充电，支持双卡！选【换修无忧版】获 AppleCare 原厂服务，享只换不修！更有快速换机、保值换新、轻松月付！","brand":"Apple"}
+{"create":{"_id": 2}}
+{"id":2,"title":"Apple 2019款 Macbook Pro 13.3【带触控栏】八代i7 18G 256G RP645显卡 深空灰 苹果笔记本电脑 轻薄本 MUHN2CH/A","price":15299,"intro":"【八月精选】Pro2019年新品上市送三重好礼，现在购买领满8000减400元优惠神劵，劵后更优惠！","brand":"Apple"}
+{"create":{"_id": 3}}
+{"id":3,"title":"Apple iPad Air 3 2019年新款平板电脑 10.5英寸（64G WLAN版/A12芯片/Retina显示屏/MUUL2CH/A）金色","price":3788,"intro":"8月尊享好礼！买iPad即送蓝牙耳机！领券立减！多款产品支持手写笔！【新一代iPad，总有一款适合你】选【换修无忧版】获 AppleCare 原厂服务，享只换不修！更有快速换机、保值换新、轻松月付！","brand":"Apple"}
+{"create":{"_id": 4}}
+{"id":4,"title":"华为HUAWEI MateBook X Pro 2019款 英特尔酷睿i5 13.9英寸全面屏轻薄笔记本电脑(i5 8G 512G 3K 触控) 灰","price":7999,"intro":"3K全面屏开启无界视野;轻薄设计灵动有型，HuaweiShare一碰传","brand":"华为"}
+{"create":{"_id": 5}}
+{"id":5,"title":"华为 HUAWEI Mate20 X (5G) 7nm工艺5G旗舰芯片全面屏超大广角徕卡三摄8GB+256GB翡冷翠5G双模全网通手机","price":6199,"intro":"【5G双模，支持SA/NSA网络，7.2英寸全景巨屏，石墨烯液冷散热】5G先驱，极速体验。","brand":"华为"}
+{"create":{"_id": 6}}
+{"id":6,"title":"华为平板 M6 10.8英寸麒麟980影音娱乐平板电脑4GB+64GB WiFi（香槟金）","price":2299,"intro":"【华为暑期购】8月2日-4日，M5青春版指定爆款型号优惠100元，AI语音控制","brand":"华为"}
+{"create":{"_id": 7}}
+{"id":7,"title":"荣耀20 PRO DXOMARK全球第二高分 4800万四摄 双光学防抖 麒麟980 全网通4G 8GB+128GB 蓝水翡翠 拍照手机","price":3199,"intro":"白条6期免息！麒麟980，4800万全焦段AI四摄！荣耀20系列2699起，4800万超广角AI四摄！","brand":"荣耀"}
+{"create":{"_id": 8}}
+{"id":8,"title":"荣耀MagicBook Pro 16.1英寸全面屏轻薄性能笔记本电脑（酷睿i7 8G 512G MX250 IPS FHD 指纹解锁）冰河银","price":6199,"intro":"16.1英寸无界全面屏金属轻薄本，100%sRGB色域，全高清IPS防眩光护眼屏，14小时长续航，指纹一健开机登录，魔法一碰传高速传输。","brand":"荣耀"}
+{"create":{"_id": 9}}
+{"id":9,"title":"荣耀平板5 麒麟8核芯片 GT游戏加速 4G+128G 10.1英寸全高清屏影音平板电脑 WiFi版 冰川蓝","price":1549,"intro":"【爆款平板推荐】哈曼卡顿专业调音，10.1英寸全高清大屏，双喇叭立体环绕音，配置多重护眼，值得拥有！","brand":"荣耀"}
+{"create":{"_id": 10}}
+{"id":10,"title":"小米9 4800万超广角三摄 6GB+128GB全息幻彩蓝 骁龙855 全网通4G 双卡双待 水滴全面屏拍照智能游戏手机","price":2799,"intro":"限时优惠200，成交价2799！索尼4800万广角微距三摄，屏下指纹解锁！","brand":"小米"}
+{"create":{"_id": 11}}
+{"id":11,"title":"小米(MI)Pro 2019款 15.6英寸金属轻薄笔记本(第八代英特尔酷睿i7-8550U 16G 512GSSD MX250 2G独显) 深空灰","price":6899,"intro":"【PCIE固态硬盘、72%NTSC高色域全高清屏】B面康宁玻璃覆盖、16G双通道大内存、第八代酷睿I7处理器、专业级调校MX150","brand":"小米"}
+{"create":{"_id": 12}}
+{"id":12,"title":"联想(Lenovo)拯救者Y7000P 2019英特尔酷睿i7 15.6英寸游戏笔记本电脑(i7 9750H 16G 1T SSD GTX1660Ti 144Hz)","price":9299,"intro":"超大1T固态，升级双通道16G内存一步到位，GTX1660Ti电竞级独显，英特尔9代i7H高性能处理器，144Hz电竞屏窄边框！","brand":"联想"}
+
+GET /shop_product/shop_product/1
+{
+  "_index" : "shop_product",
+  "_type" : "shop_product",
+  "_id" : "1",
+  "_version" : 1,
+  "found" : true,
+  "_source" : {
+    "id" : 1,
+    "title" : "Apple iPhone XR (A2108) 128GB 白色 移动联通电信4G手机 双卡双待",
+    "price" : 5299,
+    "intro" : "【iPhoneXR限时特惠！】6.1英寸视网膜显示屏，A12仿生芯片，面容识别，无线充电，支持双卡！选【换修无忧版】获 AppleCare 原厂服务，享只换不修！更有快速换机、保值换新、轻松月付！",
+    "brand" : "Apple"
+  }
+}
+
+GET /shop_product/shop_product/2
+{
+  "_index" : "shop_product",
+  "_type" : "shop_product",
+  "_id" : "2",
+  "_version" : 1,
+  "found" : true,
+  "_source" : {
+    "id" : 2,
+    "title" : "Apple 2019款 Macbook Pro 13.3【带触控栏】八代i7 18G 256G RP645显卡 深空灰 苹果笔记本电脑 轻薄本 MUHN2CH/A",
+    "price" : 15299,
+    "intro" : "【八月精选】Pro2019年新品上市送三重好礼，现在购买领满8000减400元优惠神劵，劵后更优惠！",
+    "brand" : "Apple"
+  }
+}
+
+GET /shop_product/shop_product/3
+{
+  "_index" : "shop_product",
+  "_type" : "shop_product",
+  "_id" : "3",
+  "_version" : 1,
+  "found" : true,
+  "_source" : {
+    "id" : 3,
+    "title" : "Apple iPad Air 3 2019年新款平板电脑 10.5英寸（64G WLAN版/A12芯片/Retina显示屏/MUUL2CH/A）金色",
+    "price" : 3788,
+    "intro" : "8月尊享好礼！买iPad即送蓝牙耳机！领券立减！多款产品支持手写笔！【新一代iPad，总有一款适合你】选【换修无忧版】获 AppleCare 原厂服务，享只换不修！更有快速换机、保值换新、轻松月付！",
+    "brand" : "Apple"
+  }
+}
+
+GET /shop_product/shop_product/_search
+{
+  "took" : 78,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 5,
+    "successful" : 5,
+    "skipped" : 0,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : 12,
+    "max_score" : 1.0,
+    "hits" : [
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "5",
+        "_score" : 1.0,
+        "_source" : {
+          "id" : 5,
+          "title" : "华为 HUAWEI Mate20 X (5G) 7nm工艺5G旗舰芯片全面屏超大广角徕卡三摄8GB+256GB翡冷翠5G双模全网通手机",
+          "price" : 6199,
+          "intro" : "【5G双模，支持SA/NSA网络，7.2英寸全景巨屏，石墨烯液冷散热】5G先驱，极速体验。",
+          "brand" : "华为"
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "8",
+        "_score" : 1.0,
+        "_source" : {
+          "id" : 8,
+          "title" : "荣耀MagicBook Pro 16.1英寸全面屏轻薄性能笔记本电脑（酷睿i7 8G 512G MX250 IPS FHD 指纹解锁）冰河银",
+          "price" : 6199,
+          "intro" : "16.1英寸无界全面屏金属轻薄本，100%sRGB色域，全高清IPS防眩光护眼屏，14小时长续航，指纹一健开机登录，魔法一碰传高速传输。",
+          "brand" : "荣耀"
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "9",
+        "_score" : 1.0,
+        "_source" : {
+          "id" : 9,
+          "title" : "荣耀平板5 麒麟8核芯片 GT游戏加速 4G+128G 10.1英寸全高清屏影音平板电脑 WiFi版 冰川蓝",
+          "price" : 1549,
+          "intro" : "【爆款平板推荐】哈曼卡顿专业调音，10.1英寸全高清大屏，双喇叭立体环绕音，配置多重护眼，值得拥有！",
+          "brand" : "荣耀"
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "10",
+        "_score" : 1.0,
+        "_source" : {
+          "id" : 10,
+          "title" : "小米9 4800万超广角三摄 6GB+128GB全息幻彩蓝 骁龙855 全网通4G 双卡双待 水滴全面屏拍照智能游戏手机",
+          "price" : 2799,
+          "intro" : "限时优惠200，成交价2799！索尼4800万广角微距三摄，屏下指纹解锁！",
+          "brand" : "小米"
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "12",
+        "_score" : 1.0,
+        "_source" : {
+          "id" : 12,
+          "title" : "联想(Lenovo)拯救者Y7000P 2019英特尔酷睿i7 15.6英寸游戏笔记本电脑(i7 9750H 16G 1T SSD GTX1660Ti 144Hz)",
+          "price" : 9299,
+          "intro" : "超大1T固态，升级双通道16G内存一步到位，GTX1660Ti电竞级独显，英特尔9代i7H高性能处理器，144Hz电竞屏窄边框！",
+          "brand" : "联想"
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "2",
+        "_score" : 1.0,
+        "_source" : {
+          "id" : 2,
+          "title" : "Apple 2019款 Macbook Pro 13.3【带触控栏】八代i7 18G 256G RP645显卡 深空灰 苹果笔记本电脑 轻薄本 MUHN2CH/A",
+          "price" : 15299,
+          "intro" : "【八月精选】Pro2019年新品上市送三重好礼，现在购买领满8000减400元优惠神劵，劵后更优惠！",
+          "brand" : "Apple"
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "4",
+        "_score" : 1.0,
+        "_source" : {
+          "id" : 4,
+          "title" : "华为HUAWEI MateBook X Pro 2019款 英特尔酷睿i5 13.9英寸全面屏轻薄笔记本电脑(i5 8G 512G 3K 触控) 灰",
+          "price" : 7999,
+          "intro" : "3K全面屏开启无界视野;轻薄设计灵动有型，HuaweiShare一碰传",
+          "brand" : "华为"
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "6",
+        "_score" : 1.0,
+        "_source" : {
+          "id" : 6,
+          "title" : "华为平板 M6 10.8英寸麒麟980影音娱乐平板电脑4GB+64GB WiFi（香槟金）",
+          "price" : 2299,
+          "intro" : "【华为暑期购】8月2日-4日，M5青春版指定爆款型号优惠100元，AI语音控制",
+          "brand" : "华为"
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "1",
+        "_score" : 1.0,
+        "_source" : {
+          "id" : 1,
+          "title" : "Apple iPhone XR (A2108) 128GB 白色 移动联通电信4G手机 双卡双待",
+          "price" : 5299,
+          "intro" : "【iPhoneXR限时特惠！】6.1英寸视网膜显示屏，A12仿生芯片，面容识别，无线充电，支持双卡！选【换修无忧版】获 AppleCare 原厂服务，享只换不修！更有快速换机、保值换新、轻松月付！",
+          "brand" : "Apple"
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "7",
+        "_score" : 1.0,
+        "_source" : {
+          "id" : 7,
+          "title" : "荣耀20 PRO DXOMARK全球第二高分 4800万四摄 双光学防抖 麒麟980 全网通4G 8GB+128GB 蓝水翡翠 拍照手机",
+          "price" : 3199,
+          "intro" : "白条6期免息！麒麟980，4800万全焦段AI四摄！荣耀20系列2699起，4800万超广角AI四摄！",
+          "brand" : "荣耀"
+        }
+      }
+    ]
+  }
+}
+
+# 结果排序
+GET /shop_product/shop_product/_search
+{
+  "sort": [
+    {
+      "price": "desc"
+    }
+  ]
+}
+{
+  "took" : 314,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 5,
+    "successful" : 5,
+    "skipped" : 0,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : 12,
+    "max_score" : null,
+    "hits" : [
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "2",
+        "_score" : null,
+        "_source" : {
+          "id" : 2,
+          "title" : "Apple 2019款 Macbook Pro 13.3【带触控栏】八代i7 18G 256G RP645显卡 深空灰 苹果笔记本电脑 轻薄本 MUHN2CH/A",
+          "price" : 15299,
+          "intro" : "【八月精选】Pro2019年新品上市送三重好礼，现在购买领满8000减400元优惠神劵，劵后更优惠！",
+          "brand" : "Apple"
+        },
+        "sort" : [
+          15299
+        ]
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "12",
+        "_score" : null,
+        "_source" : {
+          "id" : 12,
+          "title" : "联想(Lenovo)拯救者Y7000P 2019英特尔酷睿i7 15.6英寸游戏笔记本电脑(i7 9750H 16G 1T SSD GTX1660Ti 144Hz)",
+          "price" : 9299,
+          "intro" : "超大1T固态，升级双通道16G内存一步到位，GTX1660Ti电竞级独显，英特尔9代i7H高性能处理器，144Hz电竞屏窄边框！",
+          "brand" : "联想"
+        },
+        "sort" : [
+          9299
+        ]
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "4",
+        "_score" : null,
+        "_source" : {
+          "id" : 4,
+          "title" : "华为HUAWEI MateBook X Pro 2019款 英特尔酷睿i5 13.9英寸全面屏轻薄笔记本电脑(i5 8G 512G 3K 触控) 灰",
+          "price" : 7999,
+          "intro" : "3K全面屏开启无界视野;轻薄设计灵动有型，HuaweiShare一碰传",
+          "brand" : "华为"
+        },
+        "sort" : [
+          7999
+        ]
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "11",
+        "_score" : null,
+        "_source" : {
+          "id" : 11,
+          "title" : "小米(MI)Pro 2019款 15.6英寸金属轻薄笔记本(第八代英特尔酷睿i7-8550U 16G 512GSSD MX250 2G独显) 深空灰",
+          "price" : 6899,
+          "intro" : "【PCIE固态硬盘、72%NTSC高色域全高清屏】B面康宁玻璃覆盖、16G双通道大内存、第八代酷睿I7处理器、专业级调校MX150",
+          "brand" : "小米"
+        },
+        "sort" : [
+          6899
+        ]
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "5",
+        "_score" : null,
+        "_source" : {
+          "id" : 5,
+          "title" : "华为 HUAWEI Mate20 X (5G) 7nm工艺5G旗舰芯片全面屏超大广角徕卡三摄8GB+256GB翡冷翠5G双模全网通手机",
+          "price" : 6199,
+          "intro" : "【5G双模，支持SA/NSA网络，7.2英寸全景巨屏，石墨烯液冷散热】5G先驱，极速体验。",
+          "brand" : "华为"
+        },
+        "sort" : [
+          6199
+        ]
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "8",
+        "_score" : null,
+        "_source" : {
+          "id" : 8,
+          "title" : "荣耀MagicBook Pro 16.1英寸全面屏轻薄性能笔记本电脑（酷睿i7 8G 512G MX250 IPS FHD 指纹解锁）冰河银",
+          "price" : 6199,
+          "intro" : "16.1英寸无界全面屏金属轻薄本，100%sRGB色域，全高清IPS防眩光护眼屏，14小时长续航，指纹一健开机登录，魔法一碰传高速传输。",
+          "brand" : "荣耀"
+        },
+        "sort" : [
+          6199
+        ]
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "1",
+        "_score" : null,
+        "_source" : {
+          "id" : 1,
+          "title" : "Apple iPhone XR (A2108) 128GB 白色 移动联通电信4G手机 双卡双待",
+          "price" : 5299,
+          "intro" : "【iPhoneXR限时特惠！】6.1英寸视网膜显示屏，A12仿生芯片，面容识别，无线充电，支持双卡！选【换修无忧版】获 AppleCare 原厂服务，享只换不修！更有快速换机、保值换新、轻松月付！",
+          "brand" : "Apple"
+        },
+        "sort" : [
+          5299
+        ]
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "3",
+        "_score" : null,
+        "_source" : {
+          "id" : 3,
+          "title" : "Apple iPad Air 3 2019年新款平板电脑 10.5英寸（64G WLAN版/A12芯片/Retina显示屏/MUUL2CH/A）金色",
+          "price" : 3788,
+          "intro" : "8月尊享好礼！买iPad即送蓝牙耳机！领券立减！多款产品支持手写笔！【新一代iPad，总有一款适合你】选【换修无忧版】获 AppleCare 原厂服务，享只换不修！更有快速换机、保值换新、轻松月付！",
+          "brand" : "Apple"
+        },
+        "sort" : [
+          3788
+        ]
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "7",
+        "_score" : null,
+        "_source" : {
+          "id" : 7,
+          "title" : "荣耀20 PRO DXOMARK全球第二高分 4800万四摄 双光学防抖 麒麟980 全网通4G 8GB+128GB 蓝水翡翠 拍照手机",
+          "price" : 3199,
+          "intro" : "白条6期免息！麒麟980，4800万全焦段AI四摄！荣耀20系列2699起，4800万超广角AI四摄！",
+          "brand" : "荣耀"
+        },
+        "sort" : [
+          3199
+        ]
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "10",
+        "_score" : null,
+        "_source" : {
+          "id" : 10,
+          "title" : "小米9 4800万超广角三摄 6GB+128GB全息幻彩蓝 骁龙855 全网通4G 双卡双待 水滴全面屏拍照智能游戏手机",
+          "price" : 2799,
+          "intro" : "限时优惠200，成交价2799！索尼4800万广角微距三摄，屏下指纹解锁！",
+          "brand" : "小米"
+        },
+        "sort" : [
+          2799
+        ]
+      }
+    ]
+  }
+}
+
+# 分页查询
+# select * from product limit 2, 5 2: 从第二条记录开始， 5： 取5条记录
+GET /shop_product/shop_product/_search
+{
+  "sort": [
+    {
+      "price": "desc"
+    }
+  ],
+  "from": 0,
+  "size": 3
+}
+
+{
+  "took" : 2,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 5,
+    "successful" : 5,
+    "skipped" : 0,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : 12,
+    "max_score" : null,
+    "hits" : [
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "2",
+        "_score" : null,
+        "_source" : {
+          "id" : 2,
+          "title" : "Apple 2019款 Macbook Pro 13.3【带触控栏】八代i7 18G 256G RP645显卡 深空灰 苹果笔记本电脑 轻薄本 MUHN2CH/A",
+          "price" : 15299,
+          "intro" : "【八月精选】Pro2019年新品上市送三重好礼，现在购买领满8000减400元优惠神劵，劵后更优惠！",
+          "brand" : "Apple"
+        },
+        "sort" : [
+          15299
+        ]
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "12",
+        "_score" : null,
+        "_source" : {
+          "id" : 12,
+          "title" : "联想(Lenovo)拯救者Y7000P 2019英特尔酷睿i7 15.6英寸游戏笔记本电脑(i7 9750H 16G 1T SSD GTX1660Ti 144Hz)",
+          "price" : 9299,
+          "intro" : "超大1T固态，升级双通道16G内存一步到位，GTX1660Ti电竞级独显，英特尔9代i7H高性能处理器，144Hz电竞屏窄边框！",
+          "brand" : "联想"
+        },
+        "sort" : [
+          9299
+        ]
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "4",
+        "_score" : null,
+        "_source" : {
+          "id" : 4,
+          "title" : "华为HUAWEI MateBook X Pro 2019款 英特尔酷睿i5 13.9英寸全面屏轻薄笔记本电脑(i5 8G 512G 3K 触控) 灰",
+          "price" : 7999,
+          "intro" : "3K全面屏开启无界视野;轻薄设计灵动有型，HuaweiShare一碰传",
+          "brand" : "华为"
+        },
+        "sort" : [
+          7999
+        ]
+      }
+    ]
+  }
+}
+
+# 检索查询
+# 需求1：查询商品标题中符合“游戏 手机”的字样的商品
+GET /shop_product/shop_product/_search
+{
+  "query": {
+    "term": {
+      "title": "游戏 手机"
+    }
+  }
+}
+
+{
+  "took" : 32,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 5,
+    "successful" : 5,
+    "skipped" : 0,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : 0,
+    "max_score" : null,
+    "hits" : [ ]
+  }
+}
+
+# 需求1：查询商品标题中符合“游戏 手机”的字样的商品
+GET /shop_product/shop_product/_search
+{
+  "query": {
+    "match": {
+      "title": "游戏 手机"
+    }
+  }
+}
+
+{
+  "took" : 81,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 5,
+    "successful" : 5,
+    "skipped" : 0,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : 6,
+    "max_score" : 1.3091815,
+    "hits" : [
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "10",
+        "_score" : 1.3091815,
+        "_source" : {
+          "id" : 10,
+          "title" : "小米9 4800万超广角三摄 6GB+128GB全息幻彩蓝 骁龙855 全网通4G 双卡双待 水滴全面屏拍照智能游戏手机",
+          "price" : 2799,
+          "intro" : "限时优惠200，成交价2799！索尼4800万广角微距三摄，屏下指纹解锁！",
+          "brand" : "小米"
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "5",
+        "_score" : 0.8374048,
+        "_source" : {
+          "id" : 5,
+          "title" : "华为 HUAWEI Mate20 X (5G) 7nm工艺5G旗舰芯片全面屏超大广角徕卡三摄8GB+256GB翡冷翠5G双模全网通手机",
+          "price" : 6199,
+          "intro" : "【5G双模，支持SA/NSA网络，7.2英寸全景巨屏，石墨烯液冷散热】5G先驱，极速体验。",
+          "brand" : "华为"
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "12",
+        "_score" : 0.5730595,
+        "_source" : {
+          "id" : 12,
+          "title" : "联想(Lenovo)拯救者Y7000P 2019英特尔酷睿i7 15.6英寸游戏笔记本电脑(i7 9750H 16G 1T SSD GTX1660Ti 144Hz)",
+          "price" : 9299,
+          "intro" : "超大1T固态，升级双通道16G内存一步到位，GTX1660Ti电竞级独显，英特尔9代i7H高性能处理器，144Hz电竞屏窄边框！",
+          "brand" : "联想"
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "9",
+        "_score" : 0.5525197,
+        "_source" : {
+          "id" : 9,
+          "title" : "荣耀平板5 麒麟8核芯片 GT游戏加速 4G+128G 10.1英寸全高清屏影音平板电脑 WiFi版 冰川蓝",
+          "price" : 1549,
+          "intro" : "【爆款平板推荐】哈曼卡顿专业调音，10.1英寸全高清大屏，双喇叭立体环绕音，配置多重护眼，值得拥有！",
+          "brand" : "荣耀"
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "1",
+        "_score" : 0.20132807,
+        "_source" : {
+          "id" : 1,
+          "title" : "Apple iPhone XR (A2108) 128GB 白色 移动联通电信4G手机 双卡双待",
+          "price" : 5299,
+          "intro" : "【iPhoneXR限时特惠！】6.1英寸视网膜显示屏，A12仿生芯片，面容识别，无线充电，支持双卡！选【换修无忧版】获 AppleCare 原厂服务，享只换不修！更有快速换机、保值换新、轻松月付！",
+          "brand" : "Apple"
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "7",
+        "_score" : 0.16659415,
+        "_source" : {
+          "id" : 7,
+          "title" : "荣耀20 PRO DXOMARK全球第二高分 4800万四摄 双光学防抖 麒麟980 全网通4G 8GB+128GB 蓝水翡翠 拍照手机",
+          "price" : 3199,
+          "intro" : "白条6期免息！麒麟980，4800万全焦段AI四摄！荣耀20系列2699起，4800万超广角AI四摄！",
+          "brand" : "荣耀"
+        }
+      }
+    ]
+  }
+}
+
+# 需求2：查询商品价格等于15299的商品
+GET /shop_product/shop_product/_search
+{
+  "query": {
+    "term": {
+      "price": 15299
+    }
+  }
+}
+
+{
+  "took" : 166,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 5,
+    "successful" : 5,
+    "skipped" : 0,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : 1,
+    "max_score" : 1.0,
+    "hits" : [
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "2",
+        "_score" : 1.0,
+        "_source" : {
+          "id" : 2,
+          "title" : "Apple 2019款 Macbook Pro 13.3【带触控栏】八代i7 18G 256G RP645显卡 深空灰 苹果笔记本电脑 轻薄本 MUHN2CH/A",
+          "price" : 15299,
+          "intro" : "【八月精选】Pro2019年新品上市送三重好礼，现在购买领满8000减400元优惠神劵，劵后更优惠！",
+          "brand" : "Apple"
+        }
+      }
+    ]
+  }
+}
+
+# gte: 大于等于 greater than equal
+# lte: less than equal
+# 需求3： 查询商品价格在5000~10000之间商品， 按照价格升序排列
+GET /shop_product/shop_product/_search
+{
+  "query": {
+    "range": {
+      "price": {
+        "gte": 5000,
+        "lte": 10000
+      }
+    }
+  }
+}
+
+{
+  "took" : 46,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 5,
+    "successful" : 5,
+    "skipped" : 0,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : 6,
+    "max_score" : 1.0,
+    "hits" : [
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "5",
+        "_score" : 1.0,
+        "_source" : {
+          "id" : 5,
+          "title" : "华为 HUAWEI Mate20 X (5G) 7nm工艺5G旗舰芯片全面屏超大广角徕卡三摄8GB+256GB翡冷翠5G双模全网通手机",
+          "price" : 6199,
+          "intro" : "【5G双模，支持SA/NSA网络，7.2英寸全景巨屏，石墨烯液冷散热】5G先驱，极速体验。",
+          "brand" : "华为"
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "8",
+        "_score" : 1.0,
+        "_source" : {
+          "id" : 8,
+          "title" : "荣耀MagicBook Pro 16.1英寸全面屏轻薄性能笔记本电脑（酷睿i7 8G 512G MX250 IPS FHD 指纹解锁）冰河银",
+          "price" : 6199,
+          "intro" : "16.1英寸无界全面屏金属轻薄本，100%sRGB色域，全高清IPS防眩光护眼屏，14小时长续航，指纹一健开机登录，魔法一碰传高速传输。",
+          "brand" : "荣耀"
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "12",
+        "_score" : 1.0,
+        "_source" : {
+          "id" : 12,
+          "title" : "联想(Lenovo)拯救者Y7000P 2019英特尔酷睿i7 15.6英寸游戏笔记本电脑(i7 9750H 16G 1T SSD GTX1660Ti 144Hz)",
+          "price" : 9299,
+          "intro" : "超大1T固态，升级双通道16G内存一步到位，GTX1660Ti电竞级独显，英特尔9代i7H高性能处理器，144Hz电竞屏窄边框！",
+          "brand" : "联想"
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "4",
+        "_score" : 1.0,
+        "_source" : {
+          "id" : 4,
+          "title" : "华为HUAWEI MateBook X Pro 2019款 英特尔酷睿i5 13.9英寸全面屏轻薄笔记本电脑(i5 8G 512G 3K 触控) 灰",
+          "price" : 7999,
+          "intro" : "3K全面屏开启无界视野;轻薄设计灵动有型，HuaweiShare一碰传",
+          "brand" : "华为"
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "1",
+        "_score" : 1.0,
+        "_source" : {
+          "id" : 1,
+          "title" : "Apple iPhone XR (A2108) 128GB 白色 移动联通电信4G手机 双卡双待",
+          "price" : 5299,
+          "intro" : "【iPhoneXR限时特惠！】6.1英寸视网膜显示屏，A12仿生芯片，面容识别，无线充电，支持双卡！选【换修无忧版】获 AppleCare 原厂服务，享只换不修！更有快速换机、保值换新、轻松月付！",
+          "brand" : "Apple"
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "11",
+        "_score" : 1.0,
+        "_source" : {
+          "id" : 11,
+          "title" : "小米(MI)Pro 2019款 15.6英寸金属轻薄笔记本(第八代英特尔酷睿i7-8550U 16G 512GSSD MX250 2G独显) 深空灰",
+          "price" : 6899,
+          "intro" : "【PCIE固态硬盘、72%NTSC高色域全高清屏】B面康宁玻璃覆盖、16G双通道大内存、第八代酷睿I7处理器、专业级调校MX150",
+          "brand" : "小米"
+        }
+      }
+    ]
+  }
+}
+
+# 关键字查询
+# 需求1： 查询商品标题或简介中符合“蓝牙 指纹 双卡”的字样商品
+GET /shop_product/shop_product/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "蓝牙 指纹 双卡",
+      "fields": ["title", "intro"]
+    }
+  }
+}
+
+{
+  "took" : 169,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 5,
+    "successful" : 5,
+    "skipped" : 0,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : 6,
+    "max_score" : 3.0893953,
+    "hits" : [
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "10",
+        "_score" : 3.0893953,
+        "_source" : {
+          "id" : 10,
+          "title" : "小米9 4800万超广角三摄 6GB+128GB全息幻彩蓝 骁龙855 全网通4G 双卡双待 水滴全面屏拍照智能游戏手机",
+          "price" : 2799,
+          "intro" : "限时优惠200，成交价2799！索尼4800万广角微距三摄，屏下指纹解锁！",
+          "brand" : "小米"
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "9",
+        "_score" : 2.6872945,
+        "_source" : {
+          "id" : 9,
+          "title" : "荣耀平板5 麒麟8核芯片 GT游戏加速 4G+128G 10.1英寸全高清屏影音平板电脑 WiFi版 冰川蓝",
+          "price" : 1549,
+          "intro" : "【爆款平板推荐】哈曼卡顿专业调音，10.1英寸全高清大屏，双喇叭立体环绕音，配置多重护眼，值得拥有！",
+          "brand" : "荣耀"
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "8",
+        "_score" : 1.447008,
+        "_source" : {
+          "id" : 8,
+          "title" : "荣耀MagicBook Pro 16.1英寸全面屏轻薄性能笔记本电脑（酷睿i7 8G 512G MX250 IPS FHD 指纹解锁）冰河银",
+          "price" : 6199,
+          "intro" : "16.1英寸无界全面屏金属轻薄本，100%sRGB色域，全高清IPS防眩光护眼屏，14小时长续航，指纹一健开机登录，魔法一碰传高速传输。",
+          "brand" : "荣耀"
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "1",
+        "_score" : 1.2347561,
+        "_source" : {
+          "id" : 1,
+          "title" : "Apple iPhone XR (A2108) 128GB 白色 移动联通电信4G手机 双卡双待",
+          "price" : 5299,
+          "intro" : "【iPhoneXR限时特惠！】6.1英寸视网膜显示屏，A12仿生芯片，面容识别，无线充电，支持双卡！选【换修无忧版】获 AppleCare 原厂服务，享只换不修！更有快速换机、保值换新、轻松月付！",
+          "brand" : "Apple"
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "3",
+        "_score" : 0.63818395,
+        "_source" : {
+          "id" : 3,
+          "title" : "Apple iPad Air 3 2019年新款平板电脑 10.5英寸（64G WLAN版/A12芯片/Retina显示屏/MUUL2CH/A）金色",
+          "price" : 3788,
+          "intro" : "8月尊享好礼！买iPad即送蓝牙耳机！领券立减！多款产品支持手写笔！【新一代iPad，总有一款适合你】选【换修无忧版】获 AppleCare 原厂服务，享只换不修！更有快速换机、保值换新、轻松月付！",
+          "brand" : "Apple"
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "7",
+        "_score" : 0.16659415,
+        "_source" : {
+          "id" : 7,
+          "title" : "荣耀20 PRO DXOMARK全球第二高分 4800万四摄 双光学防抖 麒麟980 全网通4G 8GB+128GB 蓝水翡翠 拍照手机",
+          "price" : 3199,
+          "intro" : "白条6期免息！麒麟980，4800万全焦段AI四摄！荣耀20系列2699起，4800万超广角AI四摄！",
+          "brand" : "荣耀"
+        }
+      }
+    ]
+  }
+}
+
+# 高亮显示
+GET /shop_product/shop_product/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "蓝牙 指纹 双卡",
+      "fields": ["title", "intro"]
+    }
+  },
+  "highlight": {
+    "fields": {
+      "title": {},
+      "intro": {}
+    }
+  }
+}
+
+{
+  "took" : 448,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 5,
+    "successful" : 5,
+    "skipped" : 0,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : 6,
+    "max_score" : 3.0893953,
+    "hits" : [
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "10",
+        "_score" : 3.0893953,
+        "_source" : {
+          "id" : 10,
+          "title" : "小米9 4800万超广角三摄 6GB+128GB全息幻彩蓝 骁龙855 全网通4G 双卡双待 水滴全面屏拍照智能游戏手机",
+          "price" : 2799,
+          "intro" : "限时优惠200，成交价2799！索尼4800万广角微距三摄，屏下指纹解锁！",
+          "brand" : "小米"
+        },
+        "highlight" : {
+          "intro" : [
+            "索尼4800万广角微距三摄，屏下<em>指纹</em>解锁！"
+          ],
+          "title" : [
+            "小米9 4800万超广角三摄 6GB+128GB全息幻彩蓝 骁龙855 全网通4G <em>双</em><em>卡</em><em>双</em>待 水滴全面屏拍照智能游戏手机"
+          ]
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "9",
+        "_score" : 2.6872945,
+        "_source" : {
+          "id" : 9,
+          "title" : "荣耀平板5 麒麟8核芯片 GT游戏加速 4G+128G 10.1英寸全高清屏影音平板电脑 WiFi版 冰川蓝",
+          "price" : 1549,
+          "intro" : "【爆款平板推荐】哈曼卡顿专业调音，10.1英寸全高清大屏，双喇叭立体环绕音，配置多重护眼，值得拥有！",
+          "brand" : "荣耀"
+        },
+        "highlight" : {
+          "intro" : [
+            "【爆款平板推荐】哈曼<em>卡</em>顿专业调音，10.1英寸全高清大屏，<em>双</em>喇叭立体环绕音，配置多重护眼，值得拥有！"
+          ]
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "8",
+        "_score" : 1.447008,
+        "_source" : {
+          "id" : 8,
+          "title" : "荣耀MagicBook Pro 16.1英寸全面屏轻薄性能笔记本电脑（酷睿i7 8G 512G MX250 IPS FHD 指纹解锁）冰河银",
+          "price" : 6199,
+          "intro" : "16.1英寸无界全面屏金属轻薄本，100%sRGB色域，全高清IPS防眩光护眼屏，14小时长续航，指纹一健开机登录，魔法一碰传高速传输。",
+          "brand" : "荣耀"
+        },
+        "highlight" : {
+          "intro" : [
+            "16.1英寸无界全面屏金属轻薄本，100%sRGB色域，全高清IPS防眩光护眼屏，14小时长续航，<em>指纹</em>一健开机登录，魔法一碰传高速传输。"
+          ],
+          "title" : [
+            "荣耀MagicBook Pro 16.1英寸全面屏轻薄性能笔记本电脑（酷睿i7 8G 512G MX250 IPS FHD <em>指纹</em>解锁）冰河银"
+          ]
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "1",
+        "_score" : 1.2347561,
+        "_source" : {
+          "id" : 1,
+          "title" : "Apple iPhone XR (A2108) 128GB 白色 移动联通电信4G手机 双卡双待",
+          "price" : 5299,
+          "intro" : "【iPhoneXR限时特惠！】6.1英寸视网膜显示屏，A12仿生芯片，面容识别，无线充电，支持双卡！选【换修无忧版】获 AppleCare 原厂服务，享只换不修！更有快速换机、保值换新、轻松月付！",
+          "brand" : "Apple"
+        },
+        "highlight" : {
+          "intro" : [
+            "6.1英寸视网膜显示屏，A12仿生芯片，面容识别，无线充电，支持<em>双</em><em>卡</em>！选【换修无忧版】获 AppleCare 原厂服务，享只换不修！更有快速换机、保值换新、轻松月付！"
+          ],
+          "title" : [
+            "Apple iPhone XR (A2108) 128GB 白色 移动联通电信4G手机 <em>双</em><em>卡</em><em>双</em>待"
+          ]
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "3",
+        "_score" : 0.63818395,
+        "_source" : {
+          "id" : 3,
+          "title" : "Apple iPad Air 3 2019年新款平板电脑 10.5英寸（64G WLAN版/A12芯片/Retina显示屏/MUUL2CH/A）金色",
+          "price" : 3788,
+          "intro" : "8月尊享好礼！买iPad即送蓝牙耳机！领券立减！多款产品支持手写笔！【新一代iPad，总有一款适合你】选【换修无忧版】获 AppleCare 原厂服务，享只换不修！更有快速换机、保值换新、轻松月付！",
+          "brand" : "Apple"
+        },
+        "highlight" : {
+          "intro" : [
+            "买iPad即送<em>蓝牙</em>耳机！领券立减！多款产品支持手写笔！【新一代iPad，总有一款适合你】选【换修无忧版】获 AppleCare 原厂服务，享只换不修！更有快速换机、保值换新、轻松月付！"
+          ]
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "7",
+        "_score" : 0.16659415,
+        "_source" : {
+          "id" : 7,
+          "title" : "荣耀20 PRO DXOMARK全球第二高分 4800万四摄 双光学防抖 麒麟980 全网通4G 8GB+128GB 蓝水翡翠 拍照手机",
+          "price" : 3199,
+          "intro" : "白条6期免息！麒麟980，4800万全焦段AI四摄！荣耀20系列2699起，4800万超广角AI四摄！",
+          "brand" : "荣耀"
+        },
+        "highlight" : {
+          "title" : [
+            "荣耀20 PRO DXOMARK全球第二高分 4800万四摄 <em>双</em>光学防抖 麒麟980 全网通4G 8GB+128GB 蓝水翡翠 拍照手机"
+          ]
+        }
+      }
+    ]
+  }
+}
+
+GET /shop_product/shop_product/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "蓝牙 指纹 双卡",
+      "fields": ["title", "intro"]
+    }
+  },
+  "highlight": {
+    "fields": {
+      "title": {},
+      "intro": {}
+    },
+    "pre_tags": "<span style='color:red'>",
+    "post_tags": "</span>"
+  }
+}
+
+{
+  "took" : 197,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 5,
+    "successful" : 5,
+    "skipped" : 0,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : 6,
+    "max_score" : 3.0893953,
+    "hits" : [
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "10",
+        "_score" : 3.0893953,
+        "_source" : {
+          "id" : 10,
+          "title" : "小米9 4800万超广角三摄 6GB+128GB全息幻彩蓝 骁龙855 全网通4G 双卡双待 水滴全面屏拍照智能游戏手机",
+          "price" : 2799,
+          "intro" : "限时优惠200，成交价2799！索尼4800万广角微距三摄，屏下指纹解锁！",
+          "brand" : "小米"
+        },
+        "highlight" : {
+          "intro" : [
+            "索尼4800万广角微距三摄，屏下<span style='color:red'>指纹</span>解锁！"
+          ],
+          "title" : [
+            "小米9 4800万超广角三摄 6GB+128GB全息幻彩蓝 骁龙855 全网通4G <span style='color:red'>双</span><span style='color:red'>卡</span><span style='color:red'>双</span>待 水滴全面屏拍照智能游戏手机"
+          ]
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "9",
+        "_score" : 2.6872945,
+        "_source" : {
+          "id" : 9,
+          "title" : "荣耀平板5 麒麟8核芯片 GT游戏加速 4G+128G 10.1英寸全高清屏影音平板电脑 WiFi版 冰川蓝",
+          "price" : 1549,
+          "intro" : "【爆款平板推荐】哈曼卡顿专业调音，10.1英寸全高清大屏，双喇叭立体环绕音，配置多重护眼，值得拥有！",
+          "brand" : "荣耀"
+        },
+        "highlight" : {
+          "intro" : [
+            "【爆款平板推荐】哈曼<span style='color:red'>卡</span>顿专业调音，10.1英寸全高清大屏，<span style='color:red'>双</span>喇叭立体环绕音，配置多重护眼，值得拥有！"
+          ]
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "8",
+        "_score" : 1.447008,
+        "_source" : {
+          "id" : 8,
+          "title" : "荣耀MagicBook Pro 16.1英寸全面屏轻薄性能笔记本电脑（酷睿i7 8G 512G MX250 IPS FHD 指纹解锁）冰河银",
+          "price" : 6199,
+          "intro" : "16.1英寸无界全面屏金属轻薄本，100%sRGB色域，全高清IPS防眩光护眼屏，14小时长续航，指纹一健开机登录，魔法一碰传高速传输。",
+          "brand" : "荣耀"
+        },
+        "highlight" : {
+          "intro" : [
+            "16.1英寸无界全面屏金属轻薄本，100%sRGB色域，全高清IPS防眩光护眼屏，14小时长续航，<span style='color:red'>指纹</span>一健开机登录，魔法一碰传高速传输。"
+          ],
+          "title" : [
+            "荣耀MagicBook Pro 16.1英寸全面屏轻薄性能笔记本电脑（酷睿i7 8G 512G MX250 IPS FHD <span style='color:red'>指纹</span>解锁）冰河银"
+          ]
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "1",
+        "_score" : 1.2347561,
+        "_source" : {
+          "id" : 1,
+          "title" : "Apple iPhone XR (A2108) 128GB 白色 移动联通电信4G手机 双卡双待",
+          "price" : 5299,
+          "intro" : "【iPhoneXR限时特惠！】6.1英寸视网膜显示屏，A12仿生芯片，面容识别，无线充电，支持双卡！选【换修无忧版】获 AppleCare 原厂服务，享只换不修！更有快速换机、保值换新、轻松月付！",
+          "brand" : "Apple"
+        },
+        "highlight" : {
+          "intro" : [
+            "6.1英寸视网膜显示屏，A12仿生芯片，面容识别，无线充电，支持<span style='color:red'>双</span><span style='color:red'>卡</span>！选【换修无忧版】获 AppleCare 原厂服务，享只换不修！更有快速换机、保值换新、轻松月付！"
+          ],
+          "title" : [
+            "Apple iPhone XR (A2108) 128GB 白色 移动联通电信4G手机 <span style='color:red'>双</span><span style='color:red'>卡</span><span style='color:red'>双</span>待"
+          ]
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "3",
+        "_score" : 0.63818395,
+        "_source" : {
+          "id" : 3,
+          "title" : "Apple iPad Air 3 2019年新款平板电脑 10.5英寸（64G WLAN版/A12芯片/Retina显示屏/MUUL2CH/A）金色",
+          "price" : 3788,
+          "intro" : "8月尊享好礼！买iPad即送蓝牙耳机！领券立减！多款产品支持手写笔！【新一代iPad，总有一款适合你】选【换修无忧版】获 AppleCare 原厂服务，享只换不修！更有快速换机、保值换新、轻松月付！",
+          "brand" : "Apple"
+        },
+        "highlight" : {
+          "intro" : [
+            "买iPad即送<span style='color:red'>蓝牙</span>耳机！领券立减！多款产品支持手写笔！【新一代iPad，总有一款适合你】选【换修无忧版】获 AppleCare 原厂服务，享只换不修！更有快速换机、保值换新、轻松月付！"
+          ]
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "7",
+        "_score" : 0.16659415,
+        "_source" : {
+          "id" : 7,
+          "title" : "荣耀20 PRO DXOMARK全球第二高分 4800万四摄 双光学防抖 麒麟980 全网通4G 8GB+128GB 蓝水翡翠 拍照手机",
+          "price" : 3199,
+          "intro" : "白条6期免息！麒麟980，4800万全焦段AI四摄！荣耀20系列2699起，4800万超广角AI四摄！",
+          "brand" : "荣耀"
+        },
+        "highlight" : {
+          "title" : [
+            "荣耀20 PRO DXOMARK全球第二高分 4800万四摄 <span style='color:red'>双</span>光学防抖 麒麟980 全网通4G 8GB+128GB 蓝水翡翠 拍照手机"
+          ]
+        }
+      }
+    ]
+  }
+}
+
+# 逻辑查询
+# 需求1：查询商品标题中符合“i7”的字样并且价格大于7000的商品
+GET /shop_product/shop_product/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "title": "i7"
+          }
+        },
+        {
+          "range": {
+            "price": {
+              "gte": 7000
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+{
+  "took" : 258,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 5,
+    "successful" : 5,
+    "skipped" : 0,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : 2,
+    "max_score" : 2.2550578,
+    "hits" : [
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "12",
+        "_score" : 2.2550578,
+        "_source" : {
+          "id" : 12,
+          "title" : "联想(Lenovo)拯救者Y7000P 2019英特尔酷睿i7 15.6英寸游戏笔记本电脑(i7 9750H 16G 1T SSD GTX1660Ti 144Hz)",
+          "price" : 9299,
+          "intro" : "超大1T固态，升级双通道16G内存一步到位，GTX1660Ti电竞级独显，英特尔9代i7H高性能处理器，144Hz电竞屏窄边框！",
+          "brand" : "联想"
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "2",
+        "_score" : 1.9102095,
+        "_source" : {
+          "id" : 2,
+          "title" : "Apple 2019款 Macbook Pro 13.3【带触控栏】八代i7 18G 256G RP645显卡 深空灰 苹果笔记本电脑 轻薄本 MUHN2CH/A",
+          "price" : 15299,
+          "intro" : "【八月精选】Pro2019年新品上市送三重好礼，现在购买领满8000减400元优惠神劵，劵后更优惠！",
+          "brand" : "Apple"
+        }
+      }
+    ]
+  }
+}
+
+# 需求2：查询商品标题中符合“pro”的字样或者价格在1000~3000的商品
+GET /shop_product/shop_product/_search
+{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "match": {
+            "title": "pro"
+          }
+        },
+        {
+          "range": {
+            "price": {
+              "gte": 1000,
+              "lte": 3000
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+{
+  "took" : 40,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 5,
+    "successful" : 5,
+    "skipped" : 0,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : 8,
+    "max_score" : 1.447008,
+    "hits" : [
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "8",
+        "_score" : 1.447008,
+        "_source" : {
+          "id" : 8,
+          "title" : "荣耀MagicBook Pro 16.1英寸全面屏轻薄性能笔记本电脑（酷睿i7 8G 512G MX250 IPS FHD 指纹解锁）冰河银",
+          "price" : 6199,
+          "intro" : "16.1英寸无界全面屏金属轻薄本，100%sRGB色域，全高清IPS防眩光护眼屏，14小时长续航，指纹一健开机登录，魔法一碰传高速传输。",
+          "brand" : "荣耀"
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "9",
+        "_score" : 1.0,
+        "_source" : {
+          "id" : 9,
+          "title" : "荣耀平板5 麒麟8核芯片 GT游戏加速 4G+128G 10.1英寸全高清屏影音平板电脑 WiFi版 冰川蓝",
+          "price" : 1549,
+          "intro" : "【爆款平板推荐】哈曼卡顿专业调音，10.1英寸全高清大屏，双喇叭立体环绕音，配置多重护眼，值得拥有！",
+          "brand" : "荣耀"
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "10",
+        "_score" : 1.0,
+        "_source" : {
+          "id" : 10,
+          "title" : "小米9 4800万超广角三摄 6GB+128GB全息幻彩蓝 骁龙855 全网通4G 双卡双待 水滴全面屏拍照智能游戏手机",
+          "price" : 2799,
+          "intro" : "限时优惠200，成交价2799！索尼4800万广角微距三摄，屏下指纹解锁！",
+          "brand" : "小米"
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "6",
+        "_score" : 1.0,
+        "_source" : {
+          "id" : 6,
+          "title" : "华为平板 M6 10.8英寸麒麟980影音娱乐平板电脑4GB+64GB WiFi（香槟金）",
+          "price" : 2299,
+          "intro" : "【华为暑期购】8月2日-4日，M5青春版指定爆款型号优惠100元，AI语音控制",
+          "brand" : "华为"
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "11",
+        "_score" : 0.6602099,
+        "_source" : {
+          "id" : 11,
+          "title" : "小米(MI)Pro 2019款 15.6英寸金属轻薄笔记本(第八代英特尔酷睿i7-8550U 16G 512GSSD MX250 2G独显) 深空灰",
+          "price" : 6899,
+          "intro" : "【PCIE固态硬盘、72%NTSC高色域全高清屏】B面康宁玻璃覆盖、16G双通道大内存、第八代酷睿I7处理器、专业级调校MX150",
+          "brand" : "小米"
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "7",
+        "_score" : 0.6333549,
+        "_source" : {
+          "id" : 7,
+          "title" : "荣耀20 PRO DXOMARK全球第二高分 4800万四摄 双光学防抖 麒麟980 全网通4G 8GB+128GB 蓝水翡翠 拍照手机",
+          "price" : 3199,
+          "intro" : "白条6期免息！麒麟980，4800万全焦段AI四摄！荣耀20系列2699起，4800万超广角AI四摄！",
+          "brand" : "荣耀"
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "4",
+        "_score" : 0.4448996,
+        "_source" : {
+          "id" : 4,
+          "title" : "华为HUAWEI MateBook X Pro 2019款 英特尔酷睿i5 13.9英寸全面屏轻薄笔记本电脑(i5 8G 512G 3K 触控) 灰",
+          "price" : 7999,
+          "intro" : "3K全面屏开启无界视野;轻薄设计灵动有型，HuaweiShare一碰传",
+          "brand" : "华为"
+        }
+      },
+      {
+        "_index" : "shop_product",
+        "_type" : "shop_product",
+        "_id" : "2",
+        "_score" : 0.4361634,
+        "_source" : {
+          "id" : 2,
+          "title" : "Apple 2019款 Macbook Pro 13.3【带触控栏】八代i7 18G 256G RP645显卡 深空灰 苹果笔记本电脑 轻薄本 MUHN2CH/A",
+          "price" : 15299,
+          "intro" : "【八月精选】Pro2019年新品上市送三重好礼，现在购买领满8000减400元优惠神劵，劵后更优惠！",
+          "brand" : "Apple"
+        }
+      }
+    ]
+  }
+}
