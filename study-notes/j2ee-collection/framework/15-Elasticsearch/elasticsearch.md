@@ -2118,4 +2118,361 @@ PUT /test
   "shards_acknowledged" : true,
   "index" : "test"
 }
+
+PUT /test/_doc/1
+{
+  "id": 1,
+  "hobbys": ["篮球", "排球"]
+}
+
+{
+  "_index" : "test",
+  "_type" : "_doc",
+  "_id" : "1",
+  "_version" : 1,
+  "result" : "created",
+  "_shards" : {
+    "total" : 2,
+    "successful" : 1,
+    "failed" : 0
+  },
+  "_seq_no" : 0,
+  "_primary_term" : 1
+}
+
+GET /test/_doc/1
+
+{
+  "_index" : "test",
+  "_type" : "_doc",
+  "_id" : "1",
+  "_version" : 9,
+  "found" : true,
+  "_source" : {
+    "id" : 1,
+    "hobbys" : [
+      "篮球",
+      "排球"
+    ]
+  }
+}
+
+PUT /test/_doc/2
+{
+  "id": 2,
+  "hobbys": "乒乓球"
+}
+
+{
+  "_index" : "test",
+  "_type" : "_doc",
+  "_id" : "2",
+  "_version" : 1,
+  "result" : "created",
+  "_shards" : {
+    "total" : 2,
+    "successful" : 1,
+    "failed" : 0
+  },
+  "_seq_no" : 0,
+  "_primary_term" : 1
+}
+
+GET /test/_doc/_search
+
+{
+  "took" : 21,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 5,
+    "successful" : 5,
+    "skipped" : 0,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : 2,
+    "max_score" : 1.0,
+    "hits" : [
+      {
+        "_index" : "test",
+        "_type" : "_doc",
+        "_id" : "2",
+        "_score" : 1.0,
+        "_source" : {
+          "id" : 2,
+          "hobbys" : "乒乓球"
+        }
+      },
+      {
+        "_index" : "test",
+        "_type" : "_doc",
+        "_id" : "1",
+        "_score" : 1.0,
+        "_source" : {
+          "id" : 1,
+          "hobbys" : [
+            "篮球",
+            "排球"
+          ]
+        }
+      }
+    ]
+  }
+}
+
+GET /_xpack/sql?format=txt
+{
+  "query": "select * from test where id = 2"
+}
+
+    hobbys     |      id
+---------------+---------------
+乒乓球            |2
+
+GET /_xpack/sql?format=txt
+{
+  "query": "select * from test where id = 1"
+}
+
+{
+  "error": {
+    "root_cause": [
+      {
+        "type": "sql_illegal_argument_exception",
+        "reason": "Arrays (returned by [hobbys]) are not supported"
+      }
+    ],
+    "type": "sql_illegal_argument_exception",
+    "reason": "Arrays (returned by [hobbys]) are not supported"
+  },
+  "status": 500
+}
+```
+
+问题: 把 sql 转化为 dsl 语句
+
+```json
+GET /_xpack/sql/translate
+{
+  "query": "select * from test where id = 1"
+}
+
+{
+  "size" : 1000,
+  "query" : {
+    "term" : {
+      "id" : {
+        "value" : 1,
+        "boost" : 1.0
+      }
+    }
+  },
+  "_source" : {
+    "includes" : [
+      "hobbys"
+    ],
+    "excludes" : [ ]
+  },
+  "docvalue_fields" : [
+    {
+      "field" : "id",
+      "format" : "use_field_mapping"
+    }
+  ],
+  "sort" : [
+    {
+      "_doc" : {
+        "order" : "asc"
+      }
+    }
+  ]
+}
+
+GET /test/_doc/_search
+{
+  "size" : 1000,
+  "query" : {
+    "term" : {
+      "id" : {
+        "value" : 1,
+        "boost" : 1.0
+      }
+    }
+  },
+  "_source" : {
+    "includes" : [
+      "hobbys"
+    ],
+    "excludes" : [ ]
+  },
+  "docvalue_fields" : [
+    {
+      "field" : "id",
+      "format" : "use_field_mapping"
+    }
+  ],
+  "sort" : [
+    {
+      "_doc" : {
+        "order" : "asc"
+      }
+    }
+  ]
+}
+
+{
+  "took" : 122,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 5,
+    "successful" : 5,
+    "skipped" : 0,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : 1,
+    "max_score" : null,
+    "hits" : [
+      {
+        "_index" : "test",
+        "_type" : "_doc",
+        "_id" : "1",
+        "_score" : null,
+        "_source" : {
+          "hobbys" : [
+            "篮球",
+            "排球"
+          ]
+        },
+        "fields" : {
+          "id" : [
+            1
+          ]
+        },
+        "sort" : [
+          0
+        ]
+      }
+    ]
+  }
+}
+```
+
+常用命令 SQL Commands
+
+```json
+GET /_xpack/sql?format=txt
+{
+  "query": "show tables"
+}
+
+     name      |     type
+---------------+---------------
+.kibana        |ALIAS
+.kibana_1      |BASE TABLE
+shop_product   |BASE TABLE
+test           |BASE TABLE
+
+GET /_xpack/sql?format=txt
+{
+  "query": "desc test"
+}
+
+    column     |     type      |    mapping
+---------------+---------------+---------------
+hobbys         |VARCHAR        |TEXT
+hobbys.keyword |VARCHAR        |KEYWORD
+id             |BIGINT         |LONG
+
+GET /_xpack/sql?format=txt
+{
+  "query": "show columns in test"
+}
+
+    column     |     type      |    mapping
+---------------+---------------+---------------
+hobbys         |VARCHAR        |TEXT
+hobbys.keyword |VARCHAR        |KEYWORD
+id             |BIGINT         |LONG
+
+GET /_xpack/sql?format=txt
+{
+  "query": "select id, price, brand from shop_product"
+}
+
+      id       |     price     |     brand
+---------------+---------------+---------------
+5              |6199           |华为
+2              |15299          |Apple
+1              |5299           |Apple
+3              |3788           |Apple
+8              |6199           |荣耀
+4              |7999           |华为
+7              |3199           |荣耀
+11             |6899           |小米
+9              |1549           |荣耀
+6              |2299           |华为
+10             |2799           |小米
+12             |9299           |联想
+
+GET /_xpack/sql?format=txt
+{
+  "query": "select id, price, brand from shop_product limit 5"
+}
+
+      id       |     price     |     brand
+---------------+---------------+---------------
+5              |6199           |华为
+2              |15299          |Apple
+1              |5299           |Apple
+3              |3788           |Apple
+8              |6199           |荣耀
+
+GET /_xpack/sql?format=txt
+{
+  "query": "select brand, avg(price) from shop_product group by brand"
+}
+
+     brand     |   AVG(price)
+---------------+-----------------
+Apple          |8128.666666666667
+华为             |5499.0
+小米             |4849.0
+联想             |9299.0
+荣耀             |3649.0
+
+GET /_xpack/sql?format=txt
+{
+  "query": "select brand, avg(price), count(*) from shop_product group by brand"
+}
+
+     brand     |   AVG(price)    |   COUNT(1)
+---------------+-----------------+---------------
+Apple          |8128.666666666667|3
+华为             |5499.0           |3
+小米             |4849.0           |2
+联想             |9299.0           |1
+荣耀             |3649.0           |3
+
+GET /_xpack/sql?format=txt
+{
+  "query": "select brand, avg(price) avgPrice, count(*) from shop_product group by brand having avgPrice > 5000"
+}
+
+     brand     |    avgPrice     |   COUNT(1)
+---------------+-----------------+---------------
+Apple          |8128.666666666667|3
+华为             |5499.0           |3
+联想             |9299.0           |1
+
+GET /_xpack/sql?format=txt
+{
+  "query": "select brand, avg(price) avgPrice, count(*), max(price), min(price) from shop_product group by brand having avgPrice > 5000"
+}
+
+     brand     |    avgPrice     |   COUNT(1)    |  MAX(price)   |  MIN(price)
+---------------+-----------------+---------------+---------------+---------------
+Apple          |8128.666666666667|3              |15299.0        |3788.0
+华为             |5499.0           |3              |7999.0         |2299.0
+联想             |9299.0           |1              |9299.0         |9299.0
 ```
