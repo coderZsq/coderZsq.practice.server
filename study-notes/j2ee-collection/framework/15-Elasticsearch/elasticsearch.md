@@ -1,9 +1,15 @@
-# ik分词器
-cp -r elasticsearch-analysis-ik-6.5.4/ /usr/share/elasticsearch/plugins/
-systemctl restart elasticsearch
-http://192.168.199.164:9200/_cat/plugins
+## ik 分词器
 
-# kibana 中 dev tool
+```shell
+$ cp -r elasticsearch-analysis-ik-6.5.4/ /usr/share/elasticsearch/plugins/
+$ systemctl restart elasticsearch
+
+http://192.168.199.164:9200/_cat/plugins
+```
+
+## kibana 中 dev tool
+
+```json
 PUT /shop_product
 #! Deprecation: the default number of shards will change from [5] to [1] in 7.0.0; if you wish to continue using the default of [5] shards, you must manage this on the create index request or with an index template
 {
@@ -232,14 +238,20 @@ GET /shop_product/_analyze
     }
   ]
 }
+```
 
-# 添加自定义分词
+## 添加自定义分词
+
+```shell
 $ cd /usr/share/elasticsearch/plugins/elasticsearch-analysis-ik-6.5.4/config
 $ less main.dic
 shift+g
 朱双泉
-$ systemctl restart elasticsearch
 
+$ systemctl restart elasticsearch
+```
+
+```json
 GET /shop_product/_analyze
 {
   "text": "朱双泉你好",
@@ -264,8 +276,11 @@ GET /shop_product/_analyze
     }
   ]
 }
+```
 
-# 建立索引
+## 建立索引
+
+```json
 PUT /aaa
 #! Deprecation: the default number of shards will change from [5] to [1] in 7.0.0; if you wish to continue using the default of [5] shards, you must manage this on the create index request or with an index template
 {
@@ -274,7 +289,7 @@ PUT /aaa
   "index" : "aaa"
 }
 
-PUT /bbb 
+PUT /bbb
 {
   "settings": {
     "number_of_shards": 2, // 分片
@@ -288,7 +303,11 @@ PUT /bbb
   "index" : "bbb"
 }
 
-# 删除索引
+```
+
+## 删除索引
+
+```json
 DELETE /aaa
 {
   "acknowledged" : true
@@ -298,10 +317,13 @@ DELETE /bbb
 {
   "acknowledged" : true
 }
+```
 
-# 建立映射
+## 建立映射
+
+```json
 DELETE /shop_product
-PUT /shop_product 
+PUT /shop_product
 {
   "mappings": {
     "shop_product": {
@@ -320,8 +342,11 @@ PUT /shop_product
   "shards_acknowledged" : true,
   "index" : "shop_product"
 }
+```
 
-# 查询映射
+## 查询映射
+
+```json
 GET /shop_product/_mapping
 {
   "shop_product" : {
@@ -343,10 +368,15 @@ GET /shop_product/_mapping
     }
   }
 }
+```
 
-# 新增和替换文档
-# ES 里面的数据 --> MySQL, MongoDB, HBase
-# "_version" : 1 解决并发的乐观锁
+## 新增和替换文档
+
+ES 里面的数据 --> MySQL, MongoDB, HBase
+
+"\_version" : 1 解决并发的乐观锁
+
+```json
 PUT /shop_product/shop_product/1
 {
   "id": 1,
@@ -390,8 +420,11 @@ PUT /shop_product/shop_product/1
   "_seq_no" : 1,
   "_primary_term" : 1
 }
+```
 
-# 查询文档
+## 查询文档
+
+```json
 GET /shop_product/shop_product/1
 {
   "_index" : "shop_product",
@@ -496,8 +529,11 @@ GET /shop_product/shop_product/_search
     ]
   }
 }
+```
 
-# 删除文档
+## 删除文档
+
+```json
 DELETE /shop_product/shop_product/2
 {
   "_index" : "shop_product",
@@ -549,8 +585,11 @@ GET /shop_product/shop_product/2
     "price" : 5555
   }
 }
+```
 
-# 高级查询
+## 高级查询
+
+```json
 DELETE /shop_product/
 {
   "acknowledged" : true
@@ -565,30 +604,30 @@ PUT /shop_product
 	  "type": "long"
 	},
         "title": {
-          "type": "text", 
-          "analyzer": "ik_smart", 
+          "type": "text",
+          "analyzer": "ik_smart",
           "search_analyzer": "ik_smart",
           "fields": {
           "keyword": {
           "type": "keyword",
             "ignore_above": 256
-            }  
+            }
           }
         },
         "price": {"type": "integer"},
         "intro": {
-          "type": "text", 
-          "analyzer": "ik_smart", 
+          "type": "text",
+          "analyzer": "ik_smart",
           "search_analyzer": "ik_smart",
           "fields": {
             "keyword": {
               "type": "keyword",
               "ignore_above": 256
-            }  
+            }
           }
         },
       	"brand": {
-      	  "type": "keyword" 
+      	  "type": "keyword"
       	}
       }
     }
@@ -816,8 +855,11 @@ GET /shop_product/shop_product/_search
     ]
   }
 }
+```
 
-# 结果排序
+## 结果排序
+
+```json
 GET /shop_product/shop_product/_search
 {
   "sort": [
@@ -1002,9 +1044,13 @@ GET /shop_product/shop_product/_search
     ]
   }
 }
+```
 
-# 分页查询
-# select * from product limit 2, 5 2: 从第二条记录开始， 5： 取5条记录
+## 分页查询
+
+select \* from product limit 2, 5 2: 从第二条记录开始， 5： 取 5 条记录
+
+```json
 GET /shop_product/shop_product/_search
 {
   "sort": [
@@ -1080,9 +1126,13 @@ GET /shop_product/shop_product/_search
     ]
   }
 }
+```
 
-# 检索查询
-# 需求1：查询商品标题中符合“游戏 手机”的字样的商品
+## 检索查询
+
+需求 1：查询商品标题中符合“游戏 手机”的字样的商品
+
+```json
 GET /shop_product/shop_product/_search
 {
   "query": {
@@ -1107,8 +1157,11 @@ GET /shop_product/shop_product/_search
     "hits" : [ ]
   }
 }
+```
 
-# 需求1：查询商品标题中符合“游戏 手机”的字样的商品
+需求 1：查询商品标题中符合“游戏 手机”的字样的商品
+
+```json
 GET /shop_product/shop_product/_search
 {
   "query": {
@@ -1212,8 +1265,11 @@ GET /shop_product/shop_product/_search
     ]
   }
 }
+```
 
-# 需求2：查询商品价格等于15299的商品
+需求 2：查询商品价格等于 15299 的商品
+
+```json
 GET /shop_product/shop_product/_search
 {
   "query": {
@@ -1252,10 +1308,13 @@ GET /shop_product/shop_product/_search
     ]
   }
 }
+```
 
-# gte: 大于等于 greater than equal
-# lte: less than equal
-# 需求3： 查询商品价格在5000~10000之间商品， 按照价格升序排列
+需求 3： 查询商品价格在 5000~10000 之间商品， 按照价格升序排列
+gte: 大于等于 greater than equal
+lte: less than equal
+
+```json
 GET /shop_product/shop_product/_search
 {
   "query": {
@@ -1362,9 +1421,13 @@ GET /shop_product/shop_product/_search
     ]
   }
 }
+```
 
-# 关键字查询
-# 需求1： 查询商品标题或简介中符合“蓝牙 指纹 双卡”的字样商品
+## 关键字查询
+
+需求 1： 查询商品标题或简介中符合“蓝牙 指纹 双卡”的字样商品
+
+```json
 GET /shop_product/shop_product/_search
 {
   "query": {
@@ -1469,8 +1532,11 @@ GET /shop_product/shop_product/_search
     ]
   }
 }
+```
 
-# 高亮显示
+## 高亮显示
+
+```json
 GET /shop_product/shop_product/_search
 {
   "query": {
@@ -1772,9 +1838,13 @@ GET /shop_product/shop_product/_search
     ]
   }
 }
+```
 
-# 逻辑查询
-# 需求1：查询商品标题中符合“i7”的字样并且价格大于7000的商品
+## 逻辑查询
+
+需求 1：查询商品标题中符合“i7”的字样并且价格大于 7000 的商品
+
+```json
 GET /shop_product/shop_product/_search
 {
   "query": {
@@ -1839,8 +1909,11 @@ GET /shop_product/shop_product/_search
     ]
   }
 }
+```
 
-# 需求2：查询商品标题中符合“pro”的字样或者价格在1000~3000的商品
+需求 2：查询商品标题中符合“pro”的字样或者价格在 1000~3000 的商品
+
+```json
 GET /shop_product/shop_product/_search
 {
   "query": {
@@ -1984,3 +2057,65 @@ GET /shop_product/shop_product/_search
     ]
   }
 }
+```
+
+## SQL 操作语法
+
+http 操作
+
+```json
+POST /_xpack/sql?format=txt
+{
+  "query": "select id, brand, price from shop_product"
+}
+
+      id       |     brand     |     price
+---------------+---------------+---------------
+5              |华为             |6199
+2              |Apple          |15299
+1              |Apple          |5299
+3              |Apple          |3788
+8              |荣耀             |6199
+4              |华为             |7999
+7              |荣耀             |3199
+11             |小米             |6899
+9              |荣耀             |1549
+6              |华为             |2299
+10             |小米             |2799
+12             |联想             |9299
+
+POST /_xpack/sql?format=json
+{
+  "query": "select id, brand, price from shop_product"
+}
+
+{"columns":[{"name":"id","type":"long"},{"name":"brand","type":"keyword"},{"name":"price","type":"integer"}],"rows":[[5,"华为",6199],[2,"Apple",15299],[1,"Apple",5299],[3,"Apple",3788],[8,"荣耀",6199],[4,"华为",7999],[7,"荣耀",3199],[11,"小米",6899],[9,"荣耀",1549],[6,"华为",2299],[10,"小米",2799],[12,"联想",9299]]}
+
+POST /_xpack/sql?format=txt
+{
+  "query": "select id, brand, price from shop_product where title like '游戏 手机'"
+}
+
+      id       |     brand     |     price
+---------------+---------------+---------------
+5              |华为             |6199
+1              |Apple          |5299
+7              |荣耀             |3199
+9              |荣耀             |1549
+10             |小米             |2799
+12             |联想             |9299
+
+```
+
+创建一个索引库
+
+```json
+PUT /test
+
+#! Deprecation: the default number of shards will change from [5] to [1] in 7.0.0; if you wish to continue using the default of [5] shards, you must manage this on the create index request or with an index template
+{
+  "acknowledged" : true,
+  "shards_acknowledged" : true,
+  "index" : "test"
+}
+```

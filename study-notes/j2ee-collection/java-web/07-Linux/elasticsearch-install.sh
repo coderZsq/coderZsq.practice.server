@@ -53,3 +53,13 @@ tcp6       0      0 :::33060                :::*                    LISTEN      
 tcp6       0      0 :::3306                 :::*                    LISTEN      1004/mysqld
 
 http://47.101.146.105:9200/
+
+# 配置参数
+$ cd /etc/elasticsearch/
+$ vi elasticsearch.yml
+cluster.name: my-es # 集群名字
+node.name: lab001 # 节点名字
+
+# SQL
+$ cd /usr/share/elasticsearch/bin
+$ ./elasticsearch-sql-cli

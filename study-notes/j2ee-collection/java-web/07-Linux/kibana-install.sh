@@ -15,3 +15,8 @@ tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      
 tcp        0      0 0.0.0.0:5601            0.0.0.0:*               LISTEN      4710/./bin/../node/
 tcp6       0      0 :::33060                :::*                    LISTEN      1004/mysqld
 tcp6       0      0 :::3306                 :::*                    LISTEN      1004/mysqld
+
+# 配置参数 连接es的url
+$ cd /usr/local/kibana-6.5.4-linux-x86_64/config
+$ vi kibana.yml
+#elasticsearch.url: "http://localhost:9200"
