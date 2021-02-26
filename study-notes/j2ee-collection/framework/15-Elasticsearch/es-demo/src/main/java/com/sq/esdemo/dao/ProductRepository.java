@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProductRepository extends ElasticsearchRepository<Product, String> {
-    @Query(" \"match\": {\"title\": \"?0\"} ")
+    @Query("{\"match\": {\"title\": \"?0\"}}")
     public Page<Product> queryByTitle(String title, Pageable pageable);
 }

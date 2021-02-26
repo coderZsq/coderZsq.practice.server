@@ -135,9 +135,9 @@ public class EsDemoApplicationTests {
 
 	@Test
 	public void test3() throws Exception {
+		final Product product = repository.findById("1").orElse(null);
+		System.out.println("product = " + product);
 		final Page<Product> page = repository.queryByTitle("小米9", PageRequest.of(1, 3));
-		for (Product product : page.getContent()) {
-			System.err.println(product);
-		}
+
 	}
 }

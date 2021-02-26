@@ -2476,3 +2476,16 @@ Apple          |8128.666666666667|3              |15299.0        |3788.0
 华为             |5499.0           |3              |7999.0         |2299.0
 联想             |9299.0           |1              |9299.0         |9299.0
 ```
+
+## 节点的状态信息
+
+```json
+GET /_cat/master?v
+
+id                     host          ip            node
+9_-cLjLXQPeySWP2wRlXvA 172.16.23.125 172.16.23.125 lab001
+
+GET /_cat/nodes?v
+ip            heap.percent ram.percent cpu load_1m load_5m load_15m node.role master name
+172.16.23.125           15          94  11    0.02    0.39     0.61 mdi       *      lab001
+```
