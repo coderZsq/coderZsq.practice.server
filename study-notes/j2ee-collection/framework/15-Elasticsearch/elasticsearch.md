@@ -2489,3 +2489,12 @@ GET /_cat/nodes?v
 ip            heap.percent ram.percent cpu load_1m load_5m load_15m node.role master name
 172.16.23.125           15          94  11    0.02    0.39     0.61 mdi       *      lab001
 ```
+
+## 集群的健康状态
+
+```json
+GET /_cat/health?v
+
+epoch      timestamp cluster status node.total node.data shards pri relo init unassign pending_tasks max_task_wait_time active_shards_percent
+1614317354 05:29:14  my-es   yellow          1         1     11  11    0    0       10             0                  -                 52.4%
+```
