@@ -80,7 +80,7 @@ $ passwd es
 # 给es对应的权限
 $ chown -R es:es /usr/local/software
 
-# 修改系统参数配置
+# 修改应用参数配置
 $ cd /usr/local/software/
 $ su es
 $ tar -zxvf elasticsearch-6.5.4.tar.gz
