@@ -396,3 +396,322 @@ The stdin plugin is now waiting for input:
     "@timestamp" => 2021-03-01T09:55:35.758Z,
            "age" => 18
 }
+'
+
+# 数据的条件判断
+$pwd 
+/root
+
+$cp wms.log product.log
+$cp wms.log order.log
+
+$pwd
+/usr/local/logstash-6.5.4
+
+$vi /etc/if.conf
+input {
+  file {
+    path => "/root/wms.log"
+    start_position => "beginning"
+    stat_interval => "2"
+    type => "wms"
+  }
+  file {
+    path => "/root/product.log"
+    start_position => "beginning"
+    stat_interval => "2"
+    type => "product"
+  }
+  file {
+    path => "/root/order.log"
+    start_position => "beginning"
+    stat_interval => "2"
+    type => "order"
+  }
+}
+
+output {
+  if [type] == "wms" {
+    elasticsearch {
+      index => wms
+      hosts => ["172.16.23.125:9200"]
+    }
+  }
+  if [type] == "product" {
+    elasticsearch {
+      index => product
+      hosts => ["172.16.23.125:9200"]
+    }
+  }
+  if [type] == "order" {
+    elasticsearch {
+      index => order
+      hosts => ["172.16.23.125:9200"]
+    }
+  }
+  stdout {}
+}
+
+$bin/logstash -f etc/if.conf
+{
+    "@timestamp" => 2021-03-02T09:07:13.946Z,
+          "path" => "/root/product.log",
+      "@version" => "1",
+          "host" => "localhost.localdomain",
+       "message" => "Exception in thread \"main\" java.lang.ArithmeticException: / by zero",
+          "type" => "product"
+}
+{
+    "@timestamp" => 2021-03-02T09:07:14.024Z,
+          "path" => "/root/product.log",
+      "@version" => "1",
+          "host" => "localhost.localdomain",
+       "message" => "\tat Main.main(Main.java:3)",
+          "type" => "product"
+}
+{
+    "@timestamp" => 2021-03-02T09:07:14.025Z,
+          "path" => "/root/product.log",
+      "@version" => "1",
+          "host" => "localhost.localdomain",
+       "message" => "",
+          "type" => "product"
+}
+{
+    "@timestamp" => 2021-03-02T09:07:14.025Z,
+          "path" => "/root/product.log",
+      "@version" => "1",
+          "host" => "localhost.localdomain",
+       "message" => "Process finished with exit code 1",
+          "type" => "product"
+}
+{
+    "@timestamp" => 2021-03-02T09:07:14.026Z,
+          "path" => "/root/product.log",
+      "@version" => "1",
+          "host" => "localhost.localdomain",
+       "message" => "",
+          "type" => "product"
+}
+{
+    "@timestamp" => 2021-03-02T09:07:13.942Z,
+          "path" => "/root/order.log",
+      "@version" => "1",
+          "host" => "localhost.localdomain",
+       "message" => "Exception in thread \"main\" java.lang.ArithmeticException: / by zero",
+          "type" => "order"
+}
+{
+    "@timestamp" => 2021-03-02T09:07:14.060Z,
+          "path" => "/root/order.log",
+      "@version" => "1",
+          "host" => "localhost.localdomain",
+       "message" => "\tat Main.main(Main.java:3)",
+          "type" => "order"
+}
+{
+    "@timestamp" => 2021-03-02T09:07:14.061Z,
+          "path" => "/root/order.log",
+      "@version" => "1",
+          "host" => "localhost.localdomain",
+       "message" => "",
+          "type" => "order"
+}
+{
+    "@timestamp" => 2021-03-02T09:07:14.061Z,
+          "path" => "/root/order.log",
+      "@version" => "1",
+          "host" => "localhost.localdomain",
+       "message" => "Process finished with exit code 1",
+          "type" => "order"
+}
+{
+    "@timestamp" => 2021-03-02T09:07:14.061Z,
+          "path" => "/root/order.log",
+      "@version" => "1",
+          "host" => "localhost.localdomain",
+       "message" => "",
+          "type" => "order"
+}
+
+$cp etc/if.conf etc/if2.conf
+$vi etc/if2.conf
+input {
+  file {
+    path => "/root/wms.log"
+    start_position => "beginning"
+    stat_interval => "2"
+    type => "wms"
+  }
+  file {
+    path => "/root/product.log"
+    start_position => "beginning"
+    stat_interval => "2"
+    type => "product"
+  }
+  file {
+    path => "/root/order.log"
+    start_position => "beginning"
+    stat_interval => "2"
+    type => "order"
+  }
+}
+
+output {
+  elasticsearch {
+    index => "%{type}"
+    hosts => ["172.16.23.125:9200"]
+  }
+  stdout {}
+}
+
+$rm -fr data/
+$bin/logstash -f etc/if2.conf
+{
+    "@timestamp" => 2021-03-02T09:13:12.280Z,
+      "@version" => "1",
+          "type" => "order",
+          "host" => "localhost.localdomain",
+          "path" => "/root/order.log",
+       "message" => "Exception in thread \"main\" java.lang.ArithmeticException: / by zero"
+}
+{
+    "@timestamp" => 2021-03-02T09:13:12.390Z,
+      "@version" => "1",
+          "type" => "order",
+          "host" => "localhost.localdomain",
+          "path" => "/root/order.log",
+       "message" => "\tat Main.main(Main.java:3)"
+}
+{
+    "@timestamp" => 2021-03-02T09:13:12.391Z,
+      "@version" => "1",
+          "type" => "order",
+          "host" => "localhost.localdomain",
+          "path" => "/root/order.log",
+       "message" => ""
+}
+{
+    "@timestamp" => 2021-03-02T09:13:12.391Z,
+      "@version" => "1",
+          "type" => "order",
+          "host" => "localhost.localdomain",
+          "path" => "/root/order.log",
+       "message" => "Process finished with exit code 1"
+}
+{
+    "@timestamp" => 2021-03-02T09:13:12.391Z,
+      "@version" => "1",
+          "type" => "order",
+          "host" => "localhost.localdomain",
+          "path" => "/root/order.log",
+       "message" => ""
+}
+{
+    "@timestamp" => 2021-03-02T09:13:12.281Z,
+      "@version" => "1",
+          "type" => "wms",
+          "host" => "localhost.localdomain",
+          "path" => "/root/wms.log",
+       "message" => "Exception in thread \"main\" java.lang.ArithmeticException: / by zero"
+}
+{
+    "@timestamp" => 2021-03-02T09:13:12.402Z,
+      "@version" => "1",
+          "type" => "wms",
+          "host" => "localhost.localdomain",
+          "path" => "/root/wms.log",
+       "message" => "\tat Main.main(Main.java:3)"
+}
+{
+    "@timestamp" => 2021-03-02T09:13:12.402Z,
+      "@version" => "1",
+          "type" => "wms",
+          "host" => "localhost.localdomain",
+          "path" => "/root/wms.log",
+       "message" => ""
+}
+{
+    "@timestamp" => 2021-03-02T09:13:12.403Z,
+      "@version" => "1",
+          "type" => "wms",
+          "host" => "localhost.localdomain",
+          "path" => "/root/wms.log",
+       "message" => "Process finished with exit code 1"
+}
+{
+    "@timestamp" => 2021-03-02T09:13:12.403Z,
+      "@version" => "1",
+          "type" => "wms",
+          "host" => "localhost.localdomain",
+          "path" => "/root/wms.log",
+       "message" => ""
+}
+{
+    "@timestamp" => 2021-03-02T09:13:12.275Z,
+      "@version" => "1",
+          "type" => "product",
+          "host" => "localhost.localdomain",
+          "path" => "/root/product.log",
+       "message" => "Exception in thread \"main\" java.lang.ArithmeticException: / by zero"
+}
+{
+    "@timestamp" => 2021-03-02T09:13:12.405Z,
+      "@version" => "1",
+          "type" => "product",
+          "host" => "localhost.localdomain",
+          "path" => "/root/product.log",
+       "message" => "\tat Main.main(Main.java:3)"
+}
+{
+    "@timestamp" => 2021-03-02T09:13:12.406Z,
+      "@version" => "1",
+          "type" => "product",
+          "host" => "localhost.localdomain",
+          "path" => "/root/product.log",
+       "message" => ""
+}
+{
+    "@timestamp" => 2021-03-02T09:13:12.406Z,
+      "@version" => "1",
+          "type" => "product",
+          "host" => "localhost.localdomain",
+          "path" => "/root/product.log",
+       "message" => "Process finished with exit code 1"
+}
+{
+    "@timestamp" => 2021-03-02T09:13:12.406Z,
+      "@version" => "1",
+          "type" => "product",
+          "host" => "localhost.localdomain",
+          "path" => "/root/product.log",
+       "message" => ""
+}
+
+# 数据的过滤处理
+$vi etc/kv.conf
+input {
+   stdin {}
+}
+filter {
+   kv {
+      field_split => '&?'
+   }
+}
+output {
+   stdout {
+      codec => rubydebug
+   }
+}
+
+$bin/logstash -f etc/kv.conf
+age=19&name=lucy&hobby=ball
+{
+      "@version" => "1",
+       "message" => "age=19&name=lucy&hobby=ball",
+         "hobby" => "ball",
+          "name" => "lucy",
+           "age" => "19",
+          "host" => "localhost.localdomain",
+    "@timestamp" => 2021-03-02T09:20:01.312Z
+}
