@@ -715,3 +715,29 @@ age=19&name=lucy&hobby=ball
           "host" => "localhost.localdomain",
     "@timestamp" => 2021-03-02T09:20:01.312Z
 }
+
+# 同步MySQL到ES
+$vi etc/mysql-es.conf
+input {
+  jdbc {
+    type => "dest"
+    jdbc_driver_library => "/root/mysql-connector-java-5.1.45.jar"
+    jdbc_driver_class => "com.mysql.jdbc.Driver"
+    jdbc_connection_string => "jdbc:mysql://192.168.26.1:3306/wolf2w"
+    jdbc_user => "root"
+    jdbc_password => "admin"
+    schedule => "* /1 * * * *"
+    use_column_value => false
+    tracking_column => "last_update_time"
+    statement => "SELECT id, name, info from destination where last_update_time > :sql_last_value"
+  }
+}
+out {
+  elasticsearch: {
+    hosts => ["127.0.0.1:9200"]
+    index => "wolf2w_destination"
+    document_type => "destination"
+    document_id => "%{id}"
+  }
+  stdout {}
+}
