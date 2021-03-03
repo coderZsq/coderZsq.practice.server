@@ -1,4 +1,4 @@
-package com.sq.dp.dip;
+package com.sq.dp.principle.dip;
 
 interface IMessager {
     String buildMsg();

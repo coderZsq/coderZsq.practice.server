@@ -1,4 +1,4 @@
-package com.sq.dp.sp;
+package com.sq.dp.principle.sp;
 
 /**
  * 单一职责原则:

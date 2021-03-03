@@ -1,4 +1,4 @@
-package com.sq.dp.isp;
+package com.sq.dp.principle.isp;
 
 interface Interface1 {
     // 类型一

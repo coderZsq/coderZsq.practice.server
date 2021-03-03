@@ -1,4 +1,4 @@
-package com.sq.dp.lsp;
+package com.sq.dp.principle.lsp;
 
 import java.util.ArrayList;
 import java.util.List;
