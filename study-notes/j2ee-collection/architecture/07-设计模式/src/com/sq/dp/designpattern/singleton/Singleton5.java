@@ -1,4 +1,4 @@
-package com.sq.dp.designpattern;
+package com.sq.dp.designpattern.singleton;
 
 /**
  * 单例模式 (懒汉式-同步代码块)
