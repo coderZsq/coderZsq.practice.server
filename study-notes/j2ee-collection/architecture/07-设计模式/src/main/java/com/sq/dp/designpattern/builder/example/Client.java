@@ -1,6 +1,6 @@
 package com.sq.dp.designpattern.builder.example;
 
-public class Clinet {
+public class Client {
     public static void main(String[] args) {
         AbstructComputerBuilder builder = new ComputerBuilder("办公使用");
         ComputerDirector director = new ComputerDirector(builder);
