@@ -1,53 +1,57 @@
-package com.sq.records;
+package com.sq.recorder;
 
 import com.sq.recorder.pojo.po.Article;
+import com.sq.recorder.service.ArticleService;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.text.SimpleDateFormat;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ArticlesTest {
-    @Test
-    public  void test(String[] args) throws IOException {
-        load("/Users/zhushuangquan/Codes/GitHub/coderZsq.github.io/_posts");
-    }
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest(classes = RecorderApplication.class)
+public class ArticleTest {
+    @Autowired
+    private ArticleService service;
 
-    public void load(String directoryPath) throws IOException {
-        File directory = new File(directoryPath);
+    @Test
+    public void saveStockArticles() throws Exception {
+        File directory = new File("/Users/zhushuangquan/Codes/GitHub/coderZsq.github.io/_posts");
         if (directory.isFile() || !directory.exists()) {
             return;
         }
-        List<Article> list = new ArrayList<>();
         for (File file : Objects.requireNonNull(directory.listFiles())) {
             if (!"md".equals(FilenameUtils.getExtension(file.getName()))) continue;
-            String input = FileUtils.readFileToString(file, "UTF8");
+            String input = FileUtils.readFileToString(file, "UTF-8");
             Article article = new Article();
-            article.setContent(input.split("---")[2]);
+            article.setContent(input.split("\n---\n\n")[1]);
             article.setTitle(matchColumn(input, "title"));
-            article.setDate(matchColumn(input, "date"));
+            article.setType("stock");
+            SimpleDateFormat fmt = new SimpleDateFormat("yyyy.MM.dd HH:mm");
+            article.setDate(fmt.parse(matchColumn(input, "date")));
             int words = wordCount(input);
             article.setWords(words);
             article.setDuration(words / 350);
-            System.out.println(article.getDuration());
-            list.add(article);
+            service.save(article);
         }
     }
 
-    public String matchColumn(String input, String column) {
+    private String matchColumn(String input, String column) {
         Pattern pattern = Pattern.compile(column + ": (.+)\n");
         Matcher matcher = pattern.matcher(input);
-        if (!matcher.find())  return null;
+        if (!matcher.find()) return null;
         return matcher.group().substring(column.length() + 2).trim();
     }
 
-    public static int wordCount(String string) {
+    private int wordCount(String string) {
         if (string == null) {
             return 0;
         }

@@ -1,11 +1,11 @@
-package com.sq.recorder.pojo.po;
+package com.sq.recorder.pojo.vo.req.save;
 
 import lombok.Data;
 
 import java.util.Date;
 
 @Data
-public class Article {
+public class ArticleReqVo {
     //主键
     private Integer id;
     //标题
