@@ -12,6 +12,8 @@ public class ArticleVo {
     private Integer id;
     //标题
     private String title;
+    //类型
+    private String type;
     //正文
     private String content;
     //字数
