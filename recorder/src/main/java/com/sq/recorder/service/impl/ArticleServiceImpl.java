@@ -27,6 +27,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         }
         String type = query.getType();
         if (type != null) {
+            wrapper.eq(Article::getType, type);
         }
         wrapper.orderByDesc(Article::getDate);
         return baseMapper
