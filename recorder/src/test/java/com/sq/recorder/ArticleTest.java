@@ -32,7 +32,11 @@ public class ArticleTest {
             if (!"md".equals(FilenameUtils.getExtension(file.getName()))) continue;
             String input = FileUtils.readFileToString(file, "UTF-8");
             Article article = new Article();
-            article.setContent(input.split("\n---\n\n")[1]);
+            article.setContent(input.split("\n---\n\n")[1]
+                            .replaceAll("!\\[.*\\]\\(.*\\)", "")
+                            .replaceAll("<img.*\n", "")
+                            .replaceAll("\".*/>", "")
+            );
             article.setTitle(matchColumn(input, "title"));
             article.setType("stock");
             SimpleDateFormat fmt = new SimpleDateFormat("yyyy.MM.dd HH:mm");
