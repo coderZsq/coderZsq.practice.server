@@ -21,5 +21,5 @@ public class ArticleReqVo {
     //阅读时长
     private Integer duration;
     //日期
-    private Date date;
+    private Long date;
 }

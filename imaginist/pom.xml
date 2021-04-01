@@ -18,9 +18,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <druid.version>1.2.1</druid.version>
         <mybatis-plus.version>3.4.1</mybatis-plus.version>
+        <tinypinyin.version>2.0.3</tinypinyin.version>
         <springfox.version>3.0.0</springfox.version>
         <swagger-models.version>1.6.2</swagger-models.version>
         <mapStruct.version>1.4.1.Final</mapStruct.version>
+        <captcha.version>1.6.2</captcha.version>
         <commons-io.version>2.7</commons-io.version>
     </properties>
 
@@ -35,6 +37,26 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>${commons-io.version}</version>
+        </dependency>
+
+        <!-- 权限控制 -->
+        <!--<dependency>-->
+        <!--    <groupId>org.apache.shiro</groupId>-->
+        <!--    <artifactId>shiro-spring-boot-web-starter</artifactId>-->
+        <!--    <version>1.7.0</version>-->
+        <!--</dependency>-->
+
+        <!-- 缓存 -->
+        <dependency>
+            <groupId>org.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+        </dependency>
+
+        <!-- 验证码 -->
+        <dependency>
+            <groupId>com.github.whvcse</groupId>
+            <artifactId>easy-captcha</artifactId>
+            <version>${captcha.version}</version>
         </dependency>
 
         <!-- 对象转换 -->
@@ -73,6 +95,13 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
+        <!-- 拼音 -->
+        <dependency>
+            <groupId>com.github.promeg</groupId>
+            <artifactId>tinypinyin</artifactId>
+            <version>${tinypinyin.version}</version>
         </dependency>
 
         <!-- 数据库 -->
