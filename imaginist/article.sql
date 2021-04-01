@@ -20,4 +20,3 @@ CREATE TABLE `article`
 # SET GLOBAL sort_buffer_size = 1024*1024;
 # SET sort_buffer_size = 1024*1024;
 # SELECT * FROM article ORDER BY date DESC
-

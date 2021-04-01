@@ -14,6 +14,8 @@ public class Article {
     private String type;
     //正文
     private String content;
+    //预览
+    private String preview;
     //字数
     private Integer words;
     //阅读时长

@@ -14,8 +14,8 @@ public class ArticleVo {
     private String title;
     //类型
     private String type;
-    //正文
-    private String content;
+    //预览
+    private String preview;
     //字数
     private Integer words;
     //阅读时长
