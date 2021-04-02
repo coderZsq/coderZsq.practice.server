@@ -34,4 +34,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
                 .selectPage(new MpPage<>(query), wrapper)
                 .buildVo(MapStructs.INSTANCE::po2vo);
     }
+
+    @Override
+    public Integer saveGeneratedId(Article article) {
+        if (baseMapper.insert(article) > 0) {
+            return article.getId();
+        }
+        return null;
+    }
 }

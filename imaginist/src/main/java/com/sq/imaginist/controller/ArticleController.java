@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.sq.imaginist.common.mapStruct.MapStructs;
 import com.sq.imaginist.common.util.JsonVos;
 import com.sq.imaginist.pojo.po.Article;
+import com.sq.imaginist.pojo.vo.JsonVo;
 import com.sq.imaginist.pojo.vo.PageJsonVo;
 import com.sq.imaginist.pojo.vo.list.ArticleVo;
 import com.sq.imaginist.pojo.vo.req.page.ArticlePageReqVo;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.function.Function;
 
 @RestController
@@ -29,6 +31,11 @@ public class ArticleController extends BaseController<Article, ArticleReqVo> {
     @ApiOperation(value = "分页查询")
     public PageJsonVo<ArticleVo> list(ArticlePageReqVo query) {
         return JsonVos.ok(service.list(query));
+    }
+
+    @Override
+    public JsonVo save(@Valid ArticleReqVo articleReqVo) {
+        return JsonVos.ok(service.saveGeneratedId(getFunction().apply(articleReqVo)));
     }
 
     @Override

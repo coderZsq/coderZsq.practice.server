@@ -7,6 +7,7 @@ import com.sq.imaginist.pojo.vo.list.ArticleVo;
 import com.sq.imaginist.pojo.vo.req.page.ArticlePageReqVo;
 
 public interface ArticleService extends IService<Article> {
-
     PageVo<ArticleVo> list(ArticlePageReqVo query);
+
+    Integer saveGeneratedId(Article article);
 }
