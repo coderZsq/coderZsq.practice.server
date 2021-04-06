@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 public class ImaginistProperties implements ApplicationContextAware {
     private static ImaginistProperties properties;
     private Cfg cfg;
+    private Upload upload;
 
     public static ImaginistProperties get() {
         return properties;
@@ -26,5 +27,21 @@ public class ImaginistProperties implements ApplicationContextAware {
     @Data
     public static class Cfg {
         private String[] corsOrigins;
+    }
+
+    @Data
+    public static class Upload {
+        private String basePath;
+        private String uploadPath;
+        private String imagePath;
+        private String videoPath;
+
+        public String getImageRelativePath() {
+            return uploadPath + imagePath;
+        }
+
+        public String getVideoRelativePath() {
+            return uploadPath + videoPath;
+        }
     }
 }

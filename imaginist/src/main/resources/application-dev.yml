@@ -15,3 +15,8 @@ imaginist:
   cfg:
     cors-origins:
       - http://localhost:3000
+  upload:
+    base-path: /Users/zhushuangquan/Codes/GitHub/coderZsq.practice.server/imaginist
+    upload-path: upload/
+    image-path: img/
+    video-path: video/
