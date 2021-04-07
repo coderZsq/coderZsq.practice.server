@@ -5,6 +5,7 @@ import com.sq.imaginist.common.mapStruct.MapStructs;
 import com.sq.imaginist.common.util.JsonVos;
 import com.sq.imaginist.common.util.Uploads;
 import com.sq.imaginist.pojo.po.Article;
+import com.sq.imaginist.pojo.vo.DataJsonVo;
 import com.sq.imaginist.pojo.vo.JsonVo;
 import com.sq.imaginist.pojo.vo.PageJsonVo;
 import com.sq.imaginist.pojo.vo.list.ArticleVo;
@@ -41,15 +42,9 @@ public class ArticleController extends BaseController<Article, ArticleReqVo> {
         return JsonVos.ok(service.saveGeneratedId(getFunction().apply(articleReqVo)));
     }
 
-    @PostMapping
-    public JsonVo uploadImg(MultipartFile img) {
-        try {
-            String filepath = Uploads.uploadImage(img);
-            System.out.println(filepath);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+    @PostMapping("/uploadImg")
+    public JsonVo uploadImg(MultipartFile img) throws Exception {
+        return new DataJsonVo<>(Uploads.uploadImage(img));
     }
 
     @Override
