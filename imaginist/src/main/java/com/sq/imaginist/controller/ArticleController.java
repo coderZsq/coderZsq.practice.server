@@ -43,6 +43,7 @@ public class ArticleController extends BaseController<Article, ArticleReqVo> {
     }
 
     @PostMapping("/uploadImg")
+    @ApiOperation("图片上传")
     public JsonVo uploadImg(MultipartFile img) throws Exception {
         return new DataJsonVo<>(Uploads.uploadImage(img));
     }
