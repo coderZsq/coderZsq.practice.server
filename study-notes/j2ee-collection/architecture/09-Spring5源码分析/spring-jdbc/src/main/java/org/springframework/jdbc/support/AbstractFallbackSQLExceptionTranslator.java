@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.UncategorizedSQLException;
+import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
@@ -63,7 +65,7 @@ public abstract class AbstractFallbackSQLExceptionTranslator implements SQLExcep
 	 * {@link #getFallbackTranslator() fallback translator} if necessary.
 	 */
 	@Override
-	@Nullable
+	@NonNull
 	public DataAccessException translate(String task, @Nullable String sql, SQLException ex) {
 		Assert.notNull(ex, "Cannot translate a null SQLException");
 
@@ -76,10 +78,15 @@ public abstract class AbstractFallbackSQLExceptionTranslator implements SQLExcep
 		// Looking for a fallback...
 		SQLExceptionTranslator fallback = getFallbackTranslator();
 		if (fallback != null) {
-			return fallback.translate(task, sql, ex);
+			dae = fallback.translate(task, sql, ex);
+			if (dae != null) {
+				// Fallback exception match found.
+				return dae;
+			}
 		}
 
-		return null;
+		// We couldn't identify it more precisely.
+		return new UncategorizedSQLException(task, sql, ex);
 	}
 
 	/**

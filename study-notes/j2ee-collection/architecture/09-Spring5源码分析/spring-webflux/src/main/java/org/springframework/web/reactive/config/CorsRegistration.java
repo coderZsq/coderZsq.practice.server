@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package org.springframework.web.reactive.config;
 
 import java.util.Arrays;
-import java.util.List;
 
 import org.springframework.web.cors.CorsConfiguration;
 
@@ -46,25 +45,21 @@ public class CorsRegistration {
 
 
 	/**
-	 * A list of origins for which cross-origin requests are allowed. Please,
-	 * see {@link CorsConfiguration#setAllowedOrigins(List)} for details.
-	 * <p>By default all origins are allowed unless {@code originPatterns} is
-	 * also set in which case {@code originPatterns} is used instead.
+	 * The list of allowed origins that be specific origins, e.g.
+	 * {@code "https://domain1.com"}, or {@code "*"} for all origins.
+	 * <p>A matched origin is listed in the {@code Access-Control-Allow-Origin}
+	 * response header of preflight actual CORS requests.
+	 * <p>By default all origins are allowed.
+	 * <p><strong>Note:</strong> CORS checks use values from "Forwarded"
+	 * (<a href="https://tools.ietf.org/html/rfc7239">RFC 7239</a>),
+	 * "X-Forwarded-Host", "X-Forwarded-Port", and "X-Forwarded-Proto" headers,
+	 * if present, in order to reflect the client-originated address.
+	 * Consider using the {@code ForwardedHeaderFilter} in order to choose from a
+	 * central place whether to extract and use, or to discard such headers.
+	 * See the Spring Framework reference for more on this filter.
 	 */
 	public CorsRegistration allowedOrigins(String... origins) {
 		this.config.setAllowedOrigins(Arrays.asList(origins));
-		return this;
-	}
-
-	/**
-	 * Alternative to {@link #allowCredentials} that supports origins declared
-	 * via wildcard patterns. Please, see
-	 * @link CorsConfiguration#setAllowedOriginPatterns(List)} for details.
-	 * <p>By default this is not set.
-	 * @since 5.3
-	 */
-	public CorsRegistration allowedOriginPatterns(String... patterns) {
-		this.config.setAllowedOriginPatterns(Arrays.asList(patterns));
 		return this;
 	}
 
@@ -98,8 +93,7 @@ public class CorsRegistration {
 	 * {@code Cache-Control}, {@code Content-Language}, {@code Content-Type},
 	 * {@code Expires}, {@code Last-Modified}, or {@code Pragma}, that an
 	 * actual response might have and can be exposed.
-	 * <p>The special value {@code "*"} allows all headers to be exposed for
-	 * non-credentialed requests.
+	 * <p>Note that {@code "*"} is not supported on this property.
 	 * <p>By default this is not set.
 	 */
 	public CorsRegistration exposedHeaders(String... headers) {
@@ -132,18 +126,6 @@ public class CorsRegistration {
 	 */
 	public CorsRegistration maxAge(long maxAge) {
 		this.config.setMaxAge(maxAge);
-		return this;
-	}
-
-	/**
-	 * Apply the given {@code CorsConfiguration} to the one being configured via
-	 * {@link CorsConfiguration#combine(CorsConfiguration)} which in turn has been
-	 * initialized with {@link CorsConfiguration#applyPermitDefaultValues()}.
-	 * @param other the configuration to apply
-	 * @since 5.3
-	 */
-	public CorsRegistration combine(CorsConfiguration other) {
-		this.config.combine(other);
 		return this;
 	}
 

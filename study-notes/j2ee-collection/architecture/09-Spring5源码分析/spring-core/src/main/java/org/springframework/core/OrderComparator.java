@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -101,7 +101,8 @@ public class OrderComparator implements Comparator<Object> {
 			Object orderSource = sourceProvider.getOrderSource(obj);
 			if (orderSource != null) {
 				if (orderSource.getClass().isArray()) {
-					for (Object source : ObjectUtils.toObjectArray(orderSource)) {
+					Object[] sources = ObjectUtils.toObjectArray(orderSource);
+					for (Object source : sources) {
 						order = findOrder(source);
 						if (order != null) {
 							break;

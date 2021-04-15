@@ -239,8 +239,9 @@ public class DefaultServerRequestTests {
 
 	@Test
 	public void body() {
-		byte[] bytes = "foo".getBytes(StandardCharsets.UTF_8);
-		DefaultDataBuffer dataBuffer = DefaultDataBufferFactory.sharedInstance.wrap(ByteBuffer.wrap(bytes));
+		DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
+		DefaultDataBuffer dataBuffer =
+				factory.wrap(ByteBuffer.wrap("foo".getBytes(StandardCharsets.UTF_8)));
 		Flux<DataBuffer> body = Flux.just(dataBuffer);
 
 		HttpHeaders httpHeaders = new HttpHeaders();
@@ -258,8 +259,9 @@ public class DefaultServerRequestTests {
 
 	@Test
 	public void bodyToMono() {
-		byte[] bytes = "foo".getBytes(StandardCharsets.UTF_8);
-		DefaultDataBuffer dataBuffer = DefaultDataBufferFactory.sharedInstance.wrap(ByteBuffer.wrap(bytes));
+		DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
+		DefaultDataBuffer dataBuffer =
+				factory.wrap(ByteBuffer.wrap("foo".getBytes(StandardCharsets.UTF_8)));
 		Flux<DataBuffer> body = Flux.just(dataBuffer);
 
 		HttpHeaders httpHeaders = new HttpHeaders();
@@ -276,8 +278,9 @@ public class DefaultServerRequestTests {
 
 	@Test
 	public void bodyToMonoParameterizedTypeReference() {
-		byte[] bytes = "foo".getBytes(StandardCharsets.UTF_8);
-		DefaultDataBuffer dataBuffer = DefaultDataBufferFactory.sharedInstance.wrap(ByteBuffer.wrap(bytes));
+		DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
+		DefaultDataBuffer dataBuffer =
+				factory.wrap(ByteBuffer.wrap("foo".getBytes(StandardCharsets.UTF_8)));
 		Flux<DataBuffer> body = Flux.just(dataBuffer);
 
 		HttpHeaders httpHeaders = new HttpHeaders();
@@ -295,8 +298,9 @@ public class DefaultServerRequestTests {
 
 	@Test
 	public void bodyToMonoDecodingException() {
-		byte[] bytes = "{\"invalid\":\"json\" ".getBytes(StandardCharsets.UTF_8);
-		DefaultDataBuffer dataBuffer = DefaultDataBufferFactory.sharedInstance.wrap(ByteBuffer.wrap(bytes));
+		DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
+		DefaultDataBuffer dataBuffer =
+				factory.wrap(ByteBuffer.wrap("{\"invalid\":\"json\" ".getBytes(StandardCharsets.UTF_8)));
 		Flux<DataBuffer> body = Flux.just(dataBuffer);
 
 		HttpHeaders httpHeaders = new HttpHeaders();
@@ -316,8 +320,9 @@ public class DefaultServerRequestTests {
 
 	@Test
 	public void bodyToFlux() {
-		byte[] bytes = "foo".getBytes(StandardCharsets.UTF_8);
-		DefaultDataBuffer dataBuffer = DefaultDataBufferFactory.sharedInstance.wrap(ByteBuffer.wrap(bytes));
+		DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
+		DefaultDataBuffer dataBuffer =
+				factory.wrap(ByteBuffer.wrap("foo".getBytes(StandardCharsets.UTF_8)));
 		Flux<DataBuffer> body = Flux.just(dataBuffer);
 
 		HttpHeaders httpHeaders = new HttpHeaders();
@@ -334,8 +339,9 @@ public class DefaultServerRequestTests {
 
 	@Test
 	public void bodyToFluxParameterizedTypeReference() {
-		byte[] bytes = "foo".getBytes(StandardCharsets.UTF_8);
-		DefaultDataBuffer dataBuffer = DefaultDataBufferFactory.sharedInstance.wrap(ByteBuffer.wrap(bytes));
+		DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
+		DefaultDataBuffer dataBuffer =
+				factory.wrap(ByteBuffer.wrap("foo".getBytes(StandardCharsets.UTF_8)));
 		Flux<DataBuffer> body = Flux.just(dataBuffer);
 
 		HttpHeaders httpHeaders = new HttpHeaders();
@@ -353,8 +359,9 @@ public class DefaultServerRequestTests {
 
 	@Test
 	public void bodyUnacceptable() {
-		byte[] bytes = "foo".getBytes(StandardCharsets.UTF_8);
-		DefaultDataBuffer dataBuffer = DefaultDataBufferFactory.sharedInstance.wrap(ByteBuffer.wrap(bytes));
+		DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
+		DefaultDataBuffer dataBuffer =
+				factory.wrap(ByteBuffer.wrap("foo".getBytes(StandardCharsets.UTF_8)));
 		Flux<DataBuffer> body = Flux.just(dataBuffer);
 
 		HttpHeaders httpHeaders = new HttpHeaders();
@@ -373,8 +380,9 @@ public class DefaultServerRequestTests {
 
 	@Test
 	public void formData() {
-		byte[] bytes = "foo=bar&baz=qux".getBytes(StandardCharsets.UTF_8);
-		DefaultDataBuffer dataBuffer = DefaultDataBufferFactory.sharedInstance.wrap(ByteBuffer.wrap(bytes));
+		DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
+		DefaultDataBuffer dataBuffer =
+				factory.wrap(ByteBuffer.wrap("foo=bar&baz=qux".getBytes(StandardCharsets.UTF_8)));
 		Flux<DataBuffer> body = Flux.just(dataBuffer);
 
 		HttpHeaders httpHeaders = new HttpHeaders();
@@ -406,8 +414,9 @@ public class DefaultServerRequestTests {
 				"\r\n" +
 				"qux\r\n" +
 				"--12345--\r\n";
-		byte[] bytes = data.getBytes(StandardCharsets.UTF_8);
-		DefaultDataBuffer dataBuffer = DefaultDataBufferFactory.sharedInstance.wrap(ByteBuffer.wrap(bytes));
+		DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
+		DefaultDataBuffer dataBuffer =
+				factory.wrap(ByteBuffer.wrap(data.getBytes(StandardCharsets.UTF_8)));
 		Flux<DataBuffer> body = Flux.just(dataBuffer);
 
 		HttpHeaders httpHeaders = new HttpHeaders();

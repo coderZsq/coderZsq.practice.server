@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package org.springframework.scheduling.support;
 
-import java.time.Clock;
 import java.util.Date;
 
 import org.springframework.lang.Nullable;
@@ -30,8 +29,6 @@ import org.springframework.scheduling.TriggerContext;
  */
 public class SimpleTriggerContext implements TriggerContext {
 
-	private final Clock clock;
-
 	@Nullable
 	private volatile Date lastScheduledExecutionTime;
 
@@ -43,36 +40,21 @@ public class SimpleTriggerContext implements TriggerContext {
 
 
 	/**
-	 * Create a SimpleTriggerContext with all time values set to {@code null},
-	 * exposing the system clock for the default time zone.
+	 * Create a SimpleTriggerContext with all time values set to {@code null}.
 	 */
 	public SimpleTriggerContext() {
-		this.clock = Clock.systemDefaultZone();
 	}
 
 	/**
-	 * Create a SimpleTriggerContext with the given time values,
-	 * exposing the system clock for the default time zone.
+	 * Create a SimpleTriggerContext with the given time values.
 	 * @param lastScheduledExecutionTime last <i>scheduled</i> execution time
 	 * @param lastActualExecutionTime last <i>actual</i> execution time
 	 * @param lastCompletionTime last completion time
 	 */
 	public SimpleTriggerContext(Date lastScheduledExecutionTime, Date lastActualExecutionTime, Date lastCompletionTime) {
-		this();
 		this.lastScheduledExecutionTime = lastScheduledExecutionTime;
 		this.lastActualExecutionTime = lastActualExecutionTime;
 		this.lastCompletionTime = lastCompletionTime;
-	}
-
-	/**
-	 * Create a SimpleTriggerContext with all time values set to {@code null},
-	 * exposing the given clock.
-	 * @param clock the clock to use for trigger calculation
-	 * @since 5.3
-	 * @see #update(Date, Date, Date)
-	 */
-	public SimpleTriggerContext(Clock clock) {
-		this.clock = clock;
 	}
 
 
@@ -88,11 +70,6 @@ public class SimpleTriggerContext implements TriggerContext {
 		this.lastCompletionTime = lastCompletionTime;
 	}
 
-
-	@Override
-	public Clock getClock() {
-		return this.clock;
-	}
 
 	@Override
 	@Nullable

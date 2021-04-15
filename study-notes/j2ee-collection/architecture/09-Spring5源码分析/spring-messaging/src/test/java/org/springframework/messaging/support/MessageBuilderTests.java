@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
+import org.springframework.util.IdGenerator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -35,16 +36,16 @@ import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
  * @author Mark Fisher
  * @author Rossen Stoyanchev
  */
-class MessageBuilderTests {
+public class MessageBuilderTests {
 
 	@Test
-	void simpleMessageCreation() {
+	public void testSimpleMessageCreation() {
 		Message<String> message = MessageBuilder.withPayload("foo").build();
 		assertThat(message.getPayload()).isEqualTo("foo");
 	}
 
 	@Test
-	void headerValues() {
+	public void testHeaderValues() {
 		Message<String> message = MessageBuilder.withPayload("test")
 				.setHeader("foo", "bar")
 				.setHeader("count", 123)
@@ -54,7 +55,7 @@ class MessageBuilderTests {
 	}
 
 	@Test
-	void copiedHeaderValues() {
+	public void testCopiedHeaderValues() {
 		Message<String> message1 = MessageBuilder.withPayload("test1")
 				.setHeader("foo", "1")
 				.setHeader("bar", "2")
@@ -73,21 +74,21 @@ class MessageBuilderTests {
 	}
 
 	@Test
-	void idHeaderValueReadOnly() {
+	public void testIdHeaderValueReadOnly() {
 		UUID id = UUID.randomUUID();
 		assertThatIllegalArgumentException().isThrownBy(() ->
 				MessageBuilder.withPayload("test").setHeader(MessageHeaders.ID, id));
 	}
 
 	@Test
-	void timestampValueReadOnly() {
+	public void testTimestampValueReadOnly() {
 		Long timestamp = 12345L;
 		assertThatIllegalArgumentException().isThrownBy(() ->
 				MessageBuilder.withPayload("test").setHeader(MessageHeaders.TIMESTAMP, timestamp).build());
 	}
 
 	@Test
-	void copyHeadersIfAbsent() {
+	public void copyHeadersIfAbsent() {
 		Message<String> message1 = MessageBuilder.withPayload("test1")
 				.setHeader("foo", "bar").build();
 		Message<String> message2 = MessageBuilder.withPayload("test2")
@@ -99,7 +100,7 @@ class MessageBuilderTests {
 	}
 
 	@Test
-	void createFromMessage() {
+	public void createFromMessage() {
 		Message<String> message1 = MessageBuilder.withPayload("test")
 				.setHeader("foo", "bar").build();
 		Message<String> message2 = MessageBuilder.fromMessage(message1).build();
@@ -108,7 +109,7 @@ class MessageBuilderTests {
 	}
 
 	@Test // gh-23417
-	void createErrorMessageFromErrorMessage() {
+	public void createErrorMessageFromErrorMessage() {
 		Message<String> source = MessageBuilder.withPayload("test").setHeader("foo", "bar").build();
 		RuntimeException ex = new RuntimeException();
 		ErrorMessage errorMessage1 = new ErrorMessage(ex, Collections.singletonMap("baz", "42"), source);
@@ -121,7 +122,7 @@ class MessageBuilderTests {
 	}
 
 	@Test
-	void createIdRegenerated() {
+	public void createIdRegenerated() {
 		Message<String> message1 = MessageBuilder.withPayload("test")
 				.setHeader("foo", "bar").build();
 		Message<String> message2 = MessageBuilder.fromMessage(message1).setHeader("another", 1).build();
@@ -130,7 +131,7 @@ class MessageBuilderTests {
 	}
 
 	@Test
-	void remove() {
+	public void testRemove() {
 		Message<Integer> message1 = MessageBuilder.withPayload(1)
 				.setHeader("foo", "bar").build();
 		Message<Integer> message2 = MessageBuilder.fromMessage(message1)
@@ -140,7 +141,7 @@ class MessageBuilderTests {
 	}
 
 	@Test
-	void settingToNullRemoves() {
+	public void testSettingToNullRemoves() {
 		Message<Integer> message1 = MessageBuilder.withPayload(1)
 				.setHeader("foo", "bar").build();
 		Message<Integer> message2 = MessageBuilder.fromMessage(message1)
@@ -150,28 +151,28 @@ class MessageBuilderTests {
 	}
 
 	@Test
-	void notModifiedSameMessage() throws Exception {
+	public void testNotModifiedSameMessage() throws Exception {
 		Message<?> original = MessageBuilder.withPayload("foo").build();
 		Message<?> result = MessageBuilder.fromMessage(original).build();
 		assertThat(result).isEqualTo(original);
 	}
 
 	@Test
-	void containsHeaderNotModifiedSameMessage() throws Exception {
+	public void testContainsHeaderNotModifiedSameMessage() throws Exception {
 		Message<?> original = MessageBuilder.withPayload("foo").setHeader("bar", 42).build();
 		Message<?> result = MessageBuilder.fromMessage(original).build();
 		assertThat(result).isEqualTo(original);
 	}
 
 	@Test
-	void sameHeaderValueAddedNotModifiedSameMessage() throws Exception {
+	public void testSameHeaderValueAddedNotModifiedSameMessage() throws Exception {
 		Message<?> original = MessageBuilder.withPayload("foo").setHeader("bar", 42).build();
 		Message<?> result = MessageBuilder.fromMessage(original).setHeader("bar", 42).build();
 		assertThat(result).isEqualTo(original);
 	}
 
 	@Test
-	void copySameHeaderValuesNotModifiedSameMessage() throws Exception {
+	public void testCopySameHeaderValuesNotModifiedSameMessage() throws Exception {
 		Date current = new Date();
 		Map<String, Object> originalHeaders = new HashMap<>();
 		originalHeaders.put("b", "xyz");
@@ -186,7 +187,7 @@ class MessageBuilderTests {
 	}
 
 	@Test
-	void buildMessageWithMutableHeaders() {
+	public void testBuildMessageWithMutableHeaders() {
 		MessageHeaderAccessor accessor = new MessageHeaderAccessor();
 		accessor.setLeaveMutable(true);
 		MessageHeaders headers = accessor.getMessageHeaders();
@@ -198,7 +199,7 @@ class MessageBuilderTests {
 	}
 
 	@Test
-	void buildMessageWithDefaultMutability() {
+	public void testBuildMessageWithDefaultMutability() {
 		MessageHeaderAccessor accessor = new MessageHeaderAccessor();
 		MessageHeaders headers = accessor.getMessageHeaders();
 		Message<?> message = MessageBuilder.createMessage("foo", headers);
@@ -211,16 +212,21 @@ class MessageBuilderTests {
 	}
 
 	@Test
-	void buildMessageWithoutIdAndTimestamp() {
+	public void testBuildMessageWithoutIdAndTimestamp() {
 		MessageHeaderAccessor headerAccessor = new MessageHeaderAccessor();
-		headerAccessor.setIdGenerator(() -> MessageHeaders.ID_VALUE_NONE);
+		headerAccessor.setIdGenerator(new IdGenerator() {
+			@Override
+			public UUID generateId() {
+				return MessageHeaders.ID_VALUE_NONE;
+			}
+		});
 		Message<?> message = MessageBuilder.createMessage("foo", headerAccessor.getMessageHeaders());
 		assertThat(message.getHeaders().getId()).isNull();
 		assertThat(message.getHeaders().getTimestamp()).isNull();
 	}
 
 	@Test
-	void buildMultipleMessages() {
+	public void testBuildMultipleMessages() {
 		MessageHeaderAccessor headerAccessor = new MessageHeaderAccessor();
 		MessageBuilder<?> messageBuilder = MessageBuilder.withPayload("payload").setHeaders(headerAccessor);
 
@@ -237,5 +243,4 @@ class MessageBuilderTests {
 		assertThat(message2.getHeaders().get("foo")).isEqualTo("bar2");
 		assertThat(message3.getHeaders().get("foo")).isEqualTo("bar3");
 	}
-
 }

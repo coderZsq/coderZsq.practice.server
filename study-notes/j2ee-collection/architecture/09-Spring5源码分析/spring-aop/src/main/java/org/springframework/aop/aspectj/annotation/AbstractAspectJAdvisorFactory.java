@@ -16,6 +16,17 @@
 
 package org.springframework.aop.aspectj.annotation;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.reflect.AjType;
+import org.aspectj.lang.reflect.AjTypeSystem;
+import org.aspectj.lang.reflect.PerClauseKind;
+import org.springframework.aop.framework.AopConfigException;
+import org.springframework.core.ParameterNameDiscoverer;
+import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.lang.Nullable;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -24,24 +35,6 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.AfterThrowing;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
-import org.aspectj.lang.reflect.AjType;
-import org.aspectj.lang.reflect.AjTypeSystem;
-import org.aspectj.lang.reflect.PerClauseKind;
-
-import org.springframework.aop.framework.AopConfigException;
-import org.springframework.core.ParameterNameDiscoverer;
-import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.lang.Nullable;
 
 /**
  * Abstract base class for factories that can create Spring AOP Advisors
@@ -57,8 +50,10 @@ import org.springframework.lang.Nullable;
  */
 public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFactory {
 
+	/** aspect 编译的前缀 */
 	private static final String AJC_MAGIC = "ajc$";
 
+	/** aspect 所支持的注解类 */
 	private static final Class<?>[] ASPECTJ_ANNOTATION_CLASSES = new Class<?>[] {
 			Pointcut.class, Around.class, Before.class, After.class, AfterReturning.class, AfterThrowing.class};
 
@@ -74,12 +69,22 @@ public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFac
 	 * if it has the @Aspect annotation, and was not compiled by ajc. The reason for this latter test
 	 * is that aspects written in the code-style (AspectJ language) also have the annotation present
 	 * when compiled by ajc with the -1.5 flag, yet they cannot be consumed by Spring AOP.
+	 *
+	 * 传入正在创建的 Bean 对象的 class 中是不是有 @Aspect 切面的注解信息
 	 */
 	@Override
 	public boolean isAspect(Class<?> clazz) {
+		/**
+		 * 有没有切面注解 && 没有被 AspectJ 编译过
+		 */
 		return (hasAspectAnnotation(clazz) && !compiledByAjc(clazz));
 	}
 
+	/**
+	 * 去类上面查询有没有 @Aspect 注解
+	 * @param clazz bean 的 class 对象
+	 * @return true | false
+	 */
 	private boolean hasAspectAnnotation(Class<?> clazz) {
 		return (AnnotationUtils.findAnnotation(clazz, Aspect.class) != null);
 	}

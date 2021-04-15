@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2014 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package org.springframework.test.context.support;
 import java.util.Properties;
 
 import org.springframework.beans.factory.support.BeanDefinitionReader;
+import org.springframework.beans.factory.support.PropertiesBeanDefinitionReader;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.test.context.MergedContextConfiguration;
 import org.springframework.util.ObjectUtils;
@@ -29,20 +30,17 @@ import org.springframework.util.ObjectUtils;
  *
  * @author Sam Brannen
  * @since 2.5
- * @deprecated as of 5.3, in favor of Spring's common bean definition formats
- * and/or custom loader implementations
  */
-@Deprecated
 public class GenericPropertiesContextLoader extends AbstractGenericContextLoader {
 
 	/**
-	 * Creates a new {@link org.springframework.beans.factory.support.PropertiesBeanDefinitionReader}.
+	 * Creates a new {@link PropertiesBeanDefinitionReader}.
 	 * @return a new PropertiesBeanDefinitionReader
-	 * @see org.springframework.beans.factory.support.PropertiesBeanDefinitionReader
+	 * @see PropertiesBeanDefinitionReader
 	 */
 	@Override
 	protected BeanDefinitionReader createBeanDefinitionReader(final GenericApplicationContext context) {
-		return new org.springframework.beans.factory.support.PropertiesBeanDefinitionReader(context);
+		return new PropertiesBeanDefinitionReader(context);
 	}
 
 	/**

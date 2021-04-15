@@ -56,7 +56,7 @@ class PathResourceLookupFunction implements Function<ServerRequest, Mono<Resourc
 
 	@Override
 	public Mono<Resource> apply(ServerRequest request) {
-		PathContainer pathContainer = request.requestPath().pathWithinApplication();
+		PathContainer pathContainer = request.pathContainer();
 		if (!this.pattern.matches(pathContainer)) {
 			return Mono.empty();
 		}

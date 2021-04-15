@@ -38,10 +38,10 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
  * @author Rossen Stoyanchev
  * @author Sam Brannen
  */
-class ResponseBodyTests {
+public class ResponseBodyTests {
 
 	@Test
-	void json() throws Exception {
+	public void json() throws Exception {
 		standaloneSetup(new PersonController()).build()
 				.perform(get("/person/Lee").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -60,7 +60,7 @@ class ResponseBodyTests {
 	private static class PersonController {
 
 		@GetMapping("/person/{name}")
-		Person get(@PathVariable String name) {
+		public Person get(@PathVariable String name) {
 			Person person = new Person(name);
 			person.setAge(42);
 			return person;

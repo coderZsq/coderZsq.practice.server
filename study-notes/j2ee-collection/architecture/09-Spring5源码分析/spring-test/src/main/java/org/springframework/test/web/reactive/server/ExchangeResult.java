@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import reactor.core.publisher.Mono;
 
 import org.springframework.http.HttpHeaders;
@@ -56,8 +54,6 @@ import org.springframework.util.MultiValueMap;
  */
 public class ExchangeResult {
 
-	private static Log logger = LogFactory.getLog(ExchangeResult.class);
-
 	private static final List<MediaType> PRINTABLE_MEDIA_TYPES = Arrays.asList(
 			MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML,
 			MediaType.parseMediaType("text/*"), MediaType.APPLICATION_FORM_URLENCODED);
@@ -76,9 +72,6 @@ public class ExchangeResult {
 	@Nullable
 	private final String uriTemplate;
 
-	@Nullable
-	final Object mockServerResult;
-
 
 	/**
 	 * Create an instance with an HTTP request and response along with promises
@@ -90,11 +83,9 @@ public class ExchangeResult {
 	 * @param responseBody capture of serialized response body content
 	 * @param timeout how long to wait for content to materialize
 	 * @param uriTemplate the URI template used to set up the request, if any
-	 * @param serverResult the result of a mock server exchange if applicable.
 	 */
 	ExchangeResult(ClientHttpRequest request, ClientHttpResponse response,
-			Mono<byte[]> requestBody, Mono<byte[]> responseBody, Duration timeout, @Nullable String uriTemplate,
-			@Nullable Object serverResult) {
+			Mono<byte[]> requestBody, Mono<byte[]> responseBody, Duration timeout, @Nullable String uriTemplate) {
 
 		Assert.notNull(request, "ClientHttpRequest is required");
 		Assert.notNull(response, "ClientHttpResponse is required");
@@ -107,7 +98,6 @@ public class ExchangeResult {
 		this.responseBody = responseBody;
 		this.timeout = timeout;
 		this.uriTemplate = uriTemplate;
-		this.mockServerResult = serverResult;
 	}
 
 	/**
@@ -120,7 +110,6 @@ public class ExchangeResult {
 		this.responseBody = other.responseBody;
 		this.timeout = other.timeout;
 		this.uriTemplate = other.uriTemplate;
-		this.mockServerResult = other.mockServerResult;
 	}
 
 
@@ -206,16 +195,6 @@ public class ExchangeResult {
 		return this.responseBody.block(this.timeout);
 	}
 
-	/**
-	 * Return the result from the mock server exchange, if applicable, for
-	 * further assertions on the state of the server response.
-	 * @since 5.3
-	 * @see org.springframework.test.web.servlet.client.MockMvcWebTestClient#resultActionsFor(ExchangeResult)
-	 */
-	@Nullable
-	public Object getMockServerResult() {
-		return this.mockServerResult;
-	}
 
 	/**
 	 * Execute the given Runnable, catch any {@link AssertionError}, decorate
@@ -227,10 +206,7 @@ public class ExchangeResult {
 			assertion.run();
 		}
 		catch (AssertionError ex) {
-			if (logger.isErrorEnabled()) {
-				logger.error("Request details for assertion failure:\n" + this);
-			}
-			throw ex;
+			throw new AssertionError(ex.getMessage() + "\n" + this, ex);
 		}
 	}
 
@@ -246,8 +222,7 @@ public class ExchangeResult {
 				"< " + getStatus() + " " + getStatus().getReasonPhrase() + "\n" +
 				"< " + formatHeaders(getResponseHeaders(), "\n< ") + "\n" +
 				"\n" +
-				formatBody(getResponseHeaders().getContentType(), this.responseBody) +"\n" +
-				formatMockServerResult();
+				formatBody(getResponseHeaders().getContentType(), this.responseBody) +"\n";
 	}
 
 	private String formatHeaders(HttpHeaders headers, String delimiter) {
@@ -275,12 +250,6 @@ public class ExchangeResult {
 				.defaultIfEmpty("No content")
 				.onErrorResume(ex -> Mono.just("Failed to obtain content: " + ex.getMessage()))
 				.block(this.timeout);
-	}
-
-	private String formatMockServerResult() {
-		return (this.mockServerResult != null ?
-				"\n======================  MockMvc (Server) ===============================\n" +
-						this.mockServerResult + "\n" : "");
 	}
 
 }

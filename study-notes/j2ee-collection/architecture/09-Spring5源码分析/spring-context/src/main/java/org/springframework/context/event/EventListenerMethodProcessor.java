@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.MethodIntrospector;
-import org.springframework.core.SpringProperties;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -57,21 +56,12 @@ import org.springframework.util.CollectionUtils;
  *
  * @author Stephane Nicoll
  * @author Juergen Hoeller
- * @author Sebastien Deleuze
  * @since 4.2
  * @see EventListenerFactory
  * @see DefaultEventListenerFactory
  */
 public class EventListenerMethodProcessor
 		implements SmartInitializingSingleton, ApplicationContextAware, BeanFactoryPostProcessor {
-
-	/**
-	 * Boolean flag controlled by a {@code spring.spel.ignore} system property that instructs Spring to
-	 * ignore SpEL, i.e. to not initialize the SpEL infrastructure.
-	 * <p>The default is "false".
-	 */
-	private static final boolean shouldIgnoreSpel = SpringProperties.getFlag("spring.spel.ignore");
-
 
 	protected final Log logger = LogFactory.getLog(getClass());
 
@@ -84,20 +74,11 @@ public class EventListenerMethodProcessor
 	@Nullable
 	private List<EventListenerFactory> eventListenerFactories;
 
-	@Nullable
-	private final EventExpressionEvaluator evaluator;
+	private final EventExpressionEvaluator evaluator = new EventExpressionEvaluator();
 
+	/** 没有 @EventListener 注解的类 */
 	private final Set<Class<?>> nonAnnotatedClasses = Collections.newSetFromMap(new ConcurrentHashMap<>(64));
 
-
-	public EventListenerMethodProcessor() {
-		if (shouldIgnoreSpel) {
-			this.evaluator = null;
-		}
-		else {
-			this.evaluator = new EventExpressionEvaluator();
-		}
-	}
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) {
@@ -122,10 +103,12 @@ public class EventListenerMethodProcessor
 		ConfigurableListableBeanFactory beanFactory = this.beanFactory;
 		Assert.state(this.beanFactory != null, "No ConfigurableListableBeanFactory set");
 		String[] beanNames = beanFactory.getBeanNamesForType(Object.class);
+		// 找到容器中所有的 bean，查找当前 bean 标注了 @EventListener 的方法
 		for (String beanName : beanNames) {
 			if (!ScopedProxyUtils.isScopedTarget(beanName)) {
 				Class<?> type = null;
 				try {
+					// 得到 beanName 对应的真实类型
 					type = AutoProxyUtils.determineTargetClass(beanFactory, beanName);
 				}
 				catch (Throwable ex) {
@@ -151,6 +134,7 @@ public class EventListenerMethodProcessor
 						}
 					}
 					try {
+						// 处理 bean
 						processBean(beanName, type);
 					}
 					catch (Throwable ex) {
@@ -163,12 +147,14 @@ public class EventListenerMethodProcessor
 	}
 
 	private void processBean(final String beanName, final Class<?> targetType) {
+		// 不存在与 nonAnnotatedClasses 中，且类里面有 EventListener 注解，且不是 spring 容器
 		if (!this.nonAnnotatedClasses.contains(targetType) &&
 				AnnotationUtils.isCandidateClass(targetType, EventListener.class) &&
 				!isSpringContainerClass(targetType)) {
 
 			Map<Method, EventListener> annotatedMethods = null;
 			try {
+				// 找出贴了 EventListener 注解的方法
 				annotatedMethods = MethodIntrospector.selectMethods(targetType,
 						(MethodIntrospector.MetadataLookup<EventListener>) method ->
 								AnnotatedElementUtils.findMergedAnnotation(method, EventListener.class));
@@ -190,17 +176,25 @@ public class EventListenerMethodProcessor
 				// Non-empty set of methods
 				ConfigurableApplicationContext context = this.applicationContext;
 				Assert.state(context != null, "No ApplicationContext set");
+				/**
+				 *	获取EventListenerFactory的bean : 默认情况下的两个实现
+				 *	DefaultEventListenerFactory  --- springContext 自己注入的
+				 *	TransactionalEventListenerFactory -- 使用配置进去的
+				 */
 				List<EventListenerFactory> factories = this.eventListenerFactories;
 				Assert.state(factories != null, "EventListenerFactory List not initialized");
 				for (Method method : annotatedMethods.keySet()) {
 					for (EventListenerFactory factory : factories) {
 						if (factory.supportsMethod(method)) {
 							Method methodToUse = AopUtils.selectInvocableMethod(method, context.getType(beanName));
+							// 使用工厂创建监听器
 							ApplicationListener<?> applicationListener =
 									factory.createApplicationListener(beanName, targetType, methodToUse);
+							// 如果监听器是 ApplicationListenerMethodAdapter 就先执行初始化
 							if (applicationListener instanceof ApplicationListenerMethodAdapter) {
 								((ApplicationListenerMethodAdapter) applicationListener).init(context, this.evaluator);
 							}
+							// 注册监听器
 							context.addApplicationListener(applicationListener);
 							break;
 						}

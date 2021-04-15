@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,13 +77,16 @@ class SocketUtilsTests {
 	@Test
 	void findAvailableTcpPortWhenPortOnLoopbackInterfaceIsNotAvailable() throws Exception {
 		int port = SocketUtils.findAvailableTcpPort();
-		try (ServerSocket socket = ServerSocketFactory.getDefault().createServerSocket(port, 1, InetAddress.getByName("localhost"))) {
-			assertThat(socket).isNotNull();
+		ServerSocket socket = ServerSocketFactory.getDefault().createServerSocket(port, 1, InetAddress.getByName("localhost"));
+		try {
 			// will only look for the exact port
 			assertThatIllegalStateException().isThrownBy(() ->
 					SocketUtils.findAvailableTcpPort(port, port))
 				.withMessageStartingWith("Could not find an available TCP port")
 				.withMessageEndingWith("after 1 attempts");
+		}
+		finally {
+			socket.close();
 		}
 	}
 
@@ -151,13 +154,16 @@ class SocketUtilsTests {
 	@Test
 	void findAvailableUdpPortWhenPortOnLoopbackInterfaceIsNotAvailable() throws Exception {
 		int port = SocketUtils.findAvailableUdpPort();
-		try (DatagramSocket socket = new DatagramSocket(port, InetAddress.getByName("localhost"))) {
-			assertThat(socket).isNotNull();
+		DatagramSocket socket = new DatagramSocket(port, InetAddress.getByName("localhost"));
+		try {
 			// will only look for the exact port
 			assertThatIllegalStateException().isThrownBy(() ->
 					SocketUtils.findAvailableUdpPort(port, port))
 				.withMessageStartingWith("Could not find an available UDP port")
 				.withMessageEndingWith("after 1 attempts");
+		}
+		finally {
+			socket.close();
 		}
 	}
 

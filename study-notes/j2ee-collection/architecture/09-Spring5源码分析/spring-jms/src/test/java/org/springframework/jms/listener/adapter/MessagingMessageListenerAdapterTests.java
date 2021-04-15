@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -100,11 +100,10 @@ public class MessagingMessageListenerAdapterTests {
 		javax.jms.Message message = new StubTextMessage("foo");
 		Session session = mock(Session.class);
 		MessagingMessageListenerAdapter listener = getSimpleInstance("fail", String.class);
-		assertThatExceptionOfType(ListenerExecutionFailedException.class)
-			.isThrownBy(() -> listener.onMessage(message, session))
-			.havingCause()
-			.isExactlyInstanceOf(IllegalArgumentException.class)
-			.withMessage("Expected test exception");
+		assertThatExceptionOfType(ListenerExecutionFailedException.class).isThrownBy(() ->
+				listener.onMessage(message, session))
+			.withCauseExactlyInstanceOf(IllegalArgumentException.class)
+			.satisfies(ex -> assertThat(ex.getCause().getMessage()).isEqualTo("Expected test exception"));
 	}
 
 	@Test
@@ -341,7 +340,7 @@ public class MessagingMessageListenerAdapterTests {
 	}
 
 
-	protected MessagingMessageListenerAdapter getSimpleInstance(String methodName, Class<?>... parameterTypes) {
+	protected MessagingMessageListenerAdapter getSimpleInstance(String methodName, Class... parameterTypes) {
 		Method m = ReflectionUtils.findMethod(SampleBean.class, methodName, parameterTypes);
 		return createInstance(m);
 	}
@@ -353,7 +352,7 @@ public class MessagingMessageListenerAdapterTests {
 	}
 
 	protected MessagingMessageListenerAdapter getPayloadInstance(final Object payload,
-			String methodName, Class<?>... parameterTypes) {
+			String methodName, Class... parameterTypes) {
 
 		Method method = ReflectionUtils.findMethod(SampleBean.class, methodName, parameterTypes);
 		MessagingMessageListenerAdapter adapter = new MessagingMessageListenerAdapter() {
@@ -435,7 +434,6 @@ public class MessagingMessageListenerAdapterTests {
 	interface Summary {};
 	interface Full extends Summary {};
 
-	@SuppressWarnings("unused")
 	private static class SampleResponse {
 
 		private int counter = 42;
@@ -445,6 +443,9 @@ public class MessagingMessageListenerAdapterTests {
 
 		@JsonView(Full.class)
 		private String description;
+
+		SampleResponse() {
+		}
 
 		public SampleResponse(String name, String description) {
 			this.name = name;

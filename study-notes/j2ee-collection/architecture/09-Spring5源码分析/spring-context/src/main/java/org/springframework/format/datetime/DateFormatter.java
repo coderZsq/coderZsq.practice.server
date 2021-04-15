@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,21 +27,17 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import org.springframework.format.Formatter;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.lang.Nullable;
-import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 /**
  * A formatter for {@link java.util.Date} types.
- * <p>Supports the configuration of an explicit date time pattern, timezone,
- * locale, and fallback date time patterns for lenient parsing.
+ * Allows the configuration of an explicit date pattern and locale.
  *
  * @author Keith Donald
  * @author Juergen Hoeller
  * @author Phillip Webb
- * @author Sam Brannen
  * @since 3.0
  * @see SimpleDateFormat
  */
@@ -61,13 +57,7 @@ public class DateFormatter implements Formatter<Date> {
 
 
 	@Nullable
-	private Object source;
-
-	@Nullable
 	private String pattern;
-
-	@Nullable
-	private String[] fallbackPatterns;
 
 	private int style = DateFormat.DEFAULT;
 
@@ -84,32 +74,18 @@ public class DateFormatter implements Formatter<Date> {
 
 
 	/**
-	 * Create a new default {@code DateFormatter}.
+	 * Create a new default DateFormatter.
 	 */
 	public DateFormatter() {
 	}
 
 	/**
-	 * Create a new {@code DateFormatter} for the given date time pattern.
+	 * Create a new DateFormatter for the given date pattern.
 	 */
 	public DateFormatter(String pattern) {
 		this.pattern = pattern;
 	}
 
-
-	/**
-	 * Set the source of the configuration for this {@code DateFormatter} &mdash;
-	 * for example, an instance of the {@link DateTimeFormat @DateTimeFormat}
-	 * annotation if such an annotation was used to configure this {@code DateFormatter}.
-	 * <p>The supplied source object will only be used for descriptive purposes
-	 * by invoking its {@code toString()} method &mdash; for example, when
-	 * generating an exception message to provide further context.
-	 * @param source the source of the configuration
-	 * @since 5.3.5
-	 */
-	public void setSource(Object source) {
-		this.source = source;
-	}
 
 	/**
 	 * Set the pattern to use to format date values.
@@ -120,19 +96,7 @@ public class DateFormatter implements Formatter<Date> {
 	}
 
 	/**
-	 * Set additional patterns to use as a fallback in case parsing fails for the
-	 * configured {@linkplain #setPattern pattern}, {@linkplain #setIso ISO format},
-	 * {@linkplain #setStyle style}, or {@linkplain #setStylePattern style pattern}.
-	 * @param fallbackPatterns the fallback parsing patterns
-	 * @since 5.3.5
-	 * @see DateTimeFormat#fallbackPatterns()
-	 */
-	public void setFallbackPatterns(String... fallbackPatterns) {
-		this.fallbackPatterns = fallbackPatterns;
-	}
-
-	/**
-	 * Set the ISO format to use to format date values.
+	 * Set the ISO format used for this date.
 	 * @param iso the {@link ISO} format
 	 * @since 3.2
 	 */
@@ -141,7 +105,7 @@ public class DateFormatter implements Formatter<Date> {
 	}
 
 	/**
-	 * Set the {@link DateFormat} style to use to format date values.
+	 * Set the style to use to format date values.
 	 * <p>If not specified, DateFormat's default style will be used.
 	 * @see DateFormat#DEFAULT
 	 * @see DateFormat#SHORT
@@ -154,10 +118,8 @@ public class DateFormatter implements Formatter<Date> {
 	}
 
 	/**
-	 * Set the two characters to use to format date values.
-	 * <p>The first character is used for the date style; the second is used for
-	 * the time style.
-	 * <p>Supported characters:
+	 * Set the two character to use to format date values. The first character used for
+	 * the date style, the second is for the time style. Supported characters are
 	 * <ul>
 	 * <li>'S' = Small</li>
 	 * <li>'M' = Medium</li>
@@ -174,7 +136,7 @@ public class DateFormatter implements Formatter<Date> {
 	}
 
 	/**
-	 * Set the {@link TimeZone} to normalize the date values into, if any.
+	 * Set the TimeZone to normalize the date values into, if any.
 	 */
 	public void setTimeZone(TimeZone timeZone) {
 		this.timeZone = timeZone;
@@ -197,43 +159,12 @@ public class DateFormatter implements Formatter<Date> {
 
 	@Override
 	public Date parse(String text, Locale locale) throws ParseException {
-		try {
-			return getDateFormat(locale).parse(text);
-		}
-		catch (ParseException ex) {
-			if (!ObjectUtils.isEmpty(this.fallbackPatterns)) {
-				for (String pattern : this.fallbackPatterns) {
-					try {
-						DateFormat dateFormat = configureDateFormat(new SimpleDateFormat(pattern, locale));
-						// Align timezone for parsing format with printing format if ISO is set.
-						if (this.iso != null && this.iso != ISO.NONE) {
-							dateFormat.setTimeZone(UTC);
-						}
-						return dateFormat.parse(text);
-					}
-					catch (ParseException ignoredException) {
-						// Ignore fallback parsing exceptions since the exception thrown below
-						// will include information from the "source" if available -- for example,
-						// the toString() of a @DateTimeFormat annotation.
-					}
-				}
-			}
-			if (this.source != null) {
-				throw new ParseException(
-					String.format("Unable to parse date time value \"%s\" using configuration from %s", text, this.source),
-					ex.getErrorOffset());
-			}
-			// else rethrow original exception
-			throw ex;
-		}
+		return getDateFormat(locale).parse(text);
 	}
 
 
 	protected DateFormat getDateFormat(Locale locale) {
-		return configureDateFormat(createDateFormat(locale));
-	}
-
-	private DateFormat configureDateFormat(DateFormat dateFormat) {
+		DateFormat dateFormat = createDateFormat(locale);
 		if (this.timeZone != null) {
 			dateFormat.setTimeZone(this.timeZone);
 		}

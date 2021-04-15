@@ -55,7 +55,7 @@ class PathResourceLookupFunction implements Function<ServerRequest, Optional<Res
 
 	@Override
 	public Optional<Resource> apply(ServerRequest request) {
-		PathContainer pathContainer = request.requestPath().pathWithinApplication();
+		PathContainer pathContainer = request.pathContainer();
 		if (!this.pattern.matches(pathContainer)) {
 			return Optional.empty();
 		}
@@ -110,7 +110,10 @@ class PathResourceLookupFunction implements Function<ServerRequest, Optional<Res
 				return true;
 			}
 		}
-		return path.contains("..") && StringUtils.cleanPath(path).contains("../");
+		if (path.contains("..") && StringUtils.cleanPath(path).contains("../")) {
+				return true;
+			}
+		return false;
 	}
 
 	private boolean isResourceUnderLocation(Resource resource) throws IOException {
@@ -141,8 +144,10 @@ class PathResourceLookupFunction implements Function<ServerRequest, Optional<Res
 		if (!resourcePath.startsWith(locationPath)) {
 			return false;
 		}
-		return !resourcePath.contains("%") ||
-				!StringUtils.uriDecode(resourcePath, StandardCharsets.UTF_8).contains("../");
+		if (resourcePath.contains("%") && StringUtils.uriDecode(resourcePath, StandardCharsets.UTF_8).contains("../")) {
+			return false;
+		}
+		return true;
 	}
 
 

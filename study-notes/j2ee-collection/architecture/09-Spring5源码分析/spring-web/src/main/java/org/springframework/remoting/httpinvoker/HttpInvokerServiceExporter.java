@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.remoting.rmi.RemoteInvocationSerializingExporter;
 import org.springframework.remoting.support.RemoteInvocation;
 import org.springframework.remoting.support.RemoteInvocationResult;
 import org.springframework.web.HttpRequestHandler;
@@ -57,10 +58,8 @@ import org.springframework.web.util.NestedServletException;
  * @see HttpInvokerProxyFactoryBean
  * @see org.springframework.remoting.rmi.RmiServiceExporter
  * @see org.springframework.remoting.caucho.HessianServiceExporter
- * @deprecated as of 5.3 (phasing out serialization-based remoting)
  */
-@Deprecated
-public class HttpInvokerServiceExporter extends org.springframework.remoting.rmi.RemoteInvocationSerializingExporter implements HttpRequestHandler {
+public class HttpInvokerServiceExporter extends RemoteInvocationSerializingExporter implements HttpRequestHandler {
 
 	/**
 	 * Reads a remote invocation from the request, executes it,
@@ -114,8 +113,12 @@ public class HttpInvokerServiceExporter extends org.springframework.remoting.rmi
 	protected RemoteInvocation readRemoteInvocation(HttpServletRequest request, InputStream is)
 			throws IOException, ClassNotFoundException {
 
-		try (ObjectInputStream ois = createObjectInputStream(decorateInputStream(request, is))) {
+		ObjectInputStream ois = createObjectInputStream(decorateInputStream(request, is));
+		try {
 			return doReadRemoteInvocation(ois);
+		}
+		finally {
+			ois.close();
 		}
 	}
 
@@ -167,9 +170,13 @@ public class HttpInvokerServiceExporter extends org.springframework.remoting.rmi
 			HttpServletRequest request, HttpServletResponse response, RemoteInvocationResult result, OutputStream os)
 			throws IOException {
 
-		try (ObjectOutputStream oos =
-					createObjectOutputStream(new FlushGuardedOutputStream(decorateOutputStream(request, response, os)))) {
+		ObjectOutputStream oos =
+				createObjectOutputStream(new FlushGuardedOutputStream(decorateOutputStream(request, response, os)));
+		try {
 			doWriteRemoteInvocationResult(result, oos);
+		}
+		finally {
+			oos.close();
 		}
 	}
 

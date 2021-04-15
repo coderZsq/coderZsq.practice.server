@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,9 +54,10 @@ public abstract class AstUtils {
 			}
 			else {
 				if (targetType != null) {
+					int pos = 0;
 					for (Class<?> clazz : targets) {
 						if (clazz == targetType) {  // put exact matches on the front to be tried first?
-							specificAccessors.add(resolver);
+							specificAccessors.add(pos++, resolver);
 						}
 						else if (clazz.isAssignableFrom(targetType)) {  // put supertype matches at the end of the
 							// specificAccessor list

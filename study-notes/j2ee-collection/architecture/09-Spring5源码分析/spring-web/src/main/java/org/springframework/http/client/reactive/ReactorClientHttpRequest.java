@@ -65,6 +65,11 @@ class ReactorClientHttpRequest extends AbstractClientHttpRequest implements Zero
 
 
 	@Override
+	public DataBufferFactory bufferFactory() {
+		return this.bufferFactory;
+	}
+
+	@Override
 	public HttpMethod getMethod() {
 		return this.httpMethod;
 	}
@@ -72,17 +77,6 @@ class ReactorClientHttpRequest extends AbstractClientHttpRequest implements Zero
 	@Override
 	public URI getURI() {
 		return this.uri;
-	}
-
-	@Override
-	public DataBufferFactory bufferFactory() {
-		return this.bufferFactory;
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> T getNativeRequest() {
-		return (T) this.request;
 	}
 
 	@Override

@@ -78,7 +78,7 @@ public class JettyRequestUpgradeStrategy implements RequestUpgradeStrategy, Serv
 	@Nullable
 	private ServletContext servletContext;
 
-	private volatile boolean running;
+	private volatile boolean running = false;
 
 	@Nullable
 	private volatile List<WebSocketExtension> supportedExtensions;

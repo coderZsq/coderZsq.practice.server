@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,12 @@ package org.springframework.test.web.servlet.samples.standalone;
 
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
+import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.junit.jupiter.api.Test;
-import reactor.core.publisher.Mono;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -113,6 +113,8 @@ public class AsyncTests {
 				.andExpect(request().asyncStarted())
 				.andReturn();
 
+		this.asyncController.onMessage("Joe");
+
 		this.mockMvc.perform(asyncDispatch(mvcResult))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -149,6 +151,8 @@ public class AsyncTests {
 				.andExpect(request().asyncStarted())
 				.andReturn();
 
+		this.asyncController.onMessage("Joe");
+
 		this.mockMvc.perform(asyncDispatch(mvcResult))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -179,6 +183,8 @@ public class AsyncTests {
 		assertThat(writer.toString().contains("Async started = true")).isTrue();
 		writer = new StringWriter();
 
+		this.asyncController.onMessage("Joe");
+
 		this.mockMvc.perform(asyncDispatch(mvcResult))
 				.andDo(print(writer))
 				.andExpect(status().isOk())
@@ -192,6 +198,10 @@ public class AsyncTests {
 	@RestController
 	@RequestMapping(path = "/{id}", produces = "application/json")
 	private static class AsyncController {
+
+		private final Collection<DeferredResult<Person>> deferredResults = new CopyOnWriteArrayList<>();
+
+		private final Collection<ListenableFutureTask<Person>> futureTasks = new CopyOnWriteArrayList<>();
 
 		@RequestMapping(params = "callable")
 		public Callable<Person> getCallable() {
@@ -225,9 +235,9 @@ public class AsyncTests {
 
 		@RequestMapping(params = "deferredResult")
 		public DeferredResult<Person> getDeferredResult() {
-			DeferredResult<Person> result = new DeferredResult<>();
-			delay(100, () -> result.setResult(new Person("Joe")));
-			return result;
+			DeferredResult<Person> deferredResult = new DeferredResult<>();
+			this.deferredResults.add(deferredResult);
+			return deferredResult;
 		}
 
 		@RequestMapping(params = "deferredResultWithImmediateValue")
@@ -239,15 +249,26 @@ public class AsyncTests {
 
 		@RequestMapping(params = "deferredResultWithDelayedError")
 		public DeferredResult<Person> getDeferredResultWithDelayedError() {
-			DeferredResult<Person> result = new DeferredResult<>();
-			delay(100, () -> result.setErrorResult(new RuntimeException("Delayed Error")));
-			return result;
+			final DeferredResult<Person> deferredResult = new DeferredResult<>();
+			new Thread() {
+				@Override
+				public void run() {
+					try {
+						Thread.sleep(100);
+						deferredResult.setErrorResult(new RuntimeException("Delayed Error"));
+					}
+					catch (InterruptedException e) {
+						/* no-op */
+					}
+				}
+			}.start();
+			return deferredResult;
 		}
 
 		@RequestMapping(params = "listenableFuture")
 		public ListenableFuture<Person> getListenableFuture() {
 			ListenableFutureTask<Person> futureTask = new ListenableFutureTask<>(() -> new Person("Joe"));
-			delay(100, futureTask);
+			this.futureTasks.add(futureTask);
 			return futureTask;
 		}
 
@@ -260,12 +281,19 @@ public class AsyncTests {
 
 		@ExceptionHandler(Exception.class)
 		@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-		public String errorHandler(Exception ex) {
-			return ex.getMessage();
+		public String errorHandler(Exception e) {
+			return e.getMessage();
 		}
 
-		private void delay(long millis, Runnable task) {
-			Mono.delay(Duration.ofMillis(millis)).doOnTerminate(task).subscribe();
+		void onMessage(String name) {
+			for (DeferredResult<Person> deferredResult : this.deferredResults) {
+				deferredResult.setResult(new Person(name));
+				this.deferredResults.remove(deferredResult);
+			}
+			for (ListenableFutureTask<Person> futureTask : this.futureTasks) {
+				futureTask.run();
+				this.futureTasks.remove(futureTask);
+			}
 		}
 	}
 

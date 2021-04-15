@@ -19,7 +19,6 @@ package org.springframework.orm.jpa;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.function.Consumer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -128,9 +127,6 @@ public class JpaTransactionManager extends AbstractPlatformTransactionManager
 	private DataSource dataSource;
 
 	private JpaDialect jpaDialect = new DefaultJpaDialect();
-
-	@Nullable
-	private Consumer<EntityManager> entityManagerInitializer;
 
 
 	/**
@@ -303,21 +299,6 @@ public class JpaTransactionManager extends AbstractPlatformTransactionManager
 	}
 
 	/**
-	 * Specify a callback for customizing every {@code EntityManager} resource
-	 * created for a new transaction managed by this {@code JpaTransactionManager}.
-	 * <p>This is an alternative to a factory-level {@code EntityManager} customizer
-	 * and to a {@code JpaVendorAdapter}-level {@code postProcessEntityManager}
-	 * callback, enabling specific customizations of transactional resources.
-	 * @since 5.3
-	 * @see #createEntityManagerForTransaction()
-	 * @see AbstractEntityManagerFactoryBean#setEntityManagerInitializer
-	 * @see JpaVendorAdapter#postProcessEntityManager
-	 */
-	public void setEntityManagerInitializer(Consumer<EntityManager> entityManagerInitializer) {
-		this.entityManagerInitializer = entityManagerInitializer;
-	}
-
-	/**
 	 * Retrieves an EntityManagerFactory by persistence unit name, if none set explicitly.
 	 * Falls back to a default EntityManagerFactory bean if no persistence unit specified.
 	 * @see #setPersistenceUnitName
@@ -471,27 +452,18 @@ public class JpaTransactionManager extends AbstractPlatformTransactionManager
 	/**
 	 * Create a JPA EntityManager to be used for a transaction.
 	 * <p>The default implementation checks whether the EntityManagerFactory
-	 * is a Spring proxy and delegates to
-	 * {@link EntityManagerFactoryInfo#createNativeEntityManager}
-	 * if possible which in turns applies
-	 * {@link JpaVendorAdapter#postProcessEntityManager(EntityManager)}.
+	 * is a Spring proxy and unwraps it first.
 	 * @see javax.persistence.EntityManagerFactory#createEntityManager()
+	 * @see EntityManagerFactoryInfo#getNativeEntityManagerFactory()
 	 */
 	protected EntityManager createEntityManagerForTransaction() {
 		EntityManagerFactory emf = obtainEntityManagerFactory();
-		Map<String, Object> properties = getJpaPropertyMap();
-		EntityManager em;
 		if (emf instanceof EntityManagerFactoryInfo) {
-			em = ((EntityManagerFactoryInfo) emf).createNativeEntityManager(properties);
+			emf = ((EntityManagerFactoryInfo) emf).getNativeEntityManagerFactory();
 		}
-		else {
-			em = (!CollectionUtils.isEmpty(properties) ?
-					emf.createEntityManager(properties) : emf.createEntityManager());
-		}
-		if (this.entityManagerInitializer != null) {
-			this.entityManagerInitializer.accept(em);
-		}
-		return em;
+		Map<String, Object> properties = getJpaPropertyMap();
+		return (!CollectionUtils.isEmpty(properties) ?
+				emf.createEntityManager(properties) : emf.createEntityManager());
 	}
 
 	/**

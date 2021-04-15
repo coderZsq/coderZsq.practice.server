@@ -28,6 +28,7 @@ import org.springframework.util.TypeUtils;
 
 /**
  * Spring AOP advice wrapping an AspectJ after-returning advice method.
+ * 类的描述: 返回通知执行真正的实现类
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
@@ -60,6 +61,9 @@ public class AspectJAfterReturningAdvice extends AbstractAspectJAdvice
 		setReturningNameNoCheck(name);
 	}
 
+	/**
+	 * 执行返回通知, 当时不直接执行, 而是由对应的拦截器对象执行
+	 */
 	@Override
 	public void afterReturning(@Nullable Object returnValue, Method method, Object[] args, @Nullable Object target) throws Throwable {
 		if (shouldInvokeOnReturnValueOf(method, returnValue)) {

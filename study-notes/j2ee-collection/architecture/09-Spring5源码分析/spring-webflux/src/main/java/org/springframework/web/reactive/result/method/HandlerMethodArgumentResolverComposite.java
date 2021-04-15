@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import reactor.core.publisher.Mono;
 
 import org.springframework.core.MethodParameter;
@@ -38,6 +40,8 @@ import org.springframework.web.server.ServerWebExchange;
  * @since 5.1.3
  */
 class HandlerMethodArgumentResolverComposite implements HandlerMethodArgumentResolver {
+
+	protected final Log logger = LogFactory.getLog(getClass());
 
 	private final List<HandlerMethodArgumentResolver> argumentResolvers = new ArrayList<>();
 

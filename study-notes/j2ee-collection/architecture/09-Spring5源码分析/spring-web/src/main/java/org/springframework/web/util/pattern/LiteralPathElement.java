@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,9 +69,10 @@ class LiteralPathElement extends PathElement {
 			return false;
 		}
 
+		char[] data = ((PathContainer.PathSegment)element).valueToMatchAsChars();
 		if (this.caseSensitive) {
 			for (int i = 0; i < this.len; i++) {
-				if (value.charAt(i) != this.text[i]) {
+				if (data[i] != this.text[i]) {
 					return false;
 				}
 			}
@@ -79,7 +80,7 @@ class LiteralPathElement extends PathElement {
 		else {
 			for (int i = 0; i < this.len; i++) {
 				// TODO revisit performance if doing a lot of case insensitive matching
-				if (Character.toLowerCase(value.charAt(i)) != this.text[i]) {
+				if (Character.toLowerCase(data[i]) != this.text[i]) {
 					return false;
 				}
 			}

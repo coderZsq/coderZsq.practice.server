@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -98,14 +98,13 @@ public abstract class ExchangeFunctions {
 			Assert.notNull(clientRequest, "ClientRequest must not be null");
 			HttpMethod httpMethod = clientRequest.method();
 			URI url = clientRequest.url();
+			String logPrefix = clientRequest.logPrefix();
 
 			return this.connector
 					.connect(httpMethod, url, httpRequest -> clientRequest.writeTo(httpRequest, this.strategies))
 					.doOnRequest(n -> logRequest(clientRequest))
-					.doOnCancel(() -> logger.debug(clientRequest.logPrefix() + "Cancel signal (to close connection)"))
-					.onErrorResume(WebClientUtils.WRAP_EXCEPTION_PREDICATE, t -> wrapException(t, clientRequest))
+					.doOnCancel(() -> logger.debug(logPrefix + "Cancel signal (to close connection)"))
 					.map(httpResponse -> {
-						String logPrefix = getLogPrefix(clientRequest, httpResponse);
 						logResponse(httpResponse, logPrefix);
 						return new DefaultClientResponse(
 								httpResponse, this.strategies, logPrefix, httpMethod.name() + " " + url,
@@ -120,10 +119,6 @@ public abstract class ExchangeFunctions {
 			);
 		}
 
-		private String getLogPrefix(ClientRequest request, ClientHttpResponse response) {
-			return request.logPrefix() + "[" + response.getId() + "] ";
-		}
-
 		private void logResponse(ClientHttpResponse response, String logPrefix) {
 			LogFormatUtils.traceDebug(logger, traceOn -> {
 				int code = response.getRawStatusCode();
@@ -135,10 +130,6 @@ public abstract class ExchangeFunctions {
 
 		private String formatHeaders(HttpHeaders headers) {
 			return this.enableLoggingRequestDetails ? headers.toString() : headers.isEmpty() ? "{}" : "{masked}";
-		}
-
-		private <T> Mono<T> wrapException(Throwable t, ClientRequest r) {
-			return Mono.error(() -> new WebClientRequestException(t, r.method(), r.url(), r.headers()));
 		}
 
 		private HttpRequest createRequest(ClientRequest request) {

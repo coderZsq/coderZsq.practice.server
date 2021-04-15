@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.springframework.scheduling.quartz;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -227,7 +228,7 @@ public abstract class SchedulerAccessor implements ResourceLoaderAware {
 			}
 			else {
 				// Create empty list for easier checks when registering triggers.
-				this.jobDetails = new ArrayList<>();
+				this.jobDetails = new LinkedList<>();
 			}
 
 			// Register Calendars.

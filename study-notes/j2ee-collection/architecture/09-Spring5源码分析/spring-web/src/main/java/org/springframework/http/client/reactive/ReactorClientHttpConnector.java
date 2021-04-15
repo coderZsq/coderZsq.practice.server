@@ -76,7 +76,6 @@ public class ReactorClientHttpConnector implements ClientHttpConnector {
 		this.httpClient = defaultInitializer.andThen(mapper).apply(initHttpClient(factory));
 	}
 
-	@SuppressWarnings("deprecation")
 	private static HttpClient initHttpClient(ReactorResourceFactory resourceFactory) {
 		ConnectionProvider provider = resourceFactory.getConnectionProvider();
 		LoopResources resources = resourceFactory.getLoopResources();
@@ -99,6 +98,10 @@ public class ReactorClientHttpConnector implements ClientHttpConnector {
 	@Override
 	public Mono<ClientHttpResponse> connect(HttpMethod method, URI uri,
 			Function<? super ClientHttpRequest, Mono<Void>> requestCallback) {
+
+		if (!uri.isAbsolute()) {
+			return Mono.error(new IllegalArgumentException("URI is not absolute: " + uri));
+		}
 
 		AtomicReference<ReactorClientHttpResponse> responseRef = new AtomicReference<>();
 

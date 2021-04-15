@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,10 +45,9 @@ public class BeanValidationPostProcessorTests {
 		ac.registerBeanDefinition("bvpp", new RootBeanDefinition(BeanValidationPostProcessor.class));
 		ac.registerBeanDefinition("capp", new RootBeanDefinition(CommonAnnotationBeanPostProcessor.class));
 		ac.registerBeanDefinition("bean", new RootBeanDefinition(NotNullConstrainedBean.class));
-		assertThatExceptionOfType(BeanCreationException.class)
-			.isThrownBy(ac::refresh)
-			.havingRootCause()
-			.withMessageContainingAll("testBean", "invalid");
+		assertThatExceptionOfType(BeanCreationException.class).isThrownBy(
+				ac::refresh)
+			.satisfies(ex -> assertThat(ex.getRootCause().getMessage()).contains("testBean").contains("invalid"));
 		ac.close();
 	}
 
@@ -98,10 +97,9 @@ public class BeanValidationPostProcessorTests {
 		bd.getPropertyValues().add("testBean", new TestBean());
 		bd.getPropertyValues().add("stringValue", "s");
 		ac.registerBeanDefinition("bean", bd);
-		assertThatExceptionOfType(BeanCreationException.class)
-			.isThrownBy(() -> ac.refresh())
-			.havingRootCause()
-			.withMessageContainingAll("stringValue", "invalid");
+		assertThatExceptionOfType(BeanCreationException.class).isThrownBy(() ->
+				ac.refresh())
+			.satisfies(ex -> assertThat(ex.getRootCause().getMessage()).contains("stringValue").contains("invalid"));
 		ac.close();
 	}
 

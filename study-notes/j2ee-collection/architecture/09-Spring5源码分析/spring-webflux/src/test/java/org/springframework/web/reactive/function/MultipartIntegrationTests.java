@@ -23,26 +23,24 @@ import java.nio.file.Paths;
 import java.util.Map;
 
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 import reactor.test.StepVerifier;
 
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.codec.multipart.FormFieldPart;
 import org.springframework.http.codec.multipart.Part;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.server.AbstractRouterFunctionIntegrationTests;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.testfixture.http.server.reactive.bootstrap.HttpServer;
-import org.springframework.web.testfixture.http.server.reactive.bootstrap.UndertowHttpServer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -62,16 +60,15 @@ class MultipartIntegrationTests extends AbstractRouterFunctionIntegrationTests {
 	void multipartData(HttpServer httpServer) throws Exception {
 		startServer(httpServer);
 
-		Mono<ResponseEntity<Void>> result = webClient
+		Mono<ClientResponse> result = webClient
 				.post()
 				.uri("http://localhost:" + this.port + "/multipartData")
 				.bodyValue(generateBody())
-				.retrieve()
-				.toEntity(Void.class);
+				.exchange();
 
 		StepVerifier
 				.create(result)
-				.consumeNextWith(entity -> assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK))
+				.consumeNextWith(response -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK))
 				.verifyComplete();
 	}
 
@@ -79,25 +76,20 @@ class MultipartIntegrationTests extends AbstractRouterFunctionIntegrationTests {
 	void parts(HttpServer httpServer) throws Exception {
 		startServer(httpServer);
 
-		Mono<ResponseEntity<Void>> result = webClient
+		Mono<ClientResponse> result = webClient
 				.post()
 				.uri("http://localhost:" + this.port + "/parts")
 				.bodyValue(generateBody())
-				.retrieve()
-				.toEntity(Void.class);
+				.exchange();
 
 		StepVerifier
 				.create(result)
-				.consumeNextWith(entity -> assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK))
+				.consumeNextWith(response -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK))
 				.verifyComplete();
 	}
 
 	@ParameterizedHttpServerTest
 	void transferTo(HttpServer httpServer) throws Exception {
-		// TODO: check why Undertow fails
-		if (httpServer instanceof UndertowHttpServer) {
-			return;
-		}
 		startServer(httpServer);
 
 		Mono<String> result = webClient
@@ -179,22 +171,17 @@ class MultipartIntegrationTests extends AbstractRouterFunctionIntegrationTests {
 					.filter(part -> part instanceof FilePart)
 					.next()
 					.cast(FilePart.class)
-					.flatMap(part -> createTempFile()
-							.flatMap(tempFile ->
-									part.transferTo(tempFile)
-											.then(ServerResponse.ok().bodyValue(tempFile.toString()))));
-		}
-
-		private Mono<Path> createTempFile() {
-			return Mono.defer(() -> {
-				try {
-					return Mono.just(Files.createTempFile("MultipartIntegrationTests", null));
-				}
-				catch (IOException ex) {
-					return Mono.error(ex);
-				}
-			})
-					.subscribeOn(Schedulers.boundedElastic());
+					.flatMap(part -> {
+						try {
+							Path tempFile = Files.createTempFile("MultipartIntegrationTests", null);
+							return part.transferTo(tempFile)
+									.then(ServerResponse.ok()
+											.bodyValue(tempFile.toString()));
+						}
+						catch (Exception e) {
+							return Mono.error(e);
+						}
+					});
 		}
 
 	}

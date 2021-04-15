@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -256,16 +256,15 @@ public class TransactionAwareConnectionFactoryProxy
 		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 			// Invocation on ConnectionProxy interface coming in...
 
-			switch (method.getName()) {
-				case "equals":
-					// Only consider equal when proxies are identical.
-					return (proxy == args[0]);
-				case "hashCode":
-					// Use hashCode of Connection proxy.
-					return System.identityHashCode(proxy);
+			if (method.getName().equals("equals")) {
+				// Only consider equal when proxies are identical.
+				return (proxy == args[0]);
 			}
-
-			if (Session.class == method.getReturnType()) {
+			else if (method.getName().equals("hashCode")) {
+				// Use hashCode of Connection proxy.
+				return System.identityHashCode(proxy);
+			}
+			else if (Session.class == method.getReturnType()) {
 				Session session = ConnectionFactoryUtils.getTransactionalSession(
 						getTargetConnectionFactory(), this.target, isSynchedLocalTransactionAllowed());
 				if (session != null) {
@@ -329,23 +328,27 @@ public class TransactionAwareConnectionFactoryProxy
 		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 			// Invocation on SessionProxy interface coming in...
 
-			switch (method.getName()) {
-				case "equals":
-					// Only consider equal when proxies are identical.
-					return (proxy == args[0]);
-				case "hashCode":
-					// Use hashCode of Connection proxy.
-					return System.identityHashCode(proxy);
-				case "commit":
-					throw new TransactionInProgressException("Commit call not allowed within a managed transaction");
-				case "rollback":
-					throw new TransactionInProgressException("Rollback call not allowed within a managed transaction");
-				case "close":
-					// Handle close method: not to be closed within a transaction.
-					return null;
-				case "getTargetSession":
-					// Handle getTargetSession method: return underlying Session.
-					return this.target;
+			if (method.getName().equals("equals")) {
+				// Only consider equal when proxies are identical.
+				return (proxy == args[0]);
+			}
+			else if (method.getName().equals("hashCode")) {
+				// Use hashCode of Connection proxy.
+				return System.identityHashCode(proxy);
+			}
+			else if (method.getName().equals("commit")) {
+				throw new TransactionInProgressException("Commit call not allowed within a managed transaction");
+			}
+			else if (method.getName().equals("rollback")) {
+				throw new TransactionInProgressException("Rollback call not allowed within a managed transaction");
+			}
+			else if (method.getName().equals("close")) {
+				// Handle close method: not to be closed within a transaction.
+				return null;
+			}
+			else if (method.getName().equals("getTargetSession")) {
+				// Handle getTargetSession method: return underlying Session.
+				return this.target;
 			}
 
 			// Invoke method on target Session.

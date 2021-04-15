@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -358,9 +358,9 @@ public class ScheduledAnnotationBeanPostProcessor
 				AnnotationUtils.isCandidateClass(targetClass, Arrays.asList(Scheduled.class, Schedules.class))) {
 			Map<Method, Set<Scheduled>> annotatedMethods = MethodIntrospector.selectMethods(targetClass,
 					(MethodIntrospector.MetadataLookup<Set<Scheduled>>) method -> {
-						Set<Scheduled> scheduledAnnotations = AnnotatedElementUtils.getMergedRepeatableAnnotations(
+						Set<Scheduled> scheduledMethods = AnnotatedElementUtils.getMergedRepeatableAnnotations(
 								method, Scheduled.class, Schedules.class);
-						return (!scheduledAnnotations.isEmpty() ? scheduledAnnotations : null);
+						return (!scheduledMethods.isEmpty() ? scheduledMethods : null);
 					});
 			if (annotatedMethods.isEmpty()) {
 				this.nonAnnotatedClasses.add(targetClass);
@@ -370,8 +370,8 @@ public class ScheduledAnnotationBeanPostProcessor
 			}
 			else {
 				// Non-empty set of methods
-				annotatedMethods.forEach((method, scheduledAnnotations) ->
-						scheduledAnnotations.forEach(scheduled -> processScheduled(scheduled, method, bean)));
+				annotatedMethods.forEach((method, scheduledMethods) ->
+						scheduledMethods.forEach(scheduled -> processScheduled(scheduled, method, bean)));
 				if (logger.isTraceEnabled()) {
 					logger.trace(annotatedMethods.size() + " @Scheduled methods processed on bean '" + beanName +
 							"': " + annotatedMethods);

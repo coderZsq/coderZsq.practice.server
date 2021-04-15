@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,8 +26,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.core.publisher.Sinks;
+import reactor.core.publisher.MonoProcessor;
 import reactor.test.StepVerifier;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -35,7 +34,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.client.reactive.ClientHttpConnector;
-import org.springframework.http.client.reactive.HttpComponentsClientHttpConnector;
 import org.springframework.http.client.reactive.JettyClientHttpConnector;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.http.codec.ServerSentEvent;
@@ -75,16 +73,12 @@ class SseIntegrationTests extends AbstractHttpHandlerIntegrationTests {
 		return new Object[][] {
 			{new JettyHttpServer(), new ReactorClientHttpConnector()},
 			{new JettyHttpServer(), new JettyClientHttpConnector()},
-			{new JettyHttpServer(), new HttpComponentsClientHttpConnector()},
 			{new ReactorHttpServer(), new ReactorClientHttpConnector()},
 			{new ReactorHttpServer(), new JettyClientHttpConnector()},
-			{new ReactorHttpServer(), new HttpComponentsClientHttpConnector()},
 			{new TomcatHttpServer(), new ReactorClientHttpConnector()},
 			{new TomcatHttpServer(), new JettyClientHttpConnector()},
-			{new TomcatHttpServer(), new HttpComponentsClientHttpConnector()},
 			{new UndertowHttpServer(), new ReactorClientHttpConnector()},
-			{new UndertowHttpServer(), new JettyClientHttpConnector()},
-			{new UndertowHttpServer(), new HttpComponentsClientHttpConnector()}
+			{new UndertowHttpServer(), new JettyClientHttpConnector()}
 		};
 	}
 
@@ -224,9 +218,7 @@ class SseIntegrationTests extends AbstractHttpHandlerIntegrationTests {
 
 		private static final Flux<Long> INTERVAL = testInterval(Duration.ofMillis(100), 50);
 
-		private final Sinks.Empty<Void> cancelSink = Sinks.empty();
-
-		private Mono<Void> cancellation = cancelSink.asMono();
+		private MonoProcessor<Void> cancellation = MonoProcessor.create();
 
 
 		@GetMapping("/string")
@@ -252,7 +244,7 @@ class SseIntegrationTests extends AbstractHttpHandlerIntegrationTests {
 		Flux<String> infinite() {
 			return Flux.just(0, 1).map(l -> "foo " + l)
 					.mergeWith(Flux.never())
-					.doOnCancel(() -> cancelSink.emitEmpty(Sinks.EmitFailureHandler.FAIL_FAST));
+					.doOnCancel(() -> cancellation.onComplete());
 		}
 	}
 

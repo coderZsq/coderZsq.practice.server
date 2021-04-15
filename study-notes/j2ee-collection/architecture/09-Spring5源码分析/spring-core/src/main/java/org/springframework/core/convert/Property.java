@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -118,7 +118,7 @@ public final class Property {
 	}
 
 
-	// Package private
+	// package private
 
 	MethodParameter getMethodParameter() {
 		return this.methodParameter;
@@ -132,7 +132,7 @@ public final class Property {
 	}
 
 
-	// Internal helpers
+	// internal helpers
 
 	private String resolveName() {
 		if (this.readMethod != null) {
@@ -142,13 +142,10 @@ public final class Property {
 			}
 			else {
 				index = this.readMethod.getName().indexOf("is");
-				if (index != -1) {
-					index += 2;
+				if (index == -1) {
+					throw new IllegalArgumentException("Not a getter method");
 				}
-				else {
-					// Record-style plain accessor method, e.g. name()
-					index = 0;
-				}
+				index += 2;
 			}
 			return StringUtils.uncapitalize(this.readMethod.getName().substring(index));
 		}

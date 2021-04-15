@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,10 +22,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
@@ -37,19 +34,15 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME;
 
 /**
- * Representation of the Content-Disposition type and parameters as defined in RFC 6266.
+ * Represent the Content-Disposition type and parameters as defined in RFC 6266.
  *
  * @author Sebastien Deleuze
  * @author Juergen Hoeller
  * @author Rossen Stoyanchev
- * @author Sergey Tsypanov
  * @since 5.0
  * @see <a href="https://tools.ietf.org/html/rfc6266">RFC 6266</a>
  */
 public final class ContentDisposition {
-
-	private final static Pattern BASE64_ENCODED_PATTERN =
-			Pattern.compile("=\\?([0-9a-zA-Z-_]+)\\?B\\?([+/0-9a-zA-Z]+=*)\\?=");
 
 	private static final String INVALID_HEADER_FIELD_PARAMETER_FORMAT =
 			"Invalid header field parameter format (as defined in RFC 5987)";
@@ -99,34 +92,8 @@ public final class ContentDisposition {
 
 
 	/**
-	 * Return whether the {@link #getType() type} is {@literal "attachment"}.
-	 * @since 5.3
-	 */
-	public boolean isAttachment() {
-		return (this.type != null && this.type.equalsIgnoreCase("attachment"));
-	}
-
-	/**
-	 * Return whether the {@link #getType() type} is {@literal "form-data"}.
-	 * @since 5.3
-	 */
-	public boolean isFormData() {
-		return (this.type != null && this.type.equalsIgnoreCase("form-data"));
-	}
-
-	/**
-	 * Return whether the {@link #getType() type} is {@literal "inline"}.
-	 * @since 5.3
-	 */
-	public boolean isInline() {
-		return (this.type != null && this.type.equalsIgnoreCase("inline"));
-	}
-
-	/**
-	 * Return the disposition type.
-	 * @see #isAttachment()
-	 * @see #isFormData()
-	 * @see #isInline()
+	 * Return the disposition type, like for example {@literal inline}, {@literal attachment},
+	 * {@literal form-data}, or {@code null} if not defined.
 	 */
 	@Nullable
 	public String getType() {
@@ -142,9 +109,8 @@ public final class ContentDisposition {
 	}
 
 	/**
-	 * Return the value of the {@literal filename} parameter, possibly decoded
-	 * from BASE64 encoding based on RFC 2047, or of the {@literal filename*}
-	 * parameter, possibly decoded as defined in the RFC 5987.
+	 * Return the value of the {@literal filename} parameter (or the value of the
+	 * {@literal filename*} one decoded as defined in the RFC 5987), or {@code null} if not defined.
 	 */
 	@Nullable
 	public String getFilename() {
@@ -162,7 +128,7 @@ public final class ContentDisposition {
 	/**
 	 * Return the value of the {@literal size} parameter, or {@code null} if not defined.
 	 * @deprecated since 5.2.3 as per
-	 * <a href="https://tools.ietf.org/html/rfc6266#appendix-B">RFC 6266, Appendix B</a>,
+	 * <a href="https://tools.ietf.org/html/rfc6266#appendix-B">RFC 6266, Apendix B</a>,
 	 * to be removed in a future release.
 	 */
 	@Deprecated
@@ -174,7 +140,7 @@ public final class ContentDisposition {
 	/**
 	 * Return the value of the {@literal creation-date} parameter, or {@code null} if not defined.
 	 * @deprecated since 5.2.3 as per
-	 * <a href="https://tools.ietf.org/html/rfc6266#appendix-B">RFC 6266, Appendix B</a>,
+	 * <a href="https://tools.ietf.org/html/rfc6266#appendix-B">RFC 6266, Apendix B</a>,
 	 * to be removed in a future release.
 	 */
 	@Deprecated
@@ -186,7 +152,7 @@ public final class ContentDisposition {
 	/**
 	 * Return the value of the {@literal modification-date} parameter, or {@code null} if not defined.
 	 * @deprecated since 5.2.3 as per
-	 * <a href="https://tools.ietf.org/html/rfc6266#appendix-B">RFC 6266, Appendix B</a>,
+	 * <a href="https://tools.ietf.org/html/rfc6266#appendix-B">RFC 6266, Apendix B</a>,
 	 * to be removed in a future release.
 	 */
 	@Deprecated
@@ -198,7 +164,7 @@ public final class ContentDisposition {
 	/**
 	 * Return the value of the {@literal read-date} parameter, or {@code null} if not defined.
 	 * @deprecated since 5.2.3 as per
-	 * <a href="https://tools.ietf.org/html/rfc6266#appendix-B">RFC 6266, Appendix B</a>,
+	 * <a href="https://tools.ietf.org/html/rfc6266#appendix-B">RFC 6266, Apendix B</a>,
 	 * to be removed in a future release.
 	 */
 	@Deprecated
@@ -206,6 +172,7 @@ public final class ContentDisposition {
 	public ZonedDateTime getReadDate() {
 		return this.readDate;
 	}
+
 
 	@Override
 	public boolean equals(@Nullable Object other) {
@@ -287,30 +254,6 @@ public final class ContentDisposition {
 
 
 	/**
-	 * Return a builder for a {@code ContentDisposition} of type {@literal "attachment"}.
-	 * @since 5.3
-	 */
-	public static Builder attachment() {
-		return builder("attachment");
-	}
-
-	/**
-	 * Return a builder for a {@code ContentDisposition} of type {@literal "form-data"}.
-	 * @since 5.3
-	 */
-	public static Builder formData() {
-		return builder("form-data");
-	}
-
-	/**
-	 * Return a builder for a {@code ContentDisposition} of type {@literal "inline"}.
-	 * @since 5.3
-	 */
-	public static Builder inline() {
-		return builder("inline");
-	}
-
-	/**
 	 * Return a builder for a {@code ContentDisposition}.
 	 * @param type the disposition type like for example {@literal inline},
 	 * {@literal attachment}, or {@literal form-data}
@@ -369,20 +312,7 @@ public final class ContentDisposition {
 					}
 				}
 				else if (attribute.equals("filename") && (filename == null)) {
-					if (value.startsWith("=?") ) {
-						Matcher matcher = BASE64_ENCODED_PATTERN.matcher(value);
-						if (matcher.find()) {
-							String match1 = matcher.group(1);
-							String match2 = matcher.group(2);
-							filename = new String(Base64.getDecoder().decode(match2), Charset.forName(match1));
-						}
-						else {
-							filename = value;
-						}
-					}
-					else {
-						filename = value;
-					}
+					filename = value;
 				}
 				else if (attribute.equals("size") ) {
 					size = Long.parseLong(value);
@@ -505,14 +435,8 @@ public final class ContentDisposition {
 		}
 		boolean escaped = false;
 		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < filename.length() ; i++) {
-			char c = filename.charAt(i);
-			if (!escaped && c == '"') {
-				sb.append("\\\"");
-			}
-			else {
-				sb.append(c);
-			}
+		for (char c : filename.toCharArray()) {
+			sb.append((c == '"' && !escaped) ? "\\\"" : c);
 			escaped = (!escaped && c == '\\');
 		}
 		// Remove backslash at the end..
@@ -590,7 +514,7 @@ public final class ContentDisposition {
 		/**
 		 * Set the value of the {@literal size} parameter.
 		 * @deprecated since 5.2.3 as per
-		 * <a href="https://tools.ietf.org/html/rfc6266#appendix-B">RFC 6266, Appendix B</a>,
+		 * <a href="https://tools.ietf.org/html/rfc6266#appendix-B">RFC 6266, Apendix B</a>,
 		 * to be removed in a future release.
 		 */
 		@Deprecated
@@ -599,7 +523,7 @@ public final class ContentDisposition {
 		/**
 		 * Set the value of the {@literal creation-date} parameter.
 		 * @deprecated since 5.2.3 as per
-		 * <a href="https://tools.ietf.org/html/rfc6266#appendix-B">RFC 6266, Appendix B</a>,
+		 * <a href="https://tools.ietf.org/html/rfc6266#appendix-B">RFC 6266, Apendix B</a>,
 		 * to be removed in a future release.
 		 */
 		@Deprecated
@@ -608,7 +532,7 @@ public final class ContentDisposition {
 		/**
 		 * Set the value of the {@literal modification-date} parameter.
 		 * @deprecated since 5.2.3 as per
-		 * <a href="https://tools.ietf.org/html/rfc6266#appendix-B">RFC 6266, Appendix B</a>,
+		 * <a href="https://tools.ietf.org/html/rfc6266#appendix-B">RFC 6266, Apendix B</a>,
 		 * to be removed in a future release.
 		 */
 		@Deprecated
@@ -617,7 +541,7 @@ public final class ContentDisposition {
 		/**
 		 * Set the value of the {@literal read-date} parameter.
 		 * @deprecated since 5.2.3 as per
-		 * <a href="https://tools.ietf.org/html/rfc6266#appendix-B">RFC 6266, Appendix B</a>,
+		 * <a href="https://tools.ietf.org/html/rfc6266#appendix-B">RFC 6266, Apendix B</a>,
 		 * to be removed in a future release.
 		 */
 		@Deprecated
@@ -682,28 +606,24 @@ public final class ContentDisposition {
 		}
 
 		@Override
-		@SuppressWarnings("deprecation")
 		public Builder size(Long size) {
 			this.size = size;
 			return this;
 		}
 
 		@Override
-		@SuppressWarnings("deprecation")
 		public Builder creationDate(ZonedDateTime creationDate) {
 			this.creationDate = creationDate;
 			return this;
 		}
 
 		@Override
-		@SuppressWarnings("deprecation")
 		public Builder modificationDate(ZonedDateTime modificationDate) {
 			this.modificationDate = modificationDate;
 			return this;
 		}
 
 		@Override
-		@SuppressWarnings("deprecation")
 		public Builder readDate(ZonedDateTime readDate) {
 			this.readDate = readDate;
 			return this;

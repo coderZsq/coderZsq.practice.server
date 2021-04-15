@@ -344,7 +344,6 @@ public class ContentNegotiatingViewResolver extends WebApplicationObjectSupport
 				if (StringUtils.hasText(candidateView.getContentType())) {
 					MediaType candidateContentType = MediaType.parseMediaType(candidateView.getContentType());
 					if (mediaType.isCompatibleWith(candidateContentType)) {
-						mediaType = mediaType.removeQualityValue();
 						if (logger.isDebugEnabled()) {
 							logger.debug("Selected '" + mediaType + "' given " + requestedMediaTypes);
 						}

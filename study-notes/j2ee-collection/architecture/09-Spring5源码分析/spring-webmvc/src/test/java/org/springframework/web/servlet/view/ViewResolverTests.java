@@ -57,8 +57,8 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 /**
  * Unit tests for {@link BeanNameViewResolver}, {@link UrlBasedViewResolver},
- * {@link InternalResourceViewResolver}, {@link org.springframework.web.servlet.view.XmlViewResolver},
- * and {@link AbstractCachingViewResolver}.
+ * {@link InternalResourceViewResolver}, {@link XmlViewResolver}, and
+ * {@link AbstractCachingViewResolver}.
  *
  * @author Juergen Hoeller
  * @author Chris Beams
@@ -399,12 +399,11 @@ public class ViewResolverTests {
 	}
 
 	@Test
-	@SuppressWarnings("deprecation")
 	public void xmlViewResolver() throws Exception {
 		this.wac.registerSingleton("testBean", TestBean.class);
 		this.wac.refresh();
 		TestBean testBean = (TestBean) this.wac.getBean("testBean");
-		org.springframework.web.servlet.view.XmlViewResolver vr = new org.springframework.web.servlet.view.XmlViewResolver();
+		XmlViewResolver vr = new XmlViewResolver();
 		vr.setLocation(new ClassPathResource("org/springframework/web/servlet/view/views.xml"));
 		vr.setApplicationContext(this.wac);
 
@@ -439,35 +438,33 @@ public class ViewResolverTests {
 	}
 
 	@Test
-	@SuppressWarnings("deprecation")
 	public void xmlViewResolverDefaultLocation() {
 		StaticWebApplicationContext wac = new StaticWebApplicationContext() {
 			@Override
 			protected Resource getResourceByPath(String path) {
-				assertThat(org.springframework.web.servlet.view.XmlViewResolver.DEFAULT_LOCATION.equals(path)).as("Correct default location").isTrue();
+				assertThat(XmlViewResolver.DEFAULT_LOCATION.equals(path)).as("Correct default location").isTrue();
 				return super.getResourceByPath(path);
 			}
 		};
 		wac.setServletContext(this.sc);
 		wac.refresh();
-		org.springframework.web.servlet.view.XmlViewResolver vr = new org.springframework.web.servlet.view.XmlViewResolver();
+		XmlViewResolver vr = new XmlViewResolver();
 		vr.setApplicationContext(wac);
 		assertThatExceptionOfType(BeanDefinitionStoreException.class).isThrownBy(vr::afterPropertiesSet);
 	}
 
 	@Test
-	@SuppressWarnings("deprecation")
 	public void xmlViewResolverWithoutCache() throws Exception {
 		StaticWebApplicationContext wac = new StaticWebApplicationContext() {
 			@Override
 			protected Resource getResourceByPath(String path) {
-				assertThat(org.springframework.web.servlet.view.XmlViewResolver.DEFAULT_LOCATION.equals(path)).as("Correct default location").isTrue();
+				assertThat(XmlViewResolver.DEFAULT_LOCATION.equals(path)).as("Correct default location").isTrue();
 				return super.getResourceByPath(path);
 			}
 		};
 		wac.setServletContext(this.sc);
 		wac.refresh();
-		org.springframework.web.servlet.view.XmlViewResolver vr = new org.springframework.web.servlet.view.XmlViewResolver();
+		XmlViewResolver vr = new XmlViewResolver();
 		vr.setCache(false);
 		vr.setApplicationContext(wac);
 		assertThatExceptionOfType(BeanDefinitionStoreException.class).isThrownBy(() ->

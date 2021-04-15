@@ -48,11 +48,8 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
  * @author Sam Brannen
  * @see org.springframework.test.web.servlet.result.PrintingResultHandlerTests
  */
-@Disabled
+@Disabled("Not intended to be executed with the build. Comment out this line to inspect the output manually.")
 public class PrintingResultHandlerSmokeTests {
-
-	// Not intended to be executed with the build.
-	// Comment out class-level @Disabled to see the output.
 
 	@Test
 	public void testPrint() throws Exception {

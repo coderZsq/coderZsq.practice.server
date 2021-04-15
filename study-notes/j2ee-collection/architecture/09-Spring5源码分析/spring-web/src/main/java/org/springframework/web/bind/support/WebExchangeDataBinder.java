@@ -37,7 +37,6 @@ import org.springframework.web.server.ServerWebExchange;
  * binding from URL query params or form data in the request data to Java objects.
  *
  * @author Rossen Stoyanchev
- * @author Juergen Hoeller
  * @since 5.0
  */
 public class WebExchangeDataBinder extends WebDataBinder {
@@ -77,11 +76,8 @@ public class WebExchangeDataBinder extends WebDataBinder {
 	/**
 	 * Protected method to obtain the values for data binding. By default this
 	 * method delegates to {@link #extractValuesToBind(ServerWebExchange)}.
-	 * @param exchange the current exchange
-	 * @return a map of bind values
-	 * @since 5.3
 	 */
-	public Mono<Map<String, Object>> getValuesToBind(ServerWebExchange exchange) {
+	protected Mono<Map<String, Object>> getValuesToBind(ServerWebExchange exchange) {
 		return extractValuesToBind(exchange);
 	}
 
@@ -111,7 +107,7 @@ public class WebExchangeDataBinder extends WebDataBinder {
 				});
 	}
 
-	protected static void addBindValue(Map<String, Object> params, String key, List<?> values) {
+	private static void addBindValue(Map<String, Object> params, String key, List<?> values) {
 		if (!CollectionUtils.isEmpty(values)) {
 			values = values.stream()
 					.map(value -> value instanceof FormFieldPart ? ((FormFieldPart) value).value() : value)

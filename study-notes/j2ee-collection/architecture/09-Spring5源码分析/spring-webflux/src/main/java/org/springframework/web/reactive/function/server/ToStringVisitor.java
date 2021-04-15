@@ -16,7 +16,6 @@
 
 package org.springframework.web.reactive.function.server;
 
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -68,10 +67,6 @@ class ToStringVisitor implements RouterFunctions.Visitor, RequestPredicates.Visi
 	public void resources(Function<ServerRequest, Mono<Resource>> lookupFunction) {
 		indent();
 		this.builder.append(lookupFunction).append('\n');
-	}
-
-	@Override
-	public void attributes(Map<String, Object> attributes) {
 	}
 
 	@Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,11 @@
 
 package org.springframework.web.socket.server.support;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,8 +30,6 @@ import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 import org.springframework.web.util.WebUtils;
@@ -48,7 +45,7 @@ public class OriginHandshakeInterceptor implements HandshakeInterceptor {
 
 	protected final Log logger = LogFactory.getLog(getClass());
 
-	private final CorsConfiguration corsConfiguration = new CorsConfiguration();
+	private final Set<String> allowedOrigins = new LinkedHashSet<>();
 
 
 	/**
@@ -77,41 +74,17 @@ public class OriginHandshakeInterceptor implements HandshakeInterceptor {
 	 */
 	public void setAllowedOrigins(Collection<String> allowedOrigins) {
 		Assert.notNull(allowedOrigins, "Allowed origins Collection must not be null");
-		this.corsConfiguration.setAllowedOrigins(new ArrayList<>(allowedOrigins));
+		this.allowedOrigins.clear();
+		this.allowedOrigins.addAll(allowedOrigins);
 	}
 
 	/**
 	 * Return the allowed {@code Origin} header values.
 	 * @since 4.1.5
+	 * @see #setAllowedOrigins
 	 */
 	public Collection<String> getAllowedOrigins() {
-		List<String> allowedOrigins = this.corsConfiguration.getAllowedOrigins();
-		return (CollectionUtils.isEmpty(allowedOrigins) ? Collections.emptySet() :
-				Collections.unmodifiableSet(new LinkedHashSet<>(allowedOrigins)));
-	}
-
-	/**
-	 * A variant of {@link #setAllowedOrigins(Collection)} that accepts flexible
-	 * domain patterns, e.g. {@code "https://*.domain1.com"}. Furthermore it
-	 * always sets the {@code Access-Control-Allow-Origin} response header to
-	 * the matched origin and never to {@code "*"}, nor to any other pattern.
-	 * @since 5.3.2
-	 * @see CorsConfiguration#setAllowedOriginPatterns(List)
-	 */
-	public void setAllowedOriginPatterns(Collection<String> allowedOriginPatterns) {
-		Assert.notNull(allowedOriginPatterns, "Allowed origin patterns Collection must not be null");
-		this.corsConfiguration.setAllowedOriginPatterns(new ArrayList<>(allowedOriginPatterns));
-	}
-
-	/**
-	 * Return the allowed {@code Origin} pattern header values.
-	 * @since 5.3.2
-	 * @see CorsConfiguration#getAllowedOriginPatterns()
-	 */
-	public Collection<String> getAllowedOriginPatterns() {
-		List<String> allowedOriginPatterns = this.corsConfiguration.getAllowedOriginPatterns();
-		return (CollectionUtils.isEmpty(allowedOriginPatterns) ? Collections.emptySet() :
-				Collections.unmodifiableSet(new LinkedHashSet<>(allowedOriginPatterns)));
+		return Collections.unmodifiableSet(this.allowedOrigins);
 	}
 
 
@@ -119,8 +92,7 @@ public class OriginHandshakeInterceptor implements HandshakeInterceptor {
 	public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response,
 			WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
 
-		if (!WebUtils.isSameOrigin(request) &&
-				this.corsConfiguration.checkOrigin(request.getHeaders().getOrigin()) == null) {
+		if (!WebUtils.isSameOrigin(request) && !WebUtils.isValidOrigin(request, this.allowedOrigins)) {
 			response.setStatusCode(HttpStatus.FORBIDDEN);
 			if (logger.isDebugEnabled()) {
 				logger.debug("Handshake request rejected, Origin header value " +

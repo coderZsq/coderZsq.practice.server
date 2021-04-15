@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.ResourcePatternResolver;
-import org.springframework.core.metrics.ApplicationStartup;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
@@ -110,6 +109,11 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 	 * @see #refresh
 	 */
 	public GenericApplicationContext() {
+		/**
+		 * 调用父类的构造函数, 为 ApplicationContext spring上 下文对象初始 beanFactory
+		 * 为啥是 DefaultListableBeanFactory？我们去看 BeanFactory 接口的时候
+		 * 发 DefaultListableBeanFactory 是最底层的实现，功能是最全的
+		 */
 		this.beanFactory = new DefaultListableBeanFactory();
 	}
 
@@ -157,12 +161,6 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 	public void setParent(@Nullable ApplicationContext parent) {
 		super.setParent(parent);
 		this.beanFactory.setParentBeanFactory(getInternalParentBeanFactory());
-	}
-
-	@Override
-	public void setApplicationStartup(ApplicationStartup applicationStartup) {
-		super.setApplicationStartup(applicationStartup);
-		this.beanFactory.setApplicationStartup(applicationStartup);
 	}
 
 	/**
@@ -273,6 +271,7 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 			throw new IllegalStateException(
 					"GenericApplicationContext does not support multiple refresh attempts: just call 'refresh' once");
 		}
+		// 指定 bean 工厂的序列化 ID
 		this.beanFactory.setSerializationId(getId());
 	}
 

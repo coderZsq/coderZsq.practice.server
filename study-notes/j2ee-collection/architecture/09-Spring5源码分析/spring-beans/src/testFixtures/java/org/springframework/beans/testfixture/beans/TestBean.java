@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -76,7 +77,7 @@ public class TestBean implements BeanNameAware, BeanFactoryAware, ITestBean, IOt
 
 	private Float myFloat = Float.valueOf(0.0f);
 
-	private Collection<? super Object> friends = new ArrayList<>();
+	private Collection<? super Object> friends = new LinkedList<>();
 
 	private Set<?> someSet = new HashSet<>();
 
@@ -468,7 +469,7 @@ public class TestBean implements BeanNameAware, BeanFactoryAware, ITestBean, IOt
 		if (this == other) {
 			return true;
 		}
-		if (!(other instanceof TestBean)) {
+		if (other == null || !(other instanceof TestBean)) {
 			return false;
 		}
 		TestBean tb2 = (TestBean) other;

@@ -47,7 +47,7 @@ import org.springframework.util.StringUtils;
 
 /**
  * A powerful {@link PropertyAccessor} that uses reflection to access properties
- * for reading and possibly also for writing on a target instance.
+ * for reading and possibly also for writing.
  *
  * <p>A property can be referenced through a public getter method (when being read)
  * or a public setter method (when being written), and also as a public field.
@@ -98,8 +98,8 @@ public class ReflectivePropertyAccessor implements PropertyAccessor {
 	}
 
 	/**
-	 * Create a new property accessor for reading and possibly also writing.
-	 * @param allowWrite whether to allow write operations on a target instance
+	 * Create a new property accessor for reading and possibly writing.
+	 * @param allowWrite whether to also allow for write operations
 	 * @since 4.3.15
 	 * @see #canWrite
 	 */
@@ -395,11 +395,6 @@ public class ReflectivePropertyAccessor implements PropertyAccessor {
 		if (method == null) {
 			method = findMethodForProperty(getPropertyMethodSuffixes(propertyName),
 					"is", clazz, mustBeStatic, 0, BOOLEAN_TYPES);
-			if (method == null) {
-				// Record-style plain accessor method, e.g. name()
-				method = findMethodForProperty(new String[] {propertyName},
-						"", clazz, mustBeStatic, 0, ANY_TYPES);
-			}
 		}
 		return method;
 	}
@@ -628,8 +623,8 @@ public class ReflectivePropertyAccessor implements PropertyAccessor {
 
 		@Override
 		public String toString() {
-			return "PropertyCacheKey [clazz=" + this.clazz.getName() + ", property=" + this.property +
-					", targetIsClass=" + this.targetIsClass + "]";
+			return "CacheKey [clazz=" + this.clazz.getName() + ", property=" + this.property + ", " +
+					this.property + ", targetIsClass=" + this.targetIsClass + "]";
 		}
 
 		@Override
@@ -688,11 +683,12 @@ public class ReflectivePropertyAccessor implements PropertyAccessor {
 					return true;
 				}
 				getterName = "is" + StringUtils.capitalize(name);
-				if (getterName.equals(method.getName())) {
-					return true;
-				}
+				return getterName.equals(method.getName());
 			}
-			return this.member.getName().equals(name);
+			else {
+				Field field = (Field) this.member;
+				return field.getName().equals(name);
+			}
 		}
 
 		@Override

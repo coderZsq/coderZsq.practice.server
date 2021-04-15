@@ -74,8 +74,8 @@ public class DefaultResponseErrorHandlerTests {
 
 		assertThatExceptionOfType(HttpClientErrorException.class)
 				.isThrownBy(() -> handler.handleError(response))
-				.withMessage("404 Not Found: [Hello World]")
-				.satisfies(ex -> assertThat(ex.getResponseHeaders()).isSameAs(headers));
+				.satisfies(ex -> assertThat(ex.getResponseHeaders()).isSameAs(headers))
+				.satisfies(ex -> assertThat(ex.getMessage()).isEqualTo("404 Not Found: [Hello World]"));
 	}
 
 	@Test
@@ -92,7 +92,8 @@ public class DefaultResponseErrorHandlerTests {
 
 		assertThatExceptionOfType(HttpClientErrorException.class)
 				.isThrownBy(() -> handler.handleError(response))
-				.withMessage("404 Not Found: [" + bodyGenerator.apply(200) + "... (500 bytes)]");
+				.satisfies(ex -> assertThat(ex.getMessage()).isEqualTo(
+						"404 Not Found: [" + bodyGenerator.apply(200) + "... (500 bytes)]"));
 	}
 
 	@Test

@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -169,15 +169,14 @@ public class MockHttpServletResponse implements HttpServletResponse {
 	public void setCharacterEncoding(String characterEncoding) {
 		this.characterEncoding = characterEncoding;
 		this.charset = true;
-		updateContentTypePropertyAndHeader();
+		updateContentTypeHeader();
 	}
 
-	private void updateContentTypePropertyAndHeader() {
+	private void updateContentTypeHeader() {
 		if (this.contentType != null) {
 			String value = this.contentType;
 			if (this.charset && !this.contentType.toLowerCase().contains(CHARSET_PREFIX)) {
 				value = value + ';' + CHARSET_PREFIX + this.characterEncoding;
-				this.contentType = value;
 			}
 			doAddHeaderValue(HttpHeaders.CONTENT_TYPE, value, true);
 		}
@@ -281,7 +280,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
 					this.charset = true;
 				}
 			}
-			updateContentTypePropertyAndHeader();
+			updateContentTypeHeader();
 		}
 	}
 
@@ -344,9 +343,6 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
 	@Override
 	public void setLocale(Locale locale) {
-		if (locale == null) {
-			return;
-		}
 		this.locale = locale;
 		doAddHeaderValue(HttpHeaders.CONTENT_LANGUAGE, locale.toLanguageTag(), true);
 	}
@@ -378,10 +374,10 @@ public class MockHttpServletResponse implements HttpServletResponse {
 			buf.append("; Domain=").append(cookie.getDomain());
 		}
 		int maxAge = cookie.getMaxAge();
-		ZonedDateTime expires = (cookie instanceof MockCookie ? ((MockCookie) cookie).getExpires() : null);
 		if (maxAge >= 0) {
 			buf.append("; Max-Age=").append(maxAge);
 			buf.append("; Expires=");
+			ZonedDateTime expires = (cookie instanceof MockCookie ? ((MockCookie) cookie).getExpires() : null);
 			if (expires != null) {
 				buf.append(expires.format(DateTimeFormatter.RFC_1123_DATE_TIME));
 			}
@@ -390,10 +386,6 @@ public class MockHttpServletResponse implements HttpServletResponse {
 				headers.setExpires(maxAge > 0 ? System.currentTimeMillis() + 1000L * maxAge : 0);
 				buf.append(headers.getFirst(HttpHeaders.EXPIRES));
 			}
-		}
-		else if (expires != null) {
-			buf.append("; Expires=");
-			buf.append(expires.format(DateTimeFormatter.RFC_1123_DATE_TIME));
 		}
 
 		if (cookie.getSecure()) {
@@ -428,7 +420,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
 	@Override
 	public boolean containsHeader(String name) {
-		return this.headers.containsKey(name);
+		return (this.headers.get(name) != null);
 	}
 
 	/**
@@ -601,12 +593,12 @@ public class MockHttpServletResponse implements HttpServletResponse {
 	}
 
 	@Override
-	public void setHeader(String name, @Nullable String value) {
+	public void setHeader(String name, String value) {
 		setHeaderValue(name, value);
 	}
 
 	@Override
-	public void addHeader(String name, @Nullable String value) {
+	public void addHeader(String name, String value) {
 		addHeaderValue(name, value);
 	}
 
@@ -620,10 +612,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
 		addHeaderValue(name, value);
 	}
 
-	private void setHeaderValue(String name, @Nullable Object value) {
-		if (value == null) {
-			return;
-		}
+	private void setHeaderValue(String name, Object value) {
 		boolean replaceHeader = true;
 		if (setSpecialHeader(name, value, replaceHeader)) {
 			return;
@@ -631,10 +620,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
 		doAddHeaderValue(name, value, replaceHeader);
 	}
 
-	private void addHeaderValue(String name, @Nullable Object value) {
-		if (value == null) {
-			return;
-		}
+	private void addHeaderValue(String name, Object value) {
 		boolean replaceHeader = false;
 		if (setSpecialHeader(name, value, replaceHeader)) {
 			return;
@@ -653,15 +639,10 @@ public class MockHttpServletResponse implements HttpServletResponse {
 			return true;
 		}
 		else if (HttpHeaders.CONTENT_LANGUAGE.equalsIgnoreCase(name)) {
-			String contentLanguages = value.toString();
 			HttpHeaders headers = new HttpHeaders();
-			headers.add(HttpHeaders.CONTENT_LANGUAGE, contentLanguages);
+			headers.add(HttpHeaders.CONTENT_LANGUAGE, value.toString());
 			Locale language = headers.getContentLanguage();
 			setLocale(language != null ? language : Locale.getDefault());
-			// Since setLocale() sets the Content-Language header to the given
-			// single Locale, we have to explicitly set the Content-Language header
-			// to the user-provided value.
-			doAddHeaderValue(HttpHeaders.CONTENT_LANGUAGE, contentLanguages, true);
 			return true;
 		}
 		else if (HttpHeaders.SET_COOKIE.equalsIgnoreCase(name)) {
@@ -680,8 +661,12 @@ public class MockHttpServletResponse implements HttpServletResponse {
 	}
 
 	private void doAddHeaderValue(String name, Object value, boolean replace) {
+		HeaderValueHolder header = this.headers.get(name);
 		Assert.notNull(value, "Header value must not be null");
-		HeaderValueHolder header = this.headers.computeIfAbsent(name, key -> new HeaderValueHolder());
+		if (header == null) {
+			header = new HeaderValueHolder();
+			this.headers.put(name, header);
+		}
 		if (replace) {
 			header.setValue(value);
 		}

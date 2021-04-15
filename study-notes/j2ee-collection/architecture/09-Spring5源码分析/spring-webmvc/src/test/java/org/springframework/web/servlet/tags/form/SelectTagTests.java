@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -599,7 +600,7 @@ public class SelectTagTests extends AbstractFormTagTests {
 		this.bean.setSomeList(list);
 
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(this.bean, COMMAND_NAME);
-		errors.getPropertyAccessor().registerCustomEditor(List.class, new CustomCollectionEditor(ArrayList.class) {
+		errors.getPropertyAccessor().registerCustomEditor(List.class, new CustomCollectionEditor(LinkedList.class) {
 			@Override
 			public String getAsText() {
 				return getValue().toString();

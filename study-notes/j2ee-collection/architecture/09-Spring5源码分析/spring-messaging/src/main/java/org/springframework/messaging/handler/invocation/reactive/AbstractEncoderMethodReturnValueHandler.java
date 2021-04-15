@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import kotlin.reflect.KFunction;
+import kotlin.reflect.jvm.ReflectJvmMapping;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.reactivestreams.Publisher;
@@ -71,6 +73,8 @@ public abstract class AbstractEncoderMethodReturnValueHandler implements Handler
 
 	private final ReactiveAdapterRegistry adapterRegistry;
 
+	private DataBufferFactory defaultBufferFactory = new DefaultDataBufferFactory();
+
 
 	protected AbstractEncoderMethodReturnValueHandler(List<Encoder<?>> encoders, ReactiveAdapterRegistry registry) {
 		Assert.notEmpty(encoders, "At least one Encoder is required");
@@ -110,8 +114,7 @@ public abstract class AbstractEncoderMethodReturnValueHandler implements Handler
 		}
 
 		DataBufferFactory bufferFactory = (DataBufferFactory) message.getHeaders()
-				.getOrDefault(HandlerMethodReturnValueHandler.DATA_BUFFER_FACTORY_HEADER,
-						DefaultDataBufferFactory.sharedInstance);
+				.getOrDefault(HandlerMethodReturnValueHandler.DATA_BUFFER_FACTORY_HEADER, this.defaultBufferFactory);
 
 		MimeType mimeType = (MimeType) message.getHeaders().get(MessageHeaders.CONTENT_TYPE);
 		Flux<DataBuffer> encodedContent = encodeContent(
@@ -121,6 +124,7 @@ public abstract class AbstractEncoderMethodReturnValueHandler implements Handler
 				handleEncodedContent(Flux.from(publisher), returnType, message));
 	}
 
+	@SuppressWarnings("unchecked")
 	private Flux<DataBuffer> encodeContent(
 			@Nullable Object content, MethodParameter returnType, DataBufferFactory bufferFactory,
 			@Nullable MimeType mimeType, Map<String, Object> hints) {
@@ -132,10 +136,11 @@ public abstract class AbstractEncoderMethodReturnValueHandler implements Handler
 		ResolvableType elementType;
 		if (adapter != null) {
 			publisher = adapter.toPublisher(content);
-			Method method = returnType.getMethod();
-			boolean isUnwrapped = (method != null && KotlinDetector.isSuspendingFunction(method) &&
-					!COROUTINES_FLOW_CLASS_NAME.equals(returnValueType.toClass().getName()));
-			ResolvableType genericType = (isUnwrapped ? returnValueType : returnValueType.getGeneric());
+			boolean isUnwrapped = KotlinDetector.isKotlinReflectPresent() &&
+					KotlinDetector.isKotlinType(returnType.getContainingClass()) &&
+					KotlinDelegate.isSuspend(returnType.getMethod()) &&
+					!COROUTINES_FLOW_CLASS_NAME.equals(returnValueType.toClass().getName());
+			ResolvableType genericType = isUnwrapped ? returnValueType : returnValueType.getGeneric();
 			elementType = getElementType(adapter, genericType);
 		}
 		else {
@@ -213,5 +218,20 @@ public abstract class AbstractEncoderMethodReturnValueHandler implements Handler
 	 * @return completion {@code Mono<Void>} for the handling
 	 */
 	protected abstract Mono<Void> handleNoContent(MethodParameter returnType, Message<?> message);
+
+
+	/**
+	 * Inner class to avoid a hard dependency on Kotlin at runtime.
+	 */
+	private static class KotlinDelegate {
+
+		static private boolean isSuspend(@Nullable Method method) {
+			if (method == null) {
+				return false;
+			}
+			KFunction<?> function = ReflectJvmMapping.getKotlinFunction(method);
+			return (function != null && function.isSuspend());
+		}
+	}
 
 }

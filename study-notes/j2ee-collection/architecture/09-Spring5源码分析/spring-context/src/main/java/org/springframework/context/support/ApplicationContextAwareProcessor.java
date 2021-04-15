@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.EmbeddedValueResolver;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEventPublisherAware;
-import org.springframework.context.ApplicationStartupAware;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.context.EnvironmentAware;
@@ -81,8 +80,7 @@ class ApplicationContextAwareProcessor implements BeanPostProcessor {
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
 		if (!(bean instanceof EnvironmentAware || bean instanceof EmbeddedValueResolverAware ||
 				bean instanceof ResourceLoaderAware || bean instanceof ApplicationEventPublisherAware ||
-				bean instanceof MessageSourceAware || bean instanceof ApplicationContextAware ||
-				bean instanceof ApplicationStartupAware)) {
+				bean instanceof MessageSourceAware || bean instanceof ApplicationContextAware)){
 			return bean;
 		}
 
@@ -120,9 +118,6 @@ class ApplicationContextAwareProcessor implements BeanPostProcessor {
 		}
 		if (bean instanceof MessageSourceAware) {
 			((MessageSourceAware) bean).setMessageSource(this.applicationContext);
-		}
-		if (bean instanceof ApplicationStartupAware) {
-			((ApplicationStartupAware) bean).setApplicationStartup(this.applicationContext.getApplicationStartup());
 		}
 		if (bean instanceof ApplicationContextAware) {
 			((ApplicationContextAware) bean).setApplicationContext(this.applicationContext);

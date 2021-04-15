@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -115,10 +115,7 @@ public class WebSocketHandlerRegistrationTests {
 		WebSocketHandler handler = new TextWebSocketHandler();
 		HttpSessionHandshakeInterceptor interceptor = new HttpSessionHandshakeInterceptor();
 
-		this.registration.addHandler(handler, "/foo")
-				.addInterceptors(interceptor)
-				.setAllowedOrigins("https://mydomain1.example")
-				.setAllowedOriginPatterns("https://*.abc.com");
+		this.registration.addHandler(handler, "/foo").addInterceptors(interceptor).setAllowedOrigins("https://mydomain1.example");
 
 		List<Mapping> mappings = this.registration.getMappings();
 		assertThat(mappings.size()).isEqualTo(1);
@@ -129,10 +126,7 @@ public class WebSocketHandlerRegistrationTests {
 		assertThat(mapping.interceptors).isNotNull();
 		assertThat(mapping.interceptors.length).isEqualTo(2);
 		assertThat(mapping.interceptors[0]).isEqualTo(interceptor);
-
-		OriginHandshakeInterceptor originInterceptor = (OriginHandshakeInterceptor) mapping.interceptors[1];
-		assertThat(originInterceptor.getAllowedOrigins()).containsExactly("https://mydomain1.example");
-		assertThat(originInterceptor.getAllowedOriginPatterns()).containsExactly("https://*.abc.com");
+		assertThat(mapping.interceptors[1].getClass()).isEqualTo(OriginHandshakeInterceptor.class);
 	}
 
 	@Test
@@ -143,7 +137,6 @@ public class WebSocketHandlerRegistrationTests {
 		this.registration.addHandler(handler, "/foo")
 				.addInterceptors(interceptor)
 				.setAllowedOrigins("https://mydomain1.example")
-				.setAllowedOriginPatterns("https://*.abc.com")
 				.withSockJS();
 
 		this.registration.getSockJsServiceRegistration().setTaskScheduler(this.taskScheduler);
@@ -158,10 +151,7 @@ public class WebSocketHandlerRegistrationTests {
 		assertThat(mapping.sockJsService.getAllowedOrigins().contains("https://mydomain1.example")).isTrue();
 		List<HandshakeInterceptor> interceptors = mapping.sockJsService.getHandshakeInterceptors();
 		assertThat(interceptors.get(0)).isEqualTo(interceptor);
-
-		OriginHandshakeInterceptor originInterceptor = (OriginHandshakeInterceptor) interceptors.get(1);
-		assertThat(originInterceptor.getAllowedOrigins()).containsExactly("https://mydomain1.example");
-		assertThat(originInterceptor.getAllowedOriginPatterns()).containsExactly("https://*.abc.com");
+		assertThat(interceptors.get(1).getClass()).isEqualTo(OriginHandshakeInterceptor.class);
 	}
 
 	@Test

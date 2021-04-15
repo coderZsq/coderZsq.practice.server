@@ -37,6 +37,9 @@ public class BeanFactoryTransactionAttributeSourceAdvisor extends AbstractBeanFa
 	@Nullable
 	private TransactionAttributeSource transactionAttributeSource;
 
+	/**
+	 * 事务属性源切点
+	 */
 	private final TransactionAttributeSourcePointcut pointcut = new TransactionAttributeSourcePointcut() {
 		@Override
 		@Nullable

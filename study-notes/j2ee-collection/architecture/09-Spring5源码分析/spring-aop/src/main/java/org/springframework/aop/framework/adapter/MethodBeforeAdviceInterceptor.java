@@ -23,7 +23,6 @@ import org.aopalliance.intercept.MethodInvocation;
 
 import org.springframework.aop.BeforeAdvice;
 import org.springframework.aop.MethodBeforeAdvice;
-import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
@@ -52,9 +51,10 @@ public class MethodBeforeAdviceInterceptor implements MethodInterceptor, BeforeA
 
 
 	@Override
-	@Nullable
 	public Object invoke(MethodInvocation mi) throws Throwable {
+		// 本拦截器是前置通知拦截器对象, 先执行前置通知的方法
 		this.advice.before(mi.getMethod(), mi.getArguments(), mi.getThis());
+		// 执行下一个拦截器, 但是该拦截器是最后一个了, 那么他就会调用目标方法
 		return mi.proceed();
 	}
 

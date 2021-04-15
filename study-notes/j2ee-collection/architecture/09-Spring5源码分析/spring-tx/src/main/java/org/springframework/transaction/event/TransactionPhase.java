@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@
 
 package org.springframework.transaction.event;
 
-import java.util.function.Consumer;
-
 import org.springframework.transaction.support.TransactionSynchronization;
 
 /**
@@ -26,9 +24,7 @@ import org.springframework.transaction.support.TransactionSynchronization;
  * @author Stephane Nicoll
  * @author Juergen Hoeller
  * @since 4.2
- * @see TransactionalEventListener#phase()
- * @see TransactionalApplicationListener#getTransactionPhase()
- * @see TransactionalApplicationListener#forPayload(TransactionPhase, Consumer)
+ * @see TransactionalEventListener
  */
 public enum TransactionPhase {
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,6 @@ import org.springframework.stereotype.Component;
  *
  * @author Chris Beams
  * @author Juergen Hoeller
- * @author Sam Brannen
  * @since 3.1
  */
 abstract class ConfigurationClassUtils {
@@ -122,11 +121,14 @@ abstract class ConfigurationClassUtils {
 			}
 		}
 
+		// 判断是不是完整的配置类，就是判断当前的 bean 的 class 上有没有标注了 @Configuration 注解
 		Map<String, Object> config = metadata.getAnnotationAttributes(Configuration.class.getName());
 		if (config != null && !Boolean.FALSE.equals(config.get("proxyBeanMethods"))) {
+			// 标记为完整配置类
 			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_FULL);
 		}
 		else if (config != null || isConfigurationCandidate(metadata)) {
+			// 标记为 lite 配置类
 			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_LITE);
 		}
 		else {
@@ -151,11 +153,13 @@ abstract class ConfigurationClassUtils {
 	 */
 	public static boolean isConfigurationCandidate(AnnotationMetadata metadata) {
 		// Do not consider an interface or an annotation...
+		// 若是接口直接返回 false
 		if (metadata.isInterface()) {
 			return false;
 		}
 
 		// Any of the typical annotations found?
+		// 若该 class 上标注了 @Component, @ComponentScan, @Import, @ImportResource 说明是 lite 配置
 		for (String indicator : candidateIndicators) {
 			if (metadata.isAnnotated(indicator)) {
 				return true;
@@ -163,10 +167,7 @@ abstract class ConfigurationClassUtils {
 		}
 
 		// Finally, let's look for @Bean methods...
-		return hasBeanMethods(metadata);
-	}
-
-	static boolean hasBeanMethods(AnnotationMetadata metadata) {
+		// 最后标注看是否有标注了 @Bean 的方法
 		try {
 			return metadata.hasAnnotatedMethods(Bean.class.getName());
 		}

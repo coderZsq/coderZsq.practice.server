@@ -16,9 +16,6 @@
 
 package org.springframework.context.annotation;
 
-import java.lang.annotation.Annotation;
-import java.util.function.Supplier;
-
 import org.springframework.beans.factory.annotation.AnnotatedGenericBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionCustomizer;
@@ -33,7 +30,11 @@ import org.springframework.core.env.StandardEnvironment;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
+import java.lang.annotation.Annotation;
+import java.util.function.Supplier;
+
 /**
+ * 适配器模式（对注册器适配），基于编程的 Bean 类型的注册
  * Convenient adapter for programmatic registration of bean classes.
  *
  * <p>This is an alternative to {@link ClassPathBeanDefinitionScanner}, applying
@@ -68,6 +69,8 @@ public class AnnotatedBeanDefinitionReader {
 	 * @see #setEnvironment(Environment)
 	 */
 	public AnnotatedBeanDefinitionReader(BeanDefinitionRegistry registry) {
+		// 保存注册器
+		// 获取或创建环境对象
 		this(registry, getOrCreateEnvironment(registry));
 	}
 
@@ -83,8 +86,13 @@ public class AnnotatedBeanDefinitionReader {
 	public AnnotatedBeanDefinitionReader(BeanDefinitionRegistry registry, Environment environment) {
 		Assert.notNull(registry, "BeanDefinitionRegistry must not be null");
 		Assert.notNull(environment, "Environment must not be null");
+		// 保存 Bean 定义的注册器
+		// 把 ApplicationContext 对象赋值给 AnnotatedBeanDefinitionReader
 		this.registry = registry;
+		// 创建条件解析器
+		// 用户处理条件注解 @Conditional
 		this.conditionEvaluator = new ConditionEvaluator(registry, environment, null);
+		// 注册一些内置的后置处理器
 		AnnotationConfigUtils.registerAnnotationConfigProcessors(this.registry);
 	}
 

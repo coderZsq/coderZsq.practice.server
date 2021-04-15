@@ -155,7 +155,7 @@ class EncoderHttpMessageWriterTests {
 
 	@Test
 	void setContentLengthForMonoBody() {
-		DefaultDataBufferFactory factory = DefaultDataBufferFactory.sharedInstance;
+		DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
 		DataBuffer buffer = factory.wrap("body".getBytes(StandardCharsets.UTF_8));
 		configureEncoder(Flux.just(buffer), MimeTypeUtils.TEXT_PLAIN);
 		HttpMessageWriter<String> writer = new EncoderHttpMessageWriter<>(this.encoder);
@@ -208,6 +208,13 @@ class EncoderHttpMessageWriterTests {
 		given(this.encoder.getEncodableMimeTypes()).willReturn(typeList);
 		given(this.encoder.encode(any(), any(), any(), this.mediaTypeCaptor.capture(), any()))
 				.willReturn(encodedStream);
+	}
+
+	private void configureEncoder(DataBuffer dataBuffer, MimeType... mimeTypes) {
+		List<MimeType> typeList = Arrays.asList(mimeTypes);
+		given(this.encoder.getEncodableMimeTypes()).willReturn(typeList);
+		given(this.encoder.encodeValue(any(), any(), any(), this.mediaTypeCaptor.capture(), any()))
+				.willReturn(dataBuffer);
 	}
 
 }

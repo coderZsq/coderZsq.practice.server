@@ -41,6 +41,7 @@ import org.springframework.http.HttpRange;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.HttpMessageReader;
 import org.springframework.http.codec.multipart.Part;
+import org.springframework.http.server.PathContainer;
 import org.springframework.http.server.RequestPath;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.lang.Nullable;
@@ -68,7 +69,7 @@ public final class MockServerRequest implements ServerRequest {
 
 	private final URI uri;
 
-	private final RequestPath requestPath;
+	private final RequestPath pathContainer;
 
 	private final MockHeaders headers;
 
@@ -87,7 +88,7 @@ public final class MockServerRequest implements ServerRequest {
 	private final WebSession session;
 
 	@Nullable
-	private final Principal principal;
+	private Principal principal;
 
 	@Nullable
 	private final InetSocketAddress remoteAddress;
@@ -110,7 +111,7 @@ public final class MockServerRequest implements ServerRequest {
 
 		this.method = method;
 		this.uri = uri;
-		this.requestPath = RequestPath.parse(uri, contextPath);
+		this.pathContainer = RequestPath.parse(uri, contextPath);
 		this.headers = headers;
 		this.cookies = cookies;
 		this.body = body;
@@ -147,8 +148,8 @@ public final class MockServerRequest implements ServerRequest {
 	}
 
 	@Override
-	public RequestPath requestPath() {
-		return this.requestPath;
+	public PathContainer pathContainer() {
+		return this.pathContainer;
 	}
 
 	@Override

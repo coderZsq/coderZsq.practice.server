@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,9 +31,8 @@ import org.apache.commons.logging.LogFactory;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.NotWritablePropertyException;
-import org.springframework.beans.TypeConverter;
+import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
@@ -75,7 +74,6 @@ import org.springframework.util.StringUtils;
  * @author Juergen Hoeller
  * @since 2.5
  * @param <T> the result type
- * @see DataClassRowMapper
  */
 public class BeanPropertyRowMapper<T> implements RowMapper<T> {
 
@@ -249,13 +247,15 @@ public class BeanPropertyRowMapper<T> implements RowMapper<T> {
 		}
 
 		StringBuilder result = new StringBuilder();
-		for (int i = 0; i < name.length(); i++) {
-			char c = name.charAt(i);
-			if (Character.isUpperCase(c)) {
-				result.append('_').append(Character.toLowerCase(c));
+		result.append(lowerCaseName(name.substring(0, 1)));
+		for (int i = 1; i < name.length(); i++) {
+			String s = name.substring(i, i + 1);
+			String slc = lowerCaseName(s);
+			if (!s.equals(slc)) {
+				result.append("_").append(slc);
 			}
 			else {
-				result.append(c);
+				result.append(s);
 			}
 		}
 		return result.toString();
@@ -280,11 +280,10 @@ public class BeanPropertyRowMapper<T> implements RowMapper<T> {
 	 */
 	@Override
 	public T mapRow(ResultSet rs, int rowNumber) throws SQLException {
-		BeanWrapperImpl bw = new BeanWrapperImpl();
+		Assert.state(this.mappedClass != null, "Mapped class was not specified");
+		T mappedObject = BeanUtils.instantiateClass(this.mappedClass);
+		BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(mappedObject);
 		initBeanWrapper(bw);
-
-		T mappedObject = constructMappedInstance(rs, bw);
-		bw.setBeanInstance(mappedObject);
 
 		ResultSetMetaData rsmd = rs.getMetaData();
 		int columnCount = rsmd.getColumnCount();
@@ -344,19 +343,6 @@ public class BeanPropertyRowMapper<T> implements RowMapper<T> {
 	}
 
 	/**
-	 * Construct an instance of the mapped class for the current row.
-	 * @param rs the ResultSet to map (pre-initialized for the current row)
-	 * @param tc a TypeConverter with this RowMapper's conversion service
-	 * @return a corresponding instance of the mapped class
-	 * @throws SQLException if an SQLException is encountered
-	 * @since 5.3
-	 */
-	protected T constructMappedInstance(ResultSet rs, TypeConverter tc) throws SQLException  {
-		Assert.state(this.mappedClass != null, "Mapped class was not specified");
-		return BeanUtils.instantiateClass(this.mappedClass);
-	}
-
-	/**
 	 * Initialize the given BeanWrapper to be used for row mapping.
 	 * To be called for each row.
 	 * <p>The default implementation applies the configured {@link ConversionService},
@@ -374,37 +360,20 @@ public class BeanPropertyRowMapper<T> implements RowMapper<T> {
 
 	/**
 	 * Retrieve a JDBC object value for the specified column.
-	 * <p>The default implementation delegates to
-	 * {@link #getColumnValue(ResultSet, int, Class)}.
-	 * @param rs is the ResultSet holding the data
-	 * @param index is the column index
-	 * @param pd the bean property that each result object is expected to match
-	 * @return the Object value
-	 * @throws SQLException in case of extraction failure
-	 * @see #getColumnValue(ResultSet, int, Class)
-	 */
-	@Nullable
-	protected Object getColumnValue(ResultSet rs, int index, PropertyDescriptor pd) throws SQLException {
-		return JdbcUtils.getResultSetValue(rs, index, pd.getPropertyType());
-	}
-
-	/**
-	 * Retrieve a JDBC object value for the specified column.
 	 * <p>The default implementation calls
 	 * {@link JdbcUtils#getResultSetValue(java.sql.ResultSet, int, Class)}.
 	 * Subclasses may override this to check specific value types upfront,
 	 * or to post-process values return from {@code getResultSetValue}.
 	 * @param rs is the ResultSet holding the data
 	 * @param index is the column index
-	 * @param paramType the target parameter type
+	 * @param pd the bean property that each result object is expected to match
 	 * @return the Object value
 	 * @throws SQLException in case of extraction failure
-	 * @since 5.3
 	 * @see org.springframework.jdbc.support.JdbcUtils#getResultSetValue(java.sql.ResultSet, int, Class)
 	 */
 	@Nullable
-	protected Object getColumnValue(ResultSet rs, int index, Class<?> paramType) throws SQLException {
-		return JdbcUtils.getResultSetValue(rs, index, paramType);
+	protected Object getColumnValue(ResultSet rs, int index, PropertyDescriptor pd) throws SQLException {
+		return JdbcUtils.getResultSetValue(rs, index, pd.getPropertyType());
 	}
 
 

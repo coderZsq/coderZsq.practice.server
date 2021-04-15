@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -554,7 +555,7 @@ public class ImportSelectorTests {
 
 		@Override
 		public Iterable<Entry> selectImports() {
-			ArrayList<Entry> content = new ArrayList<>(this.instanceImports);
+			LinkedList<Entry> content = new LinkedList<>(this.instanceImports);
 			Collections.reverse(content);
 			return content;
 		}

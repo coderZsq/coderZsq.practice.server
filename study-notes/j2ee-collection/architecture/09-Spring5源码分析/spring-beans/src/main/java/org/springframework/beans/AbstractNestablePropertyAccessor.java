@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -305,10 +305,8 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 					Class<?> componentType = propValue.getClass().getComponentType();
 					Object newArray = Array.newInstance(componentType, arrayIndex + 1);
 					System.arraycopy(propValue, 0, newArray, 0, length);
-					int lastKeyIndex = tokens.canonicalName.lastIndexOf('[');
-					String propName = tokens.canonicalName.substring(0, lastKeyIndex);
-					setPropertyValue(propName, newArray);
-					propValue = getPropertyValue(propName);
+					setPropertyValue(tokens.actualName, newArray);
+					propValue = getPropertyValue(tokens.actualName);
 				}
 				Array.set(propValue, arrayIndex, convertedValue);
 			}
@@ -424,12 +422,9 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 				}
 				return;
 			}
-			if (this.suppressNotWritablePropertyException) {
-				// Optimization for common ignoreUnknown=true scenario since the
-				// exception would be caught and swallowed higher up anyway...
-				return;
+			else {
+				throw createNotWritablePropertyException(tokens.canonicalName);
 			}
-			throw createNotWritablePropertyException(tokens.canonicalName);
 		}
 
 		Object oldValue = null;
@@ -811,6 +806,7 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 	 * @param propertyPath property path, which may be nested
 	 * @return a property accessor for the target bean
 	 */
+	@SuppressWarnings("unchecked")  // avoid nested generic
 	protected AbstractNestablePropertyAccessor getPropertyAccessorForPropertyPath(String propertyPath) {
 		int pos = PropertyAccessorUtils.getFirstNestedPropertySeparatorIndex(propertyPath);
 		// Handle nested properties recursively.

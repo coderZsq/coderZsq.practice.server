@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,7 +35,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.test.annotation.Commit;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.TestContextAnnotationUtils;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -45,7 +45,6 @@ import org.springframework.transaction.interceptor.TransactionAttribute;
 import org.springframework.transaction.interceptor.TransactionAttributeSource;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
-import org.springframework.util.ReflectionUtils.MethodFilter;
 import org.springframework.util.StringUtils;
 
 /**
@@ -79,7 +78,6 @@ import org.springframework.util.StringUtils;
  * <em>are</em> annotated with {@code @Transactional} but have the
  * {@link Transactional#propagation propagation} type set to
  * {@link org.springframework.transaction.annotation.Propagation#NOT_SUPPORTED NOT_SUPPORTED}
- * or {@link org.springframework.transaction.annotation.Propagation#NEVER NEVER}
  * will not be run within a transaction.
  *
  * <h3>Declarative Rollback and Commit Behavior</h3>
@@ -124,8 +122,7 @@ import org.springframework.util.StringUtils;
  * <tr><th>Attribute</th><th>Supported for test-managed transactions</th></tr>
  * <tr><td>{@link Transactional#value value} and {@link Transactional#transactionManager transactionManager}</td><td>yes</td></tr>
  * <tr><td>{@link Transactional#propagation propagation}</td>
- * <td>only {@link org.springframework.transaction.annotation.Propagation#NOT_SUPPORTED NOT_SUPPORTED}
- * and {@link org.springframework.transaction.annotation.Propagation#NEVER NEVER} are supported</td></tr>
+ * <td>only {@link org.springframework.transaction.annotation.Propagation#NOT_SUPPORTED NOT_SUPPORTED} is supported</td></tr>
  * <tr><td>{@link Transactional#isolation isolation}</td><td>no</td></tr>
  * <tr><td>{@link Transactional#timeout timeout}</td><td>no</td></tr>
  * <tr><td>{@link Transactional#readOnly readOnly}</td><td>no</td></tr>
@@ -151,28 +148,7 @@ public class TransactionalTestExecutionListener extends AbstractTestExecutionLis
 	private static final Log logger = LogFactory.getLog(TransactionalTestExecutionListener.class);
 
 	// Do not require @Transactional test methods to be public.
-	@SuppressWarnings("serial")
-	protected final TransactionAttributeSource attributeSource = new AnnotationTransactionAttributeSource(false) {
-
-		@Override
-		protected TransactionAttribute findTransactionAttribute(Class<?> clazz) {
-			// @Transactional present in inheritance hierarchy?
-			TransactionAttribute result = super.findTransactionAttribute(clazz);
-			if (result != null) {
-				return result;
-			}
-			// @Transactional present in enclosing class hierarchy?
-			return findTransactionAttributeInEnclosingClassHierarchy(clazz);
-		}
-
-		@Nullable
-		private TransactionAttribute findTransactionAttributeInEnclosingClassHierarchy(Class<?> clazz) {
-			if (TestContextAnnotationUtils.searchEnclosingClass(clazz)) {
-				return findTransactionAttribute(clazz.getEnclosingClass());
-			}
-			return null;
-		}
-	};
+	protected final TransactionAttributeSource attributeSource = new AnnotationTransactionAttributeSource(false);
 
 
 	/**
@@ -215,8 +191,7 @@ public class TransactionalTestExecutionListener extends AbstractTestExecutionLis
 						"] found for test context " + testContext);
 			}
 
-			if (transactionAttribute.getPropagationBehavior() == TransactionDefinition.PROPAGATION_NOT_SUPPORTED ||
-					transactionAttribute.getPropagationBehavior() == TransactionDefinition.PROPAGATION_NEVER) {
+			if (transactionAttribute.getPropagationBehavior() == TransactionDefinition.PROPAGATION_NOT_SUPPORTED) {
 				return;
 			}
 
@@ -401,7 +376,7 @@ public class TransactionalTestExecutionListener extends AbstractTestExecutionLis
 	 */
 	protected final boolean isDefaultRollback(TestContext testContext) throws Exception {
 		Class<?> testClass = testContext.getTestClass();
-		Rollback rollback = TestContextAnnotationUtils.findMergedAnnotation(testClass, Rollback.class);
+		Rollback rollback = AnnotatedElementUtils.findMergedAnnotation(testClass, Rollback.class);
 		boolean rollbackPresent = (rollback != null);
 
 		if (rollbackPresent) {
@@ -462,9 +437,9 @@ public class TransactionalTestExecutionListener extends AbstractTestExecutionLis
 	 * as well as annotated interface default methods
 	 */
 	private List<Method> getAnnotatedMethods(Class<?> clazz, Class<? extends Annotation> annotationType) {
-		MethodFilter methodFilter = ReflectionUtils.USER_DECLARED_METHODS
-				.and(method -> AnnotatedElementUtils.hasAnnotation(method, annotationType));
-		return Arrays.asList(ReflectionUtils.getUniqueDeclaredMethods(clazz, methodFilter));
+		return Arrays.stream(ReflectionUtils.getUniqueDeclaredMethods(clazz, ReflectionUtils.USER_DECLARED_METHODS))
+				.filter(method -> AnnotatedElementUtils.hasAnnotation(method, annotationType))
+				.collect(Collectors.toList());
 	}
 
 }

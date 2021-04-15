@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package org.springframework.web.testfixture.servlet;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -34,7 +33,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -157,28 +155,15 @@ public class MockMultipartHttpServletRequest extends MockHttpServletRequest impl
 
 	@Override
 	public HttpHeaders getMultipartHeaders(String paramOrFileName) {
-		MultipartFile file = getFile(paramOrFileName);
-		if (file != null) {
+		String contentType = getMultipartContentType(paramOrFileName);
+		if (contentType != null) {
 			HttpHeaders headers = new HttpHeaders();
-			if (file.getContentType() != null) {
-				headers.add(HttpHeaders.CONTENT_TYPE, file.getContentType());
-			}
+			headers.add("Content-Type", contentType);
 			return headers;
 		}
-		try {
-			Part part = getPart(paramOrFileName);
-			if (part != null) {
-				HttpHeaders headers = new HttpHeaders();
-				for (String headerName : part.getHeaderNames()) {
-					headers.put(headerName, new ArrayList<>(part.getHeaders(headerName)));
-				}
-				return headers;
-			}
+		else {
+			return null;
 		}
-		catch (Throwable ex) {
-			throw new MultipartException("Could not access multipart servlet request", ex);
-		}
-		return null;
 	}
 
 }

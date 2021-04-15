@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -99,53 +99,37 @@ public final class MultipartResolutionDelegate {
 		boolean isMultipart = (multipartRequest != null || isMultipartContent(request));
 
 		if (MultipartFile.class == parameter.getNestedParameterType()) {
-			if (!isMultipart) {
-				return null;
-			}
-			if (multipartRequest == null) {
+			if (multipartRequest == null && isMultipart) {
 				multipartRequest = new StandardMultipartHttpServletRequest(request);
 			}
-			return multipartRequest.getFile(name);
+			return (multipartRequest != null ? multipartRequest.getFile(name) : null);
 		}
 		else if (isMultipartFileCollection(parameter)) {
-			if (!isMultipart) {
-				return null;
-			}
-			if (multipartRequest == null) {
+			if (multipartRequest == null && isMultipart) {
 				multipartRequest = new StandardMultipartHttpServletRequest(request);
 			}
-			List<MultipartFile> files = multipartRequest.getFiles(name);
-			return (!files.isEmpty() ? files : null);
+			return (multipartRequest != null ? multipartRequest.getFiles(name) : null);
 		}
 		else if (isMultipartFileArray(parameter)) {
-			if (!isMultipart) {
-				return null;
-			}
-			if (multipartRequest == null) {
+			if (multipartRequest == null && isMultipart) {
 				multipartRequest = new StandardMultipartHttpServletRequest(request);
 			}
-			List<MultipartFile> files = multipartRequest.getFiles(name);
-			return (!files.isEmpty() ? files.toArray(new MultipartFile[0]) : null);
+			if (multipartRequest != null) {
+				List<MultipartFile> multipartFiles = multipartRequest.getFiles(name);
+				return multipartFiles.toArray(new MultipartFile[0]);
+			}
+			else {
+				return null;
+			}
 		}
 		else if (Part.class == parameter.getNestedParameterType()) {
-			if (!isMultipart) {
-				return null;
-			}
-			return request.getPart(name);
+			return (isMultipart ? request.getPart(name): null);
 		}
 		else if (isPartCollection(parameter)) {
-			if (!isMultipart) {
-				return null;
-			}
-			List<Part> parts = resolvePartList(request, name);
-			return (!parts.isEmpty() ? parts : null);
+			return (isMultipart ? resolvePartList(request, name) : null);
 		}
 		else if (isPartArray(parameter)) {
-			if (!isMultipart) {
-				return null;
-			}
-			List<Part> parts = resolvePartList(request, name);
-			return (!parts.isEmpty() ? parts.toArray(new Part[0]) : null);
+			return (isMultipart ? resolvePartList(request, name).toArray(new Part[0]) : null);
 		}
 		else {
 			return UNRESOLVABLE;

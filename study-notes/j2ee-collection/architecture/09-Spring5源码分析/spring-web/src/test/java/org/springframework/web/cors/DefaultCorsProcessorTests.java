@@ -16,8 +16,6 @@
 
 package org.springframework.web.cors;
 
-import java.util.Arrays;
-
 import javax.servlet.http.HttpServletResponse;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +27,6 @@ import org.springframework.web.testfixture.servlet.MockHttpServletRequest;
 import org.springframework.web.testfixture.servlet.MockHttpServletResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 /**
  * Test {@link DefaultCorsProcessor} with simple or preflight CORS request.
@@ -141,17 +138,11 @@ public class DefaultCorsProcessorTests {
 	}
 
 	@Test
-	public void actualRequestCredentialsWithWildcardOrigin() throws Exception {
+	public void actualRequestCredentialsWithOriginWildcard() throws Exception {
 		this.request.setMethod(HttpMethod.GET.name());
 		this.request.addHeader(HttpHeaders.ORIGIN, "https://domain2.com");
-
 		this.conf.addAllowedOrigin("*");
 		this.conf.setAllowCredentials(true);
-		assertThatIllegalArgumentException()
-				.isThrownBy(() -> this.processor.processRequest(this.conf, this.request, this.response));
-
-		this.conf.setAllowedOrigins(null);
-		this.conf.addAllowedOriginPattern("*");
 
 		this.processor.processRequest(this.conf, this.request, this.response);
 		assertThat(this.response.containsHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN)).isTrue();
@@ -320,20 +311,16 @@ public class DefaultCorsProcessorTests {
 	}
 
 	@Test
-	public void preflightRequestCredentialsWithWildcardOrigin() throws Exception {
+	public void preflightRequestCredentialsWithOriginWildcard() throws Exception {
 		this.request.setMethod(HttpMethod.OPTIONS.name());
 		this.request.addHeader(HttpHeaders.ORIGIN, "https://domain2.com");
 		this.request.addHeader(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, "GET");
 		this.request.addHeader(HttpHeaders.ACCESS_CONTROL_REQUEST_HEADERS, "Header1");
-		this.conf.setAllowedOrigins(Arrays.asList("https://domain1.com", "*", "http://domain3.example"));
+		this.conf.addAllowedOrigin("https://domain1.com");
+		this.conf.addAllowedOrigin("*");
+		this.conf.addAllowedOrigin("http://domain3.example");
 		this.conf.addAllowedHeader("Header1");
 		this.conf.setAllowCredentials(true);
-
-		assertThatIllegalArgumentException().isThrownBy(() ->
-				this.processor.processRequest(this.conf, this.request, this.response));
-
-		this.conf.setAllowedOrigins(null);
-		this.conf.addAllowedOriginPattern("*");
 
 		this.processor.processRequest(this.conf, this.request, this.response);
 		assertThat(this.response.containsHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN)).isTrue();

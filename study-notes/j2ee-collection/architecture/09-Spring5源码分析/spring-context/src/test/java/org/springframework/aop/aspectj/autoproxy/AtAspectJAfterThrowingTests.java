@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,26 +36,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AtAspectJAfterThrowingTests {
 
 	@Test
-	public void testAccessThrowable() {
+	public void testAccessThrowable() throws Exception {
 		ClassPathXmlApplicationContext ctx =
-				new ClassPathXmlApplicationContext(getClass().getSimpleName() + "-context.xml", getClass());
+			new ClassPathXmlApplicationContext(getClass().getSimpleName() + "-context.xml", getClass());
 
 		ITestBean bean = (ITestBean) ctx.getBean("testBean");
 		ExceptionHandlingAspect aspect = (ExceptionHandlingAspect) ctx.getBean("aspect");
 
 		assertThat(AopUtils.isAopProxy(bean)).isTrue();
-		IOException exceptionThrown = null;
 		try {
 			bean.unreliableFileOperation();
 		}
-		catch (IOException ex) {
-			exceptionThrown = ex;
+		catch (IOException e) {
+			//
 		}
 
 		assertThat(aspect.handled).isEqualTo(1);
-		assertThat(aspect.lastException).isSameAs(exceptionThrown);
+		assertThat(aspect.lastException).isNotNull();
 	}
-
 }
 
 

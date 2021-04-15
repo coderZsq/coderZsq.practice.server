@@ -34,8 +34,7 @@ public abstract class ProtobufCodecSupport {
 	static final List<MimeType> MIME_TYPES = Collections.unmodifiableList(
 			Arrays.asList(
 					new MimeType("application", "x-protobuf"),
-					new MimeType("application", "octet-stream"),
-					new MimeType("application", "vnd.google.protobuf")));
+					new MimeType("application", "octet-stream")));
 
 	static final String DELIMITED_KEY = "delimited";
 

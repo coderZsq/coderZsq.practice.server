@@ -589,7 +589,7 @@ class ReverseMethodReplacer implements MethodReplacer, Serializable {
 	@Override
 	public Object reimplement(Object obj, Method method, Object[] args) throws Throwable {
 		String s = (String) args[0];
-		return new StringBuilder(s).reverse().toString();
+		return new StringBuffer(s).reverse().toString();
 	}
 }
 

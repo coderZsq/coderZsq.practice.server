@@ -116,7 +116,12 @@ class TxAdviceBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 				attribute.setIsolationLevelName(RuleBasedTransactionAttribute.PREFIX_ISOLATION + isolation);
 			}
 			if (StringUtils.hasText(timeout)) {
-				attribute.setTimeoutString(timeout);
+				try {
+					attribute.setTimeout(Integer.parseInt(timeout));
+				}
+				catch (NumberFormatException ex) {
+					parserContext.getReaderContext().error("Timeout must be an integer value: [" + timeout + "]", methodEle);
+				}
 			}
 			if (StringUtils.hasText(readOnly)) {
 				attribute.setReadOnly(Boolean.parseBoolean(methodEle.getAttribute(READ_ONLY_ATTRIBUTE)));

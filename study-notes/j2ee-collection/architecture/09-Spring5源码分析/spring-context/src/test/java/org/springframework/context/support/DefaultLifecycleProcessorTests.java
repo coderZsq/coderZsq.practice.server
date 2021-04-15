@@ -30,7 +30,7 @@ import org.springframework.context.SmartLifecycle;
 import org.springframework.core.testfixture.EnabledForTestGroups;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.core.testfixture.TestGroup.LONG_RUNNING;
+import static org.springframework.core.testfixture.TestGroup.PERFORMANCE;
 
 /**
  * @author Mark Fisher
@@ -252,7 +252,7 @@ public class DefaultLifecycleProcessorTests {
 	}
 
 	@Test
-	@EnabledForTestGroups(LONG_RUNNING)
+	@EnabledForTestGroups(PERFORMANCE)
 	public void smartLifecycleGroupShutdown() throws Exception {
 		CopyOnWriteArrayList<Lifecycle> stoppedBeans = new CopyOnWriteArrayList<>();
 		TestSmartLifecycleBean bean1 = TestSmartLifecycleBean.forShutdownTests(1, 300, stoppedBeans);
@@ -282,7 +282,7 @@ public class DefaultLifecycleProcessorTests {
 	}
 
 	@Test
-	@EnabledForTestGroups(LONG_RUNNING)
+	@EnabledForTestGroups(PERFORMANCE)
 	public void singleSmartLifecycleShutdown() throws Exception {
 		CopyOnWriteArrayList<Lifecycle> stoppedBeans = new CopyOnWriteArrayList<>();
 		TestSmartLifecycleBean bean = TestSmartLifecycleBean.forShutdownTests(99, 300, stoppedBeans);
@@ -389,7 +389,7 @@ public class DefaultLifecycleProcessorTests {
 	}
 
 	@Test
-	@EnabledForTestGroups(LONG_RUNNING)
+	@EnabledForTestGroups(PERFORMANCE)
 	public void dependentShutdownFirstEvenIfItsPhaseIsLower() throws Exception {
 		CopyOnWriteArrayList<Lifecycle> stoppedBeans = new CopyOnWriteArrayList<>();
 		TestSmartLifecycleBean beanMin = TestSmartLifecycleBean.forShutdownTests(Integer.MIN_VALUE, 100, stoppedBeans);
@@ -462,7 +462,7 @@ public class DefaultLifecycleProcessorTests {
 	}
 
 	@Test
-	@EnabledForTestGroups(LONG_RUNNING)
+	@EnabledForTestGroups(PERFORMANCE)
 	public void dependentShutdownFirstAndIsSmartLifecycle() throws Exception {
 		CopyOnWriteArrayList<Lifecycle> stoppedBeans = new CopyOnWriteArrayList<>();
 		TestSmartLifecycleBean beanMin = TestSmartLifecycleBean.forShutdownTests(Integer.MIN_VALUE, 400, stoppedBeans);
@@ -526,7 +526,7 @@ public class DefaultLifecycleProcessorTests {
 	}
 
 	@Test
-	@EnabledForTestGroups(LONG_RUNNING)
+	@EnabledForTestGroups(PERFORMANCE)
 	public void dependentShutdownFirstButNotSmartLifecycle() throws Exception {
 		CopyOnWriteArrayList<Lifecycle> stoppedBeans = new CopyOnWriteArrayList<>();
 		TestSmartLifecycleBean bean1 = TestSmartLifecycleBean.forShutdownTests(1, 200, stoppedBeans);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import java.util.function.Consumer;
 
 import io.rsocket.Payload;
 import io.rsocket.RSocket;
-import io.rsocket.core.RSocketClient;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -49,9 +48,7 @@ final class DefaultRSocketRequester implements RSocketRequester {
 
 	private static final Map<String, Object> EMPTY_HINTS = Collections.emptyMap();
 
-	private final RSocketClient rsocketClient;
 
-	@Nullable
 	private final RSocket rsocket;
 
 	private final MimeType dataMimeType;
@@ -64,15 +61,14 @@ final class DefaultRSocketRequester implements RSocketRequester {
 
 
 	DefaultRSocketRequester(
-			@Nullable RSocketClient rsocketClient, @Nullable RSocket rsocket,
-			MimeType dataMimeType, MimeType metadataMimeType, RSocketStrategies strategies) {
+			RSocket rsocket, MimeType dataMimeType, MimeType metadataMimeType,
+			RSocketStrategies strategies) {
 
-		Assert.isTrue(rsocketClient != null || rsocket != null, "RSocketClient or RSocket is required");
+		Assert.notNull(rsocket, "RSocket is required");
 		Assert.notNull(dataMimeType, "'dataMimeType' is required");
 		Assert.notNull(metadataMimeType, "'metadataMimeType' is required");
 		Assert.notNull(strategies, "RSocketStrategies is required");
 
-		this.rsocketClient = (rsocketClient != null ? rsocketClient : RSocketClient.from(rsocket));
 		this.rsocket = rsocket;
 		this.dataMimeType = dataMimeType;
 		this.metadataMimeType = metadataMimeType;
@@ -81,12 +77,6 @@ final class DefaultRSocketRequester implements RSocketRequester {
 	}
 
 
-	@Override
-	public RSocketClient rsocketClient() {
-		return this.rsocketClient;
-	}
-
-	@Nullable
 	@Override
 	public RSocket rsocket() {
 		return this.rsocket;
@@ -111,6 +101,7 @@ final class DefaultRSocketRequester implements RSocketRequester {
 	public RequestSpec metadata(Object metadata, @Nullable MimeType mimeType) {
 		return new DefaultRequestSpec(metadata, mimeType);
 	}
+
 
 	private static boolean isVoid(ResolvableType elementType) {
 		return (Void.class.equals(elementType.resolve()) || void.class.equals(elementType.resolve()));
@@ -258,13 +249,8 @@ final class DefaultRSocketRequester implements RSocketRequester {
 		}
 
 		@Override
-		public Mono<Void> sendMetadata() {
-			return rsocketClient.metadataPush(getPayloadMono());
-		}
-
-		@Override
 		public Mono<Void> send() {
-			return rsocketClient.fireAndForget(getPayloadMono());
+			return getPayloadMono().flatMap(rsocket::fireAndForget);
 		}
 
 		@Override
@@ -279,7 +265,7 @@ final class DefaultRSocketRequester implements RSocketRequester {
 
 		@SuppressWarnings("unchecked")
 		private <T> Mono<T> retrieveMono(ResolvableType elementType) {
-			Mono<Payload> payloadMono = rsocketClient.requestResponse(getPayloadMono());
+			Mono<Payload> payloadMono = getPayloadMono().flatMap(rsocket::requestResponse);
 
 			if (isVoid(elementType)) {
 				return (Mono<T>) payloadMono.then();
@@ -304,8 +290,8 @@ final class DefaultRSocketRequester implements RSocketRequester {
 		private <T> Flux<T> retrieveFlux(ResolvableType elementType) {
 
 			Flux<Payload> payloadFlux = (this.payloadFlux != null ?
-					rsocketClient.requestChannel(this.payloadFlux) :
-					rsocketClient.requestStream(getPayloadMono()));
+					rsocket.requestChannel(this.payloadFlux) :
+					getPayloadMono().flatMapMany(rsocket::requestStream));
 
 			if (isVoid(elementType)) {
 				return payloadFlux.thenMany(Flux.empty());
@@ -325,5 +311,4 @@ final class DefaultRSocketRequester implements RSocketRequester {
 			return PayloadUtils.retainDataAndReleasePayload(payload, bufferFactory());
 		}
 	}
-
 }

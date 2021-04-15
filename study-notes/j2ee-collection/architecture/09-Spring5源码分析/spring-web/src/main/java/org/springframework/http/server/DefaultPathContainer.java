@@ -232,6 +232,8 @@ final class DefaultPathContainer implements PathContainer {
 
 		private final String valueToMatch;
 
+		private final char[] valueToMatchAsChars;
+
 		private final MultiValueMap<String, String> parameters;
 
 
@@ -241,6 +243,7 @@ final class DefaultPathContainer implements PathContainer {
 		DefaultPathSegment(String value, String valueToMatch, MultiValueMap<String, String> params) {
 			this.value = value;
 			this.valueToMatch = valueToMatch;
+			this.valueToMatchAsChars = valueToMatch.toCharArray();
 			this.parameters = CollectionUtils.unmodifiableMultiValueMap(params);
 		}
 
@@ -251,6 +254,7 @@ final class DefaultPathContainer implements PathContainer {
 			this.value = value;
 			this.valueToMatch = value.contains(separator.encodedSequence()) ?
 					value.replaceAll(separator.encodedSequence(), separator.value()) : value;
+			this.valueToMatchAsChars = this.valueToMatch.toCharArray();
 			this.parameters = EMPTY_PARAMS;
 		}
 
@@ -267,7 +271,7 @@ final class DefaultPathContainer implements PathContainer {
 
 		@Override
 		public char[] valueToMatchAsChars() {
-			return this.valueToMatch.toCharArray();
+			return this.valueToMatchAsChars;
 		}
 
 		@Override

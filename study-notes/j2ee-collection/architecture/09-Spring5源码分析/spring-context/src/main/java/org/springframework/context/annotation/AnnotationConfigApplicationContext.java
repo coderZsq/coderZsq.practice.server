@@ -16,17 +16,15 @@
 
 package org.springframework.context.annotation;
 
-import java.util.Arrays;
-import java.util.function.Supplier;
-
 import org.springframework.beans.factory.config.BeanDefinitionCustomizer;
 import org.springframework.beans.factory.support.BeanNameGenerator;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.metrics.StartupStep;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+
+import java.util.function.Supplier;
 
 /**
  * Standalone application context, accepting <em>component classes</em> as input &mdash;
@@ -55,8 +53,14 @@ import org.springframework.util.Assert;
  */
 public class AnnotationConfigApplicationContext extends GenericApplicationContext implements AnnotationConfigRegistry {
 
+	/**
+	 * 注解的bean定义读取器
+	 */
 	private final AnnotatedBeanDefinitionReader reader;
 
+	/**
+	 * 类路径下的bean定义扫描器
+	 */
 	private final ClassPathBeanDefinitionScanner scanner;
 
 
@@ -65,9 +69,22 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 * through {@link #register} calls and then manually {@linkplain #refresh refreshed}.
 	 */
 	public AnnotationConfigApplicationContext() {
-		StartupStep createAnnotatedBeanDefReader = this.getApplicationStartup().start("spring.context.annotated-bean-reader.create");
+		/**
+		 * 创建一个读取注解的Bean定义读取器
+		 * 完成了spring 内部 BeanDefinition 的注册（主要是后置处理器）（适配器模式）
+		 */
 		this.reader = new AnnotatedBeanDefinitionReader(this);
-		createAnnotatedBeanDefReader.end();
+		/**
+		 * 创建 BeanDefinition 扫描器
+		 * 可以用来扫描包或者类，继而转换为bd
+		 *
+		 * spring 默认的扫描包不是这个 scanner 对象
+		 * 而是自己 new 的一个 ClassPathBeanDefinitionScanner
+		 * spring 在执行工程后置处理器 ConfigurationClassPostProcessor 时，去扫描包时会 new 一个 ClassPathBeanDefinitionScanner
+		 *
+		 * 这里的 scanner 仅仅是为了程序员可以手动调用 AnnotationConfigApplicationContext 对象的 scan 方法
+		 *
+		 */
 		this.scanner = new ClassPathBeanDefinitionScanner(this);
 	}
 
@@ -82,14 +99,19 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	}
 
 	/**
+	 * 创建一个基于注解配置的容器对象（实际上也是一个 BeanDefinitionRegistry 注册器）
+	 *
 	 * Create a new AnnotationConfigApplicationContext, deriving bean definitions
 	 * from the given component classes and automatically refreshing the context.
 	 * @param componentClasses one or more component classes &mdash; for example,
 	 * {@link Configuration @Configuration} classes
 	 */
 	public AnnotationConfigApplicationContext(Class<?>... componentClasses) {
+		// 一：调用构造函数
 		this();
+		// 二：注册我们的配置类
 		register(componentClasses);
+		// 三：IOC 容器刷新接口
 		refresh();
 	}
 
@@ -163,10 +185,7 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	@Override
 	public void register(Class<?>... componentClasses) {
 		Assert.notEmpty(componentClasses, "At least one component class must be specified");
-		StartupStep registerComponentClass = this.getApplicationStartup().start("spring.context.component-classes.register")
-				.tag("classes", () -> Arrays.toString(componentClasses));
 		this.reader.register(componentClasses);
-		registerComponentClass.end();
 	}
 
 	/**
@@ -180,10 +199,7 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	@Override
 	public void scan(String... basePackages) {
 		Assert.notEmpty(basePackages, "At least one base package must be specified");
-		StartupStep scanPackages = this.getApplicationStartup().start("spring.context.base-packages.scan")
-				.tag("packages", () -> Arrays.toString(basePackages));
 		this.scanner.scan(basePackages);
-		scanPackages.end();
 	}
 
 

@@ -44,7 +44,6 @@ import static org.mockito.Mockito.verify;
  * @author Thierry Templier
  * @author Chris Beams
  */
-@Deprecated
 public class CciLocalTransactionTests {
 
 	/**

@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,13 @@
 
 package org.springframework.web.reactive.result.method.annotation;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import kotlin.reflect.KFunction;
+import kotlin.reflect.jvm.ReflectJvmMapping;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 
@@ -29,7 +32,6 @@ import org.springframework.core.ReactiveAdapter;
 import org.springframework.core.ReactiveAdapterRegistry;
 import org.springframework.core.ResolvableType;
 import org.springframework.core.codec.Hints;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.HttpMessageWriter;
 import org.springframework.http.converter.HttpMessageNotWritableException;
@@ -129,7 +131,9 @@ public abstract class AbstractMessageWriterResultHandler extends HandlerResultHa
 		ResolvableType actualElementType;
 		if (adapter != null) {
 			publisher = adapter.toPublisher(body);
-			boolean isUnwrapped = KotlinDetector.isSuspendingFunction(bodyParameter.getMethod()) &&
+			boolean isUnwrapped = KotlinDetector.isKotlinReflectPresent() &&
+					KotlinDetector.isKotlinType(bodyParameter.getContainingClass()) &&
+					KotlinDelegate.isSuspend(bodyParameter.getMethod()) &&
 					!COROUTINES_FLOW_CLASS_NAME.equals(bodyType.toClass().getName());
 			ResolvableType genericType = isUnwrapped ? bodyType : bodyType.getGeneric();
 			elementType = getElementType(adapter, genericType);
@@ -145,20 +149,7 @@ public abstract class AbstractMessageWriterResultHandler extends HandlerResultHa
 			return Mono.from((Publisher<Void>) publisher);
 		}
 
-		MediaType bestMediaType;
-		try {
-			bestMediaType = selectMediaType(exchange, () -> getMediaTypesFor(elementType));
-		}
-		catch (NotAcceptableStatusException ex) {
-			HttpStatus statusCode = exchange.getResponse().getStatusCode();
-			if (statusCode != null && statusCode.isError()) {
-				if (logger.isDebugEnabled()) {
-					logger.debug("Ignoring error response content (if any). " + ex.getReason());
-				}
-				return Mono.empty();
-			}
-			throw ex;
-		}
+		MediaType bestMediaType = selectMediaType(exchange, () -> getMediaTypesFor(elementType));
 		if (bestMediaType != null) {
 			String logPrefix = exchange.getLogPrefix();
 			if (logger.isDebugEnabled()) {
@@ -206,10 +197,22 @@ public abstract class AbstractMessageWriterResultHandler extends HandlerResultHa
 		List<MediaType> writableMediaTypes = new ArrayList<>();
 		for (HttpMessageWriter<?> converter : getMessageWriters()) {
 			if (converter.canWrite(elementType, null)) {
-				writableMediaTypes.addAll(converter.getWritableMediaTypes(elementType));
+				writableMediaTypes.addAll(converter.getWritableMediaTypes());
 			}
 		}
 		return writableMediaTypes;
+	}
+
+
+	/**
+	 * Inner class to avoid a hard dependency on Kotlin at runtime.
+	 */
+	private static class KotlinDelegate {
+
+		static private boolean isSuspend(Method method) {
+			KFunction<?> function = ReflectJvmMapping.getKotlinFunction(method);
+			return function != null && function.isSuspend();
+		}
 	}
 
 }

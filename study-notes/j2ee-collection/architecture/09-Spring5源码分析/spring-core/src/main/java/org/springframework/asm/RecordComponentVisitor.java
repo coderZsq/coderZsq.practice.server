@@ -34,11 +34,13 @@ package org.springframework.asm;
  *
  * @author Remi Forax
  * @author Eric Bruneton
+ * @deprecated this API is experimental.
  */
+@Deprecated
 public abstract class RecordComponentVisitor {
   /**
-   * The ASM API version implemented by this visitor. The value of this field must be one of {@link
-   * Opcodes#ASM8} or {@link Opcodes#ASM9}.
+   * The ASM API version implemented by this visitor. The value of this field must be {@link
+   * Opcodes#ASM8_EXPERIMENTAL}.
    */
   protected final int api;
 
@@ -50,9 +52,11 @@ public abstract class RecordComponentVisitor {
   /**
    * Constructs a new {@link RecordComponentVisitor}.
    *
-   * @param api the ASM API version implemented by this visitor. Must be one of {@link Opcodes#ASM8}
-   *     or {@link Opcodes#ASM9}.
+   * @param api the ASM API version implemented by this visitor. Must be {@link
+   *     Opcodes#ASM8_EXPERIMENTAL}.
+   * @deprecated this API is experimental.
    */
+  @Deprecated
   public RecordComponentVisitor(final int api) {
     this(api, null);
   }
@@ -60,22 +64,23 @@ public abstract class RecordComponentVisitor {
   /**
    * Constructs a new {@link RecordComponentVisitor}.
    *
-   * @param api the ASM API version implemented by this visitor. Must be {@link Opcodes#ASM8}.
+   * @param api the ASM API version implemented by this visitor. Must be {@link
+   *     Opcodes#ASM8_EXPERIMENTAL}.
    * @param recordComponentVisitor the record component visitor to which this visitor must delegate
    *     method calls. May be null.
+   * @deprecated this API is experimental.
    */
+  @Deprecated
   public RecordComponentVisitor(
       final int api, final RecordComponentVisitor recordComponentVisitor) {
-    if (api != Opcodes.ASM9
-        && api != Opcodes.ASM8
-        && api != Opcodes.ASM7
+    if (api != Opcodes.ASM7
         && api != Opcodes.ASM6
         && api != Opcodes.ASM5
         && api != Opcodes.ASM4
-        && api != Opcodes.ASM10_EXPERIMENTAL) {
+        && api != Opcodes.ASM8_EXPERIMENTAL) {
       throw new IllegalArgumentException("Unsupported api " + api);
     }
-    // SPRING PATCH: no preview mode check for ASM experimental
+    // SPRING PATCH: no preview mode check for ASM 8 experimental
     this.api = api;
     this.delegate = recordComponentVisitor;
   }
@@ -84,8 +89,10 @@ public abstract class RecordComponentVisitor {
    * The record visitor to which this visitor must delegate method calls. May be {@literal null}.
    *
    * @return the record visitor to which this visitor must delegate method calls or {@literal null}.
+   * @deprecated this API is experimental.
    */
-  public RecordComponentVisitor getDelegate() {
+  @Deprecated
+  public RecordComponentVisitor getDelegateExperimental() {
     return delegate;
   }
 
@@ -96,10 +103,13 @@ public abstract class RecordComponentVisitor {
    * @param visible {@literal true} if the annotation is visible at runtime.
    * @return a visitor to visit the annotation values, or {@literal null} if this visitor is not
    *     interested in visiting this annotation.
+   * @deprecated this API is experimental.
    */
-  public AnnotationVisitor visitAnnotation(final String descriptor, final boolean visible) {
+  @Deprecated
+  public AnnotationVisitor visitAnnotationExperimental(
+      final String descriptor, final boolean visible) {
     if (delegate != null) {
-      return delegate.visitAnnotation(descriptor, visible);
+      return delegate.visitAnnotationExperimental(descriptor, visible);
     }
     return null;
   }
@@ -118,11 +128,13 @@ public abstract class RecordComponentVisitor {
    * @param visible {@literal true} if the annotation is visible at runtime.
    * @return a visitor to visit the annotation values, or {@literal null} if this visitor is not
    *     interested in visiting this annotation.
+   * @deprecated this API is experimental.
    */
-  public AnnotationVisitor visitTypeAnnotation(
+  @Deprecated
+  public AnnotationVisitor visitTypeAnnotationExperimental(
       final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
     if (delegate != null) {
-      return delegate.visitTypeAnnotation(typeRef, typePath, descriptor, visible);
+      return delegate.visitTypeAnnotationExperimental(typeRef, typePath, descriptor, visible);
     }
     return null;
   }
@@ -131,20 +143,25 @@ public abstract class RecordComponentVisitor {
    * Visits a non standard attribute of the record component.
    *
    * @param attribute an attribute.
+   * @deprecated this API is experimental.
    */
-  public void visitAttribute(final Attribute attribute) {
+  @Deprecated
+  public void visitAttributeExperimental(final Attribute attribute) {
     if (delegate != null) {
-      delegate.visitAttribute(attribute);
+      delegate.visitAttributeExperimental(attribute);
     }
   }
 
   /**
    * Visits the end of the record component. This method, which is the last one to be called, is
    * used to inform the visitor that everything have been visited.
+   *
+   * @deprecated this API is experimental.
    */
-  public void visitEnd() {
+  @Deprecated
+  public void visitEndExperimental() {
     if (delegate != null) {
-      delegate.visitEnd();
+      delegate.visitEndExperimental();
     }
   }
 }

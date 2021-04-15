@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,11 +72,12 @@ public class ObjectFactoryCreatingFactoryBeanTests {
 	}
 
 	@Test
+	@SuppressWarnings("rawtypes")
 	public void testFactorySerialization() throws Exception {
 		FactoryTestBean testBean = beanFactory.getBean("factoryTestBean", FactoryTestBean.class);
 		ObjectFactory<?> objectFactory = testBean.getObjectFactory();
 
-		objectFactory = SerializationTestUtils.serializeAndDeserialize(objectFactory);
+		objectFactory = (ObjectFactory) SerializationTestUtils.serializeAndDeserialize(objectFactory);
 
 		Date date1 = (Date) objectFactory.getObject();
 		Date date2 = (Date) objectFactory.getObject();
@@ -94,11 +95,12 @@ public class ObjectFactoryCreatingFactoryBeanTests {
 	}
 
 	@Test
+	@SuppressWarnings("rawtypes")
 	public void testProviderSerialization() throws Exception {
 		ProviderTestBean testBean = beanFactory.getBean("providerTestBean", ProviderTestBean.class);
 		Provider<?> provider = testBean.getProvider();
 
-		provider = SerializationTestUtils.serializeAndDeserialize(provider);
+		provider = (Provider) SerializationTestUtils.serializeAndDeserialize(provider);
 
 		Date date1 = (Date) provider.get();
 		Date date2 = (Date) provider.get();

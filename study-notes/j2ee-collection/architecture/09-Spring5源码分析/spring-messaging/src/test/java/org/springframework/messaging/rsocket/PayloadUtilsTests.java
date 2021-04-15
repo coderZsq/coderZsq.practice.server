@@ -44,6 +44,8 @@ public class PayloadUtilsTests {
 	private LeakAwareNettyDataBufferFactory nettyBufferFactory =
 			new LeakAwareNettyDataBufferFactory(PooledByteBufAllocator.DEFAULT);
 
+	private DefaultDataBufferFactory defaultBufferFactory = new DefaultDataBufferFactory();
+
 
 	@AfterEach
 	public void tearDown() throws Exception {
@@ -68,7 +70,7 @@ public class PayloadUtilsTests {
 	@Test
 	public void retainAndReleaseWithDefaultFactory() {
 		Payload payload = ByteBufPayload.create("sample data");
-		DataBuffer buffer = PayloadUtils.retainDataAndReleasePayload(payload, DefaultDataBufferFactory.sharedInstance);
+		DataBuffer buffer = PayloadUtils.retainDataAndReleasePayload(payload, this.defaultBufferFactory);
 
 		assertThat(buffer).isInstanceOf(DefaultDataBuffer.class);
 		assertThat(payload.refCnt()).isEqualTo(0);
@@ -161,7 +163,7 @@ public class PayloadUtilsTests {
 	}
 
 	private DefaultDataBuffer createDefaultDataBuffer(String content) {
-		DefaultDataBuffer buffer = DefaultDataBufferFactory.sharedInstance.allocateBuffer();
+		DefaultDataBuffer buffer = this.defaultBufferFactory.allocateBuffer();
 		buffer.write(content, StandardCharsets.UTF_8);
 		return buffer;
 	}

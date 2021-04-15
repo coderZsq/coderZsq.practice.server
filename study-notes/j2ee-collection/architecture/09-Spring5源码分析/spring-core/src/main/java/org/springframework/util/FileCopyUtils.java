@@ -218,7 +218,7 @@ public abstract class FileCopyUtils {
 			return "";
 		}
 
-		StringWriter out = new StringWriter(BUFFER_SIZE);
+		StringWriter out = new StringWriter();
 		copy(in, out);
 		return out.toString();
 	}

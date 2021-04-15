@@ -25,7 +25,6 @@ import org.springframework.aop.Advisor;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.core.NamedThreadLocal;
 import org.springframework.core.PriorityOrdered;
-import org.springframework.lang.Nullable;
 
 /**
  * Interceptor that exposes the current {@link org.aopalliance.intercept.MethodInvocation}
@@ -89,9 +88,9 @@ public final class ExposeInvocationInterceptor implements MethodInterceptor, Pri
 	}
 
 	@Override
-	@Nullable
 	public Object invoke(MethodInvocation mi) throws Throwable {
 		MethodInvocation oldInvocation = invocation.get();
+		// 记录当前正在执行的拦截器
 		invocation.set(mi);
 		try {
 			return mi.proceed();

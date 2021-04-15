@@ -107,7 +107,6 @@ public abstract class AbstractMockMvcBuilder<B extends AbstractMockMvcBuilder<B>
 		return self();
 	}
 
-	@Override
 	public final <T extends B> T addDispatcherServletCustomizer(DispatcherServletCustomizer customizer) {
 		this.dispatcherServletCustomizers.add(customizer);
 		return self();

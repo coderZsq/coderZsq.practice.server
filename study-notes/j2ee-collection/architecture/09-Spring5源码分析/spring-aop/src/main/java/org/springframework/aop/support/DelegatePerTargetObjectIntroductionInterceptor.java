@@ -114,13 +114,12 @@ public class DelegatePerTargetObjectIntroductionInterceptor extends Introduction
 	 * that it is introduced into. This method is <strong>never</strong> called for
 	 * {@link MethodInvocation MethodInvocations} on the introduced interfaces.
 	 */
-	@Nullable
 	protected Object doProceed(MethodInvocation mi) throws Throwable {
 		// If we get here, just pass the invocation on.
 		return mi.proceed();
 	}
 
-	private Object getIntroductionDelegateFor(@Nullable Object targetObject) {
+	private Object getIntroductionDelegateFor(Object targetObject) {
 		synchronized (this.delegateMap) {
 			if (this.delegateMap.containsKey(targetObject)) {
 				return this.delegateMap.get(targetObject);

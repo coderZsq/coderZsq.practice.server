@@ -150,7 +150,8 @@ final class DefaultRenderingResponseBuilder implements RenderingResponse.Builder
 	}
 
 
-	private static final class DefaultRenderingResponse extends AbstractServerResponse implements RenderingResponse {
+	private static final class DefaultRenderingResponse extends DefaultServerResponseBuilder.AbstractServerResponse
+			implements RenderingResponse {
 
 		private final String name;
 

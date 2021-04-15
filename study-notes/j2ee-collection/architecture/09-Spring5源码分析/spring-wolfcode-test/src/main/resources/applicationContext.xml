@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN" "https://www.springframework.org/dtd/spring-beans-2.0.dtd">
+
+<beans>
+	<bean id="user" class="cn.wolfcode.spring.test.domain.User">
+		<constructor-arg index="0" value="root"/>
+		<constructor-arg index="1" value="123456"/>
+	</bean>
+	<bean id="userService" class="cn.wolfcode.spring.test.service.impl.UserServiceImpl">
+		<property name="user" ref="user"/>
+	</bean>
+</beans>

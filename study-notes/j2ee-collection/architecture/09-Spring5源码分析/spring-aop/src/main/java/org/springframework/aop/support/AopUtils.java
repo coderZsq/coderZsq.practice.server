@@ -120,8 +120,10 @@ public abstract class AopUtils {
 	 * Select an invocable method on the target type: either the given method itself
 	 * if actually exposed on the target type, or otherwise a corresponding method
 	 * on one of the target type's interfaces or on the target type itself.
-	 * @param method the method to check
-	 * @param targetType the target type to search methods on (typically an AOP proxy)
+	 * 方法实现说明: 判断传入的方法是不是一个 可调用的方法
+	 *
+	 * @param method the method to check | 方法对象
+	 * @param targetType the target type to search methods on (typically an AOP proxy) | class 对象
 	 * @return a corresponding invocable method on the target type
 	 * @throws IllegalStateException if the given method is not invocable on the given
 	 * target type (typically due to a proxy mismatch)
@@ -223,33 +225,50 @@ public abstract class AopUtils {
 	 */
 	public static boolean canApply(Pointcut pc, Class<?> targetClass, boolean hasIntroductions) {
 		Assert.notNull(pc, "Pointcut must not be null");
+		// 进行类级别过滤(通过 AspectJ)
+		// 粗筛
 		if (!pc.getClassFilter().matches(targetClass)) {
 			return false;
 		}
 
+		// 获取方法级别过滤的匹配器
+		// 如果 pc.getMethodMatcher() 返回 TrueMethodMatcher 则匹配所有方法
 		MethodMatcher methodMatcher = pc.getMethodMatcher();
 		if (methodMatcher == MethodMatcher.TRUE) {
 			// No need to iterate the methods if we're matching any method anyway...
 			return true;
 		}
 
+		// 判断匹配器是不是 IntroductionAwareMethodMatcher 只有 AspectJExpressionPointCut 才会实现这个接口
 		IntroductionAwareMethodMatcher introductionAwareMethodMatcher = null;
 		if (methodMatcher instanceof IntroductionAwareMethodMatcher) {
 			introductionAwareMethodMatcher = (IntroductionAwareMethodMatcher) methodMatcher;
 		}
 
+		// 创建一个集合用于保存 targetClass 的 class 对象
 		Set<Class<?>> classes = new LinkedHashSet<>();
+		// 判断当前 class 是不是代理的 class 对象
 		if (!Proxy.isProxyClass(targetClass)) {
+			// 加入到集合中去
 			classes.add(ClassUtils.getUserClass(targetClass));
 		}
+		// 获取到 targetClass 所实现的接口的 class 对象，然后加入到集合中
 		classes.addAll(ClassUtils.getAllInterfacesForClassAsSet(targetClass));
 
+		// 循环所有的 class 对象
 		for (Class<?> clazz : classes) {
+			// 通过 class 获取到所有的方法
 			Method[] methods = ReflectionUtils.getAllDeclaredMethods(clazz);
+			// 循环方法
+			// 精筛
 			for (Method method : methods) {
+				// 通过 methodMatcher.matches 来匹配方法
 				if (introductionAwareMethodMatcher != null ?
+						// 通过切点表达式进行匹配 AspectJ 方式
 						introductionAwareMethodMatcher.matches(method, targetClass, hasIntroductions) :
+						// 通过方法匹配器进行匹配 内置 aop 接口方式
 						methodMatcher.matches(method, targetClass)) {
+					// 只要有 1 个方法匹配上了就创建代理
 					return true;
 				}
 			}
@@ -281,11 +300,15 @@ public abstract class AopUtils {
 	 * @return whether the pointcut can apply on any method
 	 */
 	public static boolean canApply(Advisor advisor, Class<?> targetClass, boolean hasIntroductions) {
+		// 判断增强器 IntroductionAdvisor
 		if (advisor instanceof IntroductionAdvisor) {
 			return ((IntroductionAdvisor) advisor).getClassFilter().matches(targetClass);
 		}
+		// 判断事务的增强器 BeanFactoryTransactionAttributeSourceAdvisor 是否实现了 PointcutAdvisor
 		else if (advisor instanceof PointcutAdvisor) {
+			// 转为 PointcutAdvisor 类型
 			PointcutAdvisor pca = (PointcutAdvisor) advisor;
+			// 找到真正能用的增强器
 			return canApply(pca.getPointcut(), targetClass, hasIntroductions);
 		}
 		else {
@@ -297,27 +320,39 @@ public abstract class AopUtils {
 	/**
 	 * Determine the sublist of the {@code candidateAdvisors} list
 	 * that is applicable to the given class.
-	 * @param candidateAdvisors the Advisors to evaluate
-	 * @param clazz the target class
-	 * @return sublist of Advisors that can apply to an object of the given class
+	 * 找到合适的增强器对象
+	 *
+	 * @param candidateAdvisors the Advisors to evaluate | 候选的增强器对象
+	 * @param clazz the target class | 正在创建的 class 对象
+	 * @return sublist of Advisors that can apply to an object of the given class | 返回适合当前 bean 的增强器集合
 	 * (may be the incoming List as-is)
 	 */
 	public static List<Advisor> findAdvisorsThatCanApply(List<Advisor> candidateAdvisors, Class<?> clazz) {
+		// 如果没有通知 直接返回
 		if (candidateAdvisors.isEmpty()) {
 			return candidateAdvisors;
 		}
+		// 定义一个匹配到的增强器集合对象
 		List<Advisor> eligibleAdvisors = new ArrayList<>();
+		// 循环候选的增强器对象
 		for (Advisor candidate : candidateAdvisors) {
+			// 判断增强器对象是不是实现了 IntroductionAdvisor (很明显事务的没有实现 所以不会走下面的逻辑)
 			if (candidate instanceof IntroductionAdvisor && canApply(candidate, clazz)) {
 				eligibleAdvisors.add(candidate);
 			}
 		}
+		// 不为空
 		boolean hasIntroductions = !eligibleAdvisors.isEmpty();
 		for (Advisor candidate : candidateAdvisors) {
+			// 判断增强器对象是不是实现了 IntroductionAdvisor (很明显事务的没有实现 所以不会走下面的逻辑)
 			if (candidate instanceof IntroductionAdvisor) {
 				// already processed
+				// 在上面已经处理过，不需要处理
 				continue;
 			}
+			/**
+			 * 真正的判断事务增强器是不是合适的
+			 */
 			if (canApply(candidate, clazz, hasIntroductions)) {
 				eligibleAdvisors.add(candidate);
 			}

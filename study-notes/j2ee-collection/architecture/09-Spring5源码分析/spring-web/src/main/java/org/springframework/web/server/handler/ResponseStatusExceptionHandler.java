@@ -88,10 +88,9 @@ public class ResponseStatusExceptionHandler implements WebExceptionHandler {
 
 	private boolean updateResponse(ServerHttpResponse response, Throwable ex) {
 		boolean result = false;
-		HttpStatus httpStatus = determineStatus(ex);
-		int code = (httpStatus != null ? httpStatus.value() : determineRawStatusCode(ex));
-		if (code != -1) {
-			if (response.setRawStatusCode(code)) {
+		HttpStatus status = determineStatus(ex);
+		if (status != null) {
+			if (response.setStatusCode(status)) {
 				if (ex instanceof ResponseStatusException) {
 					((ResponseStatusException) ex).getResponseHeaders()
 							.forEach((name, values) ->
@@ -110,30 +109,17 @@ public class ResponseStatusExceptionHandler implements WebExceptionHandler {
 	}
 
 	/**
-	 * Determine the HTTP status for the given exception.
-	 * <p>As of 5.3 this method always returns {@code null} in which case
-	 * {@link #determineRawStatusCode(Throwable)} is used instead.
-	 * @param ex the exception to check
+	 * Determine the HTTP status implied by the given exception.
+	 * @param ex the exception to introspect
 	 * @return the associated HTTP status, if any
-	 * @deprecated as of 5.3 in favor of {@link #determineRawStatusCode(Throwable)}.
+	 * @since 5.0.5
 	 */
 	@Nullable
-	@Deprecated
 	protected HttpStatus determineStatus(Throwable ex) {
-		return null;
-	}
-
-	/**
-	 * Determine the raw status code for the given exception.
-	 * @param ex the exception to check
-	 * @return the associated HTTP status code, or -1 if it can't be derived.
-	 * @since 5.3
-	 */
-	protected int determineRawStatusCode(Throwable ex) {
 		if (ex instanceof ResponseStatusException) {
-			return ((ResponseStatusException) ex).getRawStatusCode();
+			return ((ResponseStatusException) ex).getStatus();
 		}
-		return -1;
+		return null;
 	}
 
 }

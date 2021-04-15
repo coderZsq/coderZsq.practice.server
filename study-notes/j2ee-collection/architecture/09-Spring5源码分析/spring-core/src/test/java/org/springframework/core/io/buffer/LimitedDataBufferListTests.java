@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,8 @@ package org.springframework.core.io.buffer;
 
 import java.nio.charset.StandardCharsets;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * Unit tests for {@link LimitedDataBufferList}.
@@ -29,12 +27,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  */
 public class LimitedDataBufferListTests {
 
+	private final static DataBufferFactory bufferFactory = new DefaultDataBufferFactory();
+
+
 	@Test
 	void limitEnforced() {
-		LimitedDataBufferList list = new LimitedDataBufferList(5);
-
-		assertThatThrownBy(() -> list.add(toDataBuffer("123456"))).isInstanceOf(DataBufferLimitException.class);
-		assertThat(list).isEmpty();
+		Assertions.assertThatThrownBy(() -> new LimitedDataBufferList(5).add(toDataBuffer("123456")))
+				.isInstanceOf(DataBufferLimitException.class);
 	}
 
 	@Test
@@ -52,8 +51,7 @@ public class LimitedDataBufferListTests {
 
 
 	private static DataBuffer toDataBuffer(String value) {
-		byte[] bytes = value.getBytes(StandardCharsets.UTF_8);
-		return DefaultDataBufferFactory.sharedInstance.wrap(bytes);
+		return bufferFactory.wrap(value.getBytes(StandardCharsets.UTF_8));
 	}
 
 }

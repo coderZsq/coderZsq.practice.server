@@ -18,9 +18,9 @@ package org.springframework.messaging.rsocket
 
 import io.rsocket.transport.ClientTransport
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.reactive.asFlow
-import kotlinx.coroutines.reactive.awaitSingleOrNull
+import kotlinx.coroutines.reactive.awaitFirstOrNull
 import kotlinx.coroutines.reactive.awaitSingle
+import kotlinx.coroutines.reactive.asFlow
 import org.reactivestreams.Publisher
 import org.springframework.core.ParameterizedTypeReference
 import reactor.core.publisher.Flux
@@ -33,7 +33,6 @@ import java.net.URI
  * @author Sebastien Deleuze
  * @since 5.2
  */
-@Suppress("DEPRECATION")
 suspend fun RSocketRequester.Builder.connectAndAwait(transport: ClientTransport): RSocketRequester =
 		connect(transport).awaitSingle()
 
@@ -43,7 +42,6 @@ suspend fun RSocketRequester.Builder.connectAndAwait(transport: ClientTransport)
  * @author Sebastien Deleuze
  * @since 5.2
  */
-@Suppress("DEPRECATION")
 suspend fun RSocketRequester.Builder.connectTcpAndAwait(host: String, port: Int): RSocketRequester =
 		connectTcp(host, port).awaitSingle()
 
@@ -53,7 +51,6 @@ suspend fun RSocketRequester.Builder.connectTcpAndAwait(host: String, port: Int)
  * @author Sebastien Deleuze
  * @since 5.2
  */
-@Suppress("DEPRECATION")
 suspend fun RSocketRequester.Builder.connectWebSocketAndAwait(uri: URI): RSocketRequester =
 		connectWebSocket(uri).awaitSingle()
 
@@ -103,7 +100,7 @@ inline fun <reified T : Any> RSocketRequester.RequestSpec.dataWithType(flow: Flo
  * @since 5.2
  */
 suspend fun RSocketRequester.RetrieveSpec.sendAndAwait() {
-	send().awaitSingleOrNull()
+	send().awaitFirstOrNull()
 }
 
 /**
@@ -122,7 +119,7 @@ suspend inline fun <reified T : Any> RSocketRequester.RetrieveSpec.retrieveAndAw
  * @since 5.2.1
  */
 suspend inline fun <reified T : Any> RSocketRequester.RetrieveSpec.retrieveAndAwaitOrNull(): T? =
-		retrieveMono(object : ParameterizedTypeReference<T>() {}).awaitSingleOrNull()
+		retrieveMono(object : ParameterizedTypeReference<T>() {}).awaitFirstOrNull()
 
 /**
  * Coroutines variant of [RSocketRequester.RetrieveSpec.retrieveFlux].

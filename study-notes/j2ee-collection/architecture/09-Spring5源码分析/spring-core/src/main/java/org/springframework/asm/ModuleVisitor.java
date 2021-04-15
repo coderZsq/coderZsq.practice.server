@@ -65,17 +65,16 @@ public abstract class ModuleVisitor {
    * @param moduleVisitor the module visitor to which this visitor must delegate method calls. May
    *     be null.
    */
+  @SuppressWarnings("deprecation")
   public ModuleVisitor(final int api, final ModuleVisitor moduleVisitor) {
-    if (api != Opcodes.ASM9
-        && api != Opcodes.ASM8
-        && api != Opcodes.ASM7
+    if (api != Opcodes.ASM7
         && api != Opcodes.ASM6
         && api != Opcodes.ASM5
         && api != Opcodes.ASM4
-        && api != Opcodes.ASM10_EXPERIMENTAL) {
+        && api != Opcodes.ASM8_EXPERIMENTAL) {
       throw new IllegalArgumentException("Unsupported api " + api);
     }
-    // SPRING PATCH: no preview mode check for ASM experimental
+    // SPRING PATCH: no preview mode check for ASM 8 experimental
     this.api = api;
     this.mv = moduleVisitor;
   }

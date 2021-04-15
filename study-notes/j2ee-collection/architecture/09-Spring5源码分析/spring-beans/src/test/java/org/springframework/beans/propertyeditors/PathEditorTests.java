@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 public class PathEditorTests {
 
 	@Test
-	public void testClasspathPathName() {
+	public void testClasspathPathName() throws Exception {
 		PropertyEditor pathEditor = new PathEditor();
 		pathEditor.setAsText("classpath:" + ClassUtils.classPackageAsResourcePath(getClass()) + "/" +
 				ClassUtils.getShortName(getClass()) + ".class");
@@ -46,14 +46,14 @@ public class PathEditorTests {
 	}
 
 	@Test
-	public void testWithNonExistentResource() {
+	public void testWithNonExistentResource() throws Exception {
 		PropertyEditor propertyEditor = new PathEditor();
 		assertThatIllegalArgumentException().isThrownBy(() ->
 				propertyEditor.setAsText("classpath:/no_way_this_file_is_found.doc"));
 	}
 
 	@Test
-	public void testWithNonExistentPath() {
+	public void testWithNonExistentPath() throws Exception {
 		PropertyEditor pathEditor = new PathEditor();
 		pathEditor.setAsText("file:/no_way_this_file_is_found.doc");
 		Object value = pathEditor.getValue();
@@ -65,7 +65,7 @@ public class PathEditorTests {
 	}
 
 	@Test
-	public void testAbsolutePath() {
+	public void testAbsolutePath() throws Exception {
 		PropertyEditor pathEditor = new PathEditor();
 		pathEditor.setAsText("/no_way_this_file_is_found.doc");
 		Object value = pathEditor.getValue();
@@ -77,31 +77,7 @@ public class PathEditorTests {
 	}
 
 	@Test
-	public void testWindowsAbsolutePath() {
-		PropertyEditor pathEditor = new PathEditor();
-		pathEditor.setAsText("C:\\no_way_this_file_is_found.doc");
-		Object value = pathEditor.getValue();
-		boolean condition1 = value instanceof Path;
-		assertThat(condition1).isTrue();
-		Path path = (Path) value;
-		boolean condition = !path.toFile().exists();
-		assertThat(condition).isTrue();
-	}
-
-	@Test
-	public void testWindowsAbsoluteFilePath() {
-		PropertyEditor pathEditor = new PathEditor();
-		pathEditor.setAsText("file://C:\\no_way_this_file_is_found.doc");
-		Object value = pathEditor.getValue();
-		boolean condition1 = value instanceof Path;
-		assertThat(condition1).isTrue();
-		Path path = (Path) value;
-		boolean condition = !path.toFile().exists();
-		assertThat(condition).isTrue();
-	}
-
-	@Test
-	public void testUnqualifiedPathNameFound() {
+	public void testUnqualifiedPathNameFound() throws Exception {
 		PropertyEditor pathEditor = new PathEditor();
 		String fileName = ClassUtils.classPackageAsResourcePath(getClass()) + "/" +
 				ClassUtils.getShortName(getClass()) + ".class";
@@ -120,7 +96,7 @@ public class PathEditorTests {
 	}
 
 	@Test
-	public void testUnqualifiedPathNameNotFound() {
+	public void testUnqualifiedPathNameNotFound() throws Exception {
 		PropertyEditor pathEditor = new PathEditor();
 		String fileName = ClassUtils.classPackageAsResourcePath(getClass()) + "/" +
 				ClassUtils.getShortName(getClass()) + ".clazz";

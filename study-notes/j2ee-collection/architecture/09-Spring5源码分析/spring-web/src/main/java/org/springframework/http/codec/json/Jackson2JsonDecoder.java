@@ -28,6 +28,7 @@ import reactor.core.publisher.Flux;
 import org.springframework.core.ResolvableType;
 import org.springframework.core.codec.StringDecoder;
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.lang.Nullable;
@@ -78,7 +79,8 @@ public class Jackson2JsonDecoder extends AbstractJackson2Decoder {
 
 		MimeType textMimeType = new MimeType(MimeTypeUtils.TEXT_PLAIN, charset);
 		Flux<String> decoded = STRING_DECODER.decode(input, STRING_TYPE, textMimeType, null);
-		return decoded.map(s -> DefaultDataBufferFactory.sharedInstance.wrap(s.getBytes(StandardCharsets.UTF_8)));
+		DataBufferFactory factory = new DefaultDataBufferFactory();
+		return decoded.map(s -> factory.wrap(s.getBytes(StandardCharsets.UTF_8)));
 	}
 
 }

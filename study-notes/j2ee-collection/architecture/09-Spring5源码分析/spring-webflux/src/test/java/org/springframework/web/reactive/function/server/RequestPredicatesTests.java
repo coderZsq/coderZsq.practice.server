@@ -29,6 +29,7 @@ import org.springframework.web.testfixture.http.server.reactive.MockServerHttpRe
 import org.springframework.web.testfixture.server.MockServerWebExchange;
 import org.springframework.web.util.pattern.PathPatternParser;
 
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -140,7 +141,7 @@ public class RequestPredicatesTests {
 		URI uri = URI.create("https://localhost/path");
 		RequestPredicate predicate = RequestPredicates.path("/p*");
 		MockServerHttpRequest mockRequest = MockServerHttpRequest.get(uri.toString()).build();
-		ServerRequest request = new DefaultServerRequest(MockServerWebExchange.from(mockRequest), Collections.emptyList());
+		ServerRequest request = new DefaultServerRequest(MockServerWebExchange.from(mockRequest), emptyList());
 		assertThat(predicate.test(request)).isTrue();
 
 		mockRequest = MockServerHttpRequest.head("https://example.com").build();
@@ -173,15 +174,6 @@ public class RequestPredicatesTests {
 
 		RequestPredicate predicate = pathPredicates.apply("/P*");
 		MockServerHttpRequest mockRequest = MockServerHttpRequest.get("https://example.com/path").build();
-		ServerRequest request = new DefaultServerRequest(MockServerWebExchange.from(mockRequest), Collections.emptyList());
-		assertThat(predicate.test(request)).isTrue();
-	}
-
-	@Test
-	public void pathWithContext() {
-		RequestPredicate predicate = RequestPredicates.path("/p*");
-		MockServerHttpRequest mockRequest = MockServerHttpRequest.get("https://localhost/context/path")
-				.contextPath("/context").build();
 		ServerRequest request = new DefaultServerRequest(MockServerWebExchange.from(mockRequest), Collections.emptyList());
 		assertThat(predicate.test(request)).isTrue();
 	}

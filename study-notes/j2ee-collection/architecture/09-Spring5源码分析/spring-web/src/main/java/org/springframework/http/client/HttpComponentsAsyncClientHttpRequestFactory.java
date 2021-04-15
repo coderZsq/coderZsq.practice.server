@@ -44,8 +44,7 @@ import org.springframework.util.Assert;
  * @author Stephane Nicoll
  * @since 4.0
  * @see HttpAsyncClient
- * @deprecated as of Spring 5.0, in favor of
- * {@link org.springframework.http.client.reactive.HttpComponentsClientHttpConnector}
+ * @deprecated as of Spring 5.0, with no direct replacement
  */
 @Deprecated
 public class HttpComponentsAsyncClientHttpRequestFactory extends HttpComponentsClientHttpRequestFactory

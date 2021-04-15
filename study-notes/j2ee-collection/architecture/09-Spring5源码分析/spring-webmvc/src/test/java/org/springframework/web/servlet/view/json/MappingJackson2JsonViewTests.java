@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,6 +38,7 @@ import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.SerializerFactory;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
@@ -59,19 +60,30 @@ import static org.mockito.Mockito.mock;
  * @author Arjen Poutsma
  * @author Rossen Stoyanchev
  * @author Sebastien Deleuze
- * @author Sam Brannen
  */
 public class MappingJackson2JsonViewTests {
 
-	private MappingJackson2JsonView view = new MappingJackson2JsonView();
+	private MappingJackson2JsonView view;
 
-	private MockHttpServletRequest request = new MockHttpServletRequest();
+	private MockHttpServletRequest request;
 
-	private MockHttpServletResponse response = new MockHttpServletResponse();
+	private MockHttpServletResponse response;
 
-	private Context jsContext = ContextFactory.getGlobal().enterContext();
+	private Context jsContext;
 
-	private ScriptableObject jsScope = jsContext.initStandardObjects();
+	private ScriptableObject jsScope;
+
+
+	@BeforeEach
+	public void setUp() {
+		request = new MockHttpServletRequest();
+		response = new MockHttpServletResponse();
+
+		jsContext = ContextFactory.getGlobal().enterContext();
+		jsScope = jsContext.initStandardObjects();
+
+		view = new MappingJackson2JsonView();
+	}
 
 
 	@Test
@@ -90,8 +102,7 @@ public class MappingJackson2JsonViewTests {
 
 		assertThat(response.getHeader("Cache-Control")).isEqualTo("no-store");
 
-		MediaType mediaType = MediaType.parseMediaType(response.getContentType());
-		assertThat(mediaType.isCompatibleWith(MediaType.parseMediaType(MappingJackson2JsonView.DEFAULT_CONTENT_TYPE))).isTrue();
+		assertThat(response.getContentType()).isEqualTo(MappingJackson2JsonView.DEFAULT_CONTENT_TYPE);
 
 		String jsonResult = response.getContentAsString();
 		assertThat(jsonResult.length() > 0).isTrue();
@@ -106,14 +117,12 @@ public class MappingJackson2JsonViewTests {
 		model.put("foo", "bar");
 
 		view.render(model, request, response);
-		MediaType mediaType = MediaType.parseMediaType(response.getContentType());
-		assertThat(mediaType.isCompatibleWith(MediaType.APPLICATION_JSON)).isTrue();
+		assertThat(response.getContentType()).isEqualTo("application/json");
 
 		request.setAttribute(View.SELECTED_CONTENT_TYPE, new MediaType("application", "vnd.example-v2+xml"));
 		view.render(model, request, response);
 
-		mediaType = MediaType.parseMediaType(response.getContentType());
-		assertThat(mediaType.isCompatibleWith(MediaType.parseMediaType("application/vnd.example-v2+xml"))).isTrue();
+		assertThat(response.getContentType()).isEqualTo("application/vnd.example-v2+xml");
 	}
 
 	@Test
@@ -317,10 +326,10 @@ public class MappingJackson2JsonViewTests {
 		if (jsonPrefix != null) {
 			json = json.substring(5);
 		}
-		Object jsResult = jsContext.evaluateString(jsScope, "(" + json + ")", "JSON Stream", 1, null);
+		Object jsResult =
+				jsContext.evaluateString(jsScope, "(" + json + ")", "JSON Stream", 1, null);
 		assertThat(jsResult).as("Json Result did not eval as valid JavaScript").isNotNull();
-		MediaType mediaType = MediaType.parseMediaType(response.getContentType());
-		assertThat(mediaType.isCompatibleWith(MediaType.APPLICATION_JSON)).isTrue();
+		assertThat(response.getContentType()).isEqualTo("application/json");
 	}
 
 

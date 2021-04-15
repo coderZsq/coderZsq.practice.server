@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.lang.reflect.Proxy;
 
 import org.springframework.aop.SpringProxy;
-import org.springframework.core.NativeDetector;
 
 /**
  * Default {@link AopProxyFactory} implementation, creating either a CGLIB proxy
@@ -39,7 +38,6 @@ import org.springframework.core.NativeDetector;
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
- * @author Sebastien Deleuze
  * @since 12.03.2004
  * @see AdvisedSupport#setOptimize
  * @see AdvisedSupport#setProxyTargetClass
@@ -48,22 +46,34 @@ import org.springframework.core.NativeDetector;
 @SuppressWarnings("serial")
 public class DefaultAopProxyFactory implements AopProxyFactory, Serializable {
 
-
+	/**
+	 * 该方法用来创建代理对象
+	 * targetClass 对象实现了接口，且 ProxyTargetClass 没有指定强制的走 cglib 代理, 那么就是创建 jdk 代理
+	 * 代理的类没有实现接口，那么会直接走 cglib 代理
+	 * 若 ProxyTargetClass 指定为 false 且代理类是接口才会走 jdk 代理, 否则还是 cglib 代理
+	 *
+	 * @param config 用来指定 advisor 信息
+	 * @return aop 代理对象
+	 * @throws AopConfigException
+	 */
 	@Override
 	public AopProxy createAopProxy(AdvisedSupport config) throws AopConfigException {
-		if (!NativeDetector.inNativeImage() &&
-				(config.isOptimize() || config.isProxyTargetClass() || hasNoUserSuppliedProxyInterfaces(config))) {
+		// 判断是否前置指定使用 cglib 代理 ProxyTargetClass = true || 没有接口
+		if (config.isOptimize() || config.isProxyTargetClass() || hasNoUserSuppliedProxyInterfaces(config)) {
 			Class<?> targetClass = config.getTargetClass();
 			if (targetClass == null) {
 				throw new AopConfigException("TargetSource cannot determine target class: " +
 						"Either an interface or a target is required for proxy creation.");
 			}
+			// targetClass 是接口 使用的就是 jdk 代理
 			if (targetClass.isInterface() || Proxy.isProxyClass(targetClass)) {
 				return new JdkDynamicAopProxy(config);
 			}
+			// cglib 代理
 			return new ObjenesisCglibAopProxy(config);
 		}
 		else {
+			// jdk 动态代理
 			return new JdkDynamicAopProxy(config);
 		}
 	}

@@ -91,6 +91,7 @@ public class AnnotationTransactionAttributeSource extends AbstractFallbackTransa
 	 */
 	public AnnotationTransactionAttributeSource(boolean publicMethodsOnly) {
 		this.publicMethodsOnly = publicMethodsOnly;
+		// 是否支持 jta 和 ejb 的事务解析
 		if (jta12Present || ejb3Present) {
 			this.annotationParsers = new LinkedHashSet<>(4);
 			this.annotationParsers.add(new SpringTransactionAnnotationParser());
@@ -171,7 +172,9 @@ public class AnnotationTransactionAttributeSource extends AbstractFallbackTransa
 	 */
 	@Nullable
 	protected TransactionAttribute determineTransactionAttribute(AnnotatedElement element) {
+		// 获取注解解析器
 		for (TransactionAnnotationParser parser : this.annotationParsers) {
+			// 通过注解解析器去解析方法上的注解
 			TransactionAttribute attr = parser.parseTransactionAnnotation(element);
 			if (attr != null) {
 				return attr;

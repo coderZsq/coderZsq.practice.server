@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,10 +23,10 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
 import org.springframework.aop.AfterAdvice;
-import org.springframework.lang.Nullable;
 
 /**
  * Spring AOP advice wrapping an AspectJ after advice method.
+ * 类的描述: 后置通知具体实现类对象 用于来执行后置通知方法 本类的设计模式才用了【适配器模式】
  *
  * @author Rod Johnson
  * @since 2.0
@@ -42,13 +42,19 @@ public class AspectJAfterAdvice extends AbstractAspectJAdvice
 	}
 
 
+	/**
+	 * @param mi 主要调用对象是 ReflectiveMethodInvocation 会通过 ReflectiveMethodInvocation.proceed() 方法来执行拦截器链
+	 * @return
+	 * @throws Throwable
+	 */
 	@Override
-	@Nullable
 	public Object invoke(MethodInvocation mi) throws Throwable {
 		try {
+			// 本拦截器是后置通知拦截器对象, 执行下一个通知
 			return mi.proceed();
 		}
 		finally {
+			// 后置通知的方法总是会被执行 因为是 finally 包裹的
 			invokeAdviceMethod(getJoinPointMatch(), null, null);
 		}
 	}

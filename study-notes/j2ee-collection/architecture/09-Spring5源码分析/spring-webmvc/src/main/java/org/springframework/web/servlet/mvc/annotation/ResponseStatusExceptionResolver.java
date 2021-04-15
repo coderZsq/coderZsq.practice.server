@@ -133,7 +133,9 @@ public class ResponseStatusExceptionResolver extends AbstractHandlerExceptionRes
 		ex.getResponseHeaders().forEach((name, values) ->
 				values.forEach(value -> response.addHeader(name, value)));
 
-		return applyStatusAndReason(ex.getRawStatusCode(), ex.getReason(), response);
+		int statusCode = ex.getStatus().value();
+		String reason = ex.getReason();
+		return applyStatusAndReason(statusCode, reason, response);
 	}
 
 	/**

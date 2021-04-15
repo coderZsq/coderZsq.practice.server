@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.testfixture.servlet.MockHttpServletRequest;
 import org.springframework.web.testfixture.servlet.MockHttpServletResponse;
 
@@ -45,24 +44,19 @@ public class CorsFilterTests {
 
 	private final CorsConfiguration config = new CorsConfiguration();
 
-
 	@BeforeEach
-	void setup() {
+	public void setup() throws Exception {
 		config.setAllowedOrigins(Arrays.asList("https://domain1.com", "https://domain2.com"));
 		config.setAllowedMethods(Arrays.asList("GET", "POST"));
 		config.setAllowedHeaders(Arrays.asList("header1", "header2"));
 		config.setExposedHeaders(Arrays.asList("header3", "header4"));
 		config.setMaxAge(123L);
 		config.setAllowCredentials(false);
-
-		UrlBasedCorsConfigurationSource configSource = new UrlBasedCorsConfigurationSource();
-		configSource.registerCorsConfiguration("/**", config);
-
-		filter = new CorsFilter(configSource);
+		filter = new CorsFilter(r -> config);
 	}
 
 	@Test
-	void nonCorsRequest() throws ServletException, IOException {
+	public void nonCorsRequest() throws ServletException, IOException {
 
 		MockHttpServletRequest request = new MockHttpServletRequest(HttpMethod.GET.name(), "/test.html");
 		MockHttpServletResponse response = new MockHttpServletResponse();
@@ -75,7 +69,7 @@ public class CorsFilterTests {
 	}
 
 	@Test
-	void sameOriginRequest() throws ServletException, IOException {
+	public void sameOriginRequest() throws ServletException, IOException {
 
 		MockHttpServletRequest request = new MockHttpServletRequest(HttpMethod.GET.name(), "https://domain1.com/test.html");
 		request.addHeader(HttpHeaders.ORIGIN, "https://domain1.com");
@@ -92,7 +86,7 @@ public class CorsFilterTests {
 	}
 
 	@Test
-	void validActualRequest() throws ServletException, IOException {
+	public void validActualRequest() throws ServletException, IOException {
 
 		MockHttpServletRequest request = new MockHttpServletRequest(HttpMethod.GET.name(), "/test.html");
 		request.addHeader(HttpHeaders.ORIGIN, "https://domain2.com");
@@ -107,7 +101,7 @@ public class CorsFilterTests {
 	}
 
 	@Test
-	void invalidActualRequest() throws ServletException, IOException {
+	public void invalidActualRequest() throws ServletException, IOException {
 
 		MockHttpServletRequest request = new MockHttpServletRequest(HttpMethod.DELETE.name(), "/test.html");
 		request.addHeader(HttpHeaders.ORIGIN, "https://domain2.com");
@@ -121,7 +115,7 @@ public class CorsFilterTests {
 	}
 
 	@Test
-	void validPreFlightRequest() throws ServletException, IOException {
+	public void validPreFlightRequest() throws ServletException, IOException {
 
 		MockHttpServletRequest request = new MockHttpServletRequest(HttpMethod.OPTIONS.name(), "/test.html");
 		request.addHeader(HttpHeaders.ORIGIN, "https://domain2.com");
@@ -140,7 +134,7 @@ public class CorsFilterTests {
 	}
 
 	@Test
-	void invalidPreFlightRequest() throws ServletException, IOException {
+	public void invalidPreFlightRequest() throws ServletException, IOException {
 
 		MockHttpServletRequest request = new MockHttpServletRequest(HttpMethod.OPTIONS.name(), "/test.html");
 		request.addHeader(HttpHeaders.ORIGIN, "https://domain2.com");

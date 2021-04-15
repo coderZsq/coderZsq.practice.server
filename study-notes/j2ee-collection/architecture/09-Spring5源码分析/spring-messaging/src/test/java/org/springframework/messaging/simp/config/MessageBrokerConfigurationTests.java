@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.core.Ordered;
-import org.springframework.core.task.TaskExecutor;
 import org.springframework.lang.Nullable;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -595,20 +594,19 @@ public class MessageBrokerConfigurationTests {
 
 		@Override
 		@Bean
-		public AbstractSubscribableChannel clientInboundChannel(TaskExecutor clientInboundChannelExecutor) {
+		public AbstractSubscribableChannel clientInboundChannel() {
 			return new TestChannel();
 		}
 
 		@Override
 		@Bean
-		public AbstractSubscribableChannel clientOutboundChannel(TaskExecutor clientOutboundChannelExecutor) {
+		public AbstractSubscribableChannel clientOutboundChannel() {
 			return new TestChannel();
 		}
 
 		@Override
 		@Bean
-		public AbstractSubscribableChannel brokerChannel(AbstractSubscribableChannel clientInboundChannel,
-				AbstractSubscribableChannel clientOutboundChannel, TaskExecutor brokerChannelExecutor) {
+		public AbstractSubscribableChannel brokerChannel() {
 			return new TestChannel();
 		}
 	}
@@ -682,21 +680,20 @@ public class MessageBrokerConfigurationTests {
 
 		@Override
 		@Bean
-		public AbstractSubscribableChannel clientInboundChannel(TaskExecutor clientInboundChannelExecutor) {
+		public AbstractSubscribableChannel clientInboundChannel() {
 			// synchronous
 			return new ExecutorSubscribableChannel(null);
 		}
 
 		@Override
 		@Bean
-		public AbstractSubscribableChannel clientOutboundChannel(TaskExecutor clientOutboundChannelExecutor) {
+		public AbstractSubscribableChannel clientOutboundChannel() {
 			return new TestChannel();
 		}
 
 		@Override
 		@Bean
-		public AbstractSubscribableChannel brokerChannel(AbstractSubscribableChannel clientInboundChannel,
-				AbstractSubscribableChannel clientOutboundChannel, TaskExecutor brokerChannelExecutor) {
+		public AbstractSubscribableChannel brokerChannel() {
 			// synchronous
 			return new ExecutorSubscribableChannel(null);
 		}

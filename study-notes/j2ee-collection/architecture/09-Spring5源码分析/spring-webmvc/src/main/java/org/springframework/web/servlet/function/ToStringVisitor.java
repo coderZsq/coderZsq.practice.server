@@ -16,7 +16,6 @@
 
 package org.springframework.web.servlet.function;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -67,10 +66,6 @@ class ToStringVisitor implements RouterFunctions.Visitor, RequestPredicates.Visi
 	public void resources(Function<ServerRequest, Optional<Resource>> lookupFunction) {
 		indent();
 		this.builder.append(lookupFunction).append('\n');
-	}
-
-	@Override
-	public void attributes(Map<String, Object> attributes) {
 	}
 
 	@Override

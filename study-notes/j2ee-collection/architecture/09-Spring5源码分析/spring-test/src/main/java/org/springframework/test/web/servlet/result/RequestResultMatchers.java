@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import javax.servlet.http.HttpSession;
 
 import org.hamcrest.Matcher;
 
-import org.springframework.lang.Nullable;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.util.Assert;
@@ -85,7 +84,7 @@ public class RequestResultMatchers {
 	 * or {@link WebAsyncTask}.
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> ResultMatcher asyncResult(Matcher<? super T> matcher) {
+	public <T> ResultMatcher asyncResult(Matcher<T> matcher) {
 		return result -> {
 			HttpServletRequest request = result.getRequest();
 			assertAsyncStarted(request);
@@ -99,7 +98,7 @@ public class RequestResultMatchers {
 	 * or {@link WebAsyncTask}. The value matched is the value returned from the
 	 * {@code Callable} or the exception raised.
 	 */
-	public ResultMatcher asyncResult(@Nullable Object expectedResult) {
+	public ResultMatcher asyncResult(Object expectedResult) {
 		return result -> {
 			HttpServletRequest request = result.getRequest();
 			assertAsyncStarted(request);
@@ -111,7 +110,7 @@ public class RequestResultMatchers {
 	 * Assert a request attribute value with the given Hamcrest {@link Matcher}.
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> ResultMatcher attribute(String name, Matcher<? super T> matcher) {
+	public <T> ResultMatcher attribute(String name, Matcher<T> matcher) {
 		return result -> {
 			T value = (T) result.getRequest().getAttribute(name);
 			assertThat("Request attribute '" + name + "'", value, matcher);
@@ -121,7 +120,7 @@ public class RequestResultMatchers {
 	/**
 	 * Assert a request attribute value.
 	 */
-	public ResultMatcher attribute(String name, @Nullable Object expectedValue) {
+	public ResultMatcher attribute(String name, Object expectedValue) {
 		return result ->
 				assertEquals("Request attribute '" + name + "'", expectedValue, result.getRequest().getAttribute(name));
 	}
@@ -130,7 +129,7 @@ public class RequestResultMatchers {
 	 * Assert a session attribute value with the given Hamcrest {@link Matcher}.
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> ResultMatcher sessionAttribute(String name, Matcher<? super T> matcher) {
+	public <T> ResultMatcher sessionAttribute(String name, Matcher<T> matcher) {
 		return result -> {
 			HttpSession session = result.getRequest().getSession();
 			Assert.state(session != null, "No HttpSession");
@@ -142,7 +141,7 @@ public class RequestResultMatchers {
 	/**
 	 * Assert a session attribute value.
 	 */
-	public ResultMatcher sessionAttribute(String name, @Nullable Object value) {
+	public ResultMatcher sessionAttribute(String name, Object value) {
 		return result -> {
 			HttpSession session = result.getRequest().getSession();
 			Assert.state(session != null, "No HttpSession");

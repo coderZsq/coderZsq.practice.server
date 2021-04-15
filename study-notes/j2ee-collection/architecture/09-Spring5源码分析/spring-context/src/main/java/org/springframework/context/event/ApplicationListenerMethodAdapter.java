@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.StringJoiner;
 import java.util.concurrent.CompletionStage;
 
 import org.apache.commons.logging.Log;
@@ -38,7 +37,6 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.PayloadApplicationEvent;
 import org.springframework.context.expression.AnnotatedElementKey;
 import org.springframework.core.BridgeMethodResolver;
-import org.springframework.core.Ordered;
 import org.springframework.core.ReactiveAdapter;
 import org.springframework.core.ReactiveAdapterRegistry;
 import org.springframework.core.ResolvableType;
@@ -91,21 +89,12 @@ public class ApplicationListenerMethodAdapter implements GenericApplicationListe
 	private final int order;
 
 	@Nullable
-	private volatile String listenerId;
-
-	@Nullable
 	private ApplicationContext applicationContext;
 
 	@Nullable
 	private EventExpressionEvaluator evaluator;
 
 
-	/**
-	 * Construct a new ApplicationListenerMethodAdapter.
-	 * @param beanName the name of the bean to invoke the listener method on
-	 * @param targetClass the target class that the method is declared on
-	 * @param method the listener method to invoke
-	 */
 	public ApplicationListenerMethodAdapter(String beanName, Class<?> targetClass, Method method) {
 		this.beanName = beanName;
 		this.method = BridgeMethodResolver.findBridgedMethod(method);
@@ -117,8 +106,6 @@ public class ApplicationListenerMethodAdapter implements GenericApplicationListe
 		this.declaredEventTypes = resolveDeclaredEventTypes(method, ann);
 		this.condition = (ann != null ? ann.condition() : null);
 		this.order = resolveOrder(this.targetMethod);
-		String id = (ann != null ? ann.id() : "");
-		this.listenerId = (!id.isEmpty() ? id : null);
 	}
 
 	private static List<ResolvableType> resolveDeclaredEventTypes(Method method, @Nullable EventListener ann) {
@@ -148,14 +135,14 @@ public class ApplicationListenerMethodAdapter implements GenericApplicationListe
 
 	private static int resolveOrder(Method method) {
 		Order ann = AnnotatedElementUtils.findMergedAnnotation(method, Order.class);
-		return (ann != null ? ann.value() : Ordered.LOWEST_PRECEDENCE);
+		return (ann != null ? ann.value() : 0);
 	}
 
 
 	/**
 	 * Initialize this instance.
 	 */
-	void init(ApplicationContext applicationContext, @Nullable EventExpressionEvaluator evaluator) {
+	void init(ApplicationContext applicationContext, EventExpressionEvaluator evaluator) {
 		this.applicationContext = applicationContext;
 		this.evaluator = evaluator;
 	}
@@ -190,32 +177,6 @@ public class ApplicationListenerMethodAdapter implements GenericApplicationListe
 	@Override
 	public int getOrder() {
 		return this.order;
-	}
-
-	@Override
-	public String getListenerId() {
-		String id = this.listenerId;
-		if (id == null) {
-			id = getDefaultListenerId();
-			this.listenerId = id;
-		}
-		return id;
-	}
-
-	/**
-	 * Determine the default id for the target listener, to be applied in case of
-	 * no {@link EventListener#id() annotation-specified id value}.
-	 * <p>The default implementation builds a method name with parameter types.
-	 * @since 5.3.5
-	 * @see #getListenerId()
-	 */
-	protected String getDefaultListenerId() {
-		Method method = getTargetMethod();
-		StringJoiner sj = new StringJoiner(",", "(", ")");
-		for (Class<?> paramType : method.getParameterTypes()) {
-			sj.add(paramType.getName());
-		}
-		return ClassUtils.getQualifiedMethodName(method) + sj.toString();
 	}
 
 
@@ -369,14 +330,6 @@ public class ApplicationListenerMethodAdapter implements GenericApplicationListe
 	protected Object getTargetBean() {
 		Assert.notNull(this.applicationContext, "ApplicationContext must no be null");
 		return this.applicationContext.getBean(this.beanName);
-	}
-
-	/**
-	 * Return the target listener method.
-	 * @since 5.3
-	 */
-	protected Method getTargetMethod() {
-		return this.targetMethod;
 	}
 
 	/**

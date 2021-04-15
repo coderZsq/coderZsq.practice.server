@@ -138,6 +138,7 @@ public class RedirectViewTests {
 	}
 
 	@Test
+	@SuppressWarnings("AssertEqualsBetweenInconvertibleTypes")
 	public void flashMap() throws Exception {
 		RedirectView rv = new RedirectView();
 		rv.setUrl("https://url.somewhere.com/path");

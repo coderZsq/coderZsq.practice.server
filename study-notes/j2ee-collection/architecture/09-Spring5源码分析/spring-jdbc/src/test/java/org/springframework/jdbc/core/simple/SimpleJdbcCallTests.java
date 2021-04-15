@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,28 +46,31 @@ import static org.mockito.Mockito.verify;
  *
  * @author Thomas Risberg
  * @author Kiril Nugmanov
- * @author Sam Brannen
  */
-class SimpleJdbcCallTests {
+public class SimpleJdbcCallTests {
 
-	private final Connection connection = mock(Connection.class);
+	private Connection connection;
 
-	private final DatabaseMetaData databaseMetaData = mock(DatabaseMetaData.class);
+	private DatabaseMetaData databaseMetaData;
 
-	private final DataSource dataSource = mock(DataSource.class);
+	private DataSource dataSource;
 
-	private final CallableStatement callableStatement = mock(CallableStatement.class);
+	private CallableStatement callableStatement;
 
 
 	@BeforeEach
-	void setUp() throws Exception {
+	public void setUp() throws Exception {
+		connection = mock(Connection.class);
+		databaseMetaData = mock(DatabaseMetaData.class);
+		dataSource = mock(DataSource.class);
+		callableStatement = mock(CallableStatement.class);
 		given(connection.getMetaData()).willReturn(databaseMetaData);
 		given(dataSource.getConnection()).willReturn(connection);
 	}
 
 
 	@Test
-	void noSuchStoredProcedure() throws Exception {
+	public void testNoSuchStoredProcedure() throws Exception {
 		final String NO_SUCH_PROC = "x";
 		SQLException sqlException = new SQLException("Syntax error or access violation exception", "42000");
 		given(databaseMetaData.getDatabaseProductName()).willReturn("MyDB");
@@ -78,8 +81,8 @@ class SimpleJdbcCallTests {
 		given(connection.prepareCall("{call " + NO_SUCH_PROC + "()}")).willReturn(callableStatement);
 		SimpleJdbcCall sproc = new SimpleJdbcCall(dataSource).withProcedureName(NO_SUCH_PROC);
 		try {
-			assertThatExceptionOfType(BadSqlGrammarException.class)
-				.isThrownBy(() -> sproc.execute())
+			assertThatExceptionOfType(BadSqlGrammarException.class).isThrownBy(() ->
+					sproc.execute())
 				.withCause(sqlException);
 		}
 		finally {
@@ -89,7 +92,7 @@ class SimpleJdbcCallTests {
 	}
 
 	@Test
-	void unnamedParameterHandling() throws Exception {
+	public void testUnnamedParameterHandling() throws Exception {
 		final String MY_PROC = "my_proc";
 		SimpleJdbcCall sproc = new SimpleJdbcCall(dataSource).withProcedureName(MY_PROC);
 		// Shouldn't succeed in adding unnamed parameter
@@ -98,7 +101,7 @@ class SimpleJdbcCallTests {
 	}
 
 	@Test
-	void addInvoiceProcWithoutMetaDataUsingMapParamSource() throws Exception {
+	public void testAddInvoiceProcWithoutMetaDataUsingMapParamSource() throws Exception {
 		initializeAddInvoiceWithoutMetaData(false);
 		SimpleJdbcCall adder = new SimpleJdbcCall(dataSource).withProcedureName("add_invoice");
 		adder.declareParameters(
@@ -114,7 +117,7 @@ class SimpleJdbcCallTests {
 	}
 
 	@Test
-	void addInvoiceProcWithoutMetaDataUsingArrayParams() throws Exception {
+	public void testAddInvoiceProcWithoutMetaDataUsingArrayParams() throws Exception {
 		initializeAddInvoiceWithoutMetaData(false);
 		SimpleJdbcCall adder = new SimpleJdbcCall(dataSource).withProcedureName("add_invoice");
 		adder.declareParameters(
@@ -128,7 +131,7 @@ class SimpleJdbcCallTests {
 	}
 
 	@Test
-	void addInvoiceProcWithMetaDataUsingMapParamSource() throws Exception {
+	public void testAddInvoiceProcWithMetaDataUsingMapParamSource() throws Exception {
 		initializeAddInvoiceWithMetaData(false);
 		SimpleJdbcCall adder = new SimpleJdbcCall(dataSource).withProcedureName("add_invoice");
 		Number newId = adder.executeObject(Number.class, new MapSqlParameterSource()
@@ -140,7 +143,7 @@ class SimpleJdbcCallTests {
 	}
 
 	@Test
-	void addInvoiceProcWithMetaDataUsingArrayParams() throws Exception {
+	public void testAddInvoiceProcWithMetaDataUsingArrayParams() throws Exception {
 		initializeAddInvoiceWithMetaData(false);
 		SimpleJdbcCall adder = new SimpleJdbcCall(dataSource).withProcedureName("add_invoice");
 		Number newId = adder.executeObject(Number.class, 1103, 3);
@@ -150,7 +153,7 @@ class SimpleJdbcCallTests {
 	}
 
 	@Test
-	void addInvoiceFuncWithoutMetaDataUsingMapParamSource() throws Exception {
+	public void testAddInvoiceFuncWithoutMetaDataUsingMapParamSource() throws Exception {
 		initializeAddInvoiceWithoutMetaData(true);
 		SimpleJdbcCall adder = new SimpleJdbcCall(dataSource).withFunctionName("add_invoice");
 		adder.declareParameters(
@@ -166,7 +169,7 @@ class SimpleJdbcCallTests {
 	}
 
 	@Test
-	void addInvoiceFuncWithoutMetaDataUsingArrayParams() throws Exception {
+	public void testAddInvoiceFuncWithoutMetaDataUsingArrayParams() throws Exception {
 		initializeAddInvoiceWithoutMetaData(true);
 		SimpleJdbcCall adder = new SimpleJdbcCall(dataSource).withFunctionName("add_invoice");
 		adder.declareParameters(
@@ -180,7 +183,7 @@ class SimpleJdbcCallTests {
 	}
 
 	@Test
-	void addInvoiceFuncWithMetaDataUsingMapParamSource() throws Exception {
+	public void testAddInvoiceFuncWithMetaDataUsingMapParamSource() throws Exception {
 		initializeAddInvoiceWithMetaData(true);
 		SimpleJdbcCall adder = new SimpleJdbcCall(dataSource).withFunctionName("add_invoice");
 		Number newId = adder.executeFunction(Number.class, new MapSqlParameterSource()
@@ -189,20 +192,22 @@ class SimpleJdbcCallTests {
 		assertThat(newId.intValue()).isEqualTo(4);
 		verifyAddInvoiceWithMetaData(true);
 		verify(connection, atLeastOnce()).close();
+
 	}
 
 	@Test
-	void addInvoiceFuncWithMetaDataUsingArrayParams() throws Exception {
+	public void testAddInvoiceFuncWithMetaDataUsingArrayParams() throws Exception {
 		initializeAddInvoiceWithMetaData(true);
 		SimpleJdbcCall adder = new SimpleJdbcCall(dataSource).withFunctionName("add_invoice");
 		Number newId = adder.executeFunction(Number.class, 1103, 3);
 		assertThat(newId.intValue()).isEqualTo(4);
 		verifyAddInvoiceWithMetaData(true);
 		verify(connection, atLeastOnce()).close();
+
 	}
 
 	@Test
-	void correctFunctionStatement() throws Exception {
+	public void testCorrectFunctionStatement() throws Exception {
 		initializeAddInvoiceWithMetaData(true);
 		SimpleJdbcCall adder = new SimpleJdbcCall(dataSource).withFunctionName("add_invoice");
 		adder.compile();
@@ -210,7 +215,7 @@ class SimpleJdbcCallTests {
 	}
 
 	@Test
-	void correctFunctionStatementNamed() throws Exception {
+	public void testCorrectFunctionStatementNamed() throws Exception {
 		initializeAddInvoiceWithMetaData(true);
 		SimpleJdbcCall adder = new SimpleJdbcCall(dataSource).withNamedBinding().withFunctionName("add_invoice");
 		adder.compile();
@@ -218,49 +223,11 @@ class SimpleJdbcCallTests {
 	}
 
 	@Test
-	void correctProcedureStatementNamed() throws Exception {
+	public void testCorrectProcedureStatementNamed() throws Exception {
 		initializeAddInvoiceWithMetaData(false);
 		SimpleJdbcCall adder = new SimpleJdbcCall(dataSource).withNamedBinding().withProcedureName("add_invoice");
 		adder.compile();
 		verifyStatement(adder, "{call ADD_INVOICE(AMOUNT => ?, CUSTID => ?, NEWID => ?)}");
-	}
-
-	/**
-	 * This test demonstrates that a CALL statement will still be generated if
-	 * an exception occurs while retrieving metadata, potentially resulting in
-	 * missing metadata and consequently a failure while invoking the stored
-	 * procedure.
-	 */
-	@Test  // gh-26486
-	void exceptionThrownWhileRetrievingColumnNamesFromMetadata() throws Exception {
-		ResultSet proceduresResultSet = mock(ResultSet.class);
-		ResultSet procedureColumnsResultSet = mock(ResultSet.class);
-
-		given(databaseMetaData.getDatabaseProductName()).willReturn("Oracle");
-		given(databaseMetaData.getUserName()).willReturn("ME");
-		given(databaseMetaData.storesUpperCaseIdentifiers()).willReturn(true);
-		given(databaseMetaData.getProcedures("", "ME", "ADD_INVOICE")).willReturn(proceduresResultSet);
-		given(databaseMetaData.getProcedureColumns("", "ME", "ADD_INVOICE", null)).willReturn(procedureColumnsResultSet);
-
-		given(proceduresResultSet.next()).willReturn(true, false);
-		given(proceduresResultSet.getString("PROCEDURE_NAME")).willReturn("add_invoice");
-
-		given(procedureColumnsResultSet.next()).willReturn(true, true, true, false);
-		given(procedureColumnsResultSet.getString("COLUMN_NAME")).willReturn("amount", "custid", "newid");
-		given(procedureColumnsResultSet.getInt("DATA_TYPE"))
-			// Return a valid data type for the first 2 columns.
-			.willReturn(Types.INTEGER, Types.INTEGER)
-			// 3rd time, simulate an error while retrieving metadata.
-			.willThrow(new SQLException("error with DATA_TYPE for column 3"));
-
-		SimpleJdbcCall adder = new SimpleJdbcCall(dataSource).withNamedBinding().withProcedureName("add_invoice");
-		adder.compile();
-		// If an exception were not thrown for column 3, we would expect:
-		// {call ADD_INVOICE(AMOUNT => ?, CUSTID => ?, NEWID => ?)}
-		verifyStatement(adder, "{call ADD_INVOICE(AMOUNT => ?, CUSTID => ?)}");
-
-		verify(proceduresResultSet).close();
-		verify(procedureColumnsResultSet).close();
 	}
 
 

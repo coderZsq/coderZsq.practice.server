@@ -63,7 +63,7 @@ class TypeHelper {
 		if (type instanceof DeclaredType) {
 			DeclaredType declaredType = (DeclaredType) type;
 			Element enclosingElement = declaredType.asElement().getEnclosingElement();
-			if (enclosingElement instanceof TypeElement) {
+			if (enclosingElement != null && enclosingElement instanceof TypeElement) {
 				return getQualifiedName(enclosingElement) + "$" + declaredType.asElement().getSimpleName().toString();
 			}
 			else {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -119,7 +119,7 @@ public class BodyExtractorsTests {
 	public void toMono() {
 		BodyExtractor<Mono<String>, ReactiveHttpInputMessage> extractor = BodyExtractors.toMono(String.class);
 
-		DefaultDataBufferFactory factory = DefaultDataBufferFactory.sharedInstance;
+		DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
 		DefaultDataBuffer dataBuffer =
 				factory.wrap(ByteBuffer.wrap("foo".getBytes(StandardCharsets.UTF_8)));
 		Flux<DataBuffer> body = Flux.just(dataBuffer);
@@ -138,8 +138,9 @@ public class BodyExtractorsTests {
 		BodyExtractor<Mono<Map<String, String>>, ReactiveHttpInputMessage> extractor =
 				BodyExtractors.toMono(new ParameterizedTypeReference<Map<String, String>>() {});
 
-		byte[] bytes = "{\"username\":\"foo\",\"password\":\"bar\"}".getBytes(StandardCharsets.UTF_8);
-		DefaultDataBuffer dataBuffer = DefaultDataBufferFactory.sharedInstance.wrap(ByteBuffer.wrap(bytes));
+		DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
+		DefaultDataBuffer dataBuffer =
+				factory.wrap(ByteBuffer.wrap("{\"username\":\"foo\",\"password\":\"bar\"}".getBytes(StandardCharsets.UTF_8)));
 		Flux<DataBuffer> body = Flux.just(dataBuffer);
 
 		MockServerHttpRequest request = MockServerHttpRequest.post("/").contentType(MediaType.APPLICATION_JSON).body(body);
@@ -159,8 +160,9 @@ public class BodyExtractorsTests {
 		BodyExtractor<Mono<User>, ReactiveHttpInputMessage> extractor = BodyExtractors.toMono(User.class);
 		this.hints.put(JSON_VIEW_HINT, SafeToDeserialize.class);
 
-		byte[] bytes = "{\"username\":\"foo\",\"password\":\"bar\"}".getBytes(StandardCharsets.UTF_8);
-		DefaultDataBuffer dataBuffer = DefaultDataBufferFactory.sharedInstance.wrap(ByteBuffer.wrap(bytes));
+		DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
+		DefaultDataBuffer dataBuffer =
+				factory.wrap(ByteBuffer.wrap("{\"username\":\"foo\",\"password\":\"bar\"}".getBytes(StandardCharsets.UTF_8)));
 		Flux<DataBuffer> body = Flux.just(dataBuffer);
 
 		MockServerHttpRequest request = MockServerHttpRequest.post("/")
@@ -191,8 +193,9 @@ public class BodyExtractorsTests {
 
 	@Test
 	public void toMonoVoidAsClientShouldConsumeAndCancel() {
-		byte[] bytes = "foo".getBytes(StandardCharsets.UTF_8);
-		DefaultDataBuffer dataBuffer = DefaultDataBufferFactory.sharedInstance.wrap(ByteBuffer.wrap(bytes));
+		DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
+		DefaultDataBuffer dataBuffer =
+				factory.wrap(ByteBuffer.wrap("foo".getBytes(StandardCharsets.UTF_8)));
 		TestPublisher<DataBuffer> body = TestPublisher.create();
 
 		BodyExtractor<Mono<Void>, ReactiveHttpInputMessage> extractor = BodyExtractors.toMono(Void.class);
@@ -229,8 +232,9 @@ public class BodyExtractorsTests {
 	public void toFlux() {
 		BodyExtractor<Flux<String>, ReactiveHttpInputMessage> extractor = BodyExtractors.toFlux(String.class);
 
-		byte[] bytes = "foo".getBytes(StandardCharsets.UTF_8);
-		DefaultDataBuffer dataBuffer = DefaultDataBufferFactory.sharedInstance.wrap(ByteBuffer.wrap(bytes));
+		DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
+		DefaultDataBuffer dataBuffer =
+				factory.wrap(ByteBuffer.wrap("foo".getBytes(StandardCharsets.UTF_8)));
 		Flux<DataBuffer> body = Flux.just(dataBuffer);
 
 		MockServerHttpRequest request = MockServerHttpRequest.post("/").body(body);
@@ -247,9 +251,9 @@ public class BodyExtractorsTests {
 		BodyExtractor<Flux<User>, ReactiveHttpInputMessage> extractor = BodyExtractors.toFlux(User.class);
 		this.hints.put(JSON_VIEW_HINT, SafeToDeserialize.class);
 
+		DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
 		String text = "[{\"username\":\"foo\",\"password\":\"bar\"},{\"username\":\"bar\",\"password\":\"baz\"}]";
-		byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
-		DefaultDataBuffer dataBuffer = DefaultDataBufferFactory.sharedInstance.wrap(ByteBuffer.wrap(bytes));
+		DefaultDataBuffer dataBuffer = factory.wrap(ByteBuffer.wrap(text.getBytes(StandardCharsets.UTF_8)));
 		Flux<DataBuffer> body = Flux.just(dataBuffer);
 
 		MockServerHttpRequest request = MockServerHttpRequest.post("/")
@@ -275,8 +279,9 @@ public class BodyExtractorsTests {
 	public void toFluxUnacceptable() {
 		BodyExtractor<Flux<String>, ReactiveHttpInputMessage> extractor = BodyExtractors.toFlux(String.class);
 
-		byte[] bytes = "foo".getBytes(StandardCharsets.UTF_8);
-		DefaultDataBuffer dataBuffer = DefaultDataBufferFactory.sharedInstance.wrap(ByteBuffer.wrap(bytes));
+		DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
+		DefaultDataBuffer dataBuffer =
+				factory.wrap(ByteBuffer.wrap("foo".getBytes(StandardCharsets.UTF_8)));
 		Flux<DataBuffer> body = Flux.just(dataBuffer);
 
 		MockServerHttpRequest request = MockServerHttpRequest.post("/")
@@ -308,8 +313,9 @@ public class BodyExtractorsTests {
 
 	@Test
 	public void toFormData() {
-		byte[] bytes = "name+1=value+1&name+2=value+2%2B1&name+2=value+2%2B2&name+3".getBytes(StandardCharsets.UTF_8);
-		DefaultDataBuffer dataBuffer = DefaultDataBufferFactory.sharedInstance.wrap(ByteBuffer.wrap(bytes));
+		DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
+		String text = "name+1=value+1&name+2=value+2%2B1&name+2=value+2%2B2&name+3";
+		DefaultDataBuffer dataBuffer = factory.wrap(ByteBuffer.wrap(text.getBytes(StandardCharsets.UTF_8)));
 		Flux<DataBuffer> body = Flux.just(dataBuffer);
 
 		MockServerHttpRequest request = MockServerHttpRequest.post("/")
@@ -354,8 +360,9 @@ public class BodyExtractorsTests {
 				"\r\n" +
 				"-----------------------------9051914041544843365972754266--\r\n";
 
-		byte[] bytes = bodyContents.getBytes(StandardCharsets.UTF_8);
-		DefaultDataBuffer dataBuffer = DefaultDataBufferFactory.sharedInstance.wrap(ByteBuffer.wrap(bytes));
+		DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
+		DefaultDataBuffer dataBuffer =
+				factory.wrap(ByteBuffer.wrap(bodyContents.getBytes(StandardCharsets.UTF_8)));
 		Flux<DataBuffer> body = Flux.just(dataBuffer);
 
 		MockServerHttpRequest request = MockServerHttpRequest.post("/")
@@ -396,8 +403,9 @@ public class BodyExtractorsTests {
 	public void toDataBuffers() {
 		BodyExtractor<Flux<DataBuffer>, ReactiveHttpInputMessage> extractor = BodyExtractors.toDataBuffers();
 
-		byte[] bytes = "foo".getBytes(StandardCharsets.UTF_8);
-		DefaultDataBuffer dataBuffer = DefaultDataBufferFactory.sharedInstance.wrap(ByteBuffer.wrap(bytes));
+		DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
+		DefaultDataBuffer dataBuffer =
+				factory.wrap(ByteBuffer.wrap("foo".getBytes(StandardCharsets.UTF_8)));
 		Flux<DataBuffer> body = Flux.just(dataBuffer);
 
 		MockServerHttpRequest request = MockServerHttpRequest.post("/").body(body);

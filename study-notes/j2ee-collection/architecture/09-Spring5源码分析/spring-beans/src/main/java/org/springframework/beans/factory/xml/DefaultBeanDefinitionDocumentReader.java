@@ -58,20 +58,28 @@ import org.springframework.util.StringUtils;
  */
 public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocumentReader {
 
+	/** xml 中的元素：<bean> */
 	public static final String BEAN_ELEMENT = BeanDefinitionParserDelegate.BEAN_ELEMENT;
 
+	/** xml 中的元素：<beans> */
 	public static final String NESTED_BEANS_ELEMENT = "beans";
 
+	/** xml 中的元素：<alias> */
 	public static final String ALIAS_ELEMENT = "alias";
 
+	/** xml 中的属性：name="" */
 	public static final String NAME_ATTRIBUTE = "name";
 
+	/** xml 中的属性：alias="" */
 	public static final String ALIAS_ATTRIBUTE = "alias";
 
+	/** xml 中的元素：<import> */
 	public static final String IMPORT_ELEMENT = "import";
 
+	/** xml 中的属性：resource="" */
 	public static final String RESOURCE_ATTRIBUTE = "resource";
 
+	/** xml 中的属性：profile="" */
 	public static final String PROFILE_ATTRIBUTE = "profile";
 
 
@@ -93,6 +101,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	@Override
 	public void registerBeanDefinitions(Document doc, XmlReaderContext readerContext) {
 		this.readerContext = readerContext;
+		// 真正的解析并注册 Bean 定义
 		doRegisterBeanDefinitions(doc.getDocumentElement());
 	}
 
@@ -125,6 +134,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		// the new (child) delegate with a reference to the parent for fallback purposes,
 		// then ultimately reset this.delegate back to its original (parent) reference.
 		// this behavior emulates a stack of delegates without actually necessitating one.
+		// 委派模式：拿到 Bean 定义解析器
 		BeanDefinitionParserDelegate parent = this.delegate;
 		this.delegate = createDelegate(getReaderContext(), root, parent);
 
@@ -145,8 +155,10 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 			}
 		}
 
+		// 处理 xml 的前置操作：留给子类做特殊处理用
 		preProcessXml(root);
 		parseBeanDefinitions(root, this.delegate);
+		// 处理 xml 的后置操作：留给子类做特殊处理用
 		postProcessXml(root);
 
 		this.delegate = parent;
@@ -166,36 +178,44 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	 * @param root the DOM root element of the document
 	 */
 	protected void parseBeanDefinitions(Element root, BeanDefinitionParserDelegate delegate) {
+		// 检查默认命名空间是否正确: http://www.springframework.org/schema/beans
 		if (delegate.isDefaultNamespace(root)) {
 			NodeList nl = root.getChildNodes();
 			for (int i = 0; i < nl.getLength(); i++) {
 				Node node = nl.item(i);
 				if (node instanceof Element) {
 					Element ele = (Element) node;
+					// 解析 beans 命名空间的元素
 					if (delegate.isDefaultNamespace(ele)) {
 						parseDefaultElement(ele, delegate);
 					}
 					else {
+						// 解析非 beans 命名空间的元素
 						delegate.parseCustomElement(ele);
 					}
 				}
 			}
 		}
 		else {
+			// 解析非 beans 命名空间的元素
 			delegate.parseCustomElement(root);
 		}
 	}
 
 	private void parseDefaultElement(Element ele, BeanDefinitionParserDelegate delegate) {
+		// 解析 <import> 标签
 		if (delegate.nodeNameEquals(ele, IMPORT_ELEMENT)) {
 			importBeanDefinitionResource(ele);
 		}
+		// 解析 <alias> 标签
 		else if (delegate.nodeNameEquals(ele, ALIAS_ELEMENT)) {
 			processAliasRegistration(ele);
 		}
+		// 解析 <bean> 标签
 		else if (delegate.nodeNameEquals(ele, BEAN_ELEMENT)) {
 			processBeanDefinition(ele, delegate);
 		}
+		// 解析嵌套的 beans 标签
 		else if (delegate.nodeNameEquals(ele, NESTED_BEANS_ELEMENT)) {
 			// recurse
 			doRegisterBeanDefinitions(ele);
@@ -303,6 +323,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	 * and registering it with the registry.
 	 */
 	protected void processBeanDefinition(Element ele, BeanDefinitionParserDelegate delegate) {
+		// 使用委派解析器对 <bean> 标签进行解析
 		BeanDefinitionHolder bdHolder = delegate.parseBeanDefinitionElement(ele);
 		if (bdHolder != null) {
 			bdHolder = delegate.decorateBeanDefinitionIfRequired(ele, bdHolder);

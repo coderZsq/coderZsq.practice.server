@@ -33,6 +33,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -383,7 +384,7 @@ class DefaultConversionServiceTests {
 
 	@Test
 	void convertArrayToCollectionImpl() {
-		ArrayList<?> result = conversionService.convert(new String[] {"1", "2", "3"}, ArrayList.class);
+		LinkedList<?> result = conversionService.convert(new String[] {"1", "2", "3"}, LinkedList.class);
 		assertThat(result.get(0)).isEqualTo("1");
 		assertThat(result.get(1)).isEqualTo("2");
 		assertThat(result.get(2)).isEqualTo("3");

@@ -38,7 +38,7 @@ import org.springframework.lang.Nullable;
  * @since 4.1
  * @see JCacheConfigurer
  */
-@Configuration(proxyBeanMethods = false)
+@Configuration
 public abstract class AbstractJCacheConfiguration extends AbstractCachingConfiguration {
 
 	@Nullable

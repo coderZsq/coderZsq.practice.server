@@ -16,9 +16,12 @@
 
 package org.springframework.http.codec.multipart;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -47,9 +50,11 @@ import org.springframework.http.ReactiveHttpOutputMessage;
 import org.springframework.http.codec.EncoderHttpMessageWriter;
 import org.springframework.http.codec.FormHttpMessageWriter;
 import org.springframework.http.codec.HttpMessageWriter;
+import org.springframework.http.codec.LoggingCodecSupport;
 import org.springframework.http.codec.ResourceHttpMessageWriter;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+import org.springframework.util.MimeTypeUtils;
 import org.springframework.util.MultiValueMap;
 
 /**
@@ -73,8 +78,13 @@ import org.springframework.util.MultiValueMap;
  * @since 5.0
  * @see FormHttpMessageWriter
  */
-public class MultipartHttpMessageWriter extends MultipartWriterSupport
+public class MultipartHttpMessageWriter extends LoggingCodecSupport
 		implements HttpMessageWriter<MultiValueMap<String, ?>> {
+
+	/**
+	 * THe default charset used by the writer.
+	 */
+	public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
 	/** Suppress logging from individual part writers (full map logged at this level). */
 	private static final Map<String, Object> DEFAULT_HINTS = Hints.from(Hints.SUPPRESS_LOGGING_HINT, true);
@@ -84,6 +94,10 @@ public class MultipartHttpMessageWriter extends MultipartWriterSupport
 
 	@Nullable
 	private final HttpMessageWriter<MultiValueMap<String, String>> formWriter;
+
+	private Charset charset = DEFAULT_CHARSET;
+
+	private final List<MediaType> supportedMediaTypes;
 
 
 	/**
@@ -113,9 +127,9 @@ public class MultipartHttpMessageWriter extends MultipartWriterSupport
 	public MultipartHttpMessageWriter(List<HttpMessageWriter<?>> partWriters,
 			@Nullable  HttpMessageWriter<MultiValueMap<String, String>> formWriter) {
 
-		super(initMediaTypes(formWriter));
 		this.partWriters = partWriters;
 		this.formWriter = formWriter;
+		this.supportedMediaTypes = initMediaTypes(formWriter);
 	}
 
 	private static List<MediaType> initMediaTypes(@Nullable HttpMessageWriter<?> formWriter) {
@@ -145,7 +159,35 @@ public class MultipartHttpMessageWriter extends MultipartWriterSupport
 		return this.formWriter;
 	}
 
+	/**
+	 * Set the character set to use for part headers such as
+	 * "Content-Disposition" (and its filename parameter).
+	 * <p>By default this is set to "UTF-8".
+	 */
+	public void setCharset(Charset charset) {
+		Assert.notNull(charset, "Charset must not be null");
+		this.charset = charset;
+	}
 
+	/**
+	 * Return the configured charset for part headers.
+	 */
+	public Charset getCharset() {
+		return this.charset;
+	}
+
+
+	@Override
+	public List<MediaType> getWritableMediaTypes() {
+		return this.supportedMediaTypes;
+	}
+
+	@Override
+	public boolean canWrite(ResolvableType elementType, @Nullable MediaType mediaType) {
+		return (MultiValueMap.class.isAssignableFrom(elementType.toClass()) &&
+				(mediaType == null ||
+						this.supportedMediaTypes.stream().anyMatch(element -> element.isCompatibleWith(mediaType))));
+	}
 
 	@Override
 	public Mono<Void> write(Publisher<? extends MultiValueMap<String, ?>> inputStream,
@@ -184,7 +226,16 @@ public class MultipartHttpMessageWriter extends MultipartWriterSupport
 
 		byte[] boundary = generateMultipartBoundary();
 
-		mediaType = getMultipartMediaType(mediaType, boundary);
+		Map<String, String> params = new HashMap<>();
+		if (mediaType != null) {
+			params.putAll(mediaType.getParameters());
+		}
+		params.put("boundary", new String(boundary, StandardCharsets.US_ASCII));
+		params.put("charset", getCharset().name());
+
+		mediaType = (mediaType != null ? mediaType : MediaType.MULTIPART_FORM_DATA);
+		mediaType = new MediaType(mediaType, params);
+
 		outputMessage.getHeaders().setContentType(mediaType);
 
 		LogFormatUtils.traceDebug(logger, traceOn -> Hints.getLogPrefix(hints) + "Encoding " +
@@ -199,11 +250,15 @@ public class MultipartHttpMessageWriter extends MultipartWriterSupport
 				.concatWith(generateLastLine(boundary, bufferFactory))
 				.doOnDiscard(PooledDataBuffer.class, DataBufferUtils::release);
 
-		if (logger.isDebugEnabled()) {
-			body = body.doOnNext(buffer -> Hints.touchDataBuffer(buffer, hints, logger));
-		}
-
 		return outputMessage.writeWith(body);
+	}
+
+	/**
+	 * Generate a multipart boundary.
+	 * <p>By default delegates to {@link MimeTypeUtils#generateMultipartBoundary()}.
+	 */
+	protected byte[] generateMultipartBoundary() {
+		return MimeTypeUtils.generateMultipartBoundary();
 	}
 
 	private Flux<DataBuffer> encodePartValues(
@@ -214,15 +269,15 @@ public class MultipartHttpMessageWriter extends MultipartWriterSupport
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T> Flux<DataBuffer> encodePart(byte[] boundary, String name, T value, DataBufferFactory factory) {
-		MultipartHttpOutputMessage message = new MultipartHttpOutputMessage(factory);
-		HttpHeaders headers = message.getHeaders();
+	private <T> Flux<DataBuffer> encodePart(byte[] boundary, String name, T value, DataBufferFactory bufferFactory) {
+		MultipartHttpOutputMessage outputMessage = new MultipartHttpOutputMessage(bufferFactory, getCharset());
+		HttpHeaders outputHeaders = outputMessage.getHeaders();
 
 		T body;
 		ResolvableType resolvableType = null;
 		if (value instanceof HttpEntity) {
 			HttpEntity<T> httpEntity = (HttpEntity<T>) value;
-			headers.putAll(httpEntity.getHeaders());
+			outputHeaders.putAll(httpEntity.getHeaders());
 			body = httpEntity.getBody();
 			Assert.state(body != null, "MultipartHttpMessageWriter only supports HttpEntity with body");
 			if (httpEntity instanceof ResolvableTypeProvider) {
@@ -236,20 +291,20 @@ public class MultipartHttpMessageWriter extends MultipartWriterSupport
 			resolvableType = ResolvableType.forClass(body.getClass());
 		}
 
-		if (!headers.containsKey(HttpHeaders.CONTENT_DISPOSITION)) {
+		if (!outputHeaders.containsKey(HttpHeaders.CONTENT_DISPOSITION)) {
 			if (body instanceof Resource) {
-				headers.setContentDispositionFormData(name, ((Resource) body).getFilename());
+				outputHeaders.setContentDispositionFormData(name, ((Resource) body).getFilename());
 			}
 			else if (resolvableType.resolve() == Resource.class) {
-				body = (T) Mono.from((Publisher<?>) body).doOnNext(o -> headers
+				body = (T) Mono.from((Publisher<?>) body).doOnNext(o -> outputHeaders
 						.setContentDispositionFormData(name, ((Resource) o).getFilename()));
 			}
 			else {
-				headers.setContentDispositionFormData(name, null);
+				outputHeaders.setContentDispositionFormData(name, null);
 			}
 		}
 
-		MediaType contentType = headers.getContentType();
+		MediaType contentType = outputHeaders.getContentType();
 
 		final ResolvableType finalBodyType = resolvableType;
 		Optional<HttpMessageWriter<?>> writer = this.partWriters.stream()
@@ -267,23 +322,61 @@ public class MultipartHttpMessageWriter extends MultipartWriterSupport
 		// but only stores the body Flux and returns Mono.empty().
 
 		Mono<Void> partContentReady = ((HttpMessageWriter<T>) writer.get())
-				.write(bodyPublisher, resolvableType, contentType, message, DEFAULT_HINTS);
+				.write(bodyPublisher, resolvableType, contentType, outputMessage, DEFAULT_HINTS);
 
 		// After partContentReady, we can access the part content from MultipartHttpOutputMessage
 		// and use it for writing to the actual request body
 
-		Flux<DataBuffer> partContent = partContentReady.thenMany(Flux.defer(message::getBody));
+		Flux<DataBuffer> partContent = partContentReady.thenMany(Flux.defer(outputMessage::getBody));
 
 		return Flux.concat(
-				generateBoundaryLine(boundary, factory),
+				generateBoundaryLine(boundary, bufferFactory),
 				partContent,
-				generateNewLine(factory));
+				generateNewLine(bufferFactory));
 	}
 
 
-	private class MultipartHttpOutputMessage implements ReactiveHttpOutputMessage {
+	private Mono<DataBuffer> generateBoundaryLine(byte[] boundary, DataBufferFactory bufferFactory) {
+		return Mono.fromCallable(() -> {
+			DataBuffer buffer = bufferFactory.allocateBuffer(boundary.length + 4);
+			buffer.write((byte)'-');
+			buffer.write((byte)'-');
+			buffer.write(boundary);
+			buffer.write((byte)'\r');
+			buffer.write((byte)'\n');
+			return buffer;
+		});
+	}
+
+	private Mono<DataBuffer> generateNewLine(DataBufferFactory bufferFactory) {
+		return Mono.fromCallable(() -> {
+			DataBuffer buffer = bufferFactory.allocateBuffer(2);
+			buffer.write((byte)'\r');
+			buffer.write((byte)'\n');
+			return buffer;
+		});
+	}
+
+	private Mono<DataBuffer> generateLastLine(byte[] boundary, DataBufferFactory bufferFactory) {
+		return Mono.fromCallable(() -> {
+			DataBuffer buffer = bufferFactory.allocateBuffer(boundary.length + 6);
+			buffer.write((byte)'-');
+			buffer.write((byte)'-');
+			buffer.write(boundary);
+			buffer.write((byte)'-');
+			buffer.write((byte)'-');
+			buffer.write((byte)'\r');
+			buffer.write((byte)'\n');
+			return buffer;
+		});
+	}
+
+
+	private static class MultipartHttpOutputMessage implements ReactiveHttpOutputMessage {
 
 		private final DataBufferFactory bufferFactory;
+
+		private final Charset charset;
 
 		private final HttpHeaders headers = new HttpHeaders();
 
@@ -292,8 +385,9 @@ public class MultipartHttpMessageWriter extends MultipartWriterSupport
 		@Nullable
 		private Flux<DataBuffer> body;
 
-		public MultipartHttpOutputMessage(DataBufferFactory bufferFactory) {
+		public MultipartHttpOutputMessage(DataBufferFactory bufferFactory, Charset charset) {
 			this.bufferFactory = bufferFactory;
+			this.charset = charset;
 		}
 
 		@Override
@@ -321,10 +415,31 @@ public class MultipartHttpMessageWriter extends MultipartWriterSupport
 			if (this.body != null) {
 				return Mono.error(new IllegalStateException("Multiple calls to writeWith() not supported"));
 			}
-			this.body = generatePartHeaders(this.headers, this.bufferFactory).concatWith(body);
+			this.body = generateHeaders().concatWith(body);
 
 			// We don't actually want to write (just save the body Flux)
 			return Mono.empty();
+		}
+
+		private Mono<DataBuffer> generateHeaders() {
+			return Mono.fromCallable(() -> {
+				DataBuffer buffer = this.bufferFactory.allocateBuffer();
+				for (Map.Entry<String, List<String>> entry : this.headers.entrySet()) {
+					byte[] headerName = entry.getKey().getBytes(this.charset);
+					for (String headerValueString : entry.getValue()) {
+						byte[] headerValue = headerValueString.getBytes(this.charset);
+						buffer.write(headerName);
+						buffer.write((byte)':');
+						buffer.write((byte)' ');
+						buffer.write(headerValue);
+						buffer.write((byte)'\r');
+						buffer.write((byte)'\n');
+					}
+				}
+				buffer.write((byte)'\r');
+				buffer.write((byte)'\n');
+				return buffer;
+			});
 		}
 
 		@Override

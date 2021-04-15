@@ -42,7 +42,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.springframework.core.testfixture.TestGroup.LONG_RUNNING;
+import static org.springframework.core.testfixture.TestGroup.PERFORMANCE;
 
 /**
  * Unit and integration tests for {@link DelegatingWebConnection}.
@@ -124,7 +124,7 @@ public class DelegatingWebConnectionTests {
 	}
 
 	@Test
-	@EnabledForTestGroups(LONG_RUNNING)
+	@EnabledForTestGroups(PERFORMANCE)
 	public void verifyExampleInClassLevelJavadoc() throws Exception {
 		WebClient webClient = new WebClient();
 

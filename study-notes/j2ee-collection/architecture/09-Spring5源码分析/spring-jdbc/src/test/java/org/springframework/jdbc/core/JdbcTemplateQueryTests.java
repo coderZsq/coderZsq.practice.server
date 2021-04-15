@@ -26,8 +26,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Stream;
 
 import javax.sql.DataSource;
 
@@ -167,23 +165,6 @@ public class JdbcTemplateQueryTests {
 			}
 		});
 		assertThat(o instanceof Integer).as("Correct result type").isTrue();
-		verify(this.resultSet).close();
-		verify(this.statement).close();
-	}
-
-	@Test
-	public void testQueryForStreamWithRowMapper() throws Exception {
-		String sql = "SELECT AGE FROM CUSTMR WHERE ID = 3";
-		given(this.resultSet.next()).willReturn(true, false);
-		given(this.resultSet.getInt(1)).willReturn(22);
-		AtomicInteger count = new AtomicInteger();
-		try (Stream<Integer> s = this.template.queryForStream(sql, (rs, rowNum) -> rs.getInt(1))) {
-			s.forEach(val -> {
-				count.incrementAndGet();
-				assertThat(val).isEqualTo(22);
-			});
-		}
-		assertThat(count.get()).isEqualTo(1);
 		verify(this.resultSet).close();
 		verify(this.statement).close();
 	}
@@ -361,24 +342,6 @@ public class JdbcTemplateQueryTests {
 		given(this.resultSet.getInt(1)).willReturn(22);
 		Object o = this.template.queryForObject(sql, (rs, rowNum) -> rs.getInt(1), 3);
 		assertThat(o instanceof Integer).as("Correct result type").isTrue();
-		verify(this.preparedStatement).setObject(1, 3);
-		verify(this.resultSet).close();
-		verify(this.preparedStatement).close();
-	}
-
-	@Test
-	public void testQueryForStreamWithArgsAndRowMapper() throws Exception {
-		String sql = "SELECT AGE FROM CUSTMR WHERE ID = ?";
-		given(this.resultSet.next()).willReturn(true, false);
-		given(this.resultSet.getInt(1)).willReturn(22);
-		AtomicInteger count = new AtomicInteger();
-		try (Stream<Integer> s = this.template.queryForStream(sql, (rs, rowNum) -> rs.getInt(1), 3)) {
-			s.forEach(val -> {
-				count.incrementAndGet();
-				assertThat(val).isEqualTo(22);
-			});
-		}
-		assertThat(count.get()).isEqualTo(1);
 		verify(this.preparedStatement).setObject(1, 3);
 		verify(this.resultSet).close();
 		verify(this.preparedStatement).close();

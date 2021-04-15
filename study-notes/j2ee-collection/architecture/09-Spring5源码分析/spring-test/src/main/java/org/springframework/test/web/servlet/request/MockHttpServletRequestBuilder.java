@@ -700,8 +700,8 @@ public class MockHttpServletRequestBuilder
 
 		String query = this.url.getRawQuery();
 		if (!this.queryParams.isEmpty()) {
-			String str = UriComponentsBuilder.newInstance().queryParams(this.queryParams).build().encode().getQuery();
-			query = StringUtils.hasLength(query) ? (query + "&" + str) : str;
+			String s = UriComponentsBuilder.newInstance().queryParams(this.queryParams).build().encode().getQuery();
+			query = StringUtils.isEmpty(query) ? s : query + "&" + s;
 		}
 		if (query != null) {
 			request.setQueryString(query);

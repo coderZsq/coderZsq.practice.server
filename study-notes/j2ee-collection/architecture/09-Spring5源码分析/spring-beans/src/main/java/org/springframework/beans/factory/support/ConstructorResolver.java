@@ -24,13 +24,12 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -67,7 +66,6 @@ import org.springframework.util.StringUtils;
 
 /**
  * Delegate for resolving constructors and factory methods.
- *
  * <p>Performs constructor resolution through argument matching.
  *
  * @author Juergen Hoeller
@@ -86,7 +84,7 @@ class ConstructorResolver {
 	private static final Object[] EMPTY_ARGS = new Object[0];
 
 	/**
-	 * Marker for autowired arguments in a cached argument array, to be replaced
+	 * Marker for autowired arguments in a cached argument array, to be later replaced
 	 * by a {@linkplain #resolveAutowiredArgument resolved autowired argument}.
 	 */
 	private static final Object autowiredArgumentMarker = new Object();
@@ -150,7 +148,7 @@ class ConstructorResolver {
 				}
 			}
 			if (argsToResolve != null) {
-				argsToUse = resolvePreparedArguments(beanName, mbd, bw, constructorToUse, argsToResolve);
+				argsToUse = resolvePreparedArguments(beanName, mbd, bw, constructorToUse, argsToResolve, true);
 			}
 		}
 
@@ -201,7 +199,7 @@ class ConstructorResolver {
 			AutowireUtils.sortConstructors(candidates);
 			int minTypeDiffWeight = Integer.MAX_VALUE;
 			Set<Constructor<?>> ambiguousConstructors = null;
-			Deque<UnsatisfiedDependencyException> causes = null;
+			LinkedList<UnsatisfiedDependencyException> causes = null;
 
 			for (Constructor<?> candidate : candidates) {
 				int parameterCount = candidate.getParameterCount();
@@ -235,7 +233,7 @@ class ConstructorResolver {
 						}
 						// Swallow and try next constructor.
 						if (causes == null) {
-							causes = new ArrayDeque<>(1);
+							causes = new LinkedList<>();
 						}
 						causes.add(ex);
 						continue;
@@ -411,7 +409,6 @@ class ConstructorResolver {
 			if (mbd.isSingleton() && this.beanFactory.containsSingleton(beanName)) {
 				throw new ImplicitlyAppearedSingletonException();
 			}
-			this.beanFactory.registerDependentBean(factoryBeanName, beanName);
 			factoryClass = factoryBean.getClass();
 			isStatic = false;
 		}
@@ -446,7 +443,7 @@ class ConstructorResolver {
 				}
 			}
 			if (argsToResolve != null) {
-				argsToUse = resolvePreparedArguments(beanName, mbd, bw, factoryMethodToUse, argsToResolve);
+				argsToUse = resolvePreparedArguments(beanName, mbd, bw, factoryMethodToUse, argsToResolve, true);
 			}
 		}
 
@@ -514,7 +511,7 @@ class ConstructorResolver {
 				}
 			}
 
-			Deque<UnsatisfiedDependencyException> causes = null;
+			LinkedList<UnsatisfiedDependencyException> causes = null;
 
 			for (Method candidate : candidates) {
 				int parameterCount = candidate.getParameterCount();
@@ -547,7 +544,7 @@ class ConstructorResolver {
 							}
 							// Swallow and try next overloaded factory method.
 							if (causes == null) {
-								causes = new ArrayDeque<>(1);
+								causes = new LinkedList<>();
 							}
 							causes.add(ex);
 							continue;
@@ -818,7 +815,7 @@ class ConstructorResolver {
 	 * Resolve the prepared arguments stored in the given bean definition.
 	 */
 	private Object[] resolvePreparedArguments(String beanName, RootBeanDefinition mbd, BeanWrapper bw,
-			Executable executable, Object[] argsToResolve) {
+			Executable executable, Object[] argsToResolve, boolean fallback) {
 
 		TypeConverter customConverter = this.beanFactory.getCustomTypeConverter();
 		TypeConverter converter = (customConverter != null ? customConverter : bw);
@@ -831,7 +828,7 @@ class ConstructorResolver {
 			Object argValue = argsToResolve[argIndex];
 			MethodParameter methodParam = MethodParameter.forExecutable(executable, argIndex);
 			if (argValue == autowiredArgumentMarker) {
-				argValue = resolveAutowiredArgument(methodParam, beanName, null, converter, true);
+				argValue = resolveAutowiredArgument(methodParam, beanName, null, converter, fallback);
 			}
 			else if (argValue instanceof BeanMetadataElement) {
 				argValue = valueResolver.resolveValueIfNecessary("constructor argument", argValue);

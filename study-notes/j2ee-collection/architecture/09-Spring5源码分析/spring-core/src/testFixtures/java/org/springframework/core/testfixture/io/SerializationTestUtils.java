@@ -26,11 +26,9 @@ import java.io.OutputStream;
 
 /**
  * Utilities for testing serializability of objects.
- *
- * <p>Exposes static methods for use in other test cases.
+ * Exposes static methods for use in other test cases.
  *
  * @author Rod Johnson
- * @author Sam Brannen
  */
 public class SerializationTestUtils {
 
@@ -51,8 +49,7 @@ public class SerializationTestUtils {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	public static <T> T serializeAndDeserialize(T o) throws IOException, ClassNotFoundException {
+	public static Object serializeAndDeserialize(Object o) throws IOException, ClassNotFoundException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
 			oos.writeObject(o);
@@ -62,21 +59,7 @@ public class SerializationTestUtils {
 
 		ByteArrayInputStream is = new ByteArrayInputStream(bytes);
 		try (ObjectInputStream ois = new ObjectInputStream(is)) {
-			return (T) ois.readObject();
-		}
-	}
-
-	public static <T> T serializeAndDeserialize(Object o, Class<T> expectedType) throws IOException, ClassNotFoundException {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
-			oos.writeObject(o);
-			oos.flush();
-		}
-		byte[] bytes = baos.toByteArray();
-
-		ByteArrayInputStream is = new ByteArrayInputStream(bytes);
-		try (ObjectInputStream ois = new ObjectInputStream(is)) {
-			return expectedType.cast(ois.readObject());
+			return ois.readObject();
 		}
 	}
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,6 @@ import io.netty.channel.Channel;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.cookie.Cookie;
 import io.netty.handler.ssl.SslHandler;
-import org.apache.commons.logging.Log;
 import reactor.core.publisher.Flux;
 import reactor.netty.Connection;
 import reactor.netty.http.server.HttpServerRequest;
@@ -35,10 +34,9 @@ import reactor.netty.http.server.HttpServerRequest;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.NettyDataBufferFactory;
 import org.springframework.http.HttpCookie;
-import org.springframework.http.HttpLogging;
+import org.springframework.http.HttpHeaders;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
-import org.springframework.util.ClassUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -51,14 +49,7 @@ import org.springframework.util.MultiValueMap;
  */
 class ReactorServerHttpRequest extends AbstractServerHttpRequest {
 
-	/** Reactor Netty 1.0.5+. */
-	static final boolean reactorNettyRequestChannelOperationsIdPresent = ClassUtils.isPresent(
-			"reactor.netty.ChannelOperationsId", ReactorServerHttpRequest.class.getClassLoader());
-
-	private static final Log logger = HttpLogging.forLogName(ReactorServerHttpRequest.class);
-
-
-	private static final AtomicLong logPrefixIndex = new AtomicLong();
+	private static final AtomicLong logPrefixIndex = new AtomicLong(0);
 
 
 	private final HttpServerRequest request;
@@ -69,7 +60,7 @@ class ReactorServerHttpRequest extends AbstractServerHttpRequest {
 	public ReactorServerHttpRequest(HttpServerRequest request, NettyDataBufferFactory bufferFactory)
 			throws URISyntaxException {
 
-		super(initUri(request), "", new NettyHeadersAdapter(request.requestHeaders()));
+		super(initUri(request), "", initHeaders(request));
 		Assert.notNull(bufferFactory, "DataBufferFactory must not be null");
 		this.request = request;
 		this.bufferFactory = bufferFactory;
@@ -138,6 +129,11 @@ class ReactorServerHttpRequest extends AbstractServerHttpRequest {
 		return uri;
 	}
 
+	private static HttpHeaders initHeaders(HttpServerRequest channel) {
+		NettyHeadersAdapter headersMap = new NettyHeadersAdapter(channel.requestHeaders());
+		return new HttpHeaders(headersMap);
+	}
+
 
 	@Override
 	public String getMethodValue() {
@@ -197,28 +193,11 @@ class ReactorServerHttpRequest extends AbstractServerHttpRequest {
 	@Override
 	@Nullable
 	protected String initId() {
-		if (reactorNettyRequestChannelOperationsIdPresent) {
-			return (ChannelOperationsIdHelper.getId(this.request));
-		}
 		if (this.request instanceof Connection) {
 			return ((Connection) this.request).channel().id().asShortText() +
 					"-" + logPrefixIndex.incrementAndGet();
 		}
 		return null;
-	}
-
-
-	private static class ChannelOperationsIdHelper {
-
-		@Nullable
-		public static String getId(HttpServerRequest request) {
-			if (request instanceof reactor.netty.ChannelOperationsId) {
-				return (logger.isDebugEnabled() ?
-						((reactor.netty.ChannelOperationsId) request).asLongText() :
-						((reactor.netty.ChannelOperationsId) request).asShortText());
-			}
-			return null;
-		}
 	}
 
 }

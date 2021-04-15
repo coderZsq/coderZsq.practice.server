@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ import org.springframework.core.codec.StringDecoder;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.PropertySource;
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.DestinationPatternsMessageCondition;
@@ -58,6 +59,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @SuppressWarnings("ALL")
 public class MessageMappingMessageHandlerTests {
+
+	private static final DataBufferFactory bufferFactory = new DefaultDataBufferFactory();
+
 
 	private TestEncoderMethodReturnValueHandler returnValueHandler;
 
@@ -159,7 +163,7 @@ public class MessageMappingMessageHandlerTests {
 	}
 
 	private DataBuffer toDataBuffer(String payload) {
-		return DefaultDataBufferFactory.sharedInstance.wrap(payload.getBytes(UTF_8));
+		return bufferFactory.wrap(payload.getBytes(UTF_8));
 	}
 
 	private void verifyOutputContent(List<String> expected) {

@@ -28,8 +28,6 @@ import javax.sql.DataSource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InOrder;
 
 import org.springframework.core.testfixture.EnabledForTestGroups;
@@ -46,6 +44,7 @@ import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -59,12 +58,11 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.springframework.core.testfixture.TestGroup.LONG_RUNNING;
+import static org.springframework.core.testfixture.TestGroup.PERFORMANCE;
 
 /**
  * @author Juergen Hoeller
  * @since 04.07.2003
- * @see org.springframework.jdbc.support.JdbcTransactionManagerTests
  */
 public class DataSourceTransactionManagerTests  {
 
@@ -489,7 +487,9 @@ public class DataSourceTransactionManagerTests  {
 							protected void doInTransactionWithoutResult(TransactionStatus status) {
 							}
 						});
-						TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {});
+						TransactionSynchronizationManager.registerSynchronization(
+								new TransactionSynchronizationAdapter() {
+								});
 					}
 				};
 
@@ -965,10 +965,18 @@ public class DataSourceTransactionManagerTests  {
 		ordered.verify(con).close();
 	}
 
-	@ParameterizedTest(name = "transaction with {0} second timeout")
-	@ValueSource(ints = {1, 10})
-	@EnabledForTestGroups(LONG_RUNNING)
-	public void transactionWithTimeout(int timeout) throws Exception {
+	@Test
+	public void testTransactionWithLongTimeout() throws Exception {
+		doTestTransactionWithTimeout(10);
+	}
+
+	@Test
+	public void testTransactionWithShortTimeout() throws Exception {
+		doTestTransactionWithTimeout(1);
+	}
+
+	@EnabledForTestGroups(PERFORMANCE)
+	private void doTestTransactionWithTimeout(int timeout) throws Exception {
 		PreparedStatement ps = mock(PreparedStatement.class);
 		given(con.getAutoCommit()).willReturn(true);
 		given(con.prepareStatement("some SQL statement")).willReturn(ps);

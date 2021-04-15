@@ -50,17 +50,19 @@ public abstract class TransactionContextManager {
 	 * or no context found in a holder
 	 */
 	public static Mono<TransactionContext> currentContext() throws NoTransactionException {
-		return Mono.deferContextual(ctx -> {
+		return Mono.subscriberContext().handle((ctx, sink) -> {
 			if (ctx.hasKey(TransactionContext.class)) {
-				return Mono.just(ctx.get(TransactionContext.class));
+				sink.next(ctx.get(TransactionContext.class));
+				return;
 			}
 			if (ctx.hasKey(TransactionContextHolder.class)) {
 				TransactionContextHolder holder = ctx.get(TransactionContextHolder.class);
 				if (holder.hasContext()) {
-					return Mono.just(holder.currentContext());
+					sink.next(holder.currentContext());
+					return;
 				}
 			}
-			return Mono.error(new NoTransactionInContextException());
+			sink.error(new NoTransactionInContextException());
 		});
 	}
 

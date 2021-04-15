@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,8 +60,6 @@ public class DefaultClientResponseTests {
 
 	private ClientHttpResponse mockResponse;
 
-	private final HttpHeaders httpHeaders = new HttpHeaders();
-
 	private ExchangeStrategies mockExchangeStrategies;
 
 	private DefaultClientResponse defaultClientResponse;
@@ -70,7 +68,6 @@ public class DefaultClientResponseTests {
 	@BeforeEach
 	public void createMocks() {
 		mockResponse = mock(ClientHttpResponse.class);
-		given(mockResponse.getHeaders()).willReturn(this.httpHeaders);
 		mockExchangeStrategies = mock(ExchangeStrategies.class);
 		defaultClientResponse = new DefaultClientResponse(mockResponse, mockExchangeStrategies, "", "", () -> null);
 	}
@@ -94,6 +91,7 @@ public class DefaultClientResponseTests {
 
 	@Test
 	public void header() {
+		HttpHeaders httpHeaders = new HttpHeaders();
 		long contentLength = 42L;
 		httpHeaders.setContentLength(contentLength);
 		MediaType contentType = MediaType.TEXT_PLAIN;
@@ -125,8 +123,9 @@ public class DefaultClientResponseTests {
 
 	@Test
 	public void body() {
-		byte[] bytes = "foo".getBytes(StandardCharsets.UTF_8);
-		DefaultDataBuffer dataBuffer = DefaultDataBufferFactory.sharedInstance.wrap(ByteBuffer.wrap(bytes));
+		DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
+		DefaultDataBuffer dataBuffer =
+				factory.wrap(ByteBuffer.wrap("foo".getBytes(StandardCharsets.UTF_8)));
 		Flux<DataBuffer> body = Flux.just(dataBuffer);
 		mockTextPlainResponse(body);
 
@@ -140,8 +139,9 @@ public class DefaultClientResponseTests {
 
 	@Test
 	public void bodyToMono() {
-		byte[] bytes = "foo".getBytes(StandardCharsets.UTF_8);
-		DefaultDataBuffer dataBuffer = DefaultDataBufferFactory.sharedInstance.wrap(ByteBuffer.wrap(bytes));
+		DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
+		DefaultDataBuffer dataBuffer =
+				factory.wrap(ByteBuffer.wrap("foo".getBytes(StandardCharsets.UTF_8)));
 		Flux<DataBuffer> body = Flux.just(dataBuffer);
 		mockTextPlainResponse(body);
 
@@ -155,8 +155,9 @@ public class DefaultClientResponseTests {
 
 	@Test
 	public void bodyToMonoTypeReference() {
-		byte[] bytes = "foo".getBytes(StandardCharsets.UTF_8);
-		DefaultDataBuffer dataBuffer = DefaultDataBufferFactory.sharedInstance.wrap(ByteBuffer.wrap(bytes));
+		DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
+		DefaultDataBuffer dataBuffer =
+				factory.wrap(ByteBuffer.wrap("foo".getBytes(StandardCharsets.UTF_8)));
 		Flux<DataBuffer> body = Flux.just(dataBuffer);
 		mockTextPlainResponse(body);
 
@@ -172,8 +173,9 @@ public class DefaultClientResponseTests {
 
 	@Test
 	public void bodyToFlux() {
-		byte[] bytes = "foo".getBytes(StandardCharsets.UTF_8);
-		DefaultDataBuffer dataBuffer = DefaultDataBufferFactory.sharedInstance.wrap(ByteBuffer.wrap(bytes));
+		DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
+		DefaultDataBuffer dataBuffer =
+				factory.wrap(ByteBuffer.wrap("foo".getBytes(StandardCharsets.UTF_8)));
 		Flux<DataBuffer> body = Flux.just(dataBuffer);
 		mockTextPlainResponse(body);
 
@@ -188,8 +190,9 @@ public class DefaultClientResponseTests {
 
 	@Test
 	public void bodyToFluxTypeReference() {
-		byte[] bytes = "foo".getBytes(StandardCharsets.UTF_8);
-		DefaultDataBuffer dataBuffer = DefaultDataBufferFactory.sharedInstance.wrap(ByteBuffer.wrap(bytes));
+		DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
+		DefaultDataBuffer dataBuffer =
+				factory.wrap(ByteBuffer.wrap("foo".getBytes(StandardCharsets.UTF_8)));
 		Flux<DataBuffer> body = Flux.just(dataBuffer);
 		mockTextPlainResponse(body);
 
@@ -206,8 +209,9 @@ public class DefaultClientResponseTests {
 
 	@Test
 	public void toEntity() {
-		byte[] bytes = "foo".getBytes(StandardCharsets.UTF_8);
-		DefaultDataBuffer dataBuffer = DefaultDataBufferFactory.sharedInstance.wrap(ByteBuffer.wrap(bytes));
+		DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
+		DefaultDataBuffer dataBuffer =
+				factory.wrap(ByteBuffer.wrap("foo".getBytes(StandardCharsets.UTF_8)));
 		Flux<DataBuffer> body = Flux.just(dataBuffer);
 		mockTextPlainResponse(body);
 
@@ -224,10 +228,12 @@ public class DefaultClientResponseTests {
 
 	@Test
 	public void toEntityWithUnknownStatusCode() throws Exception {
-		byte[] bytes = "foo".getBytes(StandardCharsets.UTF_8);
-		DefaultDataBuffer dataBuffer = DefaultDataBufferFactory.sharedInstance.wrap(ByteBuffer.wrap(bytes));
+		DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
+		DefaultDataBuffer dataBuffer
+				= factory.wrap(ByteBuffer.wrap("foo".getBytes(StandardCharsets.UTF_8)));
 		Flux<DataBuffer> body = Flux.just(dataBuffer);
 
+		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setContentType(MediaType.TEXT_PLAIN);
 		given(mockResponse.getHeaders()).willReturn(httpHeaders);
 		given(mockResponse.getStatusCode()).willThrow(new IllegalArgumentException("999"));
@@ -248,8 +254,9 @@ public class DefaultClientResponseTests {
 
 	@Test
 	public void toEntityTypeReference() {
-		byte[] bytes = "foo".getBytes(StandardCharsets.UTF_8);
-		DefaultDataBuffer dataBuffer = DefaultDataBufferFactory.sharedInstance.wrap(ByteBuffer.wrap(bytes));
+		DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
+		DefaultDataBuffer dataBuffer =
+				factory.wrap(ByteBuffer.wrap("foo".getBytes(StandardCharsets.UTF_8)));
 		Flux<DataBuffer> body = Flux.just(dataBuffer);
 		mockTextPlainResponse(body);
 
@@ -268,8 +275,9 @@ public class DefaultClientResponseTests {
 
 	@Test
 	public void toEntityList() {
-		byte[] bytes = "foo".getBytes(StandardCharsets.UTF_8);
-		DefaultDataBuffer dataBuffer = DefaultDataBufferFactory.sharedInstance.wrap(ByteBuffer.wrap(bytes));
+		DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
+		DefaultDataBuffer dataBuffer =
+				factory.wrap(ByteBuffer.wrap("foo".getBytes(StandardCharsets.UTF_8)));
 		Flux<DataBuffer> body = Flux.just(dataBuffer);
 		mockTextPlainResponse(body);
 
@@ -285,11 +293,13 @@ public class DefaultClientResponseTests {
 	}
 
 	@Test
-	public void toEntityListWithUnknownStatusCode() {
-		byte[] bytes = "foo".getBytes(StandardCharsets.UTF_8);
-		DefaultDataBuffer dataBuffer = DefaultDataBufferFactory.sharedInstance.wrap(ByteBuffer.wrap(bytes));
+	public void toEntityListWithUnknownStatusCode() throws Exception {
+		DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
+		DefaultDataBuffer dataBuffer =
+				factory.wrap(ByteBuffer.wrap("foo".getBytes(StandardCharsets.UTF_8)));
 		Flux<DataBuffer> body = Flux.just(dataBuffer);
 
+		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setContentType(MediaType.TEXT_PLAIN);
 		given(mockResponse.getHeaders()).willReturn(httpHeaders);
 		given(mockResponse.getStatusCode()).willThrow(new IllegalArgumentException("999"));
@@ -310,8 +320,9 @@ public class DefaultClientResponseTests {
 
 	@Test
 	public void toEntityListTypeReference() {
-		byte[] bytes = "foo".getBytes(StandardCharsets.UTF_8);
-		DefaultDataBuffer dataBuffer = DefaultDataBufferFactory.sharedInstance.wrap(ByteBuffer.wrap(bytes));
+		DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
+		DefaultDataBuffer dataBuffer =
+				factory.wrap(ByteBuffer.wrap("foo".getBytes(StandardCharsets.UTF_8)));
 		Flux<DataBuffer> body = Flux.just(dataBuffer);
 
 		mockTextPlainResponse(body);
@@ -321,7 +332,8 @@ public class DefaultClientResponseTests {
 		given(mockExchangeStrategies.messageReaders()).willReturn(messageReaders);
 
 		ResponseEntity<List<String>> result = defaultClientResponse.toEntityList(
-				new ParameterizedTypeReference<String>() {}).block();
+				new ParameterizedTypeReference<String>() {
+				}).block();
 		assertThat(result.getBody()).isEqualTo(Collections.singletonList("foo"));
 		assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
 		assertThat(result.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
@@ -330,7 +342,9 @@ public class DefaultClientResponseTests {
 
 
 	private void mockTextPlainResponse(Flux<DataBuffer> body) {
+		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setContentType(MediaType.TEXT_PLAIN);
+		given(mockResponse.getHeaders()).willReturn(httpHeaders);
 		given(mockResponse.getStatusCode()).willReturn(HttpStatus.OK);
 		given(mockResponse.getRawStatusCode()).willReturn(HttpStatus.OK.value());
 		given(mockResponse.getBody()).willReturn(body);

@@ -42,7 +42,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  *
  * @author Rossen Stoyanchev
  */
-class ContentNegotiationManagerFactoryBeanTests {
+public class ContentNegotiationManagerFactoryBeanTests {
 
 	private ContentNegotiationManagerFactoryBean factoryBean;
 
@@ -52,7 +52,7 @@ class ContentNegotiationManagerFactoryBeanTests {
 
 
 	@BeforeEach
-	void setup() {
+	public void setup() {
 		TestServletContext servletContext = new TestServletContext();
 		servletContext.getMimeTypes().put("foo", "application/foo");
 
@@ -65,15 +65,15 @@ class ContentNegotiationManagerFactoryBeanTests {
 
 
 	@Test
-	void defaultSettings() throws Exception {
+	public void defaultSettings() throws Exception {
 		this.factoryBean.afterPropertiesSet();
 		ContentNegotiationManager manager = this.factoryBean.getObject();
 
 		this.servletRequest.setRequestURI("/flower.gif");
 
 		assertThat(manager.resolveMediaTypes(this.webRequest))
-				.as("Should not resolve file extensions by default")
-				.containsExactly(MediaType.ALL);
+				.as("Should be able to resolve file extensions by default")
+				.isEqualTo(Collections.singletonList(MediaType.IMAGE_GIF));
 
 		this.servletRequest.setRequestURI("/flower.foobarbaz");
 
@@ -97,7 +97,7 @@ class ContentNegotiationManagerFactoryBeanTests {
 	}
 
 	@Test
-	void explicitStrategies() throws Exception {
+	public void explicitStrategies() throws Exception {
 		Map<String, MediaType> mediaTypes = Collections.singletonMap("bar", new MediaType("application", "bar"));
 		ParameterContentNegotiationStrategy strategy1 = new ParameterContentNegotiationStrategy(mediaTypes);
 		HeaderContentNegotiationStrategy strategy2 = new HeaderContentNegotiationStrategy();
@@ -116,8 +116,7 @@ class ContentNegotiationManagerFactoryBeanTests {
 	}
 
 	@Test
-	@SuppressWarnings("deprecation")
-	void favorPath() throws Exception {
+	public void favorPath() throws Exception {
 		this.factoryBean.setFavorPathExtension(true);
 		this.factoryBean.addMediaType("bar", new MediaType("application", "bar"));
 		this.factoryBean.afterPropertiesSet();
@@ -137,8 +136,7 @@ class ContentNegotiationManagerFactoryBeanTests {
 	}
 
 	@Test // SPR-10170
-	@SuppressWarnings("deprecation")
-	void favorPathWithIgnoreUnknownPathExtensionTurnedOff() {
+	public void favorPathWithIgnoreUnknownPathExtensionTurnedOff() {
 		this.factoryBean.setFavorPathExtension(true);
 		this.factoryBean.setIgnoreUnknownPathExtensions(false);
 		this.factoryBean.afterPropertiesSet();
@@ -152,7 +150,7 @@ class ContentNegotiationManagerFactoryBeanTests {
 	}
 
 	@Test
-	void favorParameter() throws Exception {
+	public void favorParameter() throws Exception {
 		this.factoryBean.setFavorParameter(true);
 		this.factoryBean.addMediaType("json", MediaType.APPLICATION_JSON);
 
@@ -167,7 +165,7 @@ class ContentNegotiationManagerFactoryBeanTests {
 	}
 
 	@Test // SPR-10170
-	void favorParameterWithUnknownMediaType() {
+	public void favorParameterWithUnknownMediaType() {
 		this.factoryBean.setFavorParameter(true);
 		this.factoryBean.afterPropertiesSet();
 		ContentNegotiationManager manager = this.factoryBean.getObject();
@@ -180,8 +178,8 @@ class ContentNegotiationManagerFactoryBeanTests {
 	}
 
 	@Test
-	@SuppressWarnings("deprecation")
-	void mediaTypeMappingsWithoutPathAndParameterStrategies() {
+	public void mediaTypeMappingsWithoutPathAndParameterStrategies() {
+
 		this.factoryBean.setFavorPathExtension(false);
 		this.factoryBean.setFavorParameter(false);
 
@@ -201,8 +199,8 @@ class ContentNegotiationManagerFactoryBeanTests {
 	}
 
 	@Test
-	@SuppressWarnings("deprecation")
-	void fileExtensions() {
+	public void fileExtensions() {
+
 		this.factoryBean.setFavorPathExtension(false);
 		this.factoryBean.setFavorParameter(false);
 
@@ -224,9 +222,8 @@ class ContentNegotiationManagerFactoryBeanTests {
 	}
 
 	@Test
-	void ignoreAcceptHeader() throws Exception {
+	public void ignoreAcceptHeader() throws Exception {
 		this.factoryBean.setIgnoreAcceptHeader(true);
-		this.factoryBean.setFavorParameter(true);
 		this.factoryBean.afterPropertiesSet();
 		ContentNegotiationManager manager = this.factoryBean.getObject();
 
@@ -238,7 +235,7 @@ class ContentNegotiationManagerFactoryBeanTests {
 	}
 
 	@Test
-	void setDefaultContentType() throws Exception {
+	public void setDefaultContentType() throws Exception {
 		this.factoryBean.setDefaultContentType(MediaType.APPLICATION_JSON);
 		this.factoryBean.afterPropertiesSet();
 		ContentNegotiationManager manager = this.factoryBean.getObject();
@@ -251,7 +248,7 @@ class ContentNegotiationManagerFactoryBeanTests {
 	}
 
 	@Test // SPR-15367
-	void setDefaultContentTypes() throws Exception {
+	public void setDefaultContentTypes() throws Exception {
 		List<MediaType> mediaTypes = Arrays.asList(MediaType.APPLICATION_JSON, MediaType.ALL);
 		this.factoryBean.setDefaultContentTypes(mediaTypes);
 		this.factoryBean.afterPropertiesSet();
@@ -264,7 +261,7 @@ class ContentNegotiationManagerFactoryBeanTests {
 	}
 
 	@Test  // SPR-12286
-	void setDefaultContentTypeWithStrategy() throws Exception {
+	public void setDefaultContentTypeWithStrategy() throws Exception {
 		this.factoryBean.setDefaultContentTypeStrategy(new FixedContentNegotiationStrategy(MediaType.APPLICATION_JSON));
 		this.factoryBean.afterPropertiesSet();
 		ContentNegotiationManager manager = this.factoryBean.getObject();

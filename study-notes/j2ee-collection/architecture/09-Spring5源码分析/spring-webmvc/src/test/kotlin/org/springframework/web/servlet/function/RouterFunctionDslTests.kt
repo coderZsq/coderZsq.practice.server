@@ -24,7 +24,7 @@ import org.springframework.http.HttpHeaders.*
 import org.springframework.http.HttpMethod.*
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType.*
-import org.springframework.web.servlet.handler.PathPatternsTestUtils
+import org.springframework.web.testfixture.servlet.MockHttpServletRequest
 
 /**
  * Tests for WebMvc.fn [RouterFunctionDsl].
@@ -35,7 +35,7 @@ class RouterFunctionDslTests {
 
 	@Test
 	fun header() {
-		val servletRequest = PathPatternsTestUtils.initRequest("GET", "", true)
+		val servletRequest = MockHttpServletRequest()
 		servletRequest.addHeader("bar", "bar")
 		val request = DefaultServerRequest(servletRequest, emptyList())
 		assertThat(sampleRouter().route(request).isPresent).isTrue()
@@ -43,7 +43,7 @@ class RouterFunctionDslTests {
 
 	@Test
 	fun accept() {
-		val servletRequest = PathPatternsTestUtils.initRequest("GET", "/content", true)
+		val servletRequest = MockHttpServletRequest("GET", "/content")
 		servletRequest.addHeader(ACCEPT, APPLICATION_ATOM_XML_VALUE)
 		val request = DefaultServerRequest(servletRequest, emptyList())
 		assertThat(sampleRouter().route(request).isPresent).isTrue()
@@ -51,7 +51,7 @@ class RouterFunctionDslTests {
 
 	@Test
 	fun acceptAndPOST() {
-		val servletRequest = PathPatternsTestUtils.initRequest("POST", "/api/foo/", true)
+		val servletRequest = MockHttpServletRequest("POST", "/api/foo/")
 		servletRequest.addHeader(ACCEPT, APPLICATION_JSON_VALUE)
 		val request = DefaultServerRequest(servletRequest, emptyList())
 		assertThat(sampleRouter().route(request).isPresent).isTrue()
@@ -59,7 +59,7 @@ class RouterFunctionDslTests {
 
 	@Test
 	fun acceptAndPOSTWithRequestPredicate() {
-		val servletRequest = PathPatternsTestUtils.initRequest("POST", "/api/bar/", true)
+		val servletRequest = MockHttpServletRequest("POST", "/api/bar/")
 		servletRequest.addHeader(ACCEPT, APPLICATION_JSON_VALUE)
 		servletRequest.addHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
 		val request = DefaultServerRequest(servletRequest, emptyList())
@@ -68,7 +68,7 @@ class RouterFunctionDslTests {
 
 	@Test
 	fun contentType() {
-		val servletRequest = PathPatternsTestUtils.initRequest("GET", "/content", true)
+		val servletRequest = MockHttpServletRequest("GET", "/content")
 		servletRequest.addHeader(CONTENT_TYPE, APPLICATION_OCTET_STREAM_VALUE)
 		val request = DefaultServerRequest(servletRequest, emptyList())
 		assertThat(sampleRouter().route(request).isPresent).isTrue()
@@ -76,29 +76,28 @@ class RouterFunctionDslTests {
 
 	@Test
 	fun resourceByPath() {
-		val servletRequest = PathPatternsTestUtils.initRequest(
-				"GET", "/org/springframework/web/servlet/function/response.txt", true)
+		val servletRequest = MockHttpServletRequest("GET", "/org/springframework/web/servlet/function/response.txt")
 		val request = DefaultServerRequest(servletRequest, emptyList())
 		assertThat(sampleRouter().route(request).isPresent).isTrue()
 	}
 
 	@Test
 	fun method() {
-		val servletRequest = PathPatternsTestUtils.initRequest("PATCH", "/", true)
+		val servletRequest = MockHttpServletRequest("PATCH", "/")
 		val request = DefaultServerRequest(servletRequest, emptyList())
 		assertThat(sampleRouter().route(request).isPresent).isTrue()
 	}
 
 	@Test
 	fun path() {
-		val servletRequest = PathPatternsTestUtils.initRequest("GET", "/baz", true)
+		val servletRequest = MockHttpServletRequest("GET", "/baz")
 		val request = DefaultServerRequest(servletRequest, emptyList())
 		assertThat(sampleRouter().route(request).isPresent).isTrue()
 	}
 
 	@Test
 	fun resource() {
-		val servletRequest = PathPatternsTestUtils.initRequest("GET", "/response.txt", true)
+		val servletRequest = MockHttpServletRequest("GET", "/response.txt")
 		val request = DefaultServerRequest(servletRequest, emptyList())
 		assertThat(sampleRouter().route(request).isPresent).isTrue()
 	}
@@ -106,7 +105,7 @@ class RouterFunctionDslTests {
 	@Test
 	fun noRoute() {
 
-		val servletRequest = PathPatternsTestUtils.initRequest("GET", "/bar", true)
+		val servletRequest = MockHttpServletRequest("GET", "/bar")
 		servletRequest.addHeader(ACCEPT, APPLICATION_PDF_VALUE)
 		servletRequest.addHeader(CONTENT_TYPE, APPLICATION_PDF_VALUE)
 		val request = DefaultServerRequest(servletRequest, emptyList())
@@ -115,7 +114,7 @@ class RouterFunctionDslTests {
 
 	@Test
 	fun rendering() {
-		val servletRequest = PathPatternsTestUtils.initRequest("GET", "/rendering", true)
+		val servletRequest = MockHttpServletRequest("GET", "/rendering")
 		val request = DefaultServerRequest(servletRequest, emptyList())
 		assertThat(sampleRouter().route(request).get().handle(request) is RenderingResponse).isTrue()
 	}

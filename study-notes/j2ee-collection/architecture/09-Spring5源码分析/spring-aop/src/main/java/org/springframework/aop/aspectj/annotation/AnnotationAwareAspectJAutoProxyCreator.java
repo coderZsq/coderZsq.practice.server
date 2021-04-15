@@ -16,16 +16,16 @@
 
 package org.springframework.aop.aspectj.annotation;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
-
 import org.springframework.aop.Advisor;
 import org.springframework.aop.aspectj.autoproxy.AspectJAwareAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * {@link AspectJAwareAdvisorAutoProxyCreator} subclass that processes all AspectJ
@@ -86,17 +86,31 @@ public class AnnotationAwareAspectJAutoProxyCreator extends AspectJAwareAdvisorA
 	}
 
 
+	/**
+	 * 这里会找 两种通知方式：
+	 * 		   Advisor 代理方式 （@Transactional 底层的方式)
+	 * 	       AspectJ 增强方式
+	 * @return
+	 */
 	@Override
 	protected List<Advisor> findCandidateAdvisors() {
 		// Add all the Spring advisors found according to superclass rules.
+		// 找出 xml 配置的 Advisor 和原生接口的 AOP 的 Advisor 找出事务相关的 advisor
 		List<Advisor> advisors = super.findCandidateAdvisors();
 		// Build Advisors for all AspectJ aspects in the bean factory.
+		// 找出 Aspect 相关的信息之后封装为一个 advisor
 		if (this.aspectJAdvisorsBuilder != null) {
 			advisors.addAll(this.aspectJAdvisorsBuilder.buildAspectJAdvisors());
 		}
+		// 返回所有的通知
 		return advisors;
 	}
 
+	/**
+	 * aop 功能中有进行了重写了父类的判断(事务没有重写)
+	 * @param beanClass the class of the bean
+	 * @return
+	 */
 	@Override
 	protected boolean isInfrastructureClass(Class<?> beanClass) {
 		// Previously we setProxyTargetClass(true) in the constructor, but that has too
@@ -107,6 +121,9 @@ public class AnnotationAwareAspectJAutoProxyCreator extends AspectJAwareAdvisorA
 		// proxied by that interface and fail at runtime as the advice method is not
 		// defined on the interface. We could potentially relax the restriction about
 		// not advising aspects in the future.
+		/**
+		 * 除了是切面相关的基础的 bean 还判断了是不是切面
+		 */
 		return (super.isInfrastructureClass(beanClass) ||
 				(this.aspectJAdvisorFactory != null && this.aspectJAdvisorFactory.isAspect(beanClass)));
 	}

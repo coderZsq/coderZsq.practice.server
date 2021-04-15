@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
+import org.springframework.remoting.rmi.RemoteInvocationSerializingExporter;
 import org.springframework.remoting.support.RemoteInvocation;
 import org.springframework.remoting.support.RemoteInvocationResult;
 
@@ -57,7 +58,7 @@ import org.springframework.remoting.support.RemoteInvocationResult;
  */
 @Deprecated
 @org.springframework.lang.UsesSunHttpServer
-public class SimpleHttpInvokerServiceExporter extends org.springframework.remoting.rmi.RemoteInvocationSerializingExporter implements HttpHandler {
+public class SimpleHttpInvokerServiceExporter extends RemoteInvocationSerializingExporter implements HttpHandler {
 
 	/**
 	 * Reads a remote invocation from the request, executes it,

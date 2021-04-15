@@ -33,8 +33,6 @@ import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.SmartFactoryBean;
 import org.springframework.core.BridgeMethodResolver;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.lang.Nullable;
-import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.validation.annotation.Validated;
 
@@ -89,7 +87,6 @@ public class MethodValidationInterceptor implements MethodInterceptor {
 
 
 	@Override
-	@Nullable
 	public Object invoke(MethodInvocation invocation) throws Throwable {
 		// Avoid Validator invocation on FactoryBean.getObjectType/isSingleton
 		if (isFactoryBeanMetadataMethod(invocation.getMethod())) {
@@ -103,18 +100,17 @@ public class MethodValidationInterceptor implements MethodInterceptor {
 		Method methodToValidate = invocation.getMethod();
 		Set<ConstraintViolation<Object>> result;
 
-		Object target = invocation.getThis();
-		Assert.state(target != null, "Target must not be null");
-
 		try {
-			result = execVal.validateParameters(target, methodToValidate, invocation.getArguments(), groups);
+			result = execVal.validateParameters(
+					invocation.getThis(), methodToValidate, invocation.getArguments(), groups);
 		}
 		catch (IllegalArgumentException ex) {
 			// Probably a generic type mismatch between interface and impl as reported in SPR-12237 / HV-1011
 			// Let's try to find the bridged method on the implementation class...
 			methodToValidate = BridgeMethodResolver.findBridgedMethod(
-					ClassUtils.getMostSpecificMethod(invocation.getMethod(), target.getClass()));
-			result = execVal.validateParameters(target, methodToValidate, invocation.getArguments(), groups);
+					ClassUtils.getMostSpecificMethod(invocation.getMethod(), invocation.getThis().getClass()));
+			result = execVal.validateParameters(
+					invocation.getThis(), methodToValidate, invocation.getArguments(), groups);
 		}
 		if (!result.isEmpty()) {
 			throw new ConstraintViolationException(result);
@@ -122,7 +118,7 @@ public class MethodValidationInterceptor implements MethodInterceptor {
 
 		Object returnValue = invocation.proceed();
 
-		result = execVal.validateReturnValue(target, methodToValidate, returnValue, groups);
+		result = execVal.validateReturnValue(invocation.getThis(), methodToValidate, returnValue, groups);
 		if (!result.isEmpty()) {
 			throw new ConstraintViolationException(result);
 		}
@@ -161,9 +157,7 @@ public class MethodValidationInterceptor implements MethodInterceptor {
 	protected Class<?>[] determineValidationGroups(MethodInvocation invocation) {
 		Validated validatedAnn = AnnotationUtils.findAnnotation(invocation.getMethod(), Validated.class);
 		if (validatedAnn == null) {
-			Object target = invocation.getThis();
-			Assert.state(target != null, "Target must not be null");
-			validatedAnn = AnnotationUtils.findAnnotation(target.getClass(), Validated.class);
+			validatedAnn = AnnotationUtils.findAnnotation(invocation.getThis().getClass(), Validated.class);
 		}
 		return (validatedAnn != null ? validatedAnn.value() : new Class<?>[0]);
 	}

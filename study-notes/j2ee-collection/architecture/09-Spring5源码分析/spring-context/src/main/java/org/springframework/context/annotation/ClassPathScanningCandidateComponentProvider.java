@@ -18,9 +18,9 @@ package org.springframework.context.annotation;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -93,9 +93,9 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 
 	private String resourcePattern = DEFAULT_RESOURCE_PATTERN;
 
-	private final List<TypeFilter> includeFilters = new ArrayList<>();
+	private final List<TypeFilter> includeFilters = new LinkedList<>();
 
-	private final List<TypeFilter> excludeFilters = new ArrayList<>();
+	private final List<TypeFilter> excludeFilters = new LinkedList<>();
 
 	@Nullable
 	private Environment environment;
@@ -415,8 +415,12 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	private Set<BeanDefinition> scanCandidateComponents(String basePackage) {
 		Set<BeanDefinition> candidates = new LinkedHashSet<>();
 		try {
+			// 转化包扫描路径，将包路径转换为文件路径
+			// cn.wolfcode.spring.test.service
+			// classpath*:cn/wolfcode/spring/test/service/*.class
 			String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +
 					resolveBasePackage(basePackage) + '/' + this.resourcePattern;
+			// 基于路径获取到所有资源
 			Resource[] resources = getResourcePatternResolver().getResources(packageSearchPath);
 			boolean traceEnabled = logger.isTraceEnabled();
 			boolean debugEnabled = logger.isDebugEnabled();
@@ -424,11 +428,15 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 				if (traceEnabled) {
 					logger.trace("Scanning " + resource);
 				}
+				// 如果资源是可读的
 				if (resource.isReadable()) {
 					try {
+						// 得到该资源的元信息读取器
 						MetadataReader metadataReader = getMetadataReaderFactory().getMetadataReader(resource);
 						if (isCandidateComponent(metadataReader)) {
+							// 创建扫描到且匹配条件的通用 Bean 定义对象
 							ScannedGenericBeanDefinition sbd = new ScannedGenericBeanDefinition(metadataReader);
+							// 关联真实的资源对象
 							sbd.setSource(resource);
 							if (isCandidateComponent(sbd)) {
 								if (debugEnabled) {
@@ -486,11 +494,13 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	 * @return whether the class qualifies as a candidate component
 	 */
 	protected boolean isCandidateComponent(MetadataReader metadataReader) throws IOException {
+		// 是否被排除了，如果该类型被排除了，就不会被加载
 		for (TypeFilter tf : this.excludeFilters) {
 			if (tf.match(metadataReader, getMetadataReaderFactory())) {
 				return false;
 			}
 		}
+		// 判断是否符合加载条件，如贴有 @Component 等注解或创建 @Bean 的 @Condition 是否满足
 		for (TypeFilter tf : this.includeFilters) {
 			if (tf.match(metadataReader, getMetadataReaderFactory())) {
 				return isConditionMatch(metadataReader);

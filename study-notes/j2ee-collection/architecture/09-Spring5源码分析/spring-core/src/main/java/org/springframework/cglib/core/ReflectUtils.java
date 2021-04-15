@@ -260,7 +260,7 @@ public class ReflectUtils {
 		while ((index = className.indexOf("[]", index) + 1) > 0) {
 			dimensions++;
 		}
-		StringBuilder brackets = new StringBuilder(className.length() - dimensions);
+		StringBuffer brackets = new StringBuffer(className.length() - dimensions);
 		for (int i = 0; i < dimensions; i++) {
 			brackets.append('[');
 		}
@@ -522,46 +522,26 @@ public class ReflectUtils {
 			}
 		}
 
-		// Direct defineClass attempt on the target Classloader
-		if (c == null) {
+		// Classic option: protected ClassLoader.defineClass method
+		if (c == null && classLoaderDefineClassMethod != null) {
 			if (protectionDomain == null) {
 				protectionDomain = PROTECTION_DOMAIN;
 			}
-
-			// Look for publicDefineClass(String name, byte[] b, ProtectionDomain protectionDomain)
+			Object[] args = new Object[]{className, b, 0, b.length, protectionDomain};
 			try {
-				Method publicDefineClass = loader.getClass().getMethod(
-						"publicDefineClass", String.class, byte[].class, ProtectionDomain.class);
-				c = (Class) publicDefineClass.invoke(loader, className, b, protectionDomain);
+				if (!classLoaderDefineClassMethod.isAccessible()) {
+					classLoaderDefineClassMethod.setAccessible(true);
+				}
+				c = (Class) classLoaderDefineClassMethod.invoke(loader, args);
 			}
 			catch (InvocationTargetException ex) {
-				if (!(ex.getTargetException() instanceof UnsupportedOperationException)) {
-					throw new CodeGenerationException(ex.getTargetException());
-				}
-				// in case of UnsupportedOperationException, fall through
+				throw new CodeGenerationException(ex.getTargetException());
 			}
 			catch (Throwable ex) {
-				// publicDefineClass method not available -> fall through
-			}
-
-			// Classic option: protected ClassLoader.defineClass method
-			if (c == null && classLoaderDefineClassMethod != null) {
-				Object[] args = new Object[]{className, b, 0, b.length, protectionDomain};
-				try {
-					if (!classLoaderDefineClassMethod.isAccessible()) {
-						classLoaderDefineClassMethod.setAccessible(true);
-					}
-					c = (Class) classLoaderDefineClassMethod.invoke(loader, args);
-				}
-				catch (InvocationTargetException ex) {
-					throw new CodeGenerationException(ex.getTargetException());
-				}
-				catch (Throwable ex) {
-					// Fall through if setAccessible fails with InaccessibleObjectException on JDK 9+
-					// (on the module path and/or with a JVM bootstrapped with --illegal-access=deny)
-					if (!ex.getClass().getName().endsWith("InaccessibleObjectException")) {
-						throw new CodeGenerationException(ex);
-					}
+				// Fall through if setAccessible fails with InaccessibleObjectException on JDK 9+
+				// (on the module path and/or with a JVM bootstrapped with --illegal-access=deny)
+				if (!ex.getClass().getName().endsWith("InaccessibleObjectException")) {
+					throw new CodeGenerationException(ex);
 				}
 			}
 		}

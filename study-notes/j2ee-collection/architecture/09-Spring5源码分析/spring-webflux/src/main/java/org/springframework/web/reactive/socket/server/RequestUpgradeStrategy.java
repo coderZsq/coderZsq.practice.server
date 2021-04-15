@@ -68,6 +68,7 @@ public interface RequestUpgradeStrategy {
 	 * WebSocket session handling.
 	 * @since 5.1
 	 */
+	@SuppressWarnings("deprecation")
 	default Mono<Void> upgrade(ServerWebExchange exchange, WebSocketHandler webSocketHandler,
 			@Nullable String subProtocol, Supplier<HandshakeInfo> handshakeInfoFactory) {
 

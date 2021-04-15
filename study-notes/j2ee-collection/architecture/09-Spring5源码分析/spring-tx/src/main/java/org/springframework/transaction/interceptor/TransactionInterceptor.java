@@ -46,7 +46,6 @@ import org.springframework.transaction.TransactionManager;
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
- * @author Sebastien Deleuze
  * @see TransactionProxyFactoryBean
  * @see org.springframework.aop.framework.ProxyFactoryBean
  * @see org.springframework.aop.framework.ProxyFactory
@@ -113,24 +112,15 @@ public class TransactionInterceptor extends TransactionAspectSupport implements 
 		// Work out the target class: may be {@code null}.
 		// The TransactionAttributeSource should be passed the target class
 		// as well as the method, which may be from an interface.
+		// 获取代理对象的 class 属性
 		Class<?> targetClass = (invocation.getThis() != null ? AopUtils.getTargetClass(invocation.getThis()) : null);
 
 		// Adapt to TransactionAspectSupport's invokeWithinTransaction...
-		return invokeWithinTransaction(invocation.getMethod(), targetClass, new CoroutinesInvocationCallback() {
-			@Override
-			@Nullable
-			public Object proceedWithInvocation() throws Throwable {
-				return invocation.proceed();
-			}
-			@Override
-			public Object getTarget() {
-				return invocation.getThis();
-			}
-			@Override
-			public Object[] getArguments() {
-				return invocation.getArguments();
-			}
-		});
+		/**
+		 * 调用目标方法执行在事务中:
+		 * 在这埋了一个钩子函数 用来回调目标方法
+		 */
+		return invokeWithinTransaction(invocation.getMethod(), targetClass, invocation::proceed);
 	}
 
 

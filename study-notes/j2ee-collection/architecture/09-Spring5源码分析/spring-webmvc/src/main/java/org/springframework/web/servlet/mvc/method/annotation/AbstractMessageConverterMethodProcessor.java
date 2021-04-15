@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -213,20 +213,7 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 		}
 		else {
 			HttpServletRequest request = inputMessage.getServletRequest();
-			List<MediaType> acceptableTypes;
-			try {
-				acceptableTypes = getAcceptableMediaTypes(request);
-			}
-			catch (HttpMediaTypeNotAcceptableException ex) {
-				int series = outputMessage.getServletResponse().getStatus() / 100;
-				if (body == null || series == 4 || series == 5) {
-					if (logger.isDebugEnabled()) {
-						logger.debug("Ignoring error response content (if any). " + ex);
-					}
-					return;
-				}
-				throw ex;
-			}
+			List<MediaType> acceptableTypes = getAcceptableMediaTypes(request);
 			List<MediaType> producibleTypes = getProducibleMediaTypes(request, valueType, targetType);
 
 			if (body != null && producibleTypes.isEmpty()) {
@@ -312,7 +299,7 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 				throw new HttpMessageNotWritableException(
 						"No converter for [" + valueType + "] with preset Content-Type '" + contentType + "'");
 			}
-			throw new HttpMediaTypeNotAcceptableException(getSupportedMediaTypes(body.getClass()));
+			throw new HttpMediaTypeNotAcceptableException(this.allSupportedMediaTypes);
 		}
 	}
 
@@ -374,18 +361,23 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 		if (!CollectionUtils.isEmpty(mediaTypes)) {
 			return new ArrayList<>(mediaTypes);
 		}
-		List<MediaType> result = new ArrayList<>();
-		for (HttpMessageConverter<?> converter : this.messageConverters) {
-			if (converter instanceof GenericHttpMessageConverter && targetType != null) {
-				if (((GenericHttpMessageConverter<?>) converter).canWrite(targetType, valueClass, null)) {
-					result.addAll(converter.getSupportedMediaTypes(valueClass));
+		else if (!this.allSupportedMediaTypes.isEmpty()) {
+			List<MediaType> result = new ArrayList<>();
+			for (HttpMessageConverter<?> converter : this.messageConverters) {
+				if (converter instanceof GenericHttpMessageConverter && targetType != null) {
+					if (((GenericHttpMessageConverter<?>) converter).canWrite(targetType, valueClass, null)) {
+						result.addAll(converter.getSupportedMediaTypes());
+					}
+				}
+				else if (converter.canWrite(valueClass, null)) {
+					result.addAll(converter.getSupportedMediaTypes());
 				}
 			}
-			else if (converter.canWrite(valueClass, null)) {
-				result.addAll(converter.getSupportedMediaTypes(valueClass));
-			}
+			return result;
 		}
-		return (result.isEmpty() ? Collections.singletonList(MediaType.ALL) : result);
+		else {
+			return Collections.singletonList(MediaType.ALL);
+		}
 	}
 
 	private List<MediaType> getAcceptableMediaTypes(HttpServletRequest request)

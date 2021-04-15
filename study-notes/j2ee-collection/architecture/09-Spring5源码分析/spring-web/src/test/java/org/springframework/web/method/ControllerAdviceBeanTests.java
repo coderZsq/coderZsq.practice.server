@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -199,7 +199,7 @@ public class ControllerAdviceBeanTests {
 	}
 
 	@Test
-	@SuppressWarnings({"rawtypes", "unchecked"})
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void findAnnotatedBeansSortsBeans() {
 		Class[] expectedTypes = {
 			// Since ControllerAdviceBean currently treats PriorityOrdered the same as Ordered,
@@ -208,7 +208,6 @@ public class ControllerAdviceBeanTests {
 			PriorityOrderedControllerAdvice.class,
 			OrderAnnotationControllerAdvice.class,
 			PriorityAnnotationControllerAdvice.class,
-			SimpleControllerAdviceWithBeanOrder.class,
 			SimpleControllerAdvice.class,
 		};
 
@@ -230,7 +229,7 @@ public class ControllerAdviceBeanTests {
 		assertThat(new ControllerAdviceBean(bean).getOrder()).isEqualTo(expectedOrder);
 	}
 
-	@SuppressWarnings({"rawtypes", "unchecked"})
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void assertOrder(Class beanType, int expectedOrder) {
 		String beanName = "myBean";
 		BeanFactory beanFactory = mock(BeanFactory.class);
@@ -261,9 +260,6 @@ public class ControllerAdviceBeanTests {
 
 	@ControllerAdvice
 	static class SimpleControllerAdvice {}
-
-	@ControllerAdvice
-	static class SimpleControllerAdviceWithBeanOrder {}
 
 	@ControllerAdvice
 	@Order(100)
@@ -325,12 +321,12 @@ public class ControllerAdviceBeanTests {
 	static class MarkerClass {}
 
 	@Retention(RetentionPolicy.RUNTIME)
-	@interface ControllerAnnotation {}
+	static @interface ControllerAnnotation {}
 
 	@ControllerAnnotation
 	public static class AnnotatedController {}
 
-	interface ControllerInterface {}
+	static interface ControllerInterface {}
 
 	static class ImplementationController implements ControllerInterface {}
 
@@ -344,12 +340,6 @@ public class ControllerAdviceBeanTests {
 		@Bean
 		SimpleControllerAdvice simpleControllerAdvice() {
 			return new SimpleControllerAdvice();
-		}
-
-		@Bean
-		@Order(300)
-		SimpleControllerAdviceWithBeanOrder simpleControllerAdviceWithBeanOrder() {
-			return new SimpleControllerAdviceWithBeanOrder();
 		}
 
 		@Bean

@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -172,7 +172,7 @@ public interface WebTestClient {
 	// Static factory methods
 
 	/**
-	 * Use this server setup to test one {@code @Controller} at a time.
+	 * Use this server setup to test one `@Controller` at a time.
 	 * This option loads the default configuration of
 	 * {@link org.springframework.web.reactive.config.EnableWebFlux @EnableWebFlux}.
 	 * There are builder methods to customize the Java config. The resulting
@@ -229,8 +229,8 @@ public interface WebTestClient {
 	}
 
 	/**
-	 * This server setup option allows you to connect to a live server through
-	 * a Reactor Netty client connector.
+	 * This server setup option allows you to connect to a running server via
+	 * Reactor Netty.
 	 * <p><pre class="code">
 	 * WebTestClient client = WebTestClient.bindToServer()
 	 *         .baseUrl("http://localhost:8080")
@@ -244,6 +244,11 @@ public interface WebTestClient {
 
 	/**
 	 * A variant of {@link #bindToServer()} with a pre-configured connector.
+	 * <p><pre class="code">
+	 * WebTestClient client = WebTestClient.bindToServer()
+	 *         .baseUrl("http://localhost:8080")
+	 *         .build();
+	 * </pre>
 	 * @return chained API to customize client config
 	 * @since 5.0.2
 	 */
@@ -437,33 +442,6 @@ public interface WebTestClient {
 		 * @return this builder
 		 */
 		Builder filters(Consumer<List<ExchangeFilterFunction>> filtersConsumer);
-
-		/**
-		 * Configure an {@code EntityExchangeResult} callback that is invoked
-		 * every time after a response is fully decoded to a single entity, to a
-		 * List of entities, or to a byte[]. In effect, equivalent to each and
-		 * all of the below but registered once, globally:
-		 * <pre>
-		 * client.get().uri("/accounts/1")
-		 *         .exchange()
-		 *         .expectBody(Person.class).consumeWith(exchangeResult -> ... ));
-		 *
-		 * client.get().uri("/accounts")
-		 *         .exchange()
-		 *         .expectBodyList(Person.class).consumeWith(exchangeResult -> ... ));
-		 *
-		 * client.get().uri("/accounts/1")
-		 *         .exchange()
-		 *         .expectBody().consumeWith(exchangeResult -> ... ));
-		 * </pre>
-		 * <p>Note that the configured consumer does not apply to responses
-		 * decoded to {@code Flux<T>} which can be consumed outside the workflow
-		 * of the test client, for example via {@code reactor.test.StepVerifier}.
-		 * @param consumer the consumer to apply to entity responses
-		 * @return the builder
-		 * @since 5.3.5
-		 */
-		Builder entityExchangeResultConsumer(Consumer<EntityExchangeResult<?>> consumer);
 
 		/**
 		 * Configure the codecs for the {@code WebClient} in the
@@ -792,12 +770,6 @@ public interface WebTestClient {
 		HeaderAssertions expectHeader();
 
 		/**
-		 * Assertions on the cookies of the response.
-		 * @since 5.3
-		 */
-		CookieAssertions expectCookie();
-
-		/**
 		 * Consume and decode the response body to a single object of type
 		 * {@code <B>} and then apply assertions.
 		 * @param bodyType the expected body type
@@ -830,13 +802,18 @@ public interface WebTestClient {
 		BodyContentSpec expectBody();
 
 		/**
-		 * Exit the chained flow in order to consume the response body
-		 * externally, e.g. via {@link reactor.test.StepVerifier}.
+		 * Exit the chained API and consume the response body externally. This
+		 * is useful for testing infinite streams (e.g. SSE) where you need to
+		 * to assert decoded objects as they come and then cancel at some point
+		 * when test objectives are met. Consider using {@code StepVerifier}
+		 * from {@literal "reactor-test"} to assert the {@code Flux<T>} stream
+		 * of decoded objects.
 		 *
-		 * <p>Note that when {@code Void.class} is passed in, the response body
-		 * is consumed and released. If no content is expected, then consider
-		 * using {@code .expectBody().isEmpty()} instead which asserts that
-		 * there is no content.
+		 * <p><strong>Note:</strong> Do not use this option for cases where there
+		 * is no content (e.g. 204, 4xx) or you're not interested in the content.
+		 * For such cases you can use {@code expectBody().isEmpty()} or
+		 * {@code expectBody(Void.class)} which ensures that resources are
+		 * released regardless of whether the response has content or not.
 		 */
 		<T> FluxExchangeResult<T> returnResult(Class<T> elementClass);
 
@@ -865,14 +842,14 @@ public interface WebTestClient {
 		 * Assert the extracted body with a {@link Matcher}.
 		 * @since 5.1
 		 */
-		<T extends S> T value(Matcher<? super B> matcher);
+		<T extends S> T value(Matcher<B> matcher);
 
 		/**
 		 * Transform the extracted the body with a function, e.g. extracting a
 		 * property, and assert the mapped value with a {@link Matcher}.
 		 * @since 5.1
 		 */
-		<T extends S, R> T value(Function<B, R> bodyMapper, Matcher<? super R> matcher);
+		<T extends S, R> T value(Function<B, R> bodyMapper, Matcher<R> matcher);
 
 		/**
 		 * Assert the extracted body with a {@link Consumer}.

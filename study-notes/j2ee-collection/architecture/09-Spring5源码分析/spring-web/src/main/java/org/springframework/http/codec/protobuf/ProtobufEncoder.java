@@ -51,7 +51,7 @@ import org.springframework.util.MimeType;
  * {@code "application/x-protobuf"} and {@code "application/octet-stream"} with the official
  * {@code "com.google.protobuf:protobuf-java"} library.
  *
- * @author Sebastien Deleuze
+ * @author Sébastien Deleuze
  * @since 5.1
  * @see ProtobufDecoder
  */

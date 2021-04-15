@@ -16,13 +16,14 @@
 
 package org.springframework.orm.jpa.vendor;
 
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.SQLException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 
-import org.hibernate.ConnectionReleaseMode;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
 import org.hibernate.JDBCException;
@@ -42,7 +43,6 @@ import org.hibernate.UnresolvableObjectException;
 import org.hibernate.WrongClassException;
 import org.hibernate.dialect.lock.OptimisticEntityLockException;
 import org.hibernate.dialect.lock.PessimisticEntityLockException;
-import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.exception.ConstraintViolationException;
 import org.hibernate.exception.DataException;
 import org.hibernate.exception.JDBCConnectionException;
@@ -71,10 +71,12 @@ import org.springframework.transaction.InvalidIsolationLevelException;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.support.ResourceTransactionDefinition;
+import org.springframework.util.Assert;
+import org.springframework.util.ReflectionUtils;
 
 /**
  * {@link org.springframework.orm.jpa.JpaDialect} implementation for
- * Hibernate EntityManager. Developed against Hibernate 5.2/5.3/5.4.
+ * Hibernate EntityManager. Developed against Hibernate 5.1/5.2/5.3/5.4.
  *
  * @author Juergen Hoeller
  * @author Costin Leau
@@ -85,6 +87,27 @@ import org.springframework.transaction.support.ResourceTransactionDefinition;
  */
 @SuppressWarnings("serial")
 public class HibernateJpaDialect extends DefaultJpaDialect {
+
+	private static Method getFlushMode;
+
+	static {
+		try {
+			// Hibernate 5.2+ getHibernateFlushMode()
+			getFlushMode = Session.class.getMethod("getHibernateFlushMode");
+		}
+		catch (NoSuchMethodException ex) {
+			try {
+				// Classic Hibernate getFlushMode() with FlushMode return type
+				getFlushMode = Session.class.getMethod("getFlushMode");
+			}
+			catch (NoSuchMethodException ex2) {
+				throw new IllegalStateException("No compatible Hibernate getFlushMode signature found", ex2);
+			}
+		}
+		// Check that it is the Hibernate FlushMode type, not JPA's...
+		Assert.state(FlushMode.class == getFlushMode.getReturnType(), "Could not find Hibernate getFlushMode method");
+	}
+
 
 	boolean prepareConnection = true;
 
@@ -136,7 +159,7 @@ public class HibernateJpaDialect extends DefaultJpaDialect {
 	public Object beginTransaction(EntityManager entityManager, TransactionDefinition definition)
 			throws PersistenceException, SQLException, TransactionException {
 
-		SessionImplementor session = getSession(entityManager);
+		Session session = getSession(entityManager);
 
 		if (definition.getTimeout() != TransactionDefinition.TIMEOUT_DEFAULT) {
 			session.getTransaction().setTimeout(definition.getTimeout());
@@ -147,16 +170,13 @@ public class HibernateJpaDialect extends DefaultJpaDialect {
 		Connection preparedCon = null;
 
 		if (isolationLevelNeeded || definition.isReadOnly()) {
-			if (this.prepareConnection && ConnectionReleaseMode.ON_CLOSE.equals(
-					session.getJdbcCoordinator().getLogicalConnection().getConnectionHandlingMode().getReleaseMode())) {
-				preparedCon = session.connection();
+			if (this.prepareConnection) {
+				preparedCon = HibernateConnectionHandle.doGetConnection(session);
 				previousIsolationLevel = DataSourceUtils.prepareConnectionForTransaction(preparedCon, definition);
 			}
 			else if (isolationLevelNeeded) {
-				throw new InvalidIsolationLevelException(
-						"HibernateJpaDialect is not allowed to support custom isolation levels: " +
-						"make sure that its 'prepareConnection' flag is on (the default) and that the " +
-						"Hibernate connection release mode is set to ON_CLOSE.");
+				throw new InvalidIsolationLevelException(getClass().getSimpleName() +
+						" does not support custom isolation levels since the 'prepareConnection' flag is off.");
 			}
 		}
 
@@ -175,32 +195,34 @@ public class HibernateJpaDialect extends DefaultJpaDialect {
 			}
 		}
 		return new SessionTransactionData(
-				session, previousFlushMode, (preparedCon != null), previousIsolationLevel, definition.isReadOnly());
+				session, previousFlushMode, preparedCon, previousIsolationLevel, definition.isReadOnly());
 	}
 
 	@Override
 	public Object prepareTransaction(EntityManager entityManager, boolean readOnly, @Nullable String name)
 			throws PersistenceException {
 
-		SessionImplementor session = getSession(entityManager);
+		Session session = getSession(entityManager);
 		FlushMode previousFlushMode = prepareFlushMode(session, readOnly);
-		return new SessionTransactionData(session, previousFlushMode, false, null, readOnly);
+		return new SessionTransactionData(session, previousFlushMode, null, null, readOnly);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Nullable
 	protected FlushMode prepareFlushMode(Session session, boolean readOnly) throws PersistenceException {
-		FlushMode flushMode = session.getHibernateFlushMode();
+		FlushMode flushMode = (FlushMode) ReflectionUtils.invokeMethod(getFlushMode, session);
+		Assert.state(flushMode != null, "No FlushMode from Session");
 		if (readOnly) {
 			// We should suppress flushing for a read-only transaction.
 			if (!flushMode.equals(FlushMode.MANUAL)) {
-				session.setHibernateFlushMode(FlushMode.MANUAL);
+				session.setFlushMode(FlushMode.MANUAL);
 				return flushMode;
 			}
 		}
 		else {
 			// We need AUTO or COMMIT for a non-read-only transaction.
 			if (flushMode.lessThan(FlushMode.COMMIT)) {
-				session.setHibernateFlushMode(FlushMode.AUTO);
+				session.setFlushMode(FlushMode.AUTO);
 				return flushMode;
 			}
 		}
@@ -219,7 +241,7 @@ public class HibernateJpaDialect extends DefaultJpaDialect {
 	public ConnectionHandle getJdbcConnection(EntityManager entityManager, boolean readOnly)
 			throws PersistenceException, SQLException {
 
-		SessionImplementor session = getSession(entityManager);
+		Session session = getSession(entityManager);
 		return new HibernateConnectionHandle(session);
 	}
 
@@ -331,31 +353,32 @@ public class HibernateJpaDialect extends DefaultJpaDialect {
 		return new JpaSystemException(ex);
 	}
 
-	protected SessionImplementor getSession(EntityManager entityManager) {
-		return entityManager.unwrap(SessionImplementor.class);
+	protected Session getSession(EntityManager entityManager) {
+		return entityManager.unwrap(Session.class);
 	}
 
 
 	private static class SessionTransactionData {
 
-		private final SessionImplementor session;
+		private final Session session;
 
 		@Nullable
 		private final FlushMode previousFlushMode;
 
-		private final boolean needsConnectionReset;
+		@Nullable
+		private final Connection preparedCon;
 
 		@Nullable
 		private final Integer previousIsolationLevel;
 
 		private final boolean readOnly;
 
-		public SessionTransactionData(SessionImplementor session, @Nullable FlushMode previousFlushMode,
-				boolean connectionPrepared, @Nullable Integer previousIsolationLevel, boolean readOnly) {
+		public SessionTransactionData(Session session, @Nullable FlushMode previousFlushMode,
+				@Nullable Connection preparedCon, @Nullable Integer previousIsolationLevel, boolean readOnly) {
 
 			this.session = session;
 			this.previousFlushMode = previousFlushMode;
-			this.needsConnectionReset = connectionPrepared;
+			this.preparedCon = preparedCon;
 			this.previousIsolationLevel = previousIsolationLevel;
 			this.readOnly = readOnly;
 		}
@@ -365,9 +388,14 @@ public class HibernateJpaDialect extends DefaultJpaDialect {
 			if (this.previousFlushMode != null) {
 				this.session.setFlushMode(this.previousFlushMode);
 			}
-			if (this.needsConnectionReset &&
-					this.session.getJdbcCoordinator().getLogicalConnection().isPhysicallyConnected()) {
-				Connection conToReset = this.session.connection();
+			if (this.preparedCon != null && this.session.isConnected()) {
+				Connection conToReset = HibernateConnectionHandle.doGetConnection(this.session);
+				if (conToReset != this.preparedCon) {
+					LogFactory.getLog(HibernateJpaDialect.class).warn(
+							"JDBC Connection to reset not identical to originally prepared Connection - please " +
+							"make sure to use connection release mode ON_CLOSE (the default) and to run against " +
+							"Hibernate 4.2+ (or switch HibernateJpaDialect's prepareConnection flag to false");
+				}
 				DataSourceUtils.resetConnectionAfterTransaction(
 						conToReset, this.previousIsolationLevel, this.readOnly);
 			}
@@ -377,15 +405,35 @@ public class HibernateJpaDialect extends DefaultJpaDialect {
 
 	private static class HibernateConnectionHandle implements ConnectionHandle {
 
-		private final SessionImplementor session;
+		@Nullable
+		private static volatile Method connectionMethodToUse;
 
-		public HibernateConnectionHandle(SessionImplementor session) {
+		private final Session session;
+
+		public HibernateConnectionHandle(Session session) {
 			this.session = session;
 		}
 
 		@Override
 		public Connection getConnection() {
-			return this.session.connection();
+			return doGetConnection(this.session);
+		}
+
+		public static Connection doGetConnection(Session session) {
+			try {
+				Method methodToUse = connectionMethodToUse;
+				if (methodToUse == null) {
+					// Reflective lookup to find SessionImpl's connection() method on Hibernate 4.x/5.x
+					methodToUse = session.getClass().getMethod("connection");
+					connectionMethodToUse = methodToUse;
+				}
+				Connection con = (Connection) ReflectionUtils.invokeMethod(methodToUse, session);
+				Assert.state(con != null, "No Connection from Session");
+				return con;
+			}
+			catch (NoSuchMethodException ex) {
+				throw new IllegalStateException("Cannot find connection() method on Hibernate Session", ex);
+			}
 		}
 	}
 

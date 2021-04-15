@@ -30,10 +30,7 @@ import org.springframework.util.Assert;
  *
  * @author Juergen Hoeller
  * @since 1.2
- * @deprecated as of 5.3, in favor of specific data access APIs
- * (or native CCI usage if there is no alternative)
  */
-@Deprecated
 public class SimpleRecordOperation extends EisOperation {
 
 	/**

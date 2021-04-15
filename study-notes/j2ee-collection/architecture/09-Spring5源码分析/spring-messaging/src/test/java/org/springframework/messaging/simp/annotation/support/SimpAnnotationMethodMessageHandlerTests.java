@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,9 +32,11 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.EmitterProcessor;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.FluxProcessor;
 import reactor.core.publisher.Mono;
-import reactor.core.publisher.Sinks;
+import reactor.core.publisher.MonoProcessor;
 
 import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.lang.Nullable;
@@ -341,8 +343,8 @@ public class SimpAnnotationMethodMessageHandlerTests {
 		Message<?> message = createMessage("/app1/mono");
 		this.messageHandler.handleMessage(message);
 
-		assertThat(controller.sinkOne).isNotNull();
-		controller.sinkOne.emitValue("foo", Sinks.EmitFailureHandler.FAIL_FAST);
+		assertThat(controller.mono).isNotNull();
+		controller.mono.onNext("foo");
 		verify(this.converter).toMessage(this.payloadCaptor.capture(), any(MessageHeaders.class));
 		assertThat(this.payloadCaptor.getValue()).isEqualTo("foo");
 	}
@@ -356,7 +358,7 @@ public class SimpAnnotationMethodMessageHandlerTests {
 		Message<?> message = createMessage("/app1/mono");
 		this.messageHandler.handleMessage(message);
 
-		controller.sinkOne.emitError(new IllegalStateException(), Sinks.EmitFailureHandler.FAIL_FAST);
+		controller.mono.onError(new IllegalStateException());
 		assertThat(controller.exceptionCaught).isTrue();
 	}
 
@@ -369,14 +371,14 @@ public class SimpAnnotationMethodMessageHandlerTests {
 		Message<?> message = createMessage("/app1/flux");
 		this.messageHandler.handleMessage(message);
 
-		assertThat(controller.sinkMany).isNotNull();
-		controller.sinkMany.tryEmitNext("foo");
+		assertThat(controller.flux).isNotNull();
+		controller.flux.onNext("foo");
 
 		verify(this.converter, never()).toMessage(any(), any(MessageHeaders.class));
 	}
 
 	@Test
-	public void placeholder() {
+	public void placeholder() throws Exception {
 		Message<?> message = createMessage("/pre/myValue");
 		this.messageHandler.setEmbeddedValueResolver(value -> ("/${myProperty}".equals(value) ? "/myValue" : value));
 		this.messageHandler.registerHandler(this.testController);
@@ -584,22 +586,22 @@ public class SimpAnnotationMethodMessageHandlerTests {
 	@Controller
 	private static class ReactiveController {
 
-		private Sinks.One<String> sinkOne;
+		private MonoProcessor<String> mono;
 
-		private Sinks.Many<String> sinkMany;
+		private FluxProcessor<String, String> flux;
 
 		private boolean exceptionCaught = false;
 
 		@MessageMapping("mono")
 		public Mono<String> handleMono() {
-			this.sinkOne = Sinks.one();
-			return this.sinkOne.asMono();
+			this.mono = MonoProcessor.create();
+			return this.mono;
 		}
 
 		@MessageMapping("flux")
 		public Flux<String> handleFlux() {
-			this.sinkMany = Sinks.many().unicast().onBackpressureBuffer();
-			return this.sinkMany.asFlux();
+			this.flux = EmitterProcessor.create();
+			return this.flux;
 		}
 
 		@MessageExceptionHandler(IllegalStateException.class)

@@ -33,7 +33,8 @@ implement. Note that this interface is defined in plain Java. Dependent objects 
 are injected with a reference to the `Messenger` do not know that the underlying
 implementation is a Groovy script. The following listing shows the `Messenger` interface:
 
-[source,java,indent=0,subs="verbatim,quotes"]
+[source,java,indent=0]
+[subs="verbatim,quotes"]
 ----
 	package org.springframework.scripting;
 
@@ -45,7 +46,8 @@ implementation is a Groovy script. The following listing shows the `Messenger` i
 
 The following example defines a class that has a dependency on the `Messenger` interface:
 
-[source,java,indent=0,subs="verbatim,quotes"]
+[source,java,indent=0]
+[subs="verbatim,quotes"]
 ----
 	package org.springframework.scripting;
 
@@ -65,7 +67,8 @@ The following example defines a class that has a dependency on the `Messenger` i
 
 The following example implements the `Messenger` interface in Groovy:
 
-[source,groovy,indent=0,subs="verbatim,quotes"]
+[source,java,indent=0]
+[subs="verbatim,quotes"]
 ----
 	// from the file 'Messenger.groovy'
 	package org.springframework.scripting.groovy;
@@ -89,7 +92,7 @@ container. Using the dynamic-language-backed beans with a plain `BeanFactory`
 implementation is supported, but you have to manage the plumbing of the Spring internals
 to do so.
 
-For more information on schema-based configuration, see <<xsd-schemas-lang,
+For more information on schema-based configuration, see <<appendix.adoc#xsd-configuration,
 XML Schema-based Configuration>>.
 ====
 
@@ -97,7 +100,8 @@ Finally, the following example shows the bean definitions that effect the inject
 Groovy-defined `Messenger` implementation into an instance of the
 `DefaultBookingService` class:
 
-[source,xml,indent=0,subs="verbatim,quotes"]
+[source,xml,indent=0]
+[subs="verbatim,quotes"]
 ----
 	<?xml version="1.0" encoding="UTF-8"?>
 	<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -172,7 +176,7 @@ of your dynamic language source files.
 The final step in the list in the <<dynamic-language-beans-concepts, preceding section>>
 involves defining dynamic-language-backed bean definitions, one for each bean that you
 want to configure (this is no different from normal JavaBean configuration). However,
-instead of specifying the fully qualified class name of the class that is to be
+instead of specifying the fully qualified classname of the class that is to be
 instantiated and configured by the container, you can use the `<lang:language/>`
 element to define the dynamic language-backed bean.
 
@@ -217,7 +221,8 @@ if we stick with <<dynamic-language-a-first-example, the example>> from earlier 
 this chapter, the following example shows what we would change in the Spring XML
 configuration to effect refreshable beans:
 
-[source,xml,indent=0,subs="verbatim,quotes"]
+[source,xml,indent=0]
+[subs="verbatim,quotes"]
 ----
 	<beans>
 
@@ -251,7 +256,8 @@ on the dynamic-language-backed bean when the program resumes execution.
 
 The following listing shows this sample application:
 
-[source,java,indent=0,subs="verbatim,quotes"]
+[source,java,indent=0]
+[subs="verbatim,quotes"]
 ----
 	import org.springframework.context.ApplicationContext;
 	import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -276,7 +282,8 @@ surrounded by quotation marks. The following listing shows the changes that you
 (the developer) should make to the `Messenger.groovy` source file when the
 execution of the program is paused:
 
-[source,groovy,indent=0,subs="verbatim,quotes"]
+[source,java,indent=0]
+[subs="verbatim,quotes"]
 ----
 	package org.springframework.scripting
 
@@ -326,7 +333,8 @@ embedded directly in Spring bean definitions. More specifically, the
 inside a Spring configuration file. An example might clarify how the inline script
 feature works:
 
-[source,xml,indent=0,subs="verbatim,quotes"]
+[source,xml,indent=0]
+[subs="verbatim,quotes"]
 ----
 	<lang:groovy id="messenger">
 		<lang:inline-script>
@@ -363,7 +371,8 @@ constructors and properties 100% clear, the following mixture of code and config
 does not work:
 
 .An approach that cannot work
-[source,groovy,indent=0,subs="verbatim,quotes"]
+[source,java,indent=0]
+[subs="verbatim,quotes"]
 ----
 	// from the file 'Messenger.groovy'
 	package org.springframework.scripting.groovy;
@@ -385,7 +394,8 @@ does not work:
 	}
 ----
 
-[source,xml,indent=0,subs="verbatim,quotes"]
+[source,xml,indent=0]
+[subs="verbatim,quotes"]
 ----
 	<lang:groovy id="badMessenger"
 		script-source="classpath:Messenger.groovy">
@@ -420,7 +430,8 @@ If you have read this chapter straight from the top, you have already
 <<dynamic-language-a-first-example, seen an example>> of a Groovy-dynamic-language-backed
 bean. Now consider another example (again using an example from the Spring test suite):
 
-[source,java,indent=0,subs="verbatim,quotes"]
+[source,java,indent=0]
+[subs="verbatim,quotes"]
 ----
 	package org.springframework.scripting;
 
@@ -432,7 +443,8 @@ bean. Now consider another example (again using an example from the Spring test 
 
 The following example implements the `Calculator` interface in Groovy:
 
-[source,groovy,indent=0,subs="verbatim,quotes"]
+[source,groovy,indent=0]
+[subs="verbatim,quotes"]
 ----
 	// from the file 'calculator.groovy'
 	package org.springframework.scripting.groovy
@@ -447,7 +459,8 @@ The following example implements the `Calculator` interface in Groovy:
 
 The following bean definition uses the calculator defined in Groovy:
 
-[source,xml,indent=0,subs="verbatim,quotes"]
+[source,xml,indent=0]
+[subs="verbatim,quotes"]
 ----
 	<!-- from the file 'beans.xml' -->
 	<beans>
@@ -457,7 +470,8 @@ The following bean definition uses the calculator defined in Groovy:
 
 Finally, the following small application exercises the preceding configuration:
 
-[source,java,indent=0,subs="verbatim,quotes"]
+[source,java,indent=0]
+[subs="verbatim,quotes"]
 ----
 	package org.springframework.scripting;
 
@@ -466,9 +480,9 @@ Finally, the following small application exercises the preceding configuration:
 
 	public class Main {
 
-		public static void main(String[] args) {
+		public static void Main(String[] args) {
 			ApplicationContext ctx = new ClassPathXmlApplicationContext("beans.xml");
-			Calculator calc = ctx.getBean("calculator", Calculator.class);
+			Calculator calc = (Calculator) ctx.getBean("calculator");
 			System.out.println(calc.add(2, 8));
 		}
 	}
@@ -493,7 +507,8 @@ implementations of this interface could invoke any required initialization metho
 set some default property values, or specify a custom `MetaClass`. The following listing
 shows the `GroovyObjectCustomizer` interface definition:
 
-[source,java,indent=0,subs="verbatim,quotes"]
+[source,java,indent=0]
+[subs="verbatim,quotes"]
 ----
 	public interface GroovyObjectCustomizer {
 
@@ -507,7 +522,8 @@ has been defined). You can do whatever you like with the supplied `GroovyObject`
 reference. We expect that most people want to set a custom `MetaClass` with this
 callback, and the following example shows how to do so:
 
-[source,java,indent=0,subs="verbatim,quotes"]
+[source,java,indent=0]
+[subs="verbatim,quotes"]
 ----
 	public final class SimpleMethodTracingCustomizer implements GroovyObjectCustomizer {
 
@@ -532,7 +548,8 @@ search online. Plenty of articles address this topic. Actually, making use of a
 `GroovyObjectCustomizer` is easy if you use the Spring namespace support, as the
 following example shows:
 
-[source,xml,indent=0,subs="verbatim,quotes"]
+[source,xml,indent=0]
+[subs="verbatim,quotes"]
 ----
 	<!-- define the GroovyObjectCustomizer just like any other bean -->
 	<bean id="tracingCustomizer" class="example.SimpleMethodTracingCustomizer"/>
@@ -546,7 +563,8 @@ following example shows:
 If you do not use the Spring namespace support, you can still use the
 `GroovyObjectCustomizer` functionality, as the following example shows:
 
-[source,xml,indent=0,subs="verbatim,quotes"]
+[source,xml,indent=0]
+[subs="verbatim,quotes"]
 ----
 	<bean id="calculator" class="org.springframework.scripting.groovy.GroovyScriptFactory">
 		<constructor-arg value="classpath:org/springframework/scripting/groovy/Calculator.groovy"/>
@@ -596,7 +614,8 @@ Now we can show a fully working example of using a BeanShell-based bean that imp
 the `Messenger` interface that was defined earlier in this chapter. We again show the
 definition of the `Messenger` interface:
 
-[source,java,indent=0,subs="verbatim,quotes"]
+[source,java,indent=0]
+[subs="verbatim,quotes"]
 ----
 	package org.springframework.scripting;
 
@@ -609,7 +628,8 @@ definition of the `Messenger` interface:
 The following example shows the BeanShell "`implementation`" (we use the term loosely here)
 of the `Messenger` interface:
 
-[source,java,indent=0,subs="verbatim,quotes"]
+[source,java,indent=0]
+[subs="verbatim,quotes"]
 ----
 	String message;
 
@@ -625,7 +645,8 @@ of the `Messenger` interface:
 The following example shows the Spring XML that defines an "`instance`" of the above
 "`class`" (again, we use these terms very loosely here):
 
-[source,xml,indent=0,subs="verbatim,quotes"]
+[source,xml,indent=0]
+[subs="verbatim,quotes"]
 ----
 	<lang:bsh id="messageService" script-source="classpath:BshMessenger.bsh"
 		script-interfaces="org.springframework.scripting.Messenger">
@@ -676,7 +697,8 @@ beans, you have to enable the "`refreshable beans`" functionality. See
 The following example shows an `org.springframework.web.servlet.mvc.Controller` implemented
 by using the Groovy dynamic language:
 
-[source,groovy,indent=0,subs="verbatim,quotes"]
+[source,java,indent=0]
+[subs="verbatim,quotes"]
 ----
 	// from the file '/WEB-INF/groovy/FortuneController.groovy'
 	package org.springframework.showcase.fortune.web
@@ -700,7 +722,8 @@ by using the Groovy dynamic language:
 	}
 ----
 
-[source,xml,indent=0,subs="verbatim,quotes"]
+[source,xml,indent=0]
+[subs="verbatim,quotes"]
 ----
 	<lang:groovy id="fortune"
 			refresh-check-delay="3000"
@@ -733,7 +756,8 @@ implemented by using the Groovy dynamic language (see <<core.adoc#validator,
 Validation using Spring’s Validator interface>> for a discussion of the
 `Validator` interface):
 
-[source,groovy,indent=0,subs="verbatim,quotes"]
+[source,groovy,indent=0]
+[subs="verbatim,quotes"]
 ----
 	import org.springframework.validation.Validator
 	import org.springframework.validation.Errors
@@ -791,7 +815,8 @@ as it is with "`regular`" beans.)
 The following example uses the `scope` attribute to define a Groovy bean scoped as
 a <<core.adoc#beans-factory-scopes-prototype, prototype>>:
 
-[source,xml,indent=0,subs="verbatim,quotes"]
+[source,xml,indent=0]
+[subs="verbatim,quotes"]
 ----
 	<?xml version="1.0" encoding="UTF-8"?>
 	<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -823,14 +848,15 @@ The `lang` elements in Spring XML configuration deal with exposing objects that 
 written in a dynamic language (such as Groovy or BeanShell) as beans in the Spring container.
 
 These elements (and the dynamic language support) are comprehensively covered in
-<<dynamic-language, Dynamic Language Support>>. See that section
+<<integration.adoc#dynamic-language, Dynamic Language Support>>. See that chapter
 for full details on this support and the `lang` elements.
 
 To use the elements in the `lang` schema, you need to have the following preamble at the
 top of your Spring XML configuration file. The text in the following snippet references
 the correct schema so that the tags in the `lang` namespace are available to you:
 
-[source,xml,indent=0,subs="verbatim,quotes"]
+[source,xml,indent=0]
+[subs="verbatim,quotes"]
 ----
 	<?xml version="1.0" encoding="UTF-8"?>
 	<beans xmlns="http://www.springframework.org/schema/beans"

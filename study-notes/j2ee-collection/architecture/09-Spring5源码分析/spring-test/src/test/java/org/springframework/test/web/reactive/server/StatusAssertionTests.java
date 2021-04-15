@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import java.net.URI;
 import java.time.Duration;
 
 import org.junit.jupiter.api.Test;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.MonoProcessor;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -34,13 +34,12 @@ import static org.mockito.Mockito.mock;
 
 /**
  * Unit tests for {@link StatusAssertions}.
- *
  * @author Rossen Stoyanchev
  */
-class StatusAssertionTests {
+public class StatusAssertionTests {
 
 	@Test
-	void isEqualTo() {
+	public void isEqualTo() {
 		StatusAssertions assertions = statusAssertions(HttpStatus.CONFLICT);
 
 		// Success
@@ -56,13 +55,13 @@ class StatusAssertionTests {
 				assertions.isEqualTo(408));
 	}
 
-	@Test  // gh-23630
-	void isEqualToWithCustomStatus() {
+	@Test // gh-23630
+	public void isEqualToWithCustomStatus() {
 		statusAssertions(600).isEqualTo(600);
 	}
 
 	@Test
-	void reasonEquals() {
+	public void reasonEquals() {
 		StatusAssertions assertions = statusAssertions(HttpStatus.CONFLICT);
 
 		// Success
@@ -74,19 +73,20 @@ class StatusAssertionTests {
 	}
 
 	@Test
-	void statusSeries1xx() {
+	public void statusSerius1xx() {
 		StatusAssertions assertions = statusAssertions(HttpStatus.CONTINUE);
 
 		// Success
 		assertions.is1xxInformational();
 
 		// Wrong series
+
 		assertThatExceptionOfType(AssertionError.class).isThrownBy(() ->
 				assertions.is2xxSuccessful());
 	}
 
 	@Test
-	void statusSeries2xx() {
+	public void statusSerius2xx() {
 		StatusAssertions assertions = statusAssertions(HttpStatus.OK);
 
 		// Success
@@ -98,7 +98,7 @@ class StatusAssertionTests {
 	}
 
 	@Test
-	void statusSeries3xx() {
+	public void statusSerius3xx() {
 		StatusAssertions assertions = statusAssertions(HttpStatus.PERMANENT_REDIRECT);
 
 		// Success
@@ -110,7 +110,7 @@ class StatusAssertionTests {
 	}
 
 	@Test
-	void statusSeries4xx() {
+	public void statusSerius4xx() {
 		StatusAssertions assertions = statusAssertions(HttpStatus.BAD_REQUEST);
 
 		// Success
@@ -122,7 +122,7 @@ class StatusAssertionTests {
 	}
 
 	@Test
-	void statusSeries5xx() {
+	public void statusSerius5xx() {
 		StatusAssertions assertions = statusAssertions(HttpStatus.INTERNAL_SERVER_ERROR);
 
 		// Success
@@ -134,7 +134,7 @@ class StatusAssertionTests {
 	}
 
 	@Test
-	void matchesStatusValue() {
+	public void matches() {
 		StatusAssertions assertions = statusAssertions(HttpStatus.CONFLICT);
 
 		// Success
@@ -146,11 +146,6 @@ class StatusAssertionTests {
 				assertions.value(equalTo(200)));
 	}
 
-	@Test  // gh-26658
-	void matchesCustomStatusValue() {
-		statusAssertions(600).value(equalTo(600));
-	}
-
 
 	private StatusAssertions statusAssertions(HttpStatus status) {
 		return statusAssertions(status.value());
@@ -160,9 +155,10 @@ class StatusAssertionTests {
 		MockClientHttpRequest request = new MockClientHttpRequest(HttpMethod.GET, URI.create("/"));
 		MockClientHttpResponse response = new MockClientHttpResponse(status);
 
-		ExchangeResult result = new ExchangeResult(
-				request, response, Mono.empty(), Mono.empty(), Duration.ZERO, null, null);
+		MonoProcessor<byte[]> emptyContent = MonoProcessor.create();
+		emptyContent.onComplete();
 
+		ExchangeResult result = new ExchangeResult(request, response, emptyContent, emptyContent, Duration.ZERO, null);
 		return new StatusAssertions(result, mock(WebTestClient.ResponseSpec.class));
 	}
 

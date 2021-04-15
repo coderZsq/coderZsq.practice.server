@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,11 +71,9 @@ import org.springframework.web.socket.server.RequestUpgradeStrategy;
  */
 public abstract class AbstractHandshakeHandler implements HandshakeHandler, Lifecycle {
 
-	private static final boolean tomcatWsPresent;
-
 	private static final boolean jettyWsPresent;
 
-	private static final boolean jetty10WsPresent;
+	private static final boolean tomcatWsPresent;
 
 	private static final boolean undertowWsPresent;
 
@@ -87,12 +85,10 @@ public abstract class AbstractHandshakeHandler implements HandshakeHandler, Life
 
 	static {
 		ClassLoader classLoader = AbstractHandshakeHandler.class.getClassLoader();
-		tomcatWsPresent = ClassUtils.isPresent(
-				"org.apache.tomcat.websocket.server.WsHttpUpgradeHandler", classLoader);
-		jetty10WsPresent = ClassUtils.isPresent(
-				"org.eclipse.jetty.websocket.server.JettyWebSocketServerContainer", classLoader);
 		jettyWsPresent = ClassUtils.isPresent(
 				"org.eclipse.jetty.websocket.server.WebSocketServerFactory", classLoader);
+		tomcatWsPresent = ClassUtils.isPresent(
+				"org.apache.tomcat.websocket.server.WsHttpUpgradeHandler", classLoader);
 		undertowWsPresent = ClassUtils.isPresent(
 				"io.undertow.websockets.jsr.ServerWebSocketContainer", classLoader);
 		glassfishWsPresent = ClassUtils.isPresent(
@@ -101,6 +97,7 @@ public abstract class AbstractHandshakeHandler implements HandshakeHandler, Life
 				"weblogic.websocket.tyrus.TyrusServletWriter", classLoader);
 		websphereWsPresent = ClassUtils.isPresent(
 				"com.ibm.websphere.wsoc.WsWsocServerContainer", classLoader);
+
 	}
 
 
@@ -110,7 +107,7 @@ public abstract class AbstractHandshakeHandler implements HandshakeHandler, Life
 
 	private final List<String> supportedProtocols = new ArrayList<>();
 
-	private volatile boolean running;
+	private volatile boolean running = false;
 
 
 	/**
@@ -139,9 +136,6 @@ public abstract class AbstractHandshakeHandler implements HandshakeHandler, Life
 		}
 		else if (jettyWsPresent) {
 			className = "org.springframework.web.socket.server.jetty.JettyRequestUpgradeStrategy";
-		}
-		else if (jetty10WsPresent) {
-			className = "org.springframework.web.socket.server.jetty.Jetty10RequestUpgradeStrategy";
 		}
 		else if (undertowWsPresent) {
 			className = "org.springframework.web.socket.server.standard.UndertowRequestUpgradeStrategy";

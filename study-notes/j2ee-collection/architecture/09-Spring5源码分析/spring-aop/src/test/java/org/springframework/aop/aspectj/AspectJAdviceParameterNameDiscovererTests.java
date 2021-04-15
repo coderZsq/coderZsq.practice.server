@@ -275,7 +275,7 @@ public class AspectJAdviceParameterNameDiscovererTests {
 
 
 	private static String format(String[] names) {
-		StringBuilder sb = new StringBuilder();
+		StringBuffer sb = new StringBuffer();
 		sb.append("(");
 		for (int i = 0; i < names.length; i++) {
 			sb.append(names[i]);

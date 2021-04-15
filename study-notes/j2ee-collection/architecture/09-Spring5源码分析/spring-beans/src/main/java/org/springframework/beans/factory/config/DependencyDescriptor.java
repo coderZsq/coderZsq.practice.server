@@ -101,13 +101,19 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 	public DependencyDescriptor(MethodParameter methodParameter, boolean required, boolean eager) {
 		super(methodParameter);
 
+		// 当前正在创建的 bean 所在的 class
 		this.declaringClass = methodParameter.getDeclaringClass();
+		// 正在创建 bean 中属性的 setterXXX 方法名称
 		if (methodParameter.getMethod() != null) {
 			this.methodName = methodParameter.getMethod().getName();
 		}
+		// setterXX 方法的入参的类型
 		this.parameterTypes = methodParameter.getExecutable().getParameterTypes();
+		// 参数的下标
 		this.parameterIndex = methodParameter.getParameterIndex();
+		// 所在的 bean 的 class 对象
 		this.containingClass = methodParameter.getContainingClass();
+		// 入参中是否必须
 		this.required = required;
 		this.eager = eager;
 	}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.TestContextManager;
 import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.event.ApplicationEventsTestExecutionListener;
 import org.springframework.test.context.event.EventPublishingTestExecutionListener;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener;
@@ -55,7 +54,6 @@ import org.springframework.test.context.web.ServletTestExecutionListener;
  * <ul>
  * <li>{@link org.springframework.test.context.web.ServletTestExecutionListener}
  * <li>{@link org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener}
- * <li>{@link org.springframework.test.context.event.ApplicationEventsTestExecutionListener}
  * <li>{@link org.springframework.test.context.support.DependencyInjectionTestExecutionListener}
  * <li>{@link org.springframework.test.context.support.DirtiesContextTestExecutionListener}
  * <li>{@link org.springframework.test.context.event.EventPublishingTestExecutionListener}
@@ -84,7 +82,6 @@ import org.springframework.test.context.web.ServletTestExecutionListener;
  * @see TestExecutionListeners
  * @see ServletTestExecutionListener
  * @see DirtiesContextBeforeModesTestExecutionListener
- * @see ApplicationEventsTestExecutionListener
  * @see DependencyInjectionTestExecutionListener
  * @see DirtiesContextTestExecutionListener
  * @see EventPublishingTestExecutionListener
@@ -93,8 +90,8 @@ import org.springframework.test.context.web.ServletTestExecutionListener;
  */
 @RunWith(SpringRunner.class)
 @TestExecutionListeners({ ServletTestExecutionListener.class, DirtiesContextBeforeModesTestExecutionListener.class,
-	ApplicationEventsTestExecutionListener.class, DependencyInjectionTestExecutionListener.class,
-	DirtiesContextTestExecutionListener.class, EventPublishingTestExecutionListener.class })
+	DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
+	EventPublishingTestExecutionListener.class })
 public abstract class AbstractJUnit4SpringContextTests implements ApplicationContextAware {
 
 	/**

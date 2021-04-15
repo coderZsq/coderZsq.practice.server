@@ -113,20 +113,26 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 
 
 	/**
+	 * 方法实现说明: 是 AbstractApplicationContext 对象的子类, 用于 SpringMVC 来刷新容器调用
+	 *
 	 * This implementation performs an actual refresh of this context's underlying
 	 * bean factory, shutting down the previous bean factory (if any) and
 	 * initializing a fresh bean factory for the next phase of the context's lifecycle.
 	 */
 	@Override
 	protected final void refreshBeanFactory() throws BeansException {
+		// 若容器已经存在，就先销毁容器
 		if (hasBeanFactory()) {
 			destroyBeans();
 			closeBeanFactory();
 		}
 		try {
+			// 为 Spring 应用上下文对象创建 beanFactory
 			DefaultListableBeanFactory beanFactory = createBeanFactory();
+			// 为容器设置一个序列化ID
 			beanFactory.setSerializationId(getId());
 			customizeBeanFactory(beanFactory);
+			// 加载 bean 定义
 			loadBeanDefinitions(beanFactory);
 			this.beanFactory = beanFactory;
 		}

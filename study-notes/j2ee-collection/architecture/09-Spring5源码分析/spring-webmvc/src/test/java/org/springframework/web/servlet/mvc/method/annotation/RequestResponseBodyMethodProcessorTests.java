@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,8 +29,6 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -86,9 +84,6 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
  */
 @SuppressWarnings("unused")
 public class RequestResponseBodyMethodProcessorTests {
-
-	protected static final String NEWLINE_SYSTEM_PROPERTY = System.getProperty("line.separator");
-
 
 	private ModelAndViewContainer container;
 
@@ -363,37 +358,9 @@ public class RequestResponseBodyMethodProcessorTests {
 		assertThat(this.servletResponse.getHeader("Content-Type")).isEqualTo("image/jpeg");
 	}
 
-	@Test // gh-26212
-	public void handleReturnValueWithObjectMapperByTypeRegistration() throws Exception {
-		MediaType halFormsMediaType = MediaType.parseMediaType("application/prs.hal-forms+json");
-		MediaType halMediaType = MediaType.parseMediaType("application/hal+json");
+	// SPR-13135
 
-		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-
-		MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-		converter.registerObjectMappersForType(SimpleBean.class, map -> map.put(halMediaType, objectMapper));
-
-		this.servletRequest.addHeader("Accept", halFormsMediaType + "," + halMediaType);
-
-		SimpleBean simpleBean = new SimpleBean();
-		simpleBean.setId(12L);
-		simpleBean.setName("Jason");
-
-		RequestResponseBodyMethodProcessor processor =
-				new RequestResponseBodyMethodProcessor(Collections.singletonList(converter));
-		MethodParameter returnType = new MethodParameter(getClass().getDeclaredMethod("getSimpleBean"), -1);
-		processor.writeWithMessageConverters(simpleBean, returnType, this.request);
-
-		assertThat(this.servletResponse.getHeader("Content-Type")).isEqualTo(halMediaType.toString());
-		assertThat(this.servletResponse.getContentAsString()).isEqualTo(
-				"{" + NEWLINE_SYSTEM_PROPERTY +
-				"  \"id\" : 12," + NEWLINE_SYSTEM_PROPERTY +
-				"  \"name\" : \"Jason\"" + NEWLINE_SYSTEM_PROPERTY +
-				"}");
-	}
-
-	@Test // SPR-13135
+	@Test
 	public void handleReturnValueWithInvalidReturnType() throws Exception {
 		Method method = getClass().getDeclaredMethod("handleAndReturnOutputStream");
 		MethodParameter returnType = new MethodParameter(method, -1);
@@ -422,7 +389,6 @@ public class RequestResponseBodyMethodProcessorTests {
 		assertContentDisposition(processor, true, "/hello.json;a=b;setup.dataless", "unknown ext in path params");
 		assertContentDisposition(processor, true, "/hello.dataless;a=b;setup.json", "unknown ext in filename");
 		assertContentDisposition(processor, false, "/hello.json;a=b;setup.json", "safe extensions");
-		assertContentDisposition(processor, true, "/hello.json;jsessionid=foo.bar", "jsessionid shouldn't cause issue");
 
 		// encoded dot
 		assertContentDisposition(processor, true, "/hello%2Edataless;a=b;setup.json", "encoded dot in filename");
@@ -808,10 +774,6 @@ public class RequestResponseBodyMethodProcessorTests {
 
 	@RequestMapping
 	OutputStream handleAndReturnOutputStream() {
-		return null;
-	}
-
-	SimpleBean getSimpleBean() {
 		return null;
 	}
 

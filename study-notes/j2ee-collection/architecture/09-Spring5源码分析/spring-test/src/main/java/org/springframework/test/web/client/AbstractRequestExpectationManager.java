@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,11 @@ package org.springframework.test.web.client;
 
 import java.io.IOException;
 import java.net.URI;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -50,9 +48,9 @@ import org.springframework.util.Assert;
  */
 public abstract class AbstractRequestExpectationManager implements RequestExpectationManager {
 
-	private final List<RequestExpectation> expectations = new ArrayList<>();
+	private final List<RequestExpectation> expectations = new LinkedList<>();
 
-	private final List<ClientHttpRequest> requests = new ArrayList<>();
+	private final List<ClientHttpRequest> requests = new LinkedList<>();
 
 	private final Map<ClientHttpRequest, Throwable> requestFailures = new LinkedHashMap<>();
 
@@ -80,9 +78,10 @@ public abstract class AbstractRequestExpectationManager implements RequestExpect
 		return expectation;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public ClientHttpResponse validateRequest(ClientHttpRequest request) throws IOException {
-		RequestExpectation expectation;
+		RequestExpectation expectation = null;
 		synchronized (this.requests) {
 			if (this.requests.isEmpty()) {
 				afterExpectationsDeclared();
@@ -146,34 +145,8 @@ public abstract class AbstractRequestExpectationManager implements RequestExpect
 
 	@Override
 	public void verify() {
-		int count = verifyInternal();
-		if (count > 0) {
-			String message = "Further request(s) expected leaving " + count + " unsatisfied expectation(s).\n";
-			throw new AssertionError(message + getRequestDetails());
-		}
-	}
-
-	@Override
-	public void verify(Duration timeout) {
-		Instant endTime = Instant.now().plus(timeout);
-		do {
-			if (verifyInternal() == 0) {
-				return;
-			}
-		}
-		while (Instant.now().isBefore(endTime));
-		verify();
-	}
-
-	private int verifyInternal() {
 		if (this.expectations.isEmpty()) {
-			return 0;
-		}
-		if (!this.requestFailures.isEmpty()) {
-			throw new AssertionError("Some requests did not execute successfully.\n" +
-					this.requestFailures.entrySet().stream()
-							.map(entry -> "Failed request:\n" + entry.getKey() + "\n" + entry.getValue())
-							.collect(Collectors.joining("\n", "\n", "")));
+			return;
 		}
 		int count = 0;
 		for (RequestExpectation expectation : this.expectations) {
@@ -181,7 +154,16 @@ public abstract class AbstractRequestExpectationManager implements RequestExpect
 				count++;
 			}
 		}
-		return count;
+		if (count > 0) {
+			String message = "Further request(s) expected leaving " + count + " unsatisfied expectation(s).\n";
+			throw new AssertionError(message + getRequestDetails());
+		}
+		if (!this.requestFailures.isEmpty()) {
+			throw new AssertionError("Some requests did not execute successfully.\n" +
+					this.requestFailures.entrySet().stream()
+							.map(entry -> "Failed request:\n" + entry.getKey() + "\n" + entry.getValue())
+							.collect(Collectors.joining("\n", "\n", "")));
+		}
 	}
 
 	/**

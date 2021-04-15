@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.security.cert.X509Certificate;
 import java.util.Enumeration;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.AsyncContext;
@@ -46,7 +45,6 @@ import org.springframework.http.MediaType;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedCaseInsensitiveMap;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -60,7 +58,7 @@ import org.springframework.util.StringUtils;
  */
 class ServletServerHttpRequest extends AbstractServerHttpRequest {
 
-	static final DataBuffer EOF_BUFFER = DefaultDataBufferFactory.sharedInstance.allocateBuffer(0);
+	static final DataBuffer EOF_BUFFER = new DefaultDataBufferFactory().allocateBuffer(0);
 
 
 	private final HttpServletRequest request;
@@ -73,9 +71,6 @@ class ServletServerHttpRequest extends AbstractServerHttpRequest {
 
 	private final byte[] buffer;
 
-	private final AsyncListener asyncListener;
-
-
 	public ServletServerHttpRequest(HttpServletRequest request, AsyncContext asyncContext,
 			String servletPath, DataBufferFactory bufferFactory, int bufferSize)
 			throws IOException, URISyntaxException {
@@ -83,8 +78,8 @@ class ServletServerHttpRequest extends AbstractServerHttpRequest {
 		this(createDefaultHttpHeaders(request), request, asyncContext, servletPath, bufferFactory, bufferSize);
 	}
 
-	public ServletServerHttpRequest(MultiValueMap<String, String> headers, HttpServletRequest request,
-			AsyncContext asyncContext, String servletPath, DataBufferFactory bufferFactory, int bufferSize)
+	public ServletServerHttpRequest(HttpHeaders headers, HttpServletRequest request, AsyncContext asyncContext,
+			String servletPath, DataBufferFactory bufferFactory, int bufferSize)
 			throws IOException, URISyntaxException {
 
 		super(initUri(request), request.getContextPath() + servletPath, initHeaders(headers, request));
@@ -96,7 +91,7 @@ class ServletServerHttpRequest extends AbstractServerHttpRequest {
 		this.bufferFactory = bufferFactory;
 		this.buffer = new byte[bufferSize];
 
-		this.asyncListener = new RequestAsyncListener();
+		asyncContext.addListener(new RequestAsyncListener());
 
 		// Tomcat expects ReadListener registration on initial thread
 		ServletInputStream inputStream = request.getInputStream();
@@ -105,9 +100,8 @@ class ServletServerHttpRequest extends AbstractServerHttpRequest {
 	}
 
 
-	private static MultiValueMap<String, String> createDefaultHttpHeaders(HttpServletRequest request) {
-		MultiValueMap<String, String> headers =
-				CollectionUtils.toMultiValueMap(new LinkedCaseInsensitiveMap<>(8, Locale.ENGLISH));
+	private static HttpHeaders createDefaultHttpHeaders(HttpServletRequest request) {
+		HttpHeaders headers = new HttpHeaders();
 		for (Enumeration<?> names = request.getHeaderNames(); names.hasMoreElements(); ) {
 			String name = (String) names.nextElement();
 			for (Enumeration<?> values = request.getHeaders(name); values.hasMoreElements(); ) {
@@ -127,36 +121,34 @@ class ServletServerHttpRequest extends AbstractServerHttpRequest {
 		return new URI(url.toString());
 	}
 
-	private static MultiValueMap<String, String> initHeaders(
-			MultiValueMap<String, String> headerValues, HttpServletRequest request) {
-
-		HttpHeaders headers = null;
-		MediaType contentType = null;
-		if (!StringUtils.hasLength(headerValues.getFirst(HttpHeaders.CONTENT_TYPE))) {
+	private static HttpHeaders initHeaders(HttpHeaders headers, HttpServletRequest request) {
+		MediaType contentType = headers.getContentType();
+		if (contentType == null) {
 			String requestContentType = request.getContentType();
 			if (StringUtils.hasLength(requestContentType)) {
 				contentType = MediaType.parseMediaType(requestContentType);
-				headers = new HttpHeaders(headerValues);
 				headers.setContentType(contentType);
 			}
 		}
 		if (contentType != null && contentType.getCharset() == null) {
 			String encoding = request.getCharacterEncoding();
 			if (StringUtils.hasLength(encoding)) {
+				Charset charset = Charset.forName(encoding);
 				Map<String, String> params = new LinkedCaseInsensitiveMap<>();
 				params.putAll(contentType.getParameters());
-				params.put("charset", Charset.forName(encoding).toString());
-				headers.setContentType(new MediaType(contentType, params));
+				params.put("charset", charset.toString());
+				headers.setContentType(
+						new MediaType(contentType.getType(), contentType.getSubtype(),
+								params));
 			}
 		}
-		if (headerValues.getFirst(HttpHeaders.CONTENT_TYPE) == null) {
+		if (headers.getContentLength() == -1) {
 			int contentLength = request.getContentLength();
 			if (contentLength != -1) {
-				headers = (headers != null ? headers : new HttpHeaders(headerValues));
 				headers.setContentLength(contentLength);
 			}
 		}
-		return (headers != null ? headers : headerValues);
+		return headers;
 	}
 
 
@@ -217,22 +209,6 @@ class ServletServerHttpRequest extends AbstractServerHttpRequest {
 		return Flux.from(this.bodyPublisher);
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T> T getNativeRequest() {
-		return (T) this.request;
-	}
-
-	/**
-	 * Return an {@link RequestAsyncListener} that completes the request body
-	 * Publisher when the Servlet container notifies that request input has ended.
-	 * The listener is not actually registered but is rather exposed for
-	 * {@link ServletHttpHandlerAdapter} to ensure events are delegated.
-	 */
-	AsyncListener getAsyncListener() {
-		return this.asyncListener;
-	}
-
 	/**
 	 * Read from the request body InputStream and return a DataBuffer.
 	 * Invoked only when {@link ServletInputStream#isReady()} returns "true".
@@ -262,6 +238,12 @@ class ServletServerHttpRequest extends AbstractServerHttpRequest {
 		if (rsReadLogger.isTraceEnabled()) {
 			rsReadLogger.trace(getLogPrefix() + "Read " + read + (read != -1 ? " bytes" : ""));
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T getNativeRequest() {
+		return (T) this.request;
 	}
 
 

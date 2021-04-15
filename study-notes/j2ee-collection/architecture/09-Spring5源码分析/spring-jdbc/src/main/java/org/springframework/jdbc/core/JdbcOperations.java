@@ -19,7 +19,6 @@ package org.springframework.jdbc.core;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
@@ -132,22 +131,6 @@ public interface JdbcOperations {
 	 * @see #query(String, RowMapper, Object...)
 	 */
 	<T> List<T> query(String sql, RowMapper<T> rowMapper) throws DataAccessException;
-
-	/**
-	 * Execute a query given static SQL, mapping each row to a result object
-	 * via a RowMapper, and turning it into an iterable and closeable Stream.
-	 * <p>Uses a JDBC Statement, not a PreparedStatement. If you want to
-	 * execute a static query with a PreparedStatement, use the overloaded
-	 * {@code query} method with {@code null} as argument array.
-	 * @param sql the SQL query to execute
-	 * @param rowMapper a callback that will map one object per row
-	 * @return the result Stream, containing mapped objects, needing to be
-	 * closed once fully processed (e.g. through a try-with-resources clause)
-	 * @throws DataAccessException if there is any problem executing the query
-	 * @since 5.3
-	 * @see #queryForStream(String, RowMapper, Object...)
-	 */
-	<T> Stream<T> queryForStream(String sql, RowMapper<T> rowMapper) throws DataAccessException;
 
 	/**
 	 * Execute a query given static SQL, mapping a single result row to a
@@ -369,9 +352,7 @@ public interface JdbcOperations {
 	 * @param rse a callback that will extract results
 	 * @return an arbitrary result object, as returned by the ResultSetExtractor
 	 * @throws DataAccessException if the query fails
-	 * @deprecated as of 5.3, in favor of {@link #query(String, ResultSetExtractor, Object...)}
 	 */
-	@Deprecated
 	@Nullable
 	<T> T query(String sql, @Nullable Object[] args, ResultSetExtractor<T> rse) throws DataAccessException;
 
@@ -442,9 +423,7 @@ public interface JdbcOperations {
 	 * only the argument value but also the SQL type and optionally the scale
 	 * @param rch a callback that will extract results, one row at a time
 	 * @throws DataAccessException if the query fails
-	 * @deprecated as of 5.3, in favor of {@link #query(String, RowCallbackHandler, Object...)}
 	 */
-	@Deprecated
 	void query(String sql, @Nullable Object[] args, RowCallbackHandler rch) throws DataAccessException;
 
 	/**
@@ -518,9 +497,7 @@ public interface JdbcOperations {
 	 * @param rowMapper a callback that will map one object per row
 	 * @return the result List, containing mapped objects
 	 * @throws DataAccessException if the query fails
-	 * @deprecated as of 5.3, in favor of {@link #query(String, RowMapper, Object...)}
 	 */
-	@Deprecated
 	<T> List<T> query(String sql, @Nullable Object[] args, RowMapper<T> rowMapper) throws DataAccessException;
 
 	/**
@@ -538,58 +515,6 @@ public interface JdbcOperations {
 	 * @since 3.0.1
 	 */
 	<T> List<T> query(String sql, RowMapper<T> rowMapper, @Nullable Object... args) throws DataAccessException;
-
-	/**
-	 * Query using a prepared statement, mapping each row to a result object
-	 * via a RowMapper, and turning it into an iterable and closeable Stream.
-	 * <p>A PreparedStatementCreator can either be implemented directly or
-	 * configured through a PreparedStatementCreatorFactory.
-	 * @param psc a callback that creates a PreparedStatement given a Connection
-	 * @param rowMapper a callback that will map one object per row
-	 * @return the result Stream, containing mapped objects, needing to be
-	 * closed once fully processed (e.g. through a try-with-resources clause)
-	 * @throws DataAccessException if there is any problem
-	 * @see PreparedStatementCreatorFactory
-	 * @since 5.3
-	 */
-	<T> Stream<T> queryForStream(PreparedStatementCreator psc, RowMapper<T> rowMapper) throws DataAccessException;
-
-	/**
-	 * Query given SQL to create a prepared statement from SQL and a
-	 * PreparedStatementSetter implementation that knows how to bind values
-	 * to the query, mapping each row to a result object via a RowMapper,
-	 * and turning it into an iterable and closeable Stream.
-	 * @param sql the SQL query to execute
-	 * @param pss a callback that knows how to set values on the prepared statement.
-	 * If this is {@code null}, the SQL will be assumed to contain no bind parameters.
-	 * Even if there are no bind parameters, this callback may be used to set the
-	 * fetch size and other performance options.
-	 * @param rowMapper a callback that will map one object per row
-	 * @return the result Stream, containing mapped objects, needing to be
-	 * closed once fully processed (e.g. through a try-with-resources clause)
-	 * @throws DataAccessException if the query fails
-	 * @since 5.3
-	 */
-	<T> Stream<T> queryForStream(String sql, @Nullable PreparedStatementSetter pss, RowMapper<T> rowMapper)
-			throws DataAccessException;
-
-	/**
-	 * Query given SQL to create a prepared statement from SQL and a list of
-	 * arguments to bind to the query, mapping each row to a result object
-	 * via a RowMapper, and turning it into an iterable and closeable Stream.
-	 * @param sql the SQL query to execute
-	 * @param rowMapper a callback that will map one object per row
-	 * @param args arguments to bind to the query
-	 * (leaving it to the PreparedStatement to guess the corresponding SQL type);
-	 * may also contain {@link SqlParameterValue} objects which indicate not
-	 * only the argument value but also the SQL type and optionally the scale
-	 * @return the result Stream, containing mapped objects, needing to be
-	 * closed once fully processed (e.g. through a try-with-resources clause)
-	 * @throws DataAccessException if the query fails
-	 * @since 5.3
-	 */
-	<T> Stream<T> queryForStream(String sql, RowMapper<T> rowMapper, @Nullable Object... args)
-			throws DataAccessException;
 
 	/**
 	 * Query given SQL to create a prepared statement from SQL and a list
@@ -626,9 +551,7 @@ public interface JdbcOperations {
 	 * @throws IncorrectResultSizeDataAccessException if the query does not
 	 * return exactly one row
 	 * @throws DataAccessException if the query fails
-	 * @deprecated as of 5.3, in favor of {@link #queryForObject(String, RowMapper, Object...)}
 	 */
-	@Deprecated
 	@Nullable
 	<T> T queryForObject(String sql, @Nullable Object[] args, RowMapper<T> rowMapper) throws DataAccessException;
 
@@ -689,9 +612,7 @@ public interface JdbcOperations {
 	 * exactly one row, or does not return exactly one column in that row
 	 * @throws DataAccessException if the query fails
 	 * @see #queryForObject(String, Class)
-	 * @deprecated as of 5.3, in favor of {@link #queryForObject(String, Class, Object...)}
 	 */
-	@Deprecated
 	@Nullable
 	<T> T queryForObject(String sql, @Nullable Object[] args, Class<T> requiredType) throws DataAccessException;
 
@@ -793,9 +714,7 @@ public interface JdbcOperations {
 	 * @throws DataAccessException if the query fails
 	 * @see #queryForList(String, Class)
 	 * @see SingleColumnRowMapper
-	 * @deprecated as of 5.3, in favor of {@link #queryForList(String, Class, Object...)}
 	 */
-	@Deprecated
 	<T> List<T> queryForList(String sql, @Nullable Object[] args, Class<T> elementType) throws DataAccessException;
 
 	/**

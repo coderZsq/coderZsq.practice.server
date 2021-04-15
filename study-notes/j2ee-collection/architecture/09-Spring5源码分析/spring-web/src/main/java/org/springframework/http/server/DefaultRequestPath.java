@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package org.springframework.http.server;
 
+import java.net.URI;
 import java.util.List;
 
 import org.springframework.lang.Nullable;
@@ -36,8 +37,8 @@ class DefaultRequestPath implements RequestPath {
 	private final PathContainer pathWithinApplication;
 
 
-	DefaultRequestPath(String rawPath, @Nullable String contextPath) {
-		this.fullPath = PathContainer.parsePath(rawPath);
+	DefaultRequestPath(URI uri, @Nullable String contextPath) {
+		this.fullPath = PathContainer.parsePath(uri.getRawPath());
 		this.contextPath = initContextPath(this.fullPath, contextPath);
 		this.pathWithinApplication = extractPathWithinApplication(this.fullPath, this.contextPath);
 	}

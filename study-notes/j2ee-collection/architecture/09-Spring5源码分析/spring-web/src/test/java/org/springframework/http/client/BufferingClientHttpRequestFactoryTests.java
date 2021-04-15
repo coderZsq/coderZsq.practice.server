@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import org.springframework.util.FileCopyUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class BufferingClientHttpRequestFactoryTests extends AbstractHttpRequestFactoryTests {
+public class BufferingClientHttpRequestFactoryTests extends AbstractHttpRequestFactoryTests {
 
 	@Override
 	protected ClientHttpRequestFactory createRequestFactory() {
@@ -35,7 +35,7 @@ class BufferingClientHttpRequestFactoryTests extends AbstractHttpRequestFactoryT
 	}
 
 	@Test
-	void repeatableRead() throws Exception {
+	public void repeatableRead() throws Exception {
 		ClientHttpRequest request = factory.createRequest(new URI(baseUrl + "/echo"), HttpMethod.PUT);
 		assertThat(request.getMethod()).as("Invalid HTTP method").isEqualTo(HttpMethod.PUT);
 		String headerName = "MyHeader";
@@ -46,7 +46,8 @@ class BufferingClientHttpRequestFactoryTests extends AbstractHttpRequestFactoryT
 		byte[] body = "Hello World".getBytes("UTF-8");
 		request.getHeaders().setContentLength(body.length);
 		FileCopyUtils.copy(body, request.getBody());
-		try (ClientHttpResponse response = request.execute()) {
+		ClientHttpResponse response = request.execute();
+		try {
 			assertThat(response.getStatusCode()).as("Invalid status code").isEqualTo(HttpStatus.OK);
 			assertThat(response.getStatusCode()).as("Invalid status code").isEqualTo(HttpStatus.OK);
 
@@ -60,6 +61,9 @@ class BufferingClientHttpRequestFactoryTests extends AbstractHttpRequestFactoryT
 			assertThat(Arrays.equals(body, result)).as("Invalid body").isTrue();
 			FileCopyUtils.copyToByteArray(response.getBody());
 			assertThat(Arrays.equals(body, result)).as("Invalid body").isTrue();
+		}
+		finally {
+			response.close();
 		}
 	}
 

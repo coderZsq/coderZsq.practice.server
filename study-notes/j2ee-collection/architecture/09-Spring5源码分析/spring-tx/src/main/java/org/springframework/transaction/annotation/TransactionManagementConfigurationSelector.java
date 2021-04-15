@@ -27,6 +27,9 @@ import org.springframework.util.ClassUtils;
  * should be used based on the value of {@link EnableTransactionManagement#mode} on the
  * importing {@code @Configuration} class.
  *
+ * TransactionManagementConfigurationSelector 实现了 AdviceModeImportSelector 的接口,
+ *  由于在实现了 ImportSelector 接口的时候, 在加载 bean 定义的时候会回调我们的 selectImports 方法
+ *
  * @author Chris Beams
  * @author Juergen Hoeller
  * @since 3.1
@@ -38,6 +41,8 @@ import org.springframework.util.ClassUtils;
 public class TransactionManagementConfigurationSelector extends AdviceModeImportSelector<EnableTransactionManagement> {
 
 	/**
+	 * 在 spring ioc 容器中加载 bean 定义的时候会回调 selectImports 方法
+	 * 方法的返回值是我们需要导入类的全类名路径. 然后这个类就会被加载到容器中
 	 * Returns {@link ProxyTransactionManagementConfiguration} or
 	 * {@code AspectJ(Jta)TransactionManagementConfiguration} for {@code PROXY}
 	 * and {@code ASPECTJ} values of {@link EnableTransactionManagement#mode()},
@@ -46,6 +51,9 @@ public class TransactionManagementConfigurationSelector extends AdviceModeImport
 	@Override
 	protected String[] selectImports(AdviceMode adviceMode) {
 		switch (adviceMode) {
+			/**
+			 * 为容器中导入了两个组件 一个是 AutoProxyRegistrar 一个是 ProxyTransactionManagementConfiguration
+			 */
 			case PROXY:
 				return new String[] {AutoProxyRegistrar.class.getName(),
 						ProxyTransactionManagementConfiguration.class.getName()};

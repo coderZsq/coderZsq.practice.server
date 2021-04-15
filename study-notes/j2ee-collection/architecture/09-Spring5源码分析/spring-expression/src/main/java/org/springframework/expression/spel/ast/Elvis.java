@@ -24,6 +24,7 @@ import org.springframework.expression.spel.CodeFlow;
 import org.springframework.expression.spel.ExpressionState;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * Represents the elvis operator ?:. For an expression "a?:b" if a is not null, the value
@@ -51,7 +52,7 @@ public class Elvis extends SpelNodeImpl {
 	public TypedValue getValueInternal(ExpressionState state) throws EvaluationException {
 		TypedValue value = this.children[0].getValueInternal(state);
 		// If this check is changed, the generateCode method will need changing too
-		if (value.getValue() != null && !"".equals(value.getValue())) {
+		if (!StringUtils.isEmpty(value.getValue())) {
 			return value;
 		}
 		else {

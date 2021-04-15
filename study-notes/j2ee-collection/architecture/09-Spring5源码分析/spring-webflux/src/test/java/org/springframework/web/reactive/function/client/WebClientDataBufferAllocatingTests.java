@@ -40,6 +40,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.http.client.reactive.ReactorResourceFactory;
+import org.springframework.web.reactive.function.UnsupportedMediaTypeException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
@@ -86,8 +87,8 @@ class WebClientDataBufferAllocatingTests extends AbstractDataBufferAllocatingTes
 
 		if (super.bufferFactory instanceof NettyDataBufferFactory) {
 			ByteBufAllocator allocator = ((NettyDataBufferFactory) super.bufferFactory).getByteBufAllocator();
-			return new ReactorClientHttpConnector(this.factory,
-					client -> client.option(ChannelOption.ALLOCATOR, allocator));
+			return new ReactorClientHttpConnector(this.factory, httpClient ->
+					httpClient.tcpConfiguration(tcpClient -> tcpClient.option(ChannelOption.ALLOCATOR, allocator)));
 		}
 		else {
 			return new ReactorClientHttpConnector();
@@ -126,7 +127,7 @@ class WebClientDataBufferAllocatingTests extends AbstractDataBufferAllocatingTes
 				.retrieve()
 				.bodyToMono(new ParameterizedTypeReference<Map<String, String>>() {});
 
-		StepVerifier.create(mono).expectError(WebClientResponseException.class).verify(Duration.ofSeconds(3));
+		StepVerifier.create(mono).expectError(UnsupportedMediaTypeException.class).verify(Duration.ofSeconds(3));
 		assertThat(this.server.getRequestCount()).isEqualTo(1);
 	}
 
@@ -182,7 +183,9 @@ class WebClientDataBufferAllocatingTests extends AbstractDataBufferAllocatingTes
 				.setBody("foo bar"));
 
 		Mono<Void> result  = this.webClient.get()
-				.exchangeToMono(ClientResponse::releaseBody);
+				.exchange()
+				.flatMap(ClientResponse::releaseBody);
+
 
 		StepVerifier.create(result)
 				.expectComplete()
@@ -199,7 +202,8 @@ class WebClientDataBufferAllocatingTests extends AbstractDataBufferAllocatingTes
 				.setBody("foo bar"));
 
 		Mono<ResponseEntity<Void>> result  = this.webClient.get()
-				.exchangeToMono(ClientResponse::toBodilessEntity);
+				.exchange()
+				.flatMap(ClientResponse::toBodilessEntity);
 
 		StepVerifier.create(result)
 				.assertNext(entity -> {

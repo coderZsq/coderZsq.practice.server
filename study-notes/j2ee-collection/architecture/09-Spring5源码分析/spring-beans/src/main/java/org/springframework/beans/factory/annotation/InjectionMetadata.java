@@ -26,6 +26,9 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.support.RootBeanDefinition;
@@ -66,6 +69,8 @@ public class InjectionMetadata {
 	};
 
 
+	private static final Log logger = LogFactory.getLog(InjectionMetadata.class);
+
 	private final Class<?> targetClass;
 
 	private final Collection<InjectedElement> injectedElements;
@@ -105,6 +110,9 @@ public class InjectionMetadata {
 			if (!beanDefinition.isExternallyManagedConfigMember(member)) {
 				beanDefinition.registerExternallyManagedConfigMember(member);
 				checkedElements.add(element);
+				if (logger.isTraceEnabled()) {
+					logger.trace("Registered injected element on class [" + this.targetClass.getName() + "]: " + element);
+				}
 			}
 		}
 		this.checkedElements = checkedElements;
@@ -116,6 +124,9 @@ public class InjectionMetadata {
 				(checkedElements != null ? checkedElements : this.injectedElements);
 		if (!elementsToIterate.isEmpty()) {
 			for (InjectedElement element : elementsToIterate) {
+				if (logger.isTraceEnabled()) {
+					logger.trace("Processing injected element of bean '" + beanName + "': " + element);
+				}
 				element.inject(target, beanName, pvs);
 			}
 		}
@@ -141,12 +152,12 @@ public class InjectionMetadata {
 	 * Return an {@code InjectionMetadata} instance, possibly for empty elements.
 	 * @param elements the elements to inject (possibly empty)
 	 * @param clazz the target class
-	 * @return a new {@link #InjectionMetadata(Class, Collection)} instance
+	 * @return a new {@link #InjectionMetadata(Class, Collection)} instance,
+	 * or {@link #EMPTY} in case of no elements
 	 * @since 5.2
 	 */
 	public static InjectionMetadata forElements(Collection<InjectedElement> elements, Class<?> clazz) {
-		return (elements.isEmpty() ? new InjectionMetadata(clazz, Collections.emptyList()) :
-				new InjectionMetadata(clazz, elements));
+		return (elements.isEmpty() ? InjectionMetadata.EMPTY : new InjectionMetadata(clazz, elements));
 	}
 
 	/**

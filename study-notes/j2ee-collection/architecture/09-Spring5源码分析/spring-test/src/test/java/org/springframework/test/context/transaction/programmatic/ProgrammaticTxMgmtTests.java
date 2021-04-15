@@ -134,7 +134,7 @@ class ProgrammaticTxMgmtTests {
 	}
 
 	@Test
-	@Transactional(propagation = Propagation.NEVER)
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	void startTxWithNonExistentTransactionContext() {
 		assertThatIllegalStateException().isThrownBy(TestTransaction::start);
 	}
@@ -145,7 +145,7 @@ class ProgrammaticTxMgmtTests {
 	}
 
 	@Test
-	@Transactional(propagation = Propagation.NEVER)
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	void endTxWithNonExistentTransactionContext() {
 		assertThatIllegalStateException().isThrownBy(TestTransaction::end);
 	}

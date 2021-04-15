@@ -17,8 +17,9 @@
 package org.springframework.util;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,29 +31,22 @@ import org.springframework.lang.Nullable;
  *
  * @author Arjen Poutsma
  * @author Juergen Hoeller
- * @since 5.3
+ * @since 3.1
  * @param <K> the key type
  * @param <V> the value element type
  * @see CollectionUtils#toMultiValueMap
  * @see LinkedMultiValueMap
  */
 @SuppressWarnings("serial")
-public class MultiValueMapAdapter<K, V> implements MultiValueMap<K, V>, Serializable {
+class MultiValueMapAdapter<K, V> implements MultiValueMap<K, V>, Serializable {
 
 	private final Map<K, List<V>> targetMap;
 
 
-	/**
-	 * Wrap the given target {@link Map} as a {@link MultiValueMap} adapter.
-	 * @param targetMap the plain target {@code Map}
-	 */
-	public MultiValueMapAdapter(Map<K, List<V>> targetMap) {
-		Assert.notNull(targetMap, "'targetMap' must not be null");
+	MultiValueMapAdapter(Map<K, List<V>> targetMap) {
 		this.targetMap = targetMap;
 	}
 
-
-	// MultiValueMap implementation
 
 	@Override
 	@Nullable
@@ -63,13 +57,13 @@ public class MultiValueMapAdapter<K, V> implements MultiValueMap<K, V>, Serializ
 
 	@Override
 	public void add(K key, @Nullable V value) {
-		List<V> values = this.targetMap.computeIfAbsent(key, k -> new ArrayList<>(1));
+		List<V> values = this.targetMap.computeIfAbsent(key, k -> new LinkedList<>());
 		values.add(value);
 	}
 
 	@Override
 	public void addAll(K key, List<? extends V> values) {
-		List<V> currentValues = this.targetMap.computeIfAbsent(key, k -> new ArrayList<>(1));
+		List<V> currentValues = this.targetMap.computeIfAbsent(key, k -> new LinkedList<>());
 		currentValues.addAll(values);
 	}
 
@@ -82,7 +76,7 @@ public class MultiValueMapAdapter<K, V> implements MultiValueMap<K, V>, Serializ
 
 	@Override
 	public void set(K key, @Nullable V value) {
-		List<V> values = new ArrayList<>(1);
+		List<V> values = new LinkedList<>();
 		values.add(value);
 		this.targetMap.put(key, values);
 	}
@@ -94,7 +88,7 @@ public class MultiValueMapAdapter<K, V> implements MultiValueMap<K, V>, Serializ
 
 	@Override
 	public Map<K, V> toSingleValueMap() {
-		Map<K, V> singleValueMap = CollectionUtils.newLinkedHashMap(this.targetMap.size());
+		Map<K, V> singleValueMap = new LinkedHashMap<>(this.targetMap.size());
 		this.targetMap.forEach((key, values) -> {
 			if (values != null && !values.isEmpty()) {
 				singleValueMap.put(key, values.get(0));
@@ -102,9 +96,6 @@ public class MultiValueMapAdapter<K, V> implements MultiValueMap<K, V>, Serializ
 		});
 		return singleValueMap;
 	}
-
-
-	// Map implementation
 
 	@Override
 	public int size() {

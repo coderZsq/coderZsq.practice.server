@@ -84,7 +84,7 @@ public abstract class StreamUtils {
 			return "";
 		}
 
-		StringBuilder out = new StringBuilder(BUFFER_SIZE);
+		StringBuilder out = new StringBuilder();
 		InputStreamReader reader = new InputStreamReader(in, charset);
 		char[] buffer = new char[BUFFER_SIZE];
 		int charsRead;
@@ -97,6 +97,8 @@ public abstract class StreamUtils {
 	/**
 	 * Copy the contents of the given {@link ByteArrayOutputStream} into a {@link String}.
 	 * <p>This is a more effective equivalent of {@code new String(baos.toByteArray(), charset)}.
+	 * <p>As long as the {@code charset} is already available at the point of
+	 * invocation, no exception is expected to be thrown by this method.
 	 * @param baos the {@code ByteArrayOutputStream} to be copied into a String
 	 * @param charset the {@link Charset} to use to decode the bytes
 	 * @return the String that has been copied to (possibly empty)
@@ -106,12 +108,10 @@ public abstract class StreamUtils {
 		Assert.notNull(baos, "No ByteArrayOutputStream specified");
 		Assert.notNull(charset, "No Charset specified");
 		try {
-			// Can be replaced with toString(Charset) call in Java 10+
 			return baos.toString(charset.name());
 		}
 		catch (UnsupportedEncodingException ex) {
-			// Should never happen
-			throw new IllegalArgumentException("Invalid charset name: " + charset, ex);
+			throw new RuntimeException("Failed to copy contents of ByteArrayOutputStream into a String", ex);
 		}
 	}
 
@@ -127,7 +127,6 @@ public abstract class StreamUtils {
 		Assert.notNull(out, "No OutputStream specified");
 
 		out.write(in);
-		out.flush();
 	}
 
 	/**
@@ -261,7 +260,6 @@ public abstract class StreamUtils {
 		Assert.notNull(out, "No OutputStream specified");
 		return new NonClosingOutputStream(out);
 	}
-
 
 	private static class NonClosingInputStream extends FilterInputStream {
 

@@ -25,7 +25,6 @@ import java.util.concurrent.Callable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.core.KotlinDetector;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.ResolvableType;
 import org.springframework.http.HttpHeaders;
@@ -272,8 +271,6 @@ public class ServletInvocableHandlerMethod extends InvocableHandlerMethod {
 			this.returnValue = returnValue;
 			this.returnType = (returnValue instanceof ReactiveTypeHandler.CollectedValuesList ?
 					((ReactiveTypeHandler.CollectedValuesList) returnValue).getReturnType() :
-					KotlinDetector.isSuspendingFunction(super.getMethod()) ?
-					ResolvableType.forMethodParameter(getReturnType()) :
 					ResolvableType.forType(super.getGenericParameterType()).getGeneric());
 		}
 

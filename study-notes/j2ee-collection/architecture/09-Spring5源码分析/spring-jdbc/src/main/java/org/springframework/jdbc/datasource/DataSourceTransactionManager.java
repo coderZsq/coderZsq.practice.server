@@ -98,10 +98,6 @@ import org.springframework.util.Assert;
  * setup analogous to {@code JtaTransactionManager}, in particular with respect to
  * lazily registered ORM resources (e.g. a Hibernate {@code Session}).
  *
- * <p><b>NOTE: As of 5.3, {@link org.springframework.jdbc.support.JdbcTransactionManager}
- * is available as an extended subclass which includes commit/rollback exception
- * translation, aligned with {@link org.springframework.jdbc.core.JdbcTemplate}.</b>
- *
  * @author Juergen Hoeller
  * @since 02.05.2003
  * @see #setNestedTransactionAllowed
@@ -240,38 +236,58 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 
 	@Override
 	protected Object doGetTransaction() {
+		// 创建一个数据源事务对象
 		DataSourceTransactionObject txObject = new DataSourceTransactionObject();
+		// 是否允许当前事务设置保持点
 		txObject.setSavepointAllowed(isNestedTransactionAllowed());
+		/**
+		 * TransactionSynchronizationManager 事务同步管理器对象(该类中都是局部线程变量)
+		 * 用来保存当前事务的信息, 第一次从这里去线程变量中获取 事务连接持有器对象 通过数据源为 key 去获取
+		 * 由于第一次进来开始事务 我们的事务同步管理器中没有被存放. 所以此时获取出来的 conHolder 为 null
+		 */
 		ConnectionHolder conHolder =
 				(ConnectionHolder) TransactionSynchronizationManager.getResource(obtainDataSource());
 		txObject.setConnectionHolder(conHolder, false);
+		// 返回事务对象
 		return txObject;
 	}
 
+	/**
+	 * 通过 DataSourceTransactionObject 的 ConnectionHolder 判断是不是为空
+	 * @param transaction transaction object returned by doGetTransaction
+	 * @return
+	 */
 	@Override
 	protected boolean isExistingTransaction(Object transaction) {
 		DataSourceTransactionObject txObject = (DataSourceTransactionObject) transaction;
+		// 若第一次进来开始事务，txObject.hasConnectionHolder() 返回的 null 那么表示不存在事务
 		return (txObject.hasConnectionHolder() && txObject.getConnectionHolder().isTransactionActive());
 	}
 
 	@Override
 	protected void doBegin(Object transaction, TransactionDefinition definition) {
+		// 强制转化事物对象
 		DataSourceTransactionObject txObject = (DataSourceTransactionObject) transaction;
 		Connection con = null;
 
 		try {
+			// 判断事务对象没有数据库连接持有器
 			if (!txObject.hasConnectionHolder() ||
 					txObject.getConnectionHolder().isSynchronizedWithTransaction()) {
+				// 通过数据源获取一个数据库连接对象
 				Connection newCon = obtainDataSource().getConnection();
 				if (logger.isDebugEnabled()) {
 					logger.debug("Acquired Connection [" + newCon + "] for JDBC transaction");
 				}
+				// 把数据库连接包装成一个 ConnectionHolder 对象 然后设置到 txObject 对象中去
 				txObject.setConnectionHolder(new ConnectionHolder(newCon), true);
 			}
 
+			// 标记当前的连接是一个同步事务...
 			txObject.getConnectionHolder().setSynchronizedWithTransaction(true);
 			con = txObject.getConnectionHolder().getConnection();
 
+			// 设置 isReadOnly 隔离级别
 			Integer previousIsolationLevel = DataSourceUtils.prepareConnectionForTransaction(con, definition);
 			txObject.setPreviousIsolationLevel(previousIsolationLevel);
 			txObject.setReadOnly(definition.isReadOnly());
@@ -279,23 +295,29 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 			// Switch to manual commit if necessary. This is very expensive in some JDBC drivers,
 			// so we don't want to do it unnecessarily (for example if we've explicitly
 			// configured the connection pool to set it already).
+			// setAutoCommit 默认为 true，即每条 SQL 语句在各自的一个事务中执行。
 			if (con.getAutoCommit()) {
 				txObject.setMustRestoreAutoCommit(true);
 				if (logger.isDebugEnabled()) {
 					logger.debug("Switching JDBC Connection [" + con + "] to manual commit");
 				}
+				// 开启事务
 				con.setAutoCommit(false);
 			}
 
+			// 判断事务为只读事务
 			prepareTransactionalConnection(con, definition);
+			// 设置事务激活
 			txObject.getConnectionHolder().setTransactionActive(true);
 
+			// 设置事务超时时间
 			int timeout = determineTimeout(definition);
 			if (timeout != TransactionDefinition.TIMEOUT_DEFAULT) {
 				txObject.getConnectionHolder().setTimeoutInSeconds(timeout);
 			}
 
 			// Bind the connection holder to the thread.
+			// 绑定数据源和连接到同步管理器上 把数据源作为 key, 数据库连接作为 value 设置到线程变量中
 			if (txObject.isNewConnectionHolder()) {
 				TransactionSynchronizationManager.bindResource(obtainDataSource(), txObject.getConnectionHolder());
 			}
@@ -303,6 +325,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 
 		catch (Throwable ex) {
 			if (txObject.isNewConnectionHolder()) {
+				// 释放数据库连接
 				DataSourceUtils.releaseConnection(con, obtainDataSource());
 				txObject.setConnectionHolder(null, false);
 			}
@@ -333,7 +356,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 			con.commit();
 		}
 		catch (SQLException ex) {
-			throw translateException("JDBC commit", ex);
+			throw new TransactionSystemException("Could not commit JDBC transaction", ex);
 		}
 	}
 
@@ -348,7 +371,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 			con.rollback();
 		}
 		catch (SQLException ex) {
-			throw translateException("JDBC rollback", ex);
+			throw new TransactionSystemException("Could not roll back JDBC transaction", ex);
 		}
 	}
 
@@ -414,25 +437,10 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 
 		if (isEnforceReadOnly() && definition.isReadOnly()) {
 			try (Statement stmt = con.createStatement()) {
+				// 如果把事务设置成 READ ONLY，后续查询就能看到事务开始之前提交的内容
 				stmt.executeUpdate("SET TRANSACTION READ ONLY");
 			}
 		}
-	}
-
-	/**
-	 * Translate the given JDBC commit/rollback exception to a common Spring
-	 * exception to propagate from the {@link #commit}/{@link #rollback} call.
-	 * <p>The default implementation throws a {@link TransactionSystemException}.
-	 * Subclasses may specifically identify concurrency failures etc.
-	 * @param task the task description (commit or rollback)
-	 * @param ex the SQLException thrown from commit/rollback
-	 * @return the translated exception to throw, either a
-	 * {@link org.springframework.dao.DataAccessException} or a
-	 * {@link org.springframework.transaction.TransactionException}
-	 * @since 5.3
-	 */
-	protected RuntimeException translateException(String task, SQLException ex) {
-		return new TransactionSystemException(task + " failed", ex);
 	}
 
 

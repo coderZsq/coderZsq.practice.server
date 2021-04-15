@@ -17,7 +17,6 @@
 package org.springframework.web.reactive.result.method.annotation;
 
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -62,17 +61,17 @@ import static org.springframework.web.testfixture.method.MvcAnnotationPredicates
  * @author Rossen Stoyanchev
  * @author Ilya Lukyanovich
  */
-class RequestPartMethodArgumentResolverTests {
+public class RequestPartMethodArgumentResolverTests {
 
 	private RequestPartMethodArgumentResolver resolver;
 
-	private final ResolvableMethod testMethod = ResolvableMethod.on(getClass()).named("handle").build();
+	private ResolvableMethod testMethod = ResolvableMethod.on(getClass()).named("handle").build();
 
 	private MultipartHttpMessageWriter writer;
 
 
 	@BeforeEach
-	void setup() {
+	public void setup() throws Exception {
 		List<HttpMessageReader<?>> readers = ServerCodecConfigurer.create().getReaders();
 		ReactiveAdapterRegistry registry = ReactiveAdapterRegistry.getSharedInstance();
 		this.resolver = new RequestPartMethodArgumentResolver(readers, registry);
@@ -83,7 +82,7 @@ class RequestPartMethodArgumentResolverTests {
 
 
 	@Test
-	void supportsParameter() {
+	public void supportsParameter() {
 
 		MethodParameter param;
 
@@ -111,7 +110,7 @@ class RequestPartMethodArgumentResolverTests {
 
 
 	@Test
-	void person() {
+	public void person() {
 		MethodParameter param = this.testMethod.annot(requestPart()).arg(Person.class);
 		MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
 		bodyBuilder.part("name", new Person("Jones"));
@@ -121,10 +120,11 @@ class RequestPartMethodArgumentResolverTests {
 	}
 
 	@Test
-	void listPerson() {
+	public void listPerson() {
 		MethodParameter param = this.testMethod.annot(requestPart()).arg(List.class, Person.class);
 		MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
-		bodyBuilder.part("name", Arrays.asList(new Person("Jones"), new Person("James")));
+		bodyBuilder.part("name", new Person("Jones"));
+		bodyBuilder.part("name", new Person("James"));
 		List<Person> actual = resolveArgument(param, bodyBuilder);
 
 		assertThat(actual.get(0).getName()).isEqualTo("Jones");
@@ -132,7 +132,7 @@ class RequestPartMethodArgumentResolverTests {
 	}
 
 	@Test // gh-23060
-	void listPersonNotRequired() {
+	public void listPersonNotRequired() {
 		MethodParameter param = this.testMethod.annot(requestPart().notRequired()).arg(List.class, Person.class);
 		MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
 		List<Person> actual = resolveArgument(param, bodyBuilder);
@@ -141,7 +141,7 @@ class RequestPartMethodArgumentResolverTests {
 	}
 
 	@Test
-	void monoPerson() {
+	public void monoPerson() {
 		MethodParameter param = this.testMethod.annot(requestPart()).arg(Mono.class, Person.class);
 		MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
 		bodyBuilder.part("name", new Person("Jones"));
@@ -151,7 +151,7 @@ class RequestPartMethodArgumentResolverTests {
 	}
 
 	@Test // gh-23060
-	void monoPersonNotRequired() {
+	public void monoPersonNotRequired() {
 		MethodParameter param = this.testMethod.annot(requestPart().notRequired()).arg(Mono.class, Person.class);
 		MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
 		Mono<Person> actual = resolveArgument(param, bodyBuilder);
@@ -160,7 +160,7 @@ class RequestPartMethodArgumentResolverTests {
 	}
 
 	@Test
-	void fluxPerson() {
+	public void fluxPerson() {
 		MethodParameter param = this.testMethod.annot(requestPart()).arg(Flux.class, Person.class);
 		MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
 		bodyBuilder.part("name", new Person("Jones"));
@@ -173,7 +173,7 @@ class RequestPartMethodArgumentResolverTests {
 	}
 
 	@Test // gh-23060
-	void fluxPersonNotRequired() {
+	public void fluxPersonNotRequired() {
 		MethodParameter param = this.testMethod.annot(requestPart().notRequired()).arg(Flux.class, Person.class);
 		MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
 		Flux<Person> actual = resolveArgument(param, bodyBuilder);
@@ -182,7 +182,7 @@ class RequestPartMethodArgumentResolverTests {
 	}
 
 	@Test
-	void part() {
+	public void part() {
 		MethodParameter param = this.testMethod.annot(requestPart()).arg(Part.class);
 		MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
 		bodyBuilder.part("name", new Person("Jones"));
@@ -193,7 +193,7 @@ class RequestPartMethodArgumentResolverTests {
 	}
 
 	@Test
-	void listPart() {
+	public void listPart() {
 		MethodParameter param = this.testMethod.annot(requestPart()).arg(List.class, Part.class);
 		MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
 		bodyBuilder.part("name", new Person("Jones"));
@@ -205,7 +205,7 @@ class RequestPartMethodArgumentResolverTests {
 	}
 
 	@Test // gh-23060
-	void listPartNotRequired() {
+	public void listPartNotRequired() {
 		MethodParameter param = this.testMethod.annot(requestPart().notRequired()).arg(List.class, Part.class);
 		MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
 		List<Part> actual = resolveArgument(param, bodyBuilder);
@@ -214,7 +214,7 @@ class RequestPartMethodArgumentResolverTests {
 	}
 
 	@Test
-	void monoPart() {
+	public void monoPart() {
 		MethodParameter param = this.testMethod.annot(requestPart()).arg(Mono.class, Part.class);
 		MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
 		bodyBuilder.part("name", new Person("Jones"));
@@ -225,7 +225,7 @@ class RequestPartMethodArgumentResolverTests {
 	}
 
 	@Test // gh-23060
-	void monoPartNotRequired() {
+	public void monoPartNotRequired() {
 		MethodParameter param = this.testMethod.annot(requestPart().notRequired()).arg(Mono.class, Part.class);
 		MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
 		Mono<Part> actual = resolveArgument(param, bodyBuilder);
@@ -234,7 +234,7 @@ class RequestPartMethodArgumentResolverTests {
 	}
 
 	@Test
-	void fluxPart() {
+	public void fluxPart() {
 		MethodParameter param = this.testMethod.annot(requestPart()).arg(Flux.class, Part.class);
 		MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
 		bodyBuilder.part("name", new Person("Jones"));
@@ -247,7 +247,7 @@ class RequestPartMethodArgumentResolverTests {
 	}
 
 	@Test // gh-23060
-	void fluxPartNotRequired() {
+	public void fluxPartNotRequired() {
 		MethodParameter param = this.testMethod.annot(requestPart().notRequired()).arg(Flux.class, Part.class);
 		MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
 		Flux<Part> actual = resolveArgument(param, bodyBuilder);
@@ -256,7 +256,7 @@ class RequestPartMethodArgumentResolverTests {
 	}
 
 	@Test
-	void personRequired() {
+	public void personRequired() {
 		MethodParameter param = this.testMethod.annot(requestPart()).arg(Person.class);
 		ServerWebExchange exchange = createExchange(new MultipartBodyBuilder());
 		Mono<Object> result = this.resolver.resolveArgument(param, new BindingContext(), exchange);
@@ -265,7 +265,7 @@ class RequestPartMethodArgumentResolverTests {
 	}
 
 	@Test
-	void personNotRequired() {
+	public void personNotRequired() {
 		MethodParameter param = this.testMethod.annot(requestPart().notRequired()).arg(Person.class);
 		ServerWebExchange exchange = createExchange(new MultipartBodyBuilder());
 		Mono<Object> result = this.resolver.resolveArgument(param, new BindingContext(), exchange);
@@ -274,7 +274,7 @@ class RequestPartMethodArgumentResolverTests {
 	}
 
 	@Test
-	void partRequired() {
+	public void partRequired() {
 		MethodParameter param = this.testMethod.annot(requestPart()).arg(Part.class);
 		ServerWebExchange exchange = createExchange(new MultipartBodyBuilder());
 		Mono<Object> result = this.resolver.resolveArgument(param, new BindingContext(), exchange);
@@ -283,7 +283,7 @@ class RequestPartMethodArgumentResolverTests {
 	}
 
 	@Test
-	void partNotRequired() {
+	public void partNotRequired() {
 		MethodParameter param = this.testMethod.annot(requestPart().notRequired()).arg(Part.class);
 		ServerWebExchange exchange = createExchange(new MultipartBodyBuilder());
 		Mono<Object> result = this.resolver.resolveArgument(param, new BindingContext(), exchange);
@@ -308,15 +308,16 @@ class RequestPartMethodArgumentResolverTests {
 		this.writer.write(Mono.just(builder.build()), forClass(MultiValueMap.class),
 				MediaType.MULTIPART_FORM_DATA, clientRequest, Collections.emptyMap()).block();
 
-		MediaType contentType = clientRequest.getHeaders().getContentType();
-		Flux<DataBuffer> body = clientRequest.getBody();
-		MockServerHttpRequest serverRequest = MockServerHttpRequest.post("/").contentType(contentType).body(body);
+		MockServerHttpRequest serverRequest = MockServerHttpRequest.post("/")
+				.contentType(clientRequest.getHeaders().getContentType())
+				.body(clientRequest.getBody());
 
 		return MockServerWebExchange.from(serverRequest);
 	}
 
 	private String partToUtf8String(Part part) {
-		return DataBufferUtils.join(part.content()).block().toString(UTF_8);
+		DataBuffer buffer = DataBufferUtils.join(part.content()).block();
+		return buffer.toString(UTF_8);
 	}
 
 
@@ -343,7 +344,7 @@ class RequestPartMethodArgumentResolverTests {
 
 	private static class Person {
 
-		private final String name;
+		private String name;
 
 		@JsonCreator
 		public Person(@JsonProperty("name") String name) {

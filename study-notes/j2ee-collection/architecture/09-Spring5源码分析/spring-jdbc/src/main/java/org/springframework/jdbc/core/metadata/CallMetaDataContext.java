@@ -18,6 +18,7 @@ package org.springframework.jdbc.core.metadata;
 
 import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -41,7 +42,6 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 /**
@@ -369,7 +369,7 @@ public class CallMetaDataContext {
 			return workParams;
 		}
 
-		Map<String, String> limitedInParamNamesMap = CollectionUtils.newHashMap(this.limitedInParameterNames.size());
+		Map<String, String> limitedInParamNamesMap = new HashMap<>(this.limitedInParameterNames.size());
 		for (String limitedParamName : this.limitedInParameterNames) {
 			limitedInParamNamesMap.put(lowerCase(provider.parameterNameToUse(limitedParamName)), limitedParamName);
 		}
@@ -482,8 +482,8 @@ public class CallMetaDataContext {
 		Map<String, String> caseInsensitiveParameterNames =
 				SqlParameterSourceUtils.extractCaseInsensitiveParameterNames(parameterSource);
 
-		Map<String, String> callParameterNames = CollectionUtils.newHashMap(this.callParameters.size());
-		Map<String, Object> matchedParameters = CollectionUtils.newHashMap(this.callParameters.size());
+		Map<String, String> callParameterNames = new HashMap<>(this.callParameters.size());
+		Map<String, Object> matchedParameters = new HashMap<>(this.callParameters.size());
 		for (SqlParameter parameter : this.callParameters) {
 			if (parameter.isInputValueProvided()) {
 				String parameterName = parameter.getName();
@@ -551,7 +551,7 @@ public class CallMetaDataContext {
 			return inParameters;
 		}
 
-		Map<String, String> callParameterNames = CollectionUtils.newHashMap(this.callParameters.size());
+		Map<String, String> callParameterNames = new HashMap<>(this.callParameters.size());
 		for (SqlParameter parameter : this.callParameters) {
 			if (parameter.isInputValueProvided()) {
 				String parameterName =  parameter.getName();
@@ -562,7 +562,7 @@ public class CallMetaDataContext {
 			}
 		}
 
-		Map<String, Object> matchedParameters = CollectionUtils.newHashMap(inParameters.size());
+		Map<String, Object> matchedParameters = new HashMap<>(inParameters.size());
 		inParameters.forEach((parameterName, parameterValue) -> {
 			String parameterNameToMatch = provider.parameterNameToUse(parameterName);
 			String callParameterName = callParameterNames.get(lowerCase(parameterNameToMatch));
@@ -602,7 +602,7 @@ public class CallMetaDataContext {
 	}
 
 	public Map<String, ?> matchInParameterValuesWithCallParameters(Object[] parameterValues) {
-		Map<String, Object> matchedParameters = CollectionUtils.newHashMap(parameterValues.length);
+		Map<String, Object> matchedParameters = new HashMap<>(parameterValues.length);
 		int i = 0;
 		for (SqlParameter parameter : this.callParameters) {
 			if (parameter.isInputValueProvided()) {
@@ -637,22 +637,20 @@ public class CallMetaDataContext {
 			schemaNameToUse = this.metaDataProvider.schemaNameToUse(getSchemaName());
 		}
 
+		String procedureNameToUse = this.metaDataProvider.procedureNameToUse(getProcedureName());
 		if (isFunction() || isReturnValueRequired()) {
-			callString = new StringBuilder("{? = call ");
+			callString = new StringBuilder().append("{? = call ").
+					append(StringUtils.hasLength(catalogNameToUse) ? catalogNameToUse + "." : "").
+					append(StringUtils.hasLength(schemaNameToUse) ? schemaNameToUse + "." : "").
+					append(procedureNameToUse).append("(");
 			parameterCount = -1;
 		}
 		else {
-			callString = new StringBuilder("{call ");
+			callString = new StringBuilder().append("{call ").
+					append(StringUtils.hasLength(catalogNameToUse) ? catalogNameToUse + "." : "").
+					append(StringUtils.hasLength(schemaNameToUse) ? schemaNameToUse + "." : "").
+					append(procedureNameToUse).append("(");
 		}
-
-		if (StringUtils.hasLength(catalogNameToUse)) {
-			callString.append(catalogNameToUse).append(".");
-		}
-		if (StringUtils.hasLength(schemaNameToUse)) {
-			callString.append(schemaNameToUse).append(".");
-		}
-		callString.append(this.metaDataProvider.procedureNameToUse(getProcedureName()));
-		callString.append("(");
 
 		for (SqlParameter parameter : this.callParameters) {
 			if (!parameter.isResultsParameter()) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2021 the original author or authors.
+ * Copyright 2002-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,9 +65,6 @@ class ServletServerHttpResponse extends AbstractListenerServerHttpResponse {
 
 	private final ServletServerHttpRequest request;
 
-	private final ResponseAsyncListener asyncListener;
-
-
 	public ServletServerHttpResponse(HttpServletResponse response, AsyncContext asyncContext,
 			DataBufferFactory bufferFactory, int bufferSize, ServletServerHttpRequest request) throws IOException {
 
@@ -88,7 +85,7 @@ class ServletServerHttpResponse extends AbstractListenerServerHttpResponse {
 		this.bufferSize = bufferSize;
 		this.request = request;
 
-		this.asyncListener = new ResponseAsyncListener();
+		asyncContext.addListener(new ResponseAsyncListener());
 
 		// Tomcat expects WriteListener registration on initial thread
 		response.getOutputStream().setWriteListener(new ResponseBodyWriteListener());
@@ -168,16 +165,6 @@ class ServletServerHttpResponse extends AbstractListenerServerHttpResponse {
 		}
 	}
 
-	/**
-	 * Return an {@link ResponseAsyncListener} that notifies the response
-	 * body Publisher and Subscriber of Servlet container events. The listener
-	 * is not actually registered but is rather exposed for
-	 * {@link ServletHttpHandlerAdapter} to ensure events are delegated.
-	 */
-	AsyncListener getAsyncListener() {
-		return this.asyncListener;
-	}
-
 	@Override
 	protected Processor<? super Publisher<? extends DataBuffer>, Void> createBodyFlushProcessor() {
 		ResponseBodyFlushProcessor processor = new ResponseBodyFlushProcessor();
@@ -243,36 +230,32 @@ class ServletServerHttpResponse extends AbstractListenerServerHttpResponse {
 			handleError(event.getThrowable());
 		}
 
-		public void handleError(Throwable ex) {
+		void handleError(Throwable ex) {
 			ResponseBodyFlushProcessor flushProcessor = bodyFlushProcessor;
-			ResponseBodyProcessor processor = bodyProcessor;
 			if (flushProcessor != null) {
-				// Cancel the upstream source of "write" Publishers
 				flushProcessor.cancel();
-				// Cancel the current "write" Publisher and propagate onComplete downstream
-				if (processor != null) {
-					processor.cancel();
-					processor.onError(ex);
-				}
-				// This is a no-op if processor was connected and onError propagated all the way
 				flushProcessor.onError(ex);
+			}
+
+			ResponseBodyProcessor processor = bodyProcessor;
+			if (processor != null) {
+				processor.cancel();
+				processor.onError(ex);
 			}
 		}
 
 		@Override
 		public void onComplete(AsyncEvent event) {
 			ResponseBodyFlushProcessor flushProcessor = bodyFlushProcessor;
-			ResponseBodyProcessor processor = bodyProcessor;
 			if (flushProcessor != null) {
-				// Cancel the upstream source of "write" Publishers
 				flushProcessor.cancel();
-				// Cancel the current "write" Publisher and propagate onComplete downstream
-				if (processor != null) {
-					processor.cancel();
-					processor.onComplete();
-				}
-				// This is a no-op if processor was connected and onComplete propagated all the way
 				flushProcessor.onComplete();
+			}
+
+			ResponseBodyProcessor processor = bodyProcessor;
+			if (processor != null) {
+				processor.cancel();
+				processor.onComplete();
 			}
 		}
 	}
@@ -281,7 +264,7 @@ class ServletServerHttpResponse extends AbstractListenerServerHttpResponse {
 	private class ResponseBodyWriteListener implements WriteListener {
 
 		@Override
-		public void onWritePossible() {
+		public void onWritePossible() throws IOException {
 			ResponseBodyProcessor processor = bodyProcessor;
 			if (processor != null) {
 				processor.onWritePossible();
@@ -296,7 +279,18 @@ class ServletServerHttpResponse extends AbstractListenerServerHttpResponse {
 
 		@Override
 		public void onError(Throwable ex) {
-			ServletServerHttpResponse.this.asyncListener.handleError(ex);
+			ResponseBodyProcessor processor = bodyProcessor;
+			if (processor != null) {
+				processor.cancel();
+				processor.onError(ex);
+			}
+			else {
+				ResponseBodyFlushProcessor flushProcessor = bodyFlushProcessor;
+				if (flushProcessor != null) {
+					flushProcessor.cancel();
+					flushProcessor.onError(ex);
+				}
+			}
 		}
 	}
 
@@ -317,7 +311,7 @@ class ServletServerHttpResponse extends AbstractListenerServerHttpResponse {
 		@Override
 		protected void flush() throws IOException {
 			if (rsWriteFlushLogger.isTraceEnabled()) {
-				rsWriteFlushLogger.trace(getLogPrefix() + "flushing");
+				rsWriteFlushLogger.trace(getLogPrefix() + "Flush attempt");
 			}
 			ServletServerHttpResponse.this.flush();
 		}
@@ -355,7 +349,7 @@ class ServletServerHttpResponse extends AbstractListenerServerHttpResponse {
 		protected boolean write(DataBuffer dataBuffer) throws IOException {
 			if (ServletServerHttpResponse.this.flushOnNext) {
 				if (rsWriteLogger.isTraceEnabled()) {
-					rsWriteLogger.trace(getLogPrefix() + "flushing");
+					rsWriteLogger.trace(getLogPrefix() + "Flush attempt");
 				}
 				flush();
 			}
@@ -365,7 +359,10 @@ class ServletServerHttpResponse extends AbstractListenerServerHttpResponse {
 			if (ready && remaining > 0) {
 				// In case of IOException, onError handling should call discardData(DataBuffer)..
 				int written = writeToOutputStream(dataBuffer);
-				if (rsWriteLogger.isTraceEnabled()) {
+				if (logger.isTraceEnabled()) {
+					logger.trace(getLogPrefix() + "Wrote " + written + " of " + remaining + " bytes");
+				}
+				else if (rsWriteLogger.isTraceEnabled()) {
 					rsWriteLogger.trace(getLogPrefix() + "Wrote " + written + " of " + remaining + " bytes");
 				}
 				if (written == remaining) {

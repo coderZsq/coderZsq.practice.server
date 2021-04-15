@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,13 +23,13 @@ import org.aopalliance.intercept.MethodInvocation;
 
 import org.springframework.aop.AfterAdvice;
 import org.springframework.aop.AfterReturningAdvice;
-import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
  * Interceptor to wrap an {@link org.springframework.aop.AfterReturningAdvice}.
  * Used internally by the AOP framework; application developers should not need
  * to use this class directly.
+ * 使用执行返回通知的具体执行者: 用的是装饰模式
  *
  * @author Rod Johnson
  * @see MethodBeforeAdviceInterceptor
@@ -38,6 +38,7 @@ import org.springframework.util.Assert;
 @SuppressWarnings("serial")
 public class AfterReturningAdviceInterceptor implements MethodInterceptor, AfterAdvice, Serializable {
 
+	/** 把返回通知对象作为属性包裹 */
 	private final AfterReturningAdvice advice;
 
 
@@ -52,9 +53,10 @@ public class AfterReturningAdviceInterceptor implements MethodInterceptor, After
 
 
 	@Override
-	@Nullable
 	public Object invoke(MethodInvocation mi) throws Throwable {
+		// 本拦截器返回通知拦截器, 所抛出异常就不会执行返回通知的方法, 执行下一个拦截器（后置拦截器对象）
 		Object retVal = mi.proceed();
+		// 返回通知方法
 		this.advice.afterReturning(retVal, mi.getMethod(), mi.getArguments(), mi.getThis());
 		return retVal;
 	}

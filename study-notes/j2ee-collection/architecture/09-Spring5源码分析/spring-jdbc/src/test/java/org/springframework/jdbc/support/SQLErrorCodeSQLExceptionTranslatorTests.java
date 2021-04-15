@@ -192,7 +192,7 @@ public class SQLErrorCodeSQLExceptionTranslatorTests {
 		given(dataSource.getConnection()).willThrow(connectionException);
 
 		SQLErrorCodeSQLExceptionTranslator sext = new SQLErrorCodeSQLExceptionTranslator(dataSource);
-		assertThat(sext.translate("test", null, duplicateKeyException)).isNull();
+		assertThat(sext.translate("test", null, duplicateKeyException)).isNotInstanceOf(DuplicateKeyException.class);
 
 		DatabaseMetaData databaseMetaData = mock(DatabaseMetaData.class);
 		given(databaseMetaData.getDatabaseProductName()).willReturn("Oracle");

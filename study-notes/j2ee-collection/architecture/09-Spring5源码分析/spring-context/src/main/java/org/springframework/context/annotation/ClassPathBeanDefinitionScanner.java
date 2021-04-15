@@ -16,17 +16,10 @@
 
 package org.springframework.context.annotation;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
-import org.springframework.beans.factory.support.AbstractBeanDefinition;
-import org.springframework.beans.factory.support.BeanDefinitionDefaults;
-import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.BeanNameGenerator;
+import org.springframework.beans.factory.support.*;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.EnvironmentCapable;
 import org.springframework.core.env.StandardEnvironment;
@@ -34,6 +27,9 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.PatternMatchUtils;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * A bean definition scanner that detects bean candidates on the classpath,
@@ -244,20 +240,27 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 
 
 	/**
+	 * 在指定的基础包内执行扫描
+	 *
 	 * Perform a scan within the specified base packages.
 	 * @param basePackages the packages to check for annotated classes
 	 * @return number of beans registered
 	 */
 	public int scan(String... basePackages) {
+		// 记录上次以及注册的 Bean 的数量
 		int beanCountAtScanStart = this.registry.getBeanDefinitionCount();
 
+		// 真正的扫描方法
 		doScan(basePackages);
 
 		// Register annotation config processors, if necessary.
+		// 如果有注解配置类，创建各种注解配置处理器对象
+		// 如 @Configuration 处理器、@Autowired 处理器、事件监听处理器等
 		if (this.includeAnnotationConfig) {
 			AnnotationConfigUtils.registerAnnotationConfigProcessors(this.registry);
 		}
 
+		// 返回这次新注册了多少个 Bean
 		return (this.registry.getBeanDefinitionCount() - beanCountAtScanStart);
 	}
 
@@ -271,24 +274,33 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	 */
 	protected Set<BeanDefinitionHolder> doScan(String... basePackages) {
 		Assert.notEmpty(basePackages, "At least one base package must be specified");
+		// Bean 定义的集合
 		Set<BeanDefinitionHolder> beanDefinitions = new LinkedHashSet<>();
 		for (String basePackage : basePackages) {
+			// 找到符合条件的组件（已将资源转换为 Bean 定义）
 			Set<BeanDefinition> candidates = findCandidateComponents(basePackage);
 			for (BeanDefinition candidate : candidates) {
+				// 作用域解析器解析出作用域元数据对象
 				ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(candidate);
+				// 设置作用域
 				candidate.setScope(scopeMetadata.getScopeName());
+				// 生成 Bean 的名称
 				String beanName = this.beanNameGenerator.generateBeanName(candidate, this.registry);
 				if (candidate instanceof AbstractBeanDefinition) {
+					// 这是默认配置 autowire-candidate
 					postProcessBeanDefinition((AbstractBeanDefinition) candidate, beanName);
 				}
+				// 获取 @Lazy @DependsOn 等注解的数据设置到 BeanDefinition 中
 				if (candidate instanceof AnnotatedBeanDefinition) {
 					AnnotationConfigUtils.processCommonDefinitionAnnotations((AnnotatedBeanDefinition) candidate);
 				}
+				// 把解析出来的组件 bean 定义注册到 IOC 容器中（容器中没有才注册）
 				if (checkCandidate(beanName, candidate)) {
 					BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(candidate, beanName);
 					definitionHolder =
 							AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry);
 					beanDefinitions.add(definitionHolder);
+					// 注册 Bean 定义
 					registerBeanDefinition(definitionHolder, this.registry);
 				}
 			}
@@ -322,6 +334,8 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 
 
 	/**
+	 * 只有符合条件的才注册，主要是容器中没有的，或者不和容器中有的冲突的。
+	 *
 	 * Check the given candidate's bean name, determining whether the corresponding
 	 * bean definition needs to be registered or conflicts with an existing definition.
 	 * @param beanName the suggested name for the bean

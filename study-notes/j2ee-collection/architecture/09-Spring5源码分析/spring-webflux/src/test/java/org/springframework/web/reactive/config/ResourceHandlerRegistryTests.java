@@ -17,7 +17,6 @@
 package org.springframework.web.reactive.config;
 
 import java.time.Duration;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -29,10 +28,10 @@ import reactor.test.StepVerifier;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.http.CacheControl;
-import org.springframework.http.MediaType;
 import org.springframework.http.server.PathContainer;
 import org.springframework.web.reactive.HandlerMapping;
 import org.springframework.web.reactive.handler.SimpleUrlHandlerMapping;
+import org.springframework.web.reactive.resource.AppCacheManifestTransformer;
 import org.springframework.web.reactive.resource.CachingResourceResolver;
 import org.springframework.web.reactive.resource.CachingResourceTransformer;
 import org.springframework.web.reactive.resource.CssLinkResourceTransformer;
@@ -55,7 +54,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Rossen Stoyanchev
  */
-class ResourceHandlerRegistryTests {
+public class ResourceHandlerRegistryTests {
 
 	private ResourceHandlerRegistry registry;
 
@@ -63,7 +62,7 @@ class ResourceHandlerRegistryTests {
 
 
 	@BeforeEach
-	void setup() {
+	public void setup() {
 		this.registry = new ResourceHandlerRegistry(new GenericApplicationContext());
 		this.registration = this.registry.addResourceHandler("/resources/**");
 		this.registration.addResourceLocations("classpath:org/springframework/web/reactive/config/");
@@ -71,13 +70,13 @@ class ResourceHandlerRegistryTests {
 
 
 	@Test
-	void noResourceHandlers() {
+	public void noResourceHandlers() throws Exception {
 		this.registry = new ResourceHandlerRegistry(new GenericApplicationContext());
 		assertThat((Object) this.registry.getHandlerMapping()).isNull();
 	}
 
 	@Test
-	void mapPathToLocation() {
+	public void mapPathToLocation() throws Exception {
 		MockServerWebExchange exchange = MockServerWebExchange.from(MockServerHttpRequest.get(""));
 		exchange.getAttributes().put(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE,
 				PathContainer.parsePath("/testStylesheet.css"));
@@ -92,7 +91,7 @@ class ResourceHandlerRegistryTests {
 	}
 
 	@Test
-	void cacheControl() {
+	public void cacheControl() {
 		assertThat(getHandler("/resources/**").getCacheControl()).isNull();
 
 		this.registration.setCacheControl(CacheControl.noCache().cachePrivate());
@@ -101,17 +100,7 @@ class ResourceHandlerRegistryTests {
 	}
 
 	@Test
-	void mediaTypes() {
-		MediaType mediaType = MediaType.parseMediaType("foo/bar");
-		this.registration.setMediaTypes(Collections.singletonMap("bar", mediaType));
-		ResourceWebHandler requestHandler = this.registration.getRequestHandler();
-
-		assertThat(requestHandler.getMediaTypes()).size().isEqualTo(1);
-		assertThat(requestHandler.getMediaTypes()).containsEntry("bar", mediaType);
-	}
-
-	@Test
-	void order() {
+	public void order() {
 		assertThat(this.registry.getHandlerMapping().getOrder()).isEqualTo(Integer.MAX_VALUE -1);
 
 		this.registry.setOrder(0);
@@ -119,13 +108,13 @@ class ResourceHandlerRegistryTests {
 	}
 
 	@Test
-	void hasMappingForPattern() {
+	public void hasMappingForPattern() {
 		assertThat(this.registry.hasMappingForPattern("/resources/**")).isTrue();
 		assertThat(this.registry.hasMappingForPattern("/whatever")).isFalse();
 	}
 
 	@Test
-	void resourceChain() {
+	public void resourceChain() throws Exception {
 		ResourceUrlProvider resourceUrlProvider = Mockito.mock(ResourceUrlProvider.class);
 		this.registry.setResourceUrlProvider(resourceUrlProvider);
 		ResourceResolver mockResolver = Mockito.mock(ResourceResolver.class);
@@ -151,7 +140,7 @@ class ResourceHandlerRegistryTests {
 	}
 
 	@Test
-	void resourceChainWithoutCaching() {
+	public void resourceChainWithoutCaching() throws Exception {
 		this.registration.resourceChain(false);
 
 		ResourceWebHandler handler = getHandler("/resources/**");
@@ -165,14 +154,13 @@ class ResourceHandlerRegistryTests {
 	}
 
 	@Test
-	@SuppressWarnings("deprecation")
-	void resourceChainWithVersionResolver() {
+	public void resourceChainWithVersionResolver() throws Exception {
 		VersionResourceResolver versionResolver = new VersionResourceResolver()
 				.addFixedVersionStrategy("fixed", "/**/*.js")
 				.addContentVersionStrategy("/**");
 
 		this.registration.resourceChain(true).addResolver(versionResolver)
-				.addTransformer(new org.springframework.web.reactive.resource.AppCacheManifestTransformer());
+				.addTransformer(new AppCacheManifestTransformer());
 
 		ResourceWebHandler handler = getHandler("/resources/**");
 		List<ResourceResolver> resolvers = handler.getResourceResolvers();
@@ -186,19 +174,17 @@ class ResourceHandlerRegistryTests {
 		assertThat(transformers).hasSize(3);
 		assertThat(transformers.get(0)).isInstanceOf(CachingResourceTransformer.class);
 		assertThat(transformers.get(1)).isInstanceOf(CssLinkResourceTransformer.class);
-		assertThat(transformers.get(2)).isInstanceOf(org.springframework.web.reactive.resource.AppCacheManifestTransformer.class);
+		assertThat(transformers.get(2)).isInstanceOf(AppCacheManifestTransformer.class);
 	}
 
 	@Test
-	@SuppressWarnings("deprecation")
-	void resourceChainWithOverrides() {
+	public void resourceChainWithOverrides() throws Exception {
 		CachingResourceResolver cachingResolver = Mockito.mock(CachingResourceResolver.class);
 		VersionResourceResolver versionResolver = Mockito.mock(VersionResourceResolver.class);
 		WebJarsResourceResolver webjarsResolver = Mockito.mock(WebJarsResourceResolver.class);
 		PathResourceResolver pathResourceResolver = new PathResourceResolver();
 		CachingResourceTransformer cachingTransformer = Mockito.mock(CachingResourceTransformer.class);
-		org.springframework.web.reactive.resource.AppCacheManifestTransformer appCacheTransformer =
-				Mockito.mock(org.springframework.web.reactive.resource.AppCacheManifestTransformer.class);
+		AppCacheManifestTransformer appCacheTransformer = Mockito.mock(AppCacheManifestTransformer.class);
 		CssLinkResourceTransformer cssLinkTransformer = new CssLinkResourceTransformer();
 
 		this.registration.setCacheControl(CacheControl.maxAge(3600, TimeUnit.MILLISECONDS))
@@ -224,12 +210,6 @@ class ResourceHandlerRegistryTests {
 		assertThat(transformers.get(0)).isSameAs(cachingTransformer);
 		assertThat(transformers.get(1)).isSameAs(appCacheTransformer);
 		assertThat(transformers.get(2)).isSameAs(cssLinkTransformer);
-	}
-
-	@Test
-	void ignoreLastModified() {
-		this.registration.setUseLastModified(false);
-		assertThat(getHandler("/resources/**").isUseLastModified()).isFalse();
 	}
 
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,13 +84,11 @@ public class MethodInvocationProceedingJoinPoint implements ProceedingJoinPoint,
 	}
 
 	@Override
-	@Nullable
 	public Object proceed() throws Throwable {
 		return this.methodInvocation.invocableClone().proceed();
 	}
 
 	@Override
-	@Nullable
 	public Object proceed(Object[] arguments) throws Throwable {
 		Assert.notNull(arguments, "Argument array passed to proceed cannot be null");
 		if (arguments.length != this.methodInvocation.getArguments().length) {
@@ -221,12 +219,10 @@ public class MethodInvocationProceedingJoinPoint implements ProceedingJoinPoint,
 		@Override
 		@Nullable
 		public String[] getParameterNames() {
-			String[] parameterNames = this.parameterNames;
-			if (parameterNames == null) {
-				parameterNames = parameterNameDiscoverer.getParameterNames(getMethod());
-				this.parameterNames = parameterNames;
+			if (this.parameterNames == null) {
+				this.parameterNames = parameterNameDiscoverer.getParameterNames(getMethod());
 			}
-			return parameterNames;
+			return this.parameterNames;
 		}
 
 		@Override

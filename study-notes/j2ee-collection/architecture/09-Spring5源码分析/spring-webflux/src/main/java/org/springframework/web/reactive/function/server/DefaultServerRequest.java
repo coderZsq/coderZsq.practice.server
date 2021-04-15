@@ -36,14 +36,13 @@ import reactor.core.publisher.Mono;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.codec.DecodingException;
 import org.springframework.core.codec.Hints;
-import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRange;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.HttpMessageReader;
 import org.springframework.http.codec.multipart.Part;
-import org.springframework.http.server.RequestPath;
+import org.springframework.http.server.PathContainer;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.lang.Nullable;
@@ -123,7 +122,7 @@ class DefaultServerRequest implements ServerRequest {
 	}
 
 	@Override
-	public RequestPath requestPath() {
+	public PathContainer pathContainer() {
 		return request().getPath();
 	}
 
@@ -196,10 +195,8 @@ class DefaultServerRequest implements ServerRequest {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public <T> Flux<T> bodyToFlux(Class<? extends T> elementClass) {
-		Flux<T> flux = (elementClass.equals(DataBuffer.class) ?
-				(Flux<T>) request().getBody() : body(BodyExtractors.toFlux(elementClass)));
+		Flux<T> flux = body(BodyExtractors.toFlux(elementClass));
 		return flux.onErrorMap(UnsupportedMediaTypeException.class, ERROR_MAPPER)
 				.onErrorMap(DecodingException.class, DECODING_MAPPER);
 	}
@@ -264,59 +261,60 @@ class DefaultServerRequest implements ServerRequest {
 
 	private class DefaultHeaders implements Headers {
 
-		private final HttpHeaders httpHeaders =
-				HttpHeaders.readOnlyHttpHeaders(request().getHeaders());
+		private HttpHeaders delegate() {
+			return request().getHeaders();
+		}
 
 		@Override
 		public List<MediaType> accept() {
-			return this.httpHeaders.getAccept();
+			return delegate().getAccept();
 		}
 
 		@Override
 		public List<Charset> acceptCharset() {
-			return this.httpHeaders.getAcceptCharset();
+			return delegate().getAcceptCharset();
 		}
 
 		@Override
 		public List<Locale.LanguageRange> acceptLanguage() {
-			return this.httpHeaders.getAcceptLanguage();
+			return delegate().getAcceptLanguage();
 		}
 
 		@Override
 		public OptionalLong contentLength() {
-			long value = this.httpHeaders.getContentLength();
+			long value = delegate().getContentLength();
 			return (value != -1 ? OptionalLong.of(value) : OptionalLong.empty());
 		}
 
 		@Override
 		public Optional<MediaType> contentType() {
-			return Optional.ofNullable(this.httpHeaders.getContentType());
+			return Optional.ofNullable(delegate().getContentType());
 		}
 
 		@Override
 		public InetSocketAddress host() {
-			return this.httpHeaders.getHost();
+			return delegate().getHost();
 		}
 
 		@Override
 		public List<HttpRange> range() {
-			return this.httpHeaders.getRange();
+			return delegate().getRange();
 		}
 
 		@Override
 		public List<String> header(String headerName) {
-			List<String> headerValues = this.httpHeaders.get(headerName);
+			List<String> headerValues = delegate().get(headerName);
 			return (headerValues != null ? headerValues : Collections.emptyList());
 		}
 
 		@Override
 		public HttpHeaders asHttpHeaders() {
-			return this.httpHeaders;
+			return HttpHeaders.readOnlyHttpHeaders(delegate());
 		}
 
 		@Override
 		public String toString() {
-			return this.httpHeaders.toString();
+			return delegate().toString();
 		}
 	}
 
