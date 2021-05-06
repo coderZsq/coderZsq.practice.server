@@ -48,6 +48,12 @@ public class ArticleController extends BaseController<Article, ArticleReqVo> {
         return new DataJsonVo<>(Uploads.uploadImage(img));
     }
 
+    @GetMapping("/edit")
+    @ApiOperation("编辑文章")
+    public JsonVo edit(ArticlePageReqVo query) {
+        return JsonVos.ok(service.getById(query.getId()));
+    }
+
     @Override
     protected IService<Article> getService() {
         return service;
