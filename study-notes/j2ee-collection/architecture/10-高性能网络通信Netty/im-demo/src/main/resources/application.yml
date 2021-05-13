@@ -1,0 +1,14 @@
+server:
+  port: 8080
+druid:
+  url: jdbc:mysql://127.0.0.1:3306/im_demo?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
+  username: root
+  password: admin
+  initialSize: 5
+  maxActive: 30
+  minPoolSize: 2
+  maxIdleTime: 30000
+  idleConnectionTestPeriod: 100
+mybatis:
+  mapper-locations: classpath:mapper/*Mapper.xml
+  config-location: classpath:mybatis.xml

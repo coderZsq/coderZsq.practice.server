@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.wolfcode.netty.im.webserver.user.mapper.UserAccountMapper">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="cn.wolfcode.netty.im.webserver.user.model.UserAccountEntity" id="userAccountMap">
+        <result property="id" column="id"/>
+        <result property="account" column="account"/>
+        <result property="password" column="password"/>
+        <result property="disableState" column="disablestate"/>
+        <result property="isDel" column="isdel"/>
+        <result property="createDate" column="createdate"/>
+        <result property="updateDate" column="updatedate"/>
+        <result property="updateUser" column="updateuser"/>
+    </resultMap>
+
+    <resultMap type="cn.wolfcode.netty.im.webserver.user.model.UserAccountEntity" id="userAccountAndInfoMap"
+               extends="userAccountMap">
+        <!-- 一对一查询 -->
+        <association property="userInfo" column="id"
+                     select="cn.wolfcode.netty.im.webserver.user.mapper.UserInfoMapper.queryByUid"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id ,
+  	  	     account ,
+  	  	     password ,
+  	  	     disablestate ,
+  	  	     isdel ,
+  	  	     createdate ,
+  	  	     updatedate ,
+  	  	     updateuser
+
+    </sql>
+
+    <select id="queryObject" resultMap="userAccountMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_account where id = #{value}
+    </select>
+
+    <select id="queryObjectByAccount" resultMap="userAccountAndInfoMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_account where account = #{account}
+    </select>
+
+    <select id="queryList" resultMap="userAccountMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_account
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="queryTotal" resultType="int">
+        select count(*)
+        from user_account
+    </select>
+
+    <insert id="save" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into user_account
+        (`account`,
+         `password`,
+         `disablestate`,
+         `isdel`,
+         `createdate`,
+         `updatedate`,
+         `updateuser`)
+        values (#{account},
+                #{password},
+                #{disableState},
+                #{isDel},
+                NOW(),
+                NOW(),
+                #{updateUser})
+    </insert>
+
+    <update id="update">
+        update user_account
+        <set>
+            <if test="account != null">`account` = #{account},</if>
+            <if test="password != null">`password` = #{password},</if>
+            <if test="disableState != null">`disablestate` = #{disableState},</if>
+            <if test="isDel != null">`isdel` = #{isDel},</if>
+            <if test="updateDate != null">`updatedate` = NOW(),</if>
+            <if test="updateUser != null">`updateuser` = #{updateUser}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+        delete
+        from user_account
+        where id = #{value}
+    </delete>
+
+    <delete id="deleteBatch">
+        delete from user_account where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

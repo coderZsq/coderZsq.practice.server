@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.wolfcode.netty.im.webserver.user.mapper.UserMessageMapper">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="cn.wolfcode.netty.im.webserver.user.model.UserMessageEntity" id="userMessageMap">
+        <result property="id" column="id"/>
+        <result property="sendUser" column="senduser"/>
+        <result property="sendUsername" column="sendusername"/>
+        <result property="receiveUser" column="receiveuser"/>
+        <result property="groupId" column="groupid"/>
+        <result property="isRead" column="isread"/>
+        <result property="type" column="type"/>
+        <result property="content" column="content"/>
+        <result property="avatar" column="avatar"/>
+        <result property="uuid" column="uuid"/>
+        <result property="createDate" column="createdate"/>
+        <result property="updateDate" column="updatedate"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+  	  	         senduser,
+  	  	         receiveuser,
+  	  	         groupid,
+  	  	         isread,
+  	  	         type,
+  	  	         content,
+  	  	         uuid,
+  	  	         createdate,
+  	  	         updatedate
+
+    </sql>
+
+    <sql id="Full_Column_List">
+        a.id,
+        a.senduser,
+        b.name sendusername ,
+        ifnull(b.profilephoto,'/static/images/1.jpg') avatar,
+        a.content,
+        a.isread,
+        a.uuid,
+        a.createdate,
+        a.updatedate
+    </sql>
+
+    <select id="getHistoryMessageList" resultMap="userMessageMap">
+        SELECT
+        <include refid="Full_Column_List"/>
+        FROM user_message a
+        LEFT JOIN user_info b ON b.uid=a.senduser
+        where (a.senduser =#{sendUser} AND a.receiveuser =#{receiveUser} ) OR (a.senduser =#{receiveUser} AND
+        a.receiveuser =#{sendUser} ) ORDER BY id
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="queryObject" resultMap="userMessageMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_message where id = #{value}
+    </select>
+
+    <select id="queryList" resultMap="userMessageMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_message
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="queryTotal" resultType="int">
+        select count(*)
+        from user_message
+    </select>
+
+    <insert id="save" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into user_message
+        (`senduser`,
+         `receiveuser`,
+         `groupid`,
+         `isread`,
+         `type`,
+         `content`,
+         `uuid`,
+         `createdate`,
+         `updatedate`)
+        values (#{sendUser},
+                #{receiveUser},
+                #{groupId},
+                #{isRead},
+                #{type},
+                #{content},
+                #{uuid},
+                #{createDate},
+                NOW())
+    </insert>
+
+    <update id="update">
+        update user_message
+        <set>
+            <if test="sendUser != null">`senduser` = #{sendUser},</if>
+            <if test="receiveUser != null">`receiveuser` = #{receiveUser},</if>
+            <if test="groupId != null">`groupid` = #{groupId},</if>
+            <if test="isRead != null">`isread` = #{isRead},</if>
+            <if test="type != null">`type` = #{type},</if>
+            <if test="content != null">`content` = #{content},</if>
+            <if test="uuid != null">`uuid` = #{uuid},</if>
+            <if test="createDate != null">`createdate` = #{createDate},</if>
+            <if test="updateDate != null">`updatedate` = #{updateDate}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+        delete
+        from user_message
+        where id = #{value}
+    </delete>
+
+    <delete id="deleteBatch">
+        delete from user_message where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.wolfcode.netty.im.webserver.user.mapper.UserInfoMapper">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="cn.wolfcode.netty.im.webserver.user.model.UserInfoEntity" id="userInfoMap">
+        <result property="id" column="id"/>
+        <result property="uid" column="uid"/>
+        <result property="deptId" column="deptid"/>
+        <result property="name" column="name"/>
+        <result property="nickname" column="nickname"/>
+        <result property="sex" column="sex"/>
+        <result property="birthday" column="birthday"/>
+        <result property="cardId" column="cardid"/>
+        <result property="signature" column="signature"/>
+        <result property="school" column="school"/>
+        <result property="education" column="education"/>
+        <result property="address" column="address"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email"/>
+        <result property="remark" column="remark"/>
+        <result property="profilePhoto" column="profilephoto"/>
+        <result property="createDate" column="createdate"/>
+        <result property="createUser" column="createuser"/>
+        <result property="updateDate" column="updatedate"/>
+        <result property="updateUser" column="updateuser"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id ,
+  	  	     uid ,
+  	  	     deptid ,
+  	  	     name ,
+  	  	     nickname ,
+  	  	     sex ,
+  	  	     birthday ,
+  	  	     cardid ,
+  	  	     signature ,
+  	  	     school ,
+  	  	     education ,
+  	  	     address ,
+  	  	     phone ,
+  	  	     email ,
+  	  	     remark ,
+  	  	     profilephoto ,
+  	  	     createdate ,
+  	  	     createuser ,
+  	  	     updatedate ,
+  	  	     updateuser
+
+    </sql>
+
+    <select id="queryByIdList" resultType="cn.wolfcode.netty.im.webserver.user.model.UserVo">
+        select uid id, name, profilephoto avatar, signature, sex
+        from user_info where uid in <foreach collection="list" open="(" separator="," close=")" item="id">#{id}</foreach>
+    </select>
+
+    <select id="queryObject" resultMap="userInfoMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_info where id = #{value}
+    </select>
+
+    <select id="queryByUid" parameterType="long" resultMap="userInfoMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_info where uid = #{id}
+    </select>
+
+    <select id="queryList" resultMap="userInfoMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_info
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="queryTotal" resultType="int">
+        select count(*)
+        from user_info
+    </select>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        insert into user_info
+        (`uid`,
+         `deptid`,
+         `name`,
+         `nickname`,
+         `sex`,
+         `birthday`,
+         `cardid`,
+         `signature`,
+         `school`,
+         `education`,
+         `address`,
+         `phone`,
+         `email`,
+         `remark`,
+         `profilephoto`,
+         `createdate`,
+         `createuser`,
+         `updatedate`,
+         `updateuser`)
+        values (#{uid},
+                #{deptId},
+                #{name},
+                #{nickname},
+                #{sex},
+                #{birthday},
+                #{cardId},
+                #{signature},
+                #{school},
+                #{education},
+                #{address},
+                #{phone},
+                #{email},
+                #{remark},
+                #{profilePhoto},
+                NOW(),
+                #{uid},
+                NOW(),
+                #{uid})
+    </insert>
+
+    <update id="update">
+        update user_info
+        <set>
+            <if test="uid != null">`uid` = #{uid},</if>
+            <if test="deptId != null">`deptid` = #{deptId},</if>
+            <if test="name != null">`name` = #{name},</if>
+            <if test="nickname != null">`nickname` = #{nickname},</if>
+            <if test="sex != null">`sex` = #{sex},</if>
+            <if test="birthday != null">`birthday` = #{birthday},</if>
+            <if test="cardId != null">`cardid` = #{cardId},</if>
+            <if test="signature != null">`signature` = #{signature},</if>
+            <if test="school != null">`school` = #{school},</if>
+            <if test="education != null">`education` = #{education},</if>
+            <if test="address != null">`address` = #{address},</if>
+            <if test="phone != null">`phone` = #{phone},</if>
+            <if test="email != null">`email` = #{email},</if>
+            <if test="remark != null">`remark` = #{remark},</if>
+            <if test="profilePhoto != null">`profilephoto` = #{profilePhoto},</if>
+            <if test="createDate != null">`createdate` = #{createDate},</if>
+            <if test="createUser != null">`createuser` = #{createUser},</if>
+            <if test="updateDate != null">`updatedate` = #{updateDate},</if>
+            <if test="updateUser != null">`updateuser` = #{updateUser}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+        delete
+        from user_info
+        where id = #{value}
+    </delete>
+
+    <delete id="deleteBatch">
+        delete from user_info where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>
