@@ -1,3 +1,5 @@
+package jvm;
+
 // 移动平均数
 public class MovingAverage {
   private int count = 0;

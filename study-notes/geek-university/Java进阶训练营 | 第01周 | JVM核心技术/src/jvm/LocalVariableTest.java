@@ -1,3 +1,5 @@
+package jvm;
+
 public class LocalVariableTest {
   public static void main(String[] args) {
     MovingAverage ma = new MovingAverage();

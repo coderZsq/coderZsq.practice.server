@@ -1,3 +1,5 @@
+package jvm;
+
 public class ForLoopTest {
   private static int[] numbers = {1, 6, 8};
   public static void main(String[] args) {

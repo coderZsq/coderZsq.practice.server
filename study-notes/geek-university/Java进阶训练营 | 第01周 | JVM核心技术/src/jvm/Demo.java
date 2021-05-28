@@ -1,3 +1,5 @@
+package jvm;
+
 public class Demo {
   public static void foo() {
     int a = 1;
