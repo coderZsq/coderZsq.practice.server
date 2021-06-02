@@ -161,3 +161,109 @@ Proactor
 好文件，通知你来拿。
 
 ## 4. Netty 框架简介
+
+## Netty 概览
+
+网络应用开发框架
+
+1. 异步
+2. 事件驱动
+3. 基于 NIO
+
+适用于:
+
+- 服务端
+- 客户端
+- TCP/UDP
+
+## Netty 特性
+
+- 高吞吐
+- 低延迟
+- 低开销
+- 零拷贝
+- 可扩容
+
+- 松耦合: 网络和业务逻辑分离
+- 使用方便、可维护性好
+
+## 兼容性
+
+JDK 兼容性:
+
+- Netty 3.x: JDK5
+- Netty 4.x: JDK6
+- Netty 5.x: 已废弃
+
+协议兼容性:
+
+- 兼容大部分通用协议
+- 支持自定义协议
+
+嵌入式:
+
+- HTTP Server
+- HTTPS Server
+- WebSocket Server
+- TCP Server
+- UDP Server
+- In VM Pipe
+
+Netty vs. Java EE?
+
+## 基本概念
+
+- Channel 通道，Java NIO 中的基础概念,代表一个打开的连接,可执行读取/写入 IO 操作。 Netty 对 Channel 的所有 IO 操作都是非阻塞的。
+- ChannelFuture Java 的 Future 接口，只能查询操作的完成情况, 或者阻塞当前线程等待操作完成。 Netty 封装一个 ChannelFuture 接口。 我们可以将回调方法传给 ChannelFuture，在操作完成时自动执行。
+- Event & Handler Netty 基于事件驱动，事件和处理器可以关联到入站和出站数据流。
+- Encoder & Decoder 处理网络 IO 时，需要进行序列化和反序列化, 转换 Java 对象与字节流。 对入站数据进行解码, 基类是 ByteToMessageDecoder。 对出站数据进行编码, 基类是 MessageToByteEncoder。
+- ChannelPipeline 数据处理管道就是事件处理器链。有顺序、同一 Channel 的出站处理器和入站处理器在同一个列表中。
+
+## Event & Handler
+
+入站事件:
+
+- 通道激活和停用
+- 读操作事件
+- 异常事件
+- 用户事件
+
+出站事件:
+
+- 打开连接
+- 关闭连接
+- 写入数据
+- 刷新数据
+
+事件处理程序接口:
+
+- ChannelHandler
+- ChannelOutboundHandler
+- ChannelInboundHandler
+
+适配器(空实现，需要继承使用):
+
+- ChannelInboundHandlerAdapter
+- ChannelOutboundHandlerAdapter
+
+Netty 应用组成:
+
+- 网络事件
+- 应用程序逻辑事件
+- 事件处理程序
+
+# 5. Netty 使用示例
+
+## Netty 简单例子
+
+使用 Netty 改写
+最开始的例子
+
+然后，压测一下效果如何。
+
+# 6. 总结回顾与作业实践
+
+## 第四节课作业实践
+
+1、(可选)运行课上的例子，以及 Netty 的例子，分析相关现象。
+2、写一段代码，使用 HttpClient 或 OkHttp 访问 http://localhost:8801，代码提交到 Github。
