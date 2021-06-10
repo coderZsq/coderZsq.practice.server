@@ -263,3 +263,164 @@ LongAdder 的改进思路:
 3. 每个线程写自己的 Cell[i]++，最后对数组求和。
 
 还记得我们讲的爬山，做一个大项目，都需要加里程碑，也是分段
+
+# 3.并发工具类
+
+思考一下:
+多个线程之间怎么相互协作?
+前面讲到的:
+
+1. wait/notify，
+2. Lock/Condition,
+   可以作为简单的协作机制。
+
+但是更复杂的，需要这些线程
+满足某些条件(数量，时间，)。
+
+更复杂的应用场景，比如
+
+- 我们需要控制实际并发访问资源的并发数量
+- 我们需要多个线程在某个时间同时开始运行
+- 我们需要指定数量线程到达某个状态再继续处理
+
+## AQS
+
+- AbstractQueuedSynchronizer，即队列同步器。它是构建锁或者其他同步组件的基础( 如 Semaphore、CountDownLatch、ReentrantLock、ReentrantReadWriteLock)， 是 JUC 并发包中的核心基础组件。
+- AbstractQueuedSynchronizer:抽象队列式的同步器
+- 两种资源共享方式: 独占 | 共享，子类负责实现公平 OR 非公平
+
+## Semaphore - 信号量
+
+1. 准入数量 N
+2. N =1 则等价于独占锁 使用场景:同一时间控制并发线程数
+
+```java
+public class SemaphoreCounter {
+    private int sum = 0;
+    private Semaphore readSemaphore = new Semaphore(100, true);
+    private Semaphore writeSemaphore = new Semaphore(1);
+
+    public int incrAndGet() {
+        try {
+            writeSemaphore.acquireUninterruptibly();
+            return ++sum;
+        } finally {
+            writeSemaphore.release();
+        }
+    }
+    public int getSum() {
+        try {
+            readSemaphore.acquireUninterruptibly();
+            return sum;
+        } finally {
+            readSemaphore.release();
+        }
+    }
+}
+```
+
+## CountdownLatch
+
+| 重要方法                                   | 说明           |
+| :----------------------------------------- | :------------- |
+| public CountDownLatch(int count)           | 构造方法(总数) |
+| void await() throws InterruptedException   | 等待数量归 0   |
+| boolean await(long timeout, TimeUnit unit) | 限时等待       |
+| void countDown()                           | 等待数减 1     |
+| long getCount()                            | 返回剩余数量   |
+
+场景: Master 线程等待 Worker 线程把任务执行完
+示例: 等所有人干完手上的活，一起去吃饭。
+
+## CountDownLatch 示例
+
+```java
+public class CountDownLatchTask implements Runnable {
+    private CountDownLatch latch;
+
+    public CountDownLatchTask(CountDownLatch latch) {
+        this.latch = latch;
+    }
+
+    @Override
+    public void run() {
+        Integer millis = new Random().nextInt(10000);
+        try {
+            TimeUnit.MILLISECONDS.sleep(millis);
+            this.latch.countDown();
+            System.out.printf("我的任务OK了:" + Thread.currentThread().getName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+```
+
+```java
+// 使用示例
+public static void main(String[] args) throws Exception {
+    int num = 100;
+    CountDownLatch latch = new CountDownLatch(num);
+    List<CompletableFuture> list = new ArrayList<>(num);
+    for (int i = 0; i < num; i++) {
+        CompletableFuture<Void> future = CompletableFuture.runAsync(new CountDownLatchTask(latch));
+        list.add(future);
+    }
+    latch.await();
+    for (CompletableFuture future : list) {
+        future.get();
+    }
+}
+```
+
+## CyclicBarrier
+
+| 重要方法                                                  | 说明                                     |
+| :-------------------------------------------------------- | :--------------------------------------- |
+| public CyclicBarrier(int parties)                         | 构造方法(需要等待的数量)                 |
+| public CyclicBarrier(int parties, Runnable barrierAction) | 构造方法(需要等待的数量, 需要执行的任务) |
+| int await()                                               | 任务内部使用; 等待大家都到齐             |
+| int await(long timeout, TimeUnit unit)                    | 任务内部使用; 限时等待到齐               |
+| void reset()                                              | 重新一轮                                 |
+
+场景: 任务执行到一定阶段, 等待其他任务对齐。
+示例: 等待所有人都到达，再一起开吃。
+
+## CountDownLatch 与 CyclicBarrier 比较
+
+| CountDownLatch                                                             | CyclicBarrier                               |
+| :------------------------------------------------------------------------- | :------------------------------------------ |
+| 减计数方式                                                                 | 加计数方式                                  |
+| 计算为 0 时释放所有等待的线程                                              | 计数达到指定值时释放所有等待线程            |
+| 计数为 0 时, 无法重置                                                      | 计数达到指定值时, 计数置为 0 重新开始       |
+| 调用 countDown()方法计数减一, 调用 await()方法只进行阻塞, 对计数没任何影响 | 若加 1 后的值不等于构造方法的值, 则线程阻塞 |
+| 不可重复利用                                                               | 可重复利用                                  |
+
+## Future/FutureTask/CompletableFuture
+
+Future FutureTask 单个线程/任务的执行结果
+CompletableFuture 异步，回调，组合
+
+## CompletableFuture
+
+| 重要方法                                                                                                   | 说明                       |
+| :--------------------------------------------------------------------------------------------------------- | :------------------------- |
+| static final boolean useCommonPool = (ForkJoinPool.getCommonPoolParallelism() > 1);                        | 是否使用内置线程池         |
+| static final Executor asyncPool = useCommonPool ? ForkJoinPool.commonPool() : new ThreadPerTaskExecutor(); | 线程池                     |
+| CompletableFuture\<Void> runAsync(Runnable runnable);                                                      | 异步执行【当心阻塞?】      |
+| CompletableFuture\<Void> runAsync(Runnable runnable, Executor executor)                                    | 异步执行, 使用自定义线程池 |
+| T get()                                                                                                    | 等待执行结果               |
+| T get(long timeout, TimeUnit unit)                                                                         | 限时等待执行结果           |
+| T getNow(T valueIfAbsent)                                                                                  | 立即获取结果(默认值)       |
+
+# 5.总结回顾与作业实践
+
+第 7 节课作业实践
+
+1. (选做)把示例代码，运行一遍，思考课上相关的问题。也可以做一些比较。
+2. (必做)思考有多少种方式，在 main 函数启动一个新线程，运行一个方法，拿到这 个方法的返回值后，退出主线程?
+   写出你的方法，越多越好，提交到 Github。
+
+一个简单的代码参考:
+https://github.com/kimmking/JavaCourseCodes/tree/main/03concurrency/0301/src/main/java/java0/conc0303/Homework03.java
