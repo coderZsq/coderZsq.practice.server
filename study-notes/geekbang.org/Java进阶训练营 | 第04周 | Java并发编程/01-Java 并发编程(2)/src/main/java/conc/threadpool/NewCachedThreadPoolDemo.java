@@ -4,8 +4,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class NewCachedThreadPoolDemo {
+
     public static void main(String[] args) {
+
         ExecutorService executorService = Executors.newCachedThreadPool();
+
         for (int i = 0; i < 10000; i++) {
             final int no = i;
             Runnable runnable = new Runnable() {
@@ -24,5 +27,8 @@ public class NewCachedThreadPoolDemo {
         }
         executorService.shutdown();
         System.out.println("Main Thread End!");
+
+
     }
+
 }

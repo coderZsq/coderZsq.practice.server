@@ -4,8 +4,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class NewSingleThreadExecutorDemo {
+
     public static void main(String[] args) {
+
         ExecutorService executorService = Executors.newSingleThreadExecutor();
+
         for (int i = 0; i < 10; i++) {
             final int no = i;
             executorService.execute(() -> {
@@ -21,4 +24,5 @@ public class NewSingleThreadExecutorDemo {
         executorService.shutdown();
         System.out.println("Main Thread End!");
     }
+
 }
