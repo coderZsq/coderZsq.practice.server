@@ -152,3 +152,119 @@ MySQL 的版本
 
 # 3.深入数据库原理*
 
+## MySQL 存储
+
+独占模式
+1)、日志组文件:ib_logfile0和ib_logfile1，默认均为5M 
+2)、表结构文件:*.frm
+3)、独占表空间文件:*.ibd
+4)、字符集和排序规则文件:db.opt
+5)、binlog 二进制日志文件:记录主数据库服务器的 DDL 和 DML 操作 
+6)、二进制日志索引文件:master-bin.index
+共享模式 innodb_file_per_table=1
+1)、数据都在 ibdata1
+
+## MySQL 对 SQL 执行顺序
+
+实际上这个过程也并不是绝对这样的， 中间 mysql 会有部分的优化以达到最佳 的优化效果，比如在 select 筛选出找到 的数据集
+
+## MySQL 索引原理
+
+数据是按页来分块的，当一个数据被用
+到时，其附近的数据也通常会马上被使
+用。
+
+InnoDB 使用 B+ 树实现聚集索引，
+
+ 为什么一般单表数据不超过2000万?
+
+## MySQL 数据库操作演示 操作示例
+
+- 安装的几种方式，安装文件或命令，docker
+- 操作工具，mysql-cli 或 IDE(DataGrip,MySQL-WorkBench,MySQL-Front,Navicat 等) 
+- MySQL 库结构，操作语句与命令
+- MySQL SQL 语法演示
+
+5.6/5.7/8.0
+ 
+## 4. MySQL 配置优化*
+
+## 参数配置优化-1
+
+1)连接请求的变量 
+1、max_connections
+2、back_log 
+3、wait_timeout和interative_timeout
+
+## 参数配置优化
+
+查看参数配置
+- show variables like xxx my.cnf 文件
+
+## 参数配置优化-2
+
+2)缓冲区变量
+4、key_buffer_size 
+5、query_cache_size(查询缓存简称 QC) 
+6、max_connect_errors: 
+7、sort_buffer_size: 
+8、max_allowed_packet=32M 
+9、join_buffer_size=2M 
+10、thread_cache_size=300
+
+## 参数配置优化-3
+
+3)配置 Innodb 的几个变量 
+11、innodb_buffer_pool_size 
+12、innodb_flush_log_at_trx_commit 
+13、innodb_thread_concurrency=0 
+14、innodb_log_buffer_size 
+15、innodb_log_file_size=50M 
+16、innodb_log_files_in_group=3 
+17、read_buffer_size=1M 
+18、read_rnd_buffer_size=16M 
+19、bulk_insert_buffer_size=64M 
+20、binary log
+
+# 5.数据库设计优化*
+
+## MySQL 数据库设计优化-最佳实践
+
+- 如何恰当选择引擎?
+- 库表如何命名?
+- 如何合理拆分宽表?
+- 如何选择恰当数据类型:明确、尽量小
+- char、varchar 的选择
+- (text/blob/clob)的使用问题? - 文件、图片是否要存入到数据库? - 时间日期的存储问题?
+- 数值的精度问题?
+- 是否使用外键、触发器?
+
+ 还有哪些常见问题?
+
+## MySQL 数据库设计优化
+
+- 唯一约束和索引的关系?
+- 是否可以冗余字段?
+- 是否使用游标、变量、视图、自定义函数、存储过程? - 自增主键的使用问题?
+- 能够在线修改表结构(DDL 操作)?
+- 逻辑删除还是物理删除?
+- 要不要加 create_time,update_time 时间戳?
+- 数据库碎片问题?
+- 如何快速导入导出、备份数据?
+
+性能是一个综合性问题
+ 
+# 6.总结回顾与作业实践
+
+## 第12节课作业实践 
+
+1、(选做):基于课程中的设计原则和最佳实践，分析是否可以将自己负责的业务系统
+进行数据库设计或是数据库服务器方面的优化。 
+2、(必做):基于电商交易场景(用户、商品、订单)，设计一套简单的表结构，提交
+DDL 的 SQL 文件到 Github(后面2周的作业依然要是用到这个表结构)。 
+3、(选做):尽可能多的从“常见关系数据库”中列的清单，安装运行，并使用上一题的
+SQL 测试简单的增删改查。
+4、(选做):基于上一题，尝试对各个数据库测试100万订单数据的增删改查性能。
+5、(选做):尝试对 MySQL 不同引擎下测试100万订单数据的增删改查性能。
+6、(选做):模拟1000万订单数据，测试不同方式下导入导出(数据备份还原) MySQL 的速度，包括 jdbc 程序处理和命令行处理。思考和实践，如何提升处理效率。
+7、(选做):对 MySQL 配置不同的数据库连接池(DBCP、C3P0、Druid、Hikari)， 测试增删改查100万次，对比性能，生成报告。
