@@ -7,7 +7,11 @@
 
     <!-- 请确保这个 Listener 放置在首位 -->
     <listener>
-        <listener-class>org.geektimes.projects.user.web.listener.DBConnectionInitializerListener</listener-class>
+        <listener-class>org.geektimes.projects.user.web.listener.ComponentContextInitializerListener</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>org.geektimes.projects.user.web.listener.TestingListener</listener-class>
     </listener>
 
     <servlet>
@@ -97,4 +101,15 @@
         <res-auth>Container</res-auth>
     </resource-ref>
 
+    <resource-env-ref>
+        <description>
+            Object factory for DBConnectionManager instances.
+        </description>
+        <resource-env-ref-name>
+            bean/DBConnectionManager
+        </resource-env-ref-name>
+        <resource-env-ref-type>
+            org.geektimes.projects.user.sql.DBConnectionManager
+        </resource-env-ref-type>
+    </resource-env-ref>
 </web-app>

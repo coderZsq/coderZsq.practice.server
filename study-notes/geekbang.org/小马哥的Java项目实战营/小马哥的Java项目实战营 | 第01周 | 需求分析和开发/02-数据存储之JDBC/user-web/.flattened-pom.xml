@@ -47,9 +47,17 @@
             </goals>
             <configuration>
               <path>/</path>
+              <enableNaming>true</enableNaming>
             </configuration>
           </execution>
         </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+            <version>${derby.version}</version>
+          </dependency>
+        </dependencies>
       </plugin>
     </plugins>
   </build>

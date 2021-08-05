@@ -21,9 +21,4 @@
 			  username="" password=""
 			  driverClassName="org.apache.derby.jdbc.EmbeddedDriver"
 			  url="jdbc:derby:user-platform/db;create=true"/>
-
-	<!-- FactoryBean -->
-	<Resource name="bean/DBConnectionManager" auth="Container"
-			  type="org.geektimes.projects.user.sql.DBConnectionManager"
-			  factory="org.apache.naming.factory.BeanFactory" />
 </Context>
