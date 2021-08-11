@@ -10,6 +10,7 @@
   <modules>
     <module>my-web-mvc</module>
     <module>user-web</module>
+    <module>my-configuration</module>
   </modules>
   <properties>
     <microprofile-config-api.version>2.0</microprofile-config-api.version>
@@ -126,6 +127,10 @@
         <plugin>
           <artifactId>maven-war-plugin</artifactId>
           <version>${maven.war.version}</version>
+          <configuration>
+            <webXml></webXml>
+            <failOnMissingWebXml>false</failOnMissingWebXml>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.tomcat.maven</groupId>
