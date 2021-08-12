@@ -176,7 +176,7 @@ public class DefaultResponse extends Response {
         T entity = null;
         try {
             InputStream inputStream = connection.getInputStream();
-            // 参考 HttpMessageConverter 实现, 实现运行时动态判断
+            // 参考 HttpMessageConverter 实现，实现运行时动态判断
             if (String.class.equals(entityType)) {
                 Object value = IOUtils.toString(inputStream, encoding);
                 entity = (T) value;

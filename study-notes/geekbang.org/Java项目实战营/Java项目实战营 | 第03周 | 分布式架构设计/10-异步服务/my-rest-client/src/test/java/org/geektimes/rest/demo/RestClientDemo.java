@@ -11,10 +11,11 @@ public class RestClientDemo {
         Response response = client
                 .target("http://127.0.0.1:8080/hello/world")      // WebTarget
                 .request() // Invocation.Builder
-                .get();                                     // Response
+                .get();                                     //  Response
 
         String content = response.readEntity(String.class);
 
         System.out.println(content);
+
     }
 }

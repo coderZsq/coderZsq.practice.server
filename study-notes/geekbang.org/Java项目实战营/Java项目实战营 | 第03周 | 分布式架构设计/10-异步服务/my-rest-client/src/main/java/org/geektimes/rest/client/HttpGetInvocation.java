@@ -25,8 +25,10 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
@@ -69,20 +71,21 @@ class HttpGetInvocation implements Invocation {
             setRequestHeaders(connection);
             // TODO Set the cookies
             int statusCode = connection.getResponseCode();
-            // Response.ResponseBuilder responseBuilder = Response.status(statusCode);
-            //
-            // responseBuilder.build();
+//            Response.ResponseBuilder responseBuilder = Response.status(statusCode);
+//
+//            responseBuilder.build();
             DefaultResponse response = new DefaultResponse();
             response.setConnection(connection);
             response.setStatus(statusCode);
             return response;
-            // Response.Status status = Response.Status.fromStatusCode(statusCode);
-            // switch (status) {
-            //     case OK:
-            //         break;
-            //     default:
-            //         break;
-            // }
+//            Response.Status status = Response.Status.fromStatusCode(statusCode);
+//            switch (status) {
+//                case Response.Status.OK:
+//
+//                    break;
+//                default:
+//                    break;
+//            }
 
         } catch (IOException e) {
             // TODO Error handler

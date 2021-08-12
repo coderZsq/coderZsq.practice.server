@@ -1,7 +1,5 @@
 package org.geektimes.rest.client;
 
-import org.geektimes.rest.core.DefaultResponseBuilder;
-
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.AsyncInvoker;
 import javax.ws.rs.client.Entity;

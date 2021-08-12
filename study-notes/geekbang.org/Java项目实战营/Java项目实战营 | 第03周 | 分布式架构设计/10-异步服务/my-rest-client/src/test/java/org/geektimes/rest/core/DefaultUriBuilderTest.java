@@ -44,7 +44,7 @@ public class DefaultUriBuilderTest {
                 .fragment("{d}")
                 .resolveTemplates(Maps.of("a", 1, "b", 2, "c", 3, "d", 4));
 
-        // Map<String, Object> values = Maps.of("a", 1, "b", 2, "c", 3, "d", 4);
+//        Map<String, Object> values = Maps.of("a", 1, "b", 2, "c", 3, "d", 4);
 
         URI uri = builder.build();
 
