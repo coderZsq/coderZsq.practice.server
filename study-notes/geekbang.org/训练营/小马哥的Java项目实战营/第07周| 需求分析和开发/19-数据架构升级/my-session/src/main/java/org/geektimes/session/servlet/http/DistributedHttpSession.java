@@ -16,14 +16,16 @@
  */
 package org.geektimes.session.servlet.http;
 
-import javax.cache.Cache;
-import javax.cache.CacheManager;
+import org.geektimes.session.SessionInfo;
+import org.geektimes.session.SessionRepository;
+
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionContext;
 import java.util.Enumeration;
 
-import static org.geektimes.session.servlet.http.DistributedHttpSessionAttributeListener.ATTRIBUTES_CACHE_ATTRIBUTE_NAME;
+import static java.util.Collections.enumeration;
 
 /**
  * The Distributed {@link HttpSession}
@@ -34,41 +36,58 @@ import static org.geektimes.session.servlet.http.DistributedHttpSessionAttribute
  */
 public class DistributedHttpSession implements HttpSession {
 
-    private final CacheManager cacheManager;
+    /**
+     * The attribute name of {@link DistributedHttpSession} instance
+     */
+    public static final String ATTRIBUTE_NAME = "_distributedHttpSession";
+
+    private final HttpServletRequest request;
+
+    private final SessionRepository sessionRepository;
 
     private final HttpSession source;
 
     private final SessionInfo sessionInfo;
 
-    private final Cache<String, Object> attributesCache;
-
-    public DistributedHttpSession(CacheManager cacheManager, HttpSession source, SessionInfo sessionInfo) {
-        this.cacheManager = cacheManager;
+    public DistributedHttpSession(HttpServletRequest request, HttpSession source, SessionRepository sessionRepository) {
+        this.request = request;
         this.source = source;
-        this.sessionInfo = resolveSessionInfo(source, sessionInfo);
-        this.attributesCache = getCache();
+        this.sessionRepository = sessionRepository;
+        this.sessionInfo = resolveSessionInfo();
+        // set self into Request Context
+        request.setAttribute(ATTRIBUTE_NAME, this);
     }
 
-    private Cache<String, Object> getCache() {
-        Cache<String, Object> cache = buildCache();
-        source.setAttribute(ATTRIBUTES_CACHE_ATTRIBUTE_NAME, cache);
-        return cache;
+    public static DistributedHttpSession get(HttpServletRequest request) {
+        return (DistributedHttpSession) request.getAttribute(ATTRIBUTE_NAME);
     }
 
-    private Cache<String, Object> buildCache() {
-        return null;
-    }
-
-    private SessionInfo resolveSessionInfo(HttpSession source, SessionInfo sessionInfo) {
-        if (sessionInfo != null) {
-            return sessionInfo;
+    private SessionInfo resolveSessionInfo() {
+        String requestSessionId = request.getRequestedSessionId();
+        SessionInfo sessionInfo = null;
+        if (requestSessionId != null) { // the "requestSessionId" that the server generated was stored by HTTP client
+            // Try to get the SessionInfo from the repository,
+            // If the "sessionInfo" is present , it indicates that the session was created by another server
+            // in the distributed cluster, or the session had been expired in the server
+            sessionInfo = sessionRepository.getSessionInfo(requestSessionId);
         }
-        SessionInfo newSessionInfo = new SessionInfo();
-        newSessionInfo.setId(source.getId());
-        newSessionInfo.setCreationTime(source.getCreationTime());
-        newSessionInfo.setLastAccessedTime(source.getLastAccessedTime());
-        newSessionInfo.setMaxInactiveInterval(source.getMaxInactiveInterval());
-        return newSessionInfo;
+        if (sessionInfo == null) { // Maybe the first time access to the server when the "requestSessionId" is absent
+            sessionInfo = new SessionInfo(source);
+        }
+        return sessionInfo;
+    }
+
+    /**
+     * Get the {@link SessionInfo}
+     *
+     * @return non-null {@link #sessionInfo}
+     */
+    public SessionInfo getSessionInfo() {
+        return this.sessionInfo;
+    }
+
+    public void commitSessionInfo() {
+        sessionRepository.saveSessionInfo(getSessionInfo());
     }
 
     @Override
@@ -110,9 +129,9 @@ public class DistributedHttpSession implements HttpSession {
     public Object getAttribute(String name) {
         // try to find the value in local session
         Object value = source.getAttribute(name);
-        if (value == null) { // If not found, try to find it in the cache
-            value = attributesCache.get(name);
-            // restore the cached value into local session if found
+        if (value == null) { // If not found, try to find it in the repository
+            value = sessionRepository.getAttribute(getId(), name);
+            // restore the value into local session if found
             if (value != null) {
                 source.setAttribute(name, value);
             }
@@ -128,7 +147,7 @@ public class DistributedHttpSession implements HttpSession {
 
     @Override
     public Enumeration<String> getAttributeNames() {
-        return source.getAttributeNames();
+        return enumeration(sessionRepository.getAttributeNames(getId()));
     }
 
     @Override
@@ -140,6 +159,7 @@ public class DistributedHttpSession implements HttpSession {
     @Override
     public void setAttribute(String name, Object value) {
         source.setAttribute(name, value);
+        sessionRepository.setAttribute(getId(), name, value);
     }
 
     @Override
@@ -151,6 +171,7 @@ public class DistributedHttpSession implements HttpSession {
     @Override
     public void removeAttribute(String name) {
         source.removeAttribute(name);
+        sessionRepository.removeAttribute(getId(), name);
     }
 
     @Override
@@ -162,6 +183,14 @@ public class DistributedHttpSession implements HttpSession {
     @Override
     public void invalidate() {
         source.invalidate();
+        invalidateSessionInfoCache();
+        invalidateAttributesCache();
+    }
+
+    private void invalidateSessionInfoCache() {
+    }
+
+    private void invalidateAttributesCache() {
     }
 
     @Override

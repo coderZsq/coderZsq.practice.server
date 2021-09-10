@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.geektimes.session.servlet.http;
+package org.geektimes.session;
 
 import javax.servlet.http.HttpSession;
 import java.io.Serializable;
@@ -35,6 +35,20 @@ public class SessionInfo implements Serializable {
     private long lastAccessedTime;
 
     private int maxInactiveInterval;
+
+    /**
+     * Default Constructor (for Serialization)
+     */
+    public SessionInfo() {
+    }
+
+    public SessionInfo(HttpSession source) {
+        setId(source.getId());
+        setCreationTime(source.getCreationTime());
+        setLastAccessedTime(source.getLastAccessedTime());
+        setMaxInactiveInterval(source.getMaxInactiveInterval());
+    }
+
 
     public String getId() {
         return id;

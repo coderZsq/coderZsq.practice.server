@@ -16,9 +16,8 @@
  */
 package org.geektimes.session.servlet.http;
 
-import javax.cache.Cache;
-import javax.cache.CacheManager;
-import javax.cache.configuration.MutableConfiguration;
+import org.geektimes.session.SessionRepository;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpSession;
@@ -30,67 +29,36 @@ import javax.servlet.http.HttpSession;
  * @since 1.0.0
  * Date : 2021-04-28
  */
-public class DistributedServletRequest extends HttpServletRequestWrapper {
+public class DistributedServletRequestWrapper extends HttpServletRequestWrapper {
 
     private final HttpServletRequest request;
 
-    private final CacheManager cacheManager;
+    private final SessionRepository sessionRepository;
 
     /**
      * Constructs a request object wrapping the given request.
      *
-     * @param request HttpServletRequest
+     * @param request           {@link HttpServletRequest}
+     * @param sessionRepository {@link SessionRepository}
      * @throws IllegalArgumentException if the request is null
      */
-    public DistributedServletRequest(HttpServletRequest request, CacheManager cacheManager) {
+    public DistributedServletRequestWrapper(HttpServletRequest request, SessionRepository sessionRepository) {
         super(request);
         this.request = request;
-        this.cacheManager = cacheManager;
+        this.sessionRepository = sessionRepository;
     }
 
     @Override
     public HttpSession getSession(boolean create) {
-        // Get Session ID from request
-        String requestedSessionId = request.getRequestedSessionId();
 
         HttpSession session = super.getSession(create);
 
         if (session != null) {
-            SessionInfo sessionInfo = getSessionInfoFromCache(requestedSessionId);
-            return new DistributedHttpSession(cacheManager, session, sessionInfo);
+            return new DistributedHttpSession(request, session, sessionRepository);
         } else {
             // invalidate session
-            return null;
+            return session;
         }
-    }
-
-    /**
-     * Get the {@link SessionInfo} from cache.
-     *
-     * @param sessionId session id
-     * @return if not null, it indicates that current requested associating distributed session is present
-     * in the cache, or current new session is a new one absolutely
-     */
-    private SessionInfo getSessionInfoFromCache(String sessionId) {
-        Cache<String, SessionInfo> sessionInfoCache = getSessionInfoCache();
-        return sessionInfoCache.get(sessionId);
-    }
-
-    private Cache<String, SessionInfo> getSessionInfoCache() {
-        String cacheName = "SessionInfoCache";
-        Cache<String, SessionInfo> cache = cacheManager.getCache(cacheName, String.class, SessionInfo.class);
-        if (cache == null) {
-            MutableConfiguration<String, SessionInfo> configuration = new MutableConfiguration<>();
-            configuration.setTypes(String.class, SessionInfo.class);
-            // TODO ExpiryPolicy
-            // configuration.setExpiryPolicyFactory();
-            cache = cacheManager.createCache(cacheName, configuration);
-        }
-        return cache;
-    }
-
-    private Cache<String, Object> buildCache(HttpServletRequest request, HttpSession session) {
-        return null;
     }
 
     /**
