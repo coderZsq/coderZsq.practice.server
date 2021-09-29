@@ -124,3 +124,230 @@ for _, widget := range []interface{}{label, listBox, button1, button2} {
     }
 }
 ```
+
+### 一个 Undo 的委托重构
+
+上面这个是 Go 语中的委托和接口多态的编程方式，其实是面向对象和原型编程综合的玩法。这个玩法可不可以玩得更有意思呢？这是可以的。
+
+首先，我们先声明一个数据容器，其中有 Add()、 Delete() 和 Contains() 方法。还有一个转字符串的方法。
+
+```go
+type IntSet struct {
+    data map[int]bool
+}
+
+func NewIntSet() IntSet {
+    return IntSet{make(map[int]bool)}
+}
+
+func (set *IntSet) Add(x int) {
+    set.data[x] = true
+}
+
+func (set *IntSet) Delete(x int) {
+    delete(set.data, x)
+}
+
+func (set *IntSet) Contains(x int) bool {
+    return set.data[x]
+}
+
+func (set *IntSet) String() string { // Satisfies fmt.Stringer interface
+    if len(set.data) == 0 {
+        return "{}"
+    }
+    ints := make([]int, 0, len(set.data))
+    for i := range set.data {
+        ints = append(ints, i)
+    }
+    sort.Ints(ints)
+    parts := make([]string, 0, len(ints))
+    for _, i := range ints {
+        parts = append(parts, fmt.Sprint(i))
+    }
+    return "{" + strings.Join(parts, ",") + "}"
+}
+```
+
+我们如下使用这个数据容器：
+
+```go
+ints := NewIntSet()
+for _, i := range []int{1, 3, 5, 7} {
+    ints.Add(i)
+    fmt.Println(ints)
+}
+for _, i := range []int{1, 2, 3, 4, 5, 6, 7} {
+    fmt.Print(i, ints.Contains(i), " ")
+    ints.Delete(i)
+    fmt.Println(ints)
+}
+```
+
+这个数据容器平淡无奇，我们想给它加一个 Undo 的功能。我们可以这样来：
+
+```go
+type UndoableIntSet struct { // Poor style
+    IntSet    // Embedding (delegation)
+    functions []func()
+}
+
+func NewUndoableIntSet() UndoableIntSet {
+    return UndoableIntSet{NewIntSet(), nil}
+}
+
+func (set *UndoableIntSet) Add(x int) { // Override
+    if !set.Contains(x) {
+        set.data[x] = true
+        set.functions = append(set.functions, func() { set.Delete(x) })
+    } else {
+        set.functions = append(set.functions, nil)
+    }
+}
+
+func (set *UndoableIntSet) Delete(x int) { // Override
+    if set.Contains(x) {
+        delete(set.data, x)
+        set.functions = append(set.functions, func() { set.Add(x) })
+    } else {
+        set.functions = append(set.functions, nil)
+    }
+}
+
+func (set *UndoableIntSet) Undo() error {
+    if len(set.functions) == 0 {
+        return errors.New("No functions to undo")
+    }
+    index := len(set.functions) - 1
+    if function := set.functions[index]; function != nil {
+        function()
+        set.functions[index] = nil // Free closure for garbage collection
+    }
+    set.functions = set.functions[:index]
+    return nil
+}
+```
+
+于是就可以这样使用了：
+
+```go
+ints := NewUndoableIntSet()
+for _, i := range []int{1, 3, 5, 7} {
+    ints.Add(i)
+    fmt.Println(ints)
+}
+for _, i := range []int{1, 2, 3, 4, 5, 6, 7} {
+    fmt.Println(i, ints.Contains(i), " ")
+    ints.Delete(i)
+    fmt.Println(ints)
+}
+fmt.Println()
+for {
+    if err := ints.Undo(); err != nil {
+        break
+    }
+    fmt.Println(ints)
+}
+```
+
+但是，需要注意的是，我们用了一个新的 UndoableIntSet 几乎重写了所有的 IntSet 和 “写” 相关的方法，这样就可以把操作记录下来，然后 Undo 了。
+
+但是，可能别的类也需要 Undo 的功能，我是不是要重写所有的需要这个功能的类啊？这样的代码类似，就是因为数据容器不一样，我就要去重写它们，这太二了。
+
+我们能不能利用前面学到的泛型编程、函数式编程、IoC 等范式来把这个事干得好一些呢？当然是可以的。
+
+如下所示：
+
+- 我们先声明一个 Undo[] 的函数数组（其实是一个栈）；
+- 并实现一个通用 Add()。其需要一个函数指针，并把这个函数指针存放到 Undo[] 函数数组中。
+- 在 Undo() 的函数中，我们会遍历 Undo[]函数数组，并执行之，执行完后就弹栈。
+
+```go
+type Undo []func()
+
+func (undo *Undo) Add(function func()) {
+    *undo = append(*undo, function)
+}
+
+func (undo *Undo) Undo() error {
+    functions := *undo
+    if len(functions) == 0 {
+        return errors.New("No functions to undo")
+    }
+    index := len(functions) - 1
+    if function := functions[index]; function != nil {
+        function()
+        functions[index] = nil // Free closure for garbage collection
+    }
+    *undo = functions[:index]
+    return nil
+}
+
+```
+
+那么我们的 IntSet 就可以改写成如下的形式：
+
+```go
+type IntSet struct {
+    data map[int]bool
+    undo Undo
+}
+
+func NewIntSet() IntSet {
+    return IntSet{data: make(map[int]bool)}
+}
+```
+
+然后在其中的 Add 和 Delete 中实现 Undo 操作。
+
+- Add 操作时加入 Delete 操作的 Undo。
+- Delete 操作时加入 Add 操作的 Undo。
+
+```go
+
+func (set *IntSet) Add(x int) {
+    if !set.Contains(x) {
+        set.data[x] = true
+        set.undo.Add(func() { set.Delete(x) })
+    } else {
+        set.undo.Add(nil)
+    }
+}
+
+func (set *IntSet) Delete(x int) {
+    if set.Contains(x) {
+        delete(set.data, x)
+        set.undo.Add(func() { set.Add(x) })
+    } else {
+        set.undo.Add(nil)
+    }
+}
+
+func (set *IntSet) Undo() error {
+    return set.undo.Undo()
+}
+
+func (set *IntSet) Contains(x int) bool {
+    return set.data[x]
+}
+```
+
+我们再次看到，Go 语言的 Undo 接口把 Undo 的流程给抽象出来，而要怎么 Undo 的事交给了业务代码来维护（通过注册一个 Undo 的方法）。这样在 Undo 的时候，就可以回调这个方法来做与业务相关的 Undo 操作了。
+
+### 小结
+
+这是不是和最一开始的 C++ 的泛型编程很像？也和 map、reduce、filter 这样的只关心控制流程，不关心业务逻辑的做法很像？而且，一开始用一个 UndoableIntSet 来包装 IntSet 类，到反过来在 IntSet 里依赖 Undo 类，这就是控制反转 IoC。
+
+以下是《编程范式游记》系列文章的目录，方便你了解这一系列内容的全貌。这一系列文章中代码量很大，很难用音频体现出来，所以没有录制音频，还望谅解。
+
+- 01 | 编程范式游记：起源
+- 02 | 编程范式游记：泛型编程
+- 03 | 编程范式游记：类型系统和泛型的本质
+- 04 | 编程范式游记：函数式编程
+- 05 | 编程范式游记：修饰器模式
+- 06 | 编程范式游记：面向对象编程
+- 07 | 编程范式游记：基于原型的编程范式
+- 08 | 编程范式游记：Go 语言的委托模式
+- 09 | 编程范式游记：编程的本质
+- 10 | 编程范式游记：逻辑编程范式
+- 11 | 编程范式游记：程序世界里的编程范式
