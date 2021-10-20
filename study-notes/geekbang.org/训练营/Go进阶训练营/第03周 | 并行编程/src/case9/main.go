@@ -6,12 +6,23 @@ import (
 	"net/http"
 )
 
+type serverHandler struct {
+}
+
+func (sh *serverHandler) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
+	fmt.Fprintln(resp, "Hello, QCon!")
+}
+
+func NewServerHandler() http.Handler {
+	return &serverHandler{}
+}
+
 func serveApp(stop <-chan struct{}) error {
-	return nil
+	return serve("0.0.0.0:8080", NewServerHandler(), stop)
 }
 
 func serveDebug(stop <-chan struct{}) error {
-	return nil
+	return serve("127.0.0.1:8001", NewServerHandler(), stop)
 }
 
 func serve(addr string, handler http.Handler, stop <-chan struct{}) error {
@@ -37,7 +48,7 @@ func main() {
 	go func() {
 		done <- serveApp(stop)
 	}()
-	
+
 	var stopped bool
 	for i := 0; i < cap(done); i++ {
 		if err := <-done; err != nil {
