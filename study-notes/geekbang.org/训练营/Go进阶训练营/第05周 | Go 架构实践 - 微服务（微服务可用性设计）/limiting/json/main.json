@@ -1,0 +1,10 @@
+{
+  "error": {
+    "code": 401,
+    "message": "Request had invalid credentials.",
+    "status": "UNAUTHENTICATED",
+    "details": [{
+      "@type": "type.googleapis.com/google.rpc.RetryInfo"
+    }]
+  }
+}
