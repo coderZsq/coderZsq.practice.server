@@ -288,3 +288,614 @@ $ sudo mkdir -p ${IAM_LOG_DIR} # 创建 IAM 日志文件存放目录
 $ cd $IAM_ROOT
 $ ./scripts/install/install.sh iam::install::install_cfssl
 ```
+
+2. 创建配置文件。
+
+CA 配置文件是用来配置根证书的使用场景 (profile) 和具体参数 (usage、过期时间、服务端认证、客户端认证、加密等)，可以在签名其它证书时用来指定特定场景：
+
+```shell
+$ cd $IAM_ROOT
+$ tee ca-config.json << EOF
+{
+  "signing": {
+    "default": {
+      "expiry": "87600h"
+    },
+    "profiles": {
+      "iam": {
+        "usages": [
+          "signing",
+          "key encipherment",
+          "server auth",
+          "client auth"
+        ],
+        "expiry": "876000h"
+      }
+    }
+  }
+}
+EOF
+```
+
+上面的 JSON 配置中，有一些字段解释如下。
+
+- signing：表示该证书可用于签名其它证书（生成的 ca.pem 证书中 CA=TRUE）。
+- server auth：表示 client 可以用该证书对 server 提供的证书进行验证。
+- client auth：表示 server 可以用该证书对 client 提供的证书进行验证。
+- expiry：876000h，证书有效期设置为 100 年。
+
+3. 创建证书签名请求文件。
+
+我们创建用来生成 CA 证书签名请求（CSR）的 JSON 配置文件：
+
+```shell
+$ cd $IAM_ROOT
+$ tee ca-csr.json << EOF
+{
+  "CN": "iam-ca",
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "CN",
+      "ST": "BeiJing",
+      "L": "BeiJing",
+      "O": "marmotedu",
+      "OU": "iam"
+    }
+  ],
+  "ca": {
+    "expiry": "876000h"
+  }
+}
+EOF
+```
+
+上面的 JSON 配置中，有一些字段解释如下。
+
+- C：Country，国家。
+- ST：State，省份。
+- L：Locality (L) or City，城市。
+- CN：Common Name，iam-apiserver 从证书中提取该字段作为请求的用户名 (User Name) ，浏览器使用该字段验证网站是否合法。
+- O：Organization，iam-apiserver 从证书中提取该字段作为请求用户所属的组 (Group)。
+- OU：Company division (or Organization Unit – OU)，部门 / 单位。
+
+除此之外，还有两点需要我们注意。
+
+- 不同证书 csr 文件的 CN、C、ST、L、O、OU 组合必须不同，否则可能出现 PEER'S CERTIFICATE HAS AN INVALID SIGNATURE 错误。
+- 后续创建证书的 csr 文件时，CN、OU 都不相同（C、ST、L、O 相同），以达到区分的目的。
+
+4. 创建 CA 证书和私钥
+
+首先，我们通过 cfssl gencert 命令来创建：
+
+```shell
+$ cd $IAM_ROOT
+$ source scripts/install/environment.sh
+$ cfssl gencert -initca ca-csr.json | cfssljson -bare ca
+$ ls ca*
+ca-config.json  ca.csr  ca-csr.json  ca-key.pem  ca.pem
+$ sudo mv ca* ${IAM_CONFIG_DIR}/cert # 需要将证书文件拷贝到指定文件夹下（分发证书），方便各组件引用
+```
+
+上述命令会创建运行 CA 所必需的文件 ca-key.pem（私钥）和 ca.pem（证书），还会生成 ca.csr（证书签名请求），用于交叉签名或重新签名。
+
+创建完之后，我们可以通过 cfssl certinfo 命名查看 cert 和 csr 信息：
+
+```shell
+$ cfssl certinfo -cert ${IAM_CONFIG_DIR}/cert/ca.pem # 查看 cert(证书信息)
+$ cfssl certinfo -csr ${IAM_CONFIG_DIR}/cert/ca.csr # 查看 CSR(证书签名请求)信息
+```
+
+### 第 5 步，配置 hosts。
+
+iam 通过域名访问 API 接口，因为这些域名没有注册过，还不能在互联网上解析，所以需要配置 hosts，具体的操作如下：
+
+```shell
+$ sudo tee -a /etc/hosts <<EOF
+127.0.0.1 iam.api.marmotedu.com
+127.0.0.1 iam.authz.marmotedu.com
+EOF
+```
+
+### 安装和配置 iam-apiserver
+
+完成了准备工作之后，我们就可以安装 IAM 系统的各个组件了。首先我们通过以下 3 步来安装 iam-apiserver 服务。
+
+### 第 1 步，创建 iam-apiserver 证书和私钥。
+
+其它服务为了安全都是通过 HTTPS 协议访问 iam-apiserver，所以我们要先创建 iam-apiserver 证书和私钥。
+
+1. 创建证书签名请求：
+
+```shell
+$ cd $IAM_ROOT
+$ source scripts/install/environment.sh
+$ tee iam-apiserver-csr.json <<EOF
+{
+  "CN": "iam-apiserver",
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "CN",
+      "ST": "BeiJing",
+      "L": "BeiJing",
+      "O": "marmotedu",
+      "OU": "iam-apiserver"
+    }
+  ],
+  "hosts": [
+    "127.0.0.1",
+    "localhost",
+    "iam.api.marmotedu.com"
+  ]
+}
+EOF
+```
+
+代码中的 hosts 字段是用来指定授权使用该证书的 IP 和域名列表，上面的 hosts 列出了 iam-apiserver 服务的 IP 和域名。
+
+2. 生成证书和私钥：
+
+```shell
+$ cfssl gencert -ca=${IAM_CONFIG_DIR}/cert/ca.pem \
+  -ca-key=${IAM_CONFIG_DIR}/cert/ca-key.pem \
+  -config=${IAM_CONFIG_DIR}/cert/ca-config.json \
+  -profile=iam iam-apiserver-csr.json | cfssljson -bare iam-apiserver
+$ sudo mv iam-apiserver*pem ${IAM_CONFIG_DIR}/cert # 将生成的证书和私钥文件拷贝到配置文件目录
+```
+
+### 第 2 步，安装并运行 iam-apiserver。
+
+iam-apiserver 作为 iam 系统的核心组件，需要第一个安装。
+
+1. 安装 iam-apiserver 可执行程序：
+
+```shell
+$ cd $IAM_ROOT
+$ source scripts/install/environment.sh
+$ make build BINS=iam-apiserver
+$ sudo cp _output/platforms/linux/amd64/iam-apiserver ${IAM_INSTALL_DIR}/bin
+```
+
+2. 生成并安装 iam-apiserver 的配置文件（iam-apiserver.yaml）：
+
+```shell
+$ ./scripts/genconfig.sh scripts/install/environment.sh configs/iam-apiserver.yaml > iam-apiserver.yaml
+$ sudo mv iam-apiserver.yaml ${IAM_CONFIG_DIR}
+```
+
+3. 创建并安装 iam-apiserver systemd unit 文件：
+
+```shell
+$ ./scripts/genconfig.sh scripts/install/environment.sh init/iam-apiserver.service > iam-apiserver.service
+$ sudo mv iam-apiserver.service /etc/systemd/system/
+```
+
+4. 启动 iam-apiserver 服务：
+
+```shell
+$ sudo systemctl daemon-reload
+$ sudo systemctl enable iam-apiserver
+$ sudo systemctl restart iam-apiserver
+$ systemctl status iam-apiserver # 查看 iam-apiserver 运行状态，如果输出中包含 active (running)字样说明 iam-apiserver 成功启动
+```
+
+### 第 3 步，测试 iam-apiserver 是否成功安装。
+
+测试 iam-apiserver 主要是测试 RESTful 资源的 CURD：用户 CURD、密钥 CURD、授权策略 CURD。
+
+首先，我们需要获取访问 iam-apiserver 的 Token，请求如下 API 访问：
+
+```shell
+$ curl -s -XPOST -H'Content-Type: application/json' -d'{"username":"admin","password":"Admin@2021"}' http://127.0.0.1:8080/login | jq -r .token
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJpYW0uYXBpLm1hcm1vdGVkdS5jb20iLCJleHAiOjE2MTc5MjI4OTQsImlkZW50aXR5IjoiYWRtaW4iLCJpc3MiOiJpYW0tYXBpc2VydmVyIiwib3JpZ19pYXQiOjE2MTc4MzY0OTQsInN1YiI6ImFkbWluIn0.9qztVJseQ9XwqOFVUHNOtG96-KUovndz0SSr_QBsxAA
+```
+
+```
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJpYW0uYXBpLm1hcm1vdGVkdS5jb20iLCJleHAiOjE2MzU0MDU4NTUsImlkZW50aXR5IjoiYWRtaW4iLCJpc3MiOiJpYW0tYXBpc2VydmVyIiwib3JpZ19pYXQiOjE2MzUzMTk0NTUsInN1YiI6ImFkbWluIn0.PrS6Dk4EjUgPkZihMtLdCH-xCHhF6ItjIb7V3LXGSyY
+```
+
+代码中下面的 HTTP 请求通过-H'Authorization: Bearer ' 指定认证头信息，将上面请求的 Token 替换 。
+
+### 用户 CURD
+
+创建用户、列出用户、获取用户详细信息、修改用户、删除单个用户、批量删除用户，请求方法如下：
+
+```shell
+# 创建用户
+$ curl -s -XPOST -H'Content-Type: application/json' -H'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJpYW0uYXBpLm1hcm1vdGVkdS5jb20iLCJleHAiOjE2MTc5MjI4OTQsImlkZW50aXR5IjoiYWRtaW4iLCJpc3MiOiJpYW0tYXBpc2VydmVyIiwib3JpZ19pYXQiOjE2MTc4MzY0OTQsInN1YiI6ImFkbWluIn0.9qztVJseQ9XwqOFVUHNOtG96-KUovndz0SSr_QBsxAA' -d'{"password":"User@2021","metadata":{"name":"colin"},"nickname":"colin","email":"colin@foxmail.com","phone":"1812884xxxx"}' http://127.0.0.1:8080/v1/users
+
+# 列出用户
+$ curl -s -XGET -H'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJpYW0uYXBpLm1hcm1vdGVkdS5jb20iLCJleHAiOjE2MTc5MjI4OTQsImlkZW50aXR5IjoiYWRtaW4iLCJpc3MiOiJpYW0tYXBpc2VydmVyIiwib3JpZ19pYXQiOjE2MTc4MzY0OTQsInN1YiI6ImFkbWluIn0.9qztVJseQ9XwqOFVUHNOtG96-KUovndz0SSr_QBsxAA' 'http://127.0.0.1:8080/v1/users?offset=0&limit=10'
+
+# 获取 colin 用户的详细信息
+$ curl -s -XGET -H'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJpYW0uYXBpLm1hcm1vdGVkdS5jb20iLCJleHAiOjE2MTc5MjI4OTQsImlkZW50aXR5IjoiYWRtaW4iLCJpc3MiOiJpYW0tYXBpc2VydmVyIiwib3JpZ19pYXQiOjE2MTc4MzY0OTQsInN1YiI6ImFkbWluIn0.9qztVJseQ9XwqOFVUHNOtG96-KUovndz0SSr_QBsxAA' http://127.0.0.1:8080/v1/users/colin
+
+# 修改 colin 用户
+$ curl -s -XPUT -H'Content-Type: application/json' -H'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJpYW0uYXBpLm1hcm1vdGVkdS5jb20iLCJleHAiOjE2MTc5MjI4OTQsImlkZW50aXR5IjoiYWRtaW4iLCJpc3MiOiJpYW0tYXBpc2VydmVyIiwib3JpZ19pYXQiOjE2MTc4MzY0OTQsInN1YiI6ImFkbWluIn0.9qztVJseQ9XwqOFVUHNOtG96-KUovndz0SSr_QBsxAA' -d'{"nickname":"colin","email":"colin_modified@foxmail.com","phone":"1812884xxxx"}' http://127.0.0.1:8080/v1/users/colin
+
+# 删除 colin 用户
+$ curl -s -XDELETE -H'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJpYW0uYXBpLm1hcm1vdGVkdS5jb20iLCJleHAiOjE2MTc5MjI4OTQsImlkZW50aXR5IjoiYWRtaW4iLCJpc3MiOiJpYW0tYXBpc2VydmVyIiwib3JpZ19pYXQiOjE2MTc4MzY0OTQsInN1YiI6ImFkbWluIn0.9qztVJseQ9XwqOFVUHNOtG96-KUovndz0SSr_QBsxAA' http://127.0.0.1:8080/v1/users/colin
+
+# 批量删除用户
+$ curl -s -XDELETE -H'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJpYW0uYXBpLm1hcm1vdGVkdS5jb20iLCJleHAiOjE2MTc5MjI4OTQsImlkZW50aXR5IjoiYWRtaW4iLCJpc3MiOiJpYW0tYXBpc2VydmVyIiwib3JpZ19pYXQiOjE2MTc4MzY0OTQsInN1YiI6ImFkbWluIn0.9qztVJseQ9XwqOFVUHNOtG96-KUovndz0SSr_QBsxAA' 'http://127.0.0.1:8080/v1/users?name=colin&name=mark&name=john'
+```
+
+### 密钥 CURD
+
+创建密钥、列出密钥、获取密钥详细信息、修改密钥、删除密钥请求方法如下：
+
+```shell
+# 创建 secret0 密钥
+$ curl -s -XPOST -H'Content-Type: application/json' -H'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJpYW0uYXBpLm1hcm1vdGVkdS5jb20iLCJleHAiOjE2MTc5MjI4OTQsImlkZW50aXR5IjoiYWRtaW4iLCJpc3MiOiJpYW0tYXBpc2VydmVyIiwib3JpZ19pYXQiOjE2MTc4MzY0OTQsInN1YiI6ImFkbWluIn0.9qztVJseQ9XwqOFVUHNOtG96-KUovndz0SSr_QBsxAA' -d'{"metadata":{"name":"secret0"},"expires":0,"description":"admin secret"}' http://127.0.0.1:8080/v1/secrets
+
+# 列出所有密钥
+$ curl -s -XGET -H'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJpYW0uYXBpLm1hcm1vdGVkdS5jb20iLCJleHAiOjE2MTc5MjI4OTQsImlkZW50aXR5IjoiYWRtaW4iLCJpc3MiOiJpYW0tYXBpc2VydmVyIiwib3JpZ19pYXQiOjE2MTc4MzY0OTQsInN1YiI6ImFkbWluIn0.9qztVJseQ9XwqOFVUHNOtG96-KUovndz0SSr_QBsxAA' http://127.0.0.1:8080/v1/secrets
+
+# 获取 secret0 密钥的详细信息
+$ curl -s -XGET -H'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJpYW0uYXBpLm1hcm1vdGVkdS5jb20iLCJleHAiOjE2MTc5MjI4OTQsImlkZW50aXR5IjoiYWRtaW4iLCJpc3MiOiJpYW0tYXBpc2VydmVyIiwib3JpZ19pYXQiOjE2MTc4MzY0OTQsInN1YiI6ImFkbWluIn0.9qztVJseQ9XwqOFVUHNOtG96-KUovndz0SSr_QBsxAA' http://127.0.0.1:8080/v1/secrets/secret0
+
+# 修改 secret0 密钥
+$ curl -s -XPUT -H'Content-Type: application/json' -H'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJpYW0uYXBpLm1hcm1vdGVkdS5jb20iLCJleHAiOjE2MTc5MjI4OTQsImlkZW50aXR5IjoiYWRtaW4iLCJpc3MiOiJpYW0tYXBpc2VydmVyIiwib3JpZ19pYXQiOjE2MTc4MzY0OTQsInN1YiI6ImFkbWluIn0.9qztVJseQ9XwqOFVUHNOtG96-KUovndz0SSr_QBsxAA' -d'{"metadata":{"name":"secret0"},"expires":0,"description":"admin secret(modified)"}' http://127.0.0.1:8080/v1/secrets/secret0
+
+# 删除 secret0 密钥
+$ curl -s -XDELETE -H'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJpYW0uYXBpLm1hcm1vdGVkdS5jb20iLCJleHAiOjE2MTc5MjI4OTQsImlkZW50aXR5IjoiYWRtaW4iLCJpc3MiOiJpYW0tYXBpc2VydmVyIiwib3JpZ19pYXQiOjE2MTc4MzY0OTQsInN1YiI6ImFkbWluIn0.9qztVJseQ9XwqOFVUHNOtG96-KUovndz0SSr_QBsxAA' http://127.0.0.1:8080/v1/secrets/secret0
+```
+
+这里我们要注意，因为密钥属于重要资源，被删除会导致所有的访问请求失败，所以密钥不支持批量删除。
+
+### 授权策略 CURD
+
+创建策略、列出策略、获取策略详细信息、修改策略、删除策略请求方法如下：
+
+```shell
+# 创建策略
+$ curl -s -XPOST -H'Content-Type: application/json' -H'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJpYW0uYXBpLm1hcm1vdGVkdS5jb20iLCJleHAiOjE2MTc5MjI4OTQsImlkZW50aXR5IjoiYWRtaW4iLCJpc3MiOiJpYW0tYXBpc2VydmVyIiwib3JpZ19pYXQiOjE2MTc4MzY0OTQsInN1YiI6ImFkbWluIn0.9qztVJseQ9XwqOFVUHNOtG96-KUovndz0SSr_QBsxAA' -d'{"metadata":{"name":"policy0"},"policy":{"description":"One policy to rule them all.","subjects":["users:<peter|ken>","users:maria","groups:admins"],"actions":["delete","<create|update>"],"effect":"allow","resources":["resources:articles:<.*>","resources:printer"],"conditions":{"remoteIPAddress":{"type":"CIDRCondition","options":{"cidr":"192.168.0.1/16"}}}}}' http://127.0.0.1:8080/v1/policies
+
+# 列出所有策略
+$ curl -s -XGET -H'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJpYW0uYXBpLm1hcm1vdGVkdS5jb20iLCJleHAiOjE2MTc5MjI4OTQsImlkZW50aXR5IjoiYWRtaW4iLCJpc3MiOiJpYW0tYXBpc2VydmVyIiwib3JpZ19pYXQiOjE2MTc4MzY0OTQsInN1YiI6ImFkbWluIn0.9qztVJseQ9XwqOFVUHNOtG96-KUovndz0SSr_QBsxAA' http://127.0.0.1:8080/v1/policies
+
+# 获取 policy0 策略的详细信息
+$ curl -s -XGET -H'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJpYW0uYXBpLm1hcm1vdGVkdS5jb20iLCJleHAiOjE2MTc5MjI4OTQsImlkZW50aXR5IjoiYWRtaW4iLCJpc3MiOiJpYW0tYXBpc2VydmVyIiwib3JpZ19pYXQiOjE2MTc4MzY0OTQsInN1YiI6ImFkbWluIn0.9qztVJseQ9XwqOFVUHNOtG96-KUovndz0SSr_QBsxAA' http://127.0.0.1:8080/v1/policies/policy0
+
+# 修改 policy0 策略
+$ curl -s -XPUT -H'Content-Type: application/json' -H'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJpYW0uYXBpLm1hcm1vdGVkdS5jb20iLCJleHAiOjE2MTc5MjI4OTQsImlkZW50aXR5IjoiYWRtaW4iLCJpc3MiOiJpYW0tYXBpc2VydmVyIiwib3JpZ19pYXQiOjE2MTc4MzY0OTQsInN1YiI6ImFkbWluIn0.9qztVJseQ9XwqOFVUHNOtG96-KUovndz0SSr_QBsxAA' -d'{"metadata":{"name":"policy0"},"policy":{"description":"One policy to rule them all(modified).","subjects":["users:<peter|ken>","users:maria","groups:admins"],"actions":["delete","<create|update>"],"effect":"allow","resources":["resources:articles:<.*>","resources:printer"],"conditions":{"remoteIPAddress":{"type":"CIDRCondition","options":{"cidr":"192.168.0.1/16"}}}}}' http://127.0.0.1:8080/v1/policies/policy0
+
+# 删除 policy0 策略
+$ curl -s -XDELETE -H'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJpYW0uYXBpLm1hcm1vdGVkdS5jb20iLCJleHAiOjE2MTc5MjI4OTQsImlkZW50aXR5IjoiYWRtaW4iLCJpc3MiOiJpYW0tYXBpc2VydmVyIiwib3JpZ19pYXQiOjE2MTc4MzY0OTQsInN1YiI6ImFkbWluIn0.9qztVJseQ9XwqOFVUHNOtG96-KUovndz0SSr_QBsxAA' http://127.0.0.1:8080/v1/policies/policy0
+
+```
+
+### 安装 iamctl
+
+上面，我们安装了 iam 系统的 API 服务。但是想要访问 iam 服务，我们还需要安装客户端工具 iamctl。具体来说，我们可以通过 3 步完成 iamctl 的安装和配置。
+
+### 第 1 步，创建 iamctl 证书和私钥。
+
+iamctl 使用 https 协议与 iam-apiserver 进行安全通信，iam-apiserver 对 iamctl 请求包含的证书进行认证和授权。iamctl 后续用于 iam 系统访问和管理，所以这里创建具有最高权限的 admin 证书。
+
+1. 创建证书签名请求。
+
+下面创建的证书只会被 iamctl 当作 client 证书使用，所以 hosts 字段为空。代码如下：
+
+```shell
+$ cd $IAM_ROOT
+$ source scripts/install/environment.sh
+$ cat > admin-csr.json <<EOF
+{
+  "CN": "admin",
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "CN",
+      "ST": "BeiJing",
+      "L": "BeiJing",
+      "O": "marmotedu",
+      "OU": "iamctl"
+    }
+  ],
+  "hosts": []
+}
+EOF
+```
+
+2. 生成证书和私钥：
+
+```shell
+$ cfssl gencert -ca=${IAM_CONFIG_DIR}/cert/ca.pem \
+  -ca-key=${IAM_CONFIG_DIR}/cert/ca-key.pem \
+  -config=${IAM_CONFIG_DIR}/cert/ca-config.json \
+  -profile=iam admin-csr.json | cfssljson -bare admin
+$ mkdir -p $(dirname ${CONFIG_USER_CLIENT_CERTIFICATE}) $(dirname ${CONFIG_USER_CLIENT_KEY}) # 创建客户端证书存放的目录
+$ mv admin.pem ${CONFIG_USER_CLIENT_CERTIFICATE} # 安装 TLS 的客户端证书
+$ mv admin-key.pem ${CONFIG_USER_CLIENT_KEY} # 安装 TLS 的客户端私钥文件
+```
+
+### 第 2 步，安装 iamctl。
+
+iamctl 是 IAM 系统的客户端工具，其安装位置和 iam-apiserver、iam-authz-server、iam-pump 位置不同，为了能够在 shell 下直接运行 iamctl 命令，我们需要将 iamctl 安装到$HOME/bin 下，同时将 iamctl 的配置存放在默认加载的目录下：$HOME/.iam。主要分 2 步进行。
+
+1. 安装 iamctl 可执行程序：
+
+```shell
+$ cd $IAM_ROOT
+$ source scripts/install/environment.sh
+$ make build BINS=iamctl
+$ cp _output/platforms/linux/amd64/iamctl $HOME/bin
+```
+
+2. 生成并安装 iamctl 的配置文件（config）：
+
+```shell
+$ ./scripts/genconfig.sh scripts/install/environment.sh configs/iamctl.yaml> iamctl.yaml
+$ mkdir -p $HOME/.iam
+$ mv config $HOME/.iam
+```
+
+因为 iamctl 是一个客户端工具，可能会在多台机器上运行。为了简化部署 iamctl 工具的复杂度，我们可以把 config 配置文件中跟 CA 认证相关的 CA 文件内容用 base64 加密后，放置在 config 配置文件中。具体的思路就是把 config 文件中的配置项 client-certificate、client-key、certificate-authority 分别用如下配置项替换 client-certificate-data、client-key-data、certificate-authority-data。这些配置项的值可以通过对 CA 文件使用 base64 加密获得。
+
+假如，certificate-authority 值为/etc/iam/cert/ca.pem，则 certificate-authority-data 的值为 cat "/etc/iam/cert/ca.pem" | base64 | tr -d '\r\n'，其它-data 变量的值类似。这样当我们再部署 iamctl 工具时，只需要拷贝 iamctl 和配置文件，而不用再拷贝 CA 文件了。
+
+### 第 3 步，测试 iamctl 是否成功安装。
+
+执行 iamctl user list 可以列出预创建的 admin 用户，如下图所示：
+
+![](https://static001.geekbang.org/resource/image/3f/17/3f24e2f6ddd12aae99cd62de5b037d17.png?wh=1920*152)
+
+### 安装和配置 iam-authz-server
+
+接下来，我们需要安装另外一个核心组件：iam-authz-server，可以通过以下 3 步来安装。
+
+### 第 1 步，创建 iam-authz-server 证书和私钥。
+
+1. 创建证书签名请求：
+
+```shell
+$ cd $IAM_ROOT
+$ source scripts/install/environment.sh
+$ tee iam-authz-server-csr.json <<EOF
+{
+  "CN": "iam-authz-server",
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "CN",
+      "ST": "BeiJing",
+      "L": "BeiJing",
+      "O": "marmotedu",
+      "OU": "iam-authz-server"
+    }
+  ],
+  "hosts": [
+    "127.0.0.1",
+    "localhost",
+    "iam.authz.marmotedu.com"
+  ]
+}
+EOF
+```
+
+代码中的 hosts 字段指定授权使用该证书的 IP 和域名列表，上面的 hosts 列出了 iam-authz-server 服务的 IP 和域名。
+
+2. 生成证书和私钥：
+
+```shell
+$ cfssl gencert -ca=${IAM_CONFIG_DIR}/cert/ca.pem \
+  -ca-key=${IAM_CONFIG_DIR}/cert/ca-key.pem \
+  -config=${IAM_CONFIG_DIR}/cert/ca-config.json \
+  -profile=iam iam-authz-server-csr.json | cfssljson -bare iam-authz-server
+$ sudo mv iam-authz-server*pem ${IAM_CONFIG_DIR}/cert # 将生成的证书和私钥文件拷贝到配置文件目录
+```
+
+### 第 2 步，安装并运行 iam-authz-server。
+
+安装 iam-authz-server 步骤和安装 iam-apiserver 步骤基本一样，也需要 4 步。
+
+1. 安装 iam-authz-server 可执行程序：
+
+```shell
+$ cd $IAM_ROOT
+$ source scripts/install/environment.sh
+$ make build BINS=iam-authz-server
+$ sudo cp _output/platforms/linux/amd64/iam-authz-server ${IAM_INSTALL_DIR}/bin
+```
+
+2. 生成并安装 iam-authz-server 的配置文件（iam-authz-server.yaml）：
+
+```shell
+$ ./scripts/genconfig.sh scripts/install/environment.sh configs/iam-authz-server.yaml > iam-authz-server.yaml
+$ sudo mv iam-authz-server.yaml ${IAM_CONFIG_DIR}
+```
+
+3. 创建并安装 iam-authz-server systemd unit 文件：
+
+```shell
+$ ./scripts/genconfig.sh scripts/install/environment.sh init/iam-authz-server.service > iam-authz-server.service
+$ sudo mv iam-authz-server.service /etc/systemd/system/
+```
+
+4. 启动 iam-authz-server 服务：
+
+```shell
+$ sudo systemctl daemon-reload
+$ sudo systemctl enable iam-authz-server
+$ sudo systemctl restart iam-authz-server
+$ systemctl status iam-authz-server # 查看 iam-authz-server 运行状态，如果输出中包含 active (running)字样说明 iam-authz-server 成功启动。
+```
+
+### 第 3 步，测试 iam-authz-server 是否成功安装。
+
+1. 重新登陆系统，并获取访问令牌
+
+```shell
+$ token=`curl -s -XPOST -H'Content-Type: application/json' -d'{"username":"admin","password":"Admin@2021"}' http://127.0.0.1:8080/login | jq -r .token`
+```
+
+2. 创建授权策略
+
+```shell
+$ curl -s -XPOST -H"Content-Type: application/json" -H"Authorization: Bearer $token" -d'{"metadata":{"name":"authztest"},"policy":{"description":"One policy to rule them all.","subjects":["users:<peter|ken>","users:maria","groups:admins"],"actions":["delete","<create|update>"],"effect":"allow","resources":["resources:articles:<.*>","resources:printer"],"conditions":{"remoteIPAddress":{"type":"CIDRCondition","options":{"cidr":"192.168.0.1/16"}}}}}' http://127.0.0.1:8080/v1/policies
+```
+
+3. 创建密钥，并从命令的输出中提取 secretID 和 secretKey
+
+```shell
+$ curl -s -XPOST -H"Content-Type: application/json" -H"Authorization: Bearer $token" -d'{"metadata":{"name":"authztest"},"expires":0,"description":"admin secret"}' http://127.0.0.1:8080/v1/secrets
+{"metadata":{"id":23,"name":"authztest","createdAt":"2021-04-08T07:24:50.071671422+08:00","updatedAt":"2021-04-08T07:24:50.071671422+08:00"},"username":"admin","secretID":"ZuxvXNfG08BdEMqkTaP41L2DLArlE6Jpqoox","secretKey":"7Sfa5EfAPIwcTLGCfSvqLf0zZGCjF3l8","expires":0,"description":"admin secret"}
+```
+
+4. 生成访问 iam-authz-server 的 token
+
+iamctl 提供了 jwt sigin 命令，可以根据 secretID 和 secretKey 签发 Token，方便你使用。
+
+```shell
+$ iamctl jwt sign ZuxvXNfG08BdEMqkTaP41L2DLArlE6Jpqoox 7Sfa5EfAPIwcTLGCfSvqLf0zZGCjF3l8 # iamctl jwt sign $secretID $secretKey
+eyJhbGciOiJIUzI1NiIsImtpZCI6Ilp1eHZYTmZHMDhCZEVNcWtUYVA0MUwyRExBcmxFNkpwcW9veCIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJpYW0uYXV0aHoubWFybW90ZWR1LmNvbSIsImV4cCI6MTYxNzg0NTE5NSwiaWF0IjoxNjE3ODM3OTk1LCJpc3MiOiJpYW1jdGwiLCJuYmYiOjE2MTc4Mzc5OTV9.za9yLM7lHVabPAlVQLCqXEaf8sTU6sodAsMXnmpXjMQ
+```
+
+如果你的开发过程中有些重复性的操作，为了方便使用，也可以将这些操作以 iamctl 子命令的方式集成到 iamctl 命令行中。
+
+5. 测试资源授权是否通过
+
+我们可以通过请求 /v1/authz 来完成资源授权：
+
+```shell
+$ curl -s -XPOST -H'Content-Type: application/json' -H'Authorization: Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6Ilp1eHZYTmZHMDhCZEVNcWtUYVA0MUwyRExBcmxFNkpwcW9veCIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJpYW0uYXV0aHoubWFybW90ZWR1LmNvbSIsImV4cCI6MTYxNzg0NTE5NSwiaWF0IjoxNjE3ODM3OTk1LCJpc3MiOiJpYW1jdGwiLCJuYmYiOjE2MTc4Mzc5OTV9.za9yLM7lHVabPAlVQLCqXEaf8sTU6sodAsMXnmpXjMQ' -d'{"subject":"users:maria","action":"delete","resource":"resources:articles:ladon-introduction","context":{"remoteIPAddress":"192.168.0.5"}}' http://127.0.0.1:9090/v1/authz
+{"allowed":true}
+```
+
+如果授权通过会返回：{"allowed":true} 。
+
+### 安装和配置 iam-pump
+
+安装 iam-pump 步骤和安装 iam-apiserver、iam-authz-server 步骤基本一样，具体步骤如下。
+
+### 第 1 步，安装 iam-pump 可执行程序。
+
+```shell
+$ cd $IAM_ROOT
+$ source scripts/install/environment.sh
+$ make build BINS=iam-pump
+$ sudo cp _output/platforms/linux/amd64/iam-pump ${IAM_INSTALL_DIR}/bin
+```
+
+### 第 2 步，生成并安装 iam-pump 的配置文件（iam-pump.yaml）。
+
+```shell
+$ ./scripts/genconfig.sh scripts/install/environment.sh configs/iam-pump.yaml > iam-pump.yaml
+$ sudo mv iam-pump.yaml ${IAM_CONFIG_DIR}
+```
+
+### 第 3 步，创建并安装 iam-pump systemd unit 文件。
+
+```shell
+$ ./scripts/genconfig.sh scripts/install/environment.sh init/iam-pump.service > iam-pump.service
+$ sudo mv iam-pump.service /etc/systemd/system/
+```
+
+### 第 4 步，启动 iam-pump 服务。
+
+```shell
+$ sudo systemctl daemon-reload
+$ sudo systemctl enable iam-pump
+$ sudo systemctl restart iam-pump
+$ systemctl status iam-pump # 查看 iam-pump 运行状态，如果输出中包含 active (running)字样说明 iam-pump 成功启动。
+```
+
+### 第 5 步，测试 iam-pump 是否成功安装。
+
+```shell
+$ curl http://127.0.0.1:7070/healthz
+{"status": "ok"}
+```
+
+经过上面这 5 个步骤，如果返回 {“status”: “ok”} 就说明 iam-pump 服务健康。
+
+### 安装 man 文件
+
+IAM 系统通过组合调用包：github.com/cpuguy83/go-md2man/v2/md2man 和 github.com/spf13/cobra 的相关函数生成了各个组件的 man1 文件，主要分 3 步实现。
+
+### 第 1 步，生成各个组件的 man1 文件。
+
+```shell
+$ cd $IAM_ROOT
+$ ./scripts/update-generated-docs.sh
+```
+
+### 第 2 步，安装生成的 man1 文件。
+
+```shell
+$ sudo cp docs/man/man1/* /usr/share/man/man1/
+```
+
+### 第 3 步，检查是否成功安装 man1 文件。
+
+```shell
+$ man iam-apiserver
+```
+
+执行 man iam-apiserver 命令后，会弹出 man 文档界面，如下图所示：
+
+![](https://static001.geekbang.org/resource/image/a7/37/a7415f8a7ea08302067ccc93c2cab437.png?wh=1796*423)
+
+至此，IAM 系统所有组件都已经安装成功了，你可以通过 iamctl version 查看客户端和服务端版本，代码如下：
+
+```shell
+$ iamctl version -o yaml
+clientVersion:
+  buildDate: "2021-04-08T01:56:20Z"
+  compiler: gc
+  gitCommit: 1d682b0317396347b568a3ef366c1c54b3b0186b
+  gitTreeState: dirty
+  gitVersion: v0.6.1-5-g1d682b0
+  goVersion: go1.16.2
+  platform: linux/amd64
+serverVersion:
+  buildDate: "2021-04-07T22:30:53Z"
+  compiler: gc
+  gitCommit: bde163964b8c004ebb20ca4abd8a2ac0cd1f71ad
+  gitTreeState: dirty
+  gitVersion: bde1639
+  goVersion: go1.16.2
+  platform: linux/amd64
+
+```
+
+### 总结
+
+这一讲，我带你一步一步安装了 IAM 应用，完成安装的同时，也希望能加深你对 IAM 应用的理解，并为后面的实战准备好环境。为了更清晰地展示安装流程，这里我把整个安装步骤梳理成了一张脑图，你可以看看。
+
+![](https://static001.geekbang.org/resource/image/05/ae/05de7498aaba1fddd1ae6ec3cb5b2fae.jpg?wh=2778*1741)
+
+此外，我还有一点想提醒你，我们今天讲到的所有组件设置的密码都是 iam59!z$，你一定要记住啦。
+
+### 课后练习
+
+请你试着调用 iam-apiserver 提供的 API 接口创建一个用户：xuezhang，并在该用户下创建 policy 和 secret 资源。最后调用 iam-authz-server 提供的/v1/authz 接口进行资源鉴权。如果有什么有趣的发现，记得分享出来。
+
+期待在留言区看到你的尝试，我们下一讲见！
+
+### 彩蛋：一键安装
+
+如果学完了第 02 讲，你可以直接执行如下脚本，来完成 IAM 系统的安装：
+
+```shell
+$ export LINUX_PASSWORD='iam59!z$' # 重要：这里要 export going 用户的密码
+$ version=latest && curl https://marmotedu-1254073058.cos.ap-beijing.myqcloud.com/iam-release/${version}/iam.tar.gz | tar -xz -C / tmp/
+$ cd /tmp/iam/ && ./scripts/install/install.sh iam::install::install
+
+```
+
+此外，你也可以参考 [IAM 部署指南](https://github.com/marmotedu/iam/blob/master/docs/guide/zh-CN/installation/README.md) 教程进行安装，这个安装手册可以让你在创建完普通用户后，一键部署整个 IAM 系统，包括实战环境和 IAM 服务。
