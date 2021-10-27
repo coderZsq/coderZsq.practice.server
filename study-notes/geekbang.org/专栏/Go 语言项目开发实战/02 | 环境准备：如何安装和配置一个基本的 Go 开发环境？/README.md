@@ -260,6 +260,7 @@ Vim 可以选择 NeoVim，NeoVim 是基于 Vim 的一个 fork 分支，它主要
 
 ```shell
 $ sudo pip3 install pynvim
+$ sudo yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
 $ sudo yum -y install neovim
 ```
 
