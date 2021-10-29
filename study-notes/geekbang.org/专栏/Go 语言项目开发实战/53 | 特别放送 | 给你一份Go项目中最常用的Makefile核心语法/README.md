@@ -220,3 +220,296 @@ clean:
 
 Makefile 也可以像其他语言一样支持变量。在使用变量时，会像 shell 变量一样原地展开，然后再执行替换后的内容。
 
+Makefile 可以通过变量声明来声明一个变量，变量在声明时需要赋予一个初值，比如 ROOT_PACKAGE=github.com/marmotedu/iam。
+
+引用变量时可以通过$()或者${}方式引用。我的建议是，用$()方式引用变量，例如$(ROOT_PACKAGE)，也建议整个 makefile 的变量引用方式保持一致。
+
+变量会像 bash 变量一样，在使用它的地方展开。比如：
+
+```makefile
+GO=go
+build:
+    $(GO) build -v .
+```
+
+展开后为：
+
+```makefile
+GO=go
+build:
+    go build -v .
+```
+
+接下来，我给你介绍下 Makefile 中的 4 种变量赋值方法。
+
+1. = 最基本的赋值方法。
+
+例如：
+
+```makefile
+BASE_IMAGE = alpine:3.10
+```
+
+使用 = 进行赋值时，要注意下面这样的情况：
+
+```makefile
+A = a
+B = $(A) b
+A = c
+```
+
+B 最后的值为 c b，而不是 a b。也就是说，在用变量给变量赋值时，右边变量的取值，取的是最终的变量值。
+
+2. :=直接赋值，赋予当前位置的值。
+
+例如：
+
+```makefile
+A = a
+B := $(A) b
+A = c
+```
+
+B 最后的值为 a b。通过 := 的赋值方式，可以避免 = 赋值带来的潜在的不一致。
+
+3. ?= 表示如果该变量没有被赋值，则赋予等号后的值。
+
+例如:
+
+```makefile
+PLATFORMS ?= linux_amd64 linux_arm64
+```
+
+4. +=表示将等号后面的值添加到前面的变量上。
+
+```makefile
+MAKEFLAGS += --no-print-directory
+```
+
+Makefile 还支持多行变量。可以通过 define 关键字设置多行变量，变量中允许换行。定义方式为：
+
+```
+define 变量名
+变量内容
+...
+endef
+```
+
+变量的内容可以包含函数、命令、文字或是其他变量。例如，我们可以定义一个 USAGE_OPTIONS 变量：
+
+```
+define USAGE_OPTIONS
+
+Options:
+  DEBUG        Whether to generate debug symbols. Default is 0.
+  BINS         The binaries to build. Default is all of cmd.
+  ...
+  V            Set to 1 enable verbose build. Default is 0.
+endef
+```
+
+Makefile 还支持环境变量。在 Makefile 中，有两种环境变量，分别是 Makefile 预定义的环境变量和自定义的环境变量。
+
+其中，自定义的环境变量可以覆盖 Makefile 预定义的环境变量。默认情况下，Makefile 中定义的环境变量只在当前 Makefile 有效，如果想向下层传递（Makefile 中调用另一个 Makefile），需要使用 export 关键字来声明。
+
+下面的例子声明了一个环境变量，并可以在下层 Makefile 中使用：
+
+```makefile
+...
+export USAGE_OPTIONS
+...
+```
+
+此外，Makefile 还支持两种内置的变量：特殊变量和自动化变量。
+
+特殊变量是 make 提前定义好的，可以在 makefile 中直接引用。特殊变量列表如下：
+
+![](https://static001.geekbang.org/resource/image/c1/1d/c1cba21aaed2eb0117yyb0470byy641d.png?wh=1052x978)
+
+Makefile 还支持自动化变量。自动化变量可以提高我们编写 Makefile 的效率和质量。
+
+在 Makefile 的模式规则中，目标和依赖文件都是一系列的文件，那么我们如何书写一个命令，来完成从不同的依赖文件生成相对应的目标呢？
+
+这时就可以用到自动化变量。所谓自动化变量，就是这种变量会把模式中所定义的一系列的文件自动地挨个取出，一直到所有符合模式的文件都取完为止。这种自动化变量只应出现在规则的命令中。Makefile 中支持的自动化变量见下表。
+
+![](https://static001.geekbang.org/resource/image/13/12/13ec33008eaff973c0dd854a795ff712.png?wh=1263x1303)
+
+上面这些自动化变量中，$*是用得最多的。$_ 对于构造有关联的文件名是比较有效的。如果目标中没有模式的定义，那么 $_ 也就不能被推导出。但是，如果目标文件的后缀是 make 所识别的，那么 $_ 就是除了后缀的那一部分。例如：如果目标是 foo.c ，因为.c 是 make 所能识别的后缀名，所以 $_ 的值就是 foo。
+
+### 条件语句
+
+Makefile 也支持条件语句。这里先看一个示例。
+
+下面的例子判断变量 ROOT_PACKAGE 是否为空，如果为空，则输出错误信息，不为空则打印变量值：
+
+```makefile
+ifeq ($(ROOT_PACKAGE),)
+$(error the variable ROOT_PACKAGE must be set prior to including golang.mk)
+else
+$(info the value of ROOT_PACKAGE is $(ROOT_PACKAGE))
+endif
+```
+
+条件语句的语法为：
+
+```makefile
+# if ...
+<conditional-directive>
+<text-if-true>
+endif
+# if ... else ...
+<conditional-directive>
+<text-if-true>
+else
+<text-if-false>
+endif
+```
+
+例如，判断两个值是否相等：
+
+```
+ifeq 条件表达式
+...
+else
+...
+endif
+```
+
+- ifeq 表示条件语句的开始，并指定一个条件表达式。表达式包含两个参数，参数之间用逗号分隔，并且表达式用圆括号括起来。
+- else 表示条件表达式为假的情况。
+- endif 表示一个条件语句的结束，任何一个条件表达式都应该以 endif 结束。
+- 表示条件关键字，有 4 个关键字：ifeq、ifneq、ifdef、ifndef。
+
+为了加深你的理解，我们分别来看下这 4 个关键字的例子。
+
+1. ifeq：条件判断，判断是否相等。
+
+例如：
+
+```
+ifeq (<arg1>, <arg2>)
+ifeq '<arg1>' '<arg2>'
+ifeq "<arg1>" "<arg2>"
+ifeq "<arg1>" '<arg2>'
+ifeq '<arg1>' "<arg2>"
+```
+
+比较 arg1 和 arg2 的值是否相同，如果相同则为真。也可以用 make 函数 / 变量替代 arg1 或 arg2，例如 ifeq ($(origin ROOT_DIR),undefined) 或 ifeq ($(ROOT_PACKAGE),) 。origin 函数会在之后专门讲函数的一讲中介绍到。
+
+2. ifneq：条件判断，判断是否不相等。
+
+```
+ifneq (<arg1>, <arg2>)
+ifneq '<arg1>' '<arg2>'
+ifneq "<arg1>" "<arg2>"
+ifneq "<arg1>" '<arg2>'
+ifneq '<arg1>' "<arg2>"
+```
+
+比较 arg1 和 arg2 的值是否不同，如果不同则为真。
+
+3. ifdef：条件判断，判断变量是否已定义。
+
+```
+ifdef <variable-name>
+```
+
+如果值非空，则表达式为真，否则为假。也可以是函数的返回值。
+
+4. ifndef：条件判断，判断变量是否未定义。
+
+```
+ifndef <variable-name>
+```
+
+如果值为空，则表达式为真，否则为假。也可以是函数的返回值。
+
+### 函数
+
+Makefile 同样也支持函数，函数语法包括定义语法和调用语法。
+
+我们先来看下自定义函数。 make 解释器提供了一系列的函数供 Makefile 调用，这些函数是 Makefile 的预定义函数。我们可以通过 define 关键字来自定义一个函数。自定义函数的语法为：
+
+```
+define 函数名
+函数体
+endef
+```
+
+例如，下面这个自定义函数：
+
+```makefile
+define Foo
+    @echo "my name is $(0)"
+    @echo "param is $(1)"
+endef
+```
+
+define 本质上是定义一个多行变量，可以在 call 的作用下当作函数来使用，在其他位置使用只能作为多行变量来使用，例如：
+
+```makefile
+var := $(call Foo)
+new := $(Foo)
+```
+
+自定义函数是一种过程调用，没有任何的返回值。可以使用自定义函数来定义命令的集合，并应用在规则中。
+
+再来看下预定义函数。 刚才提到，make 编译器也定义了很多函数，这些函数叫作预定义函数，调用语法和变量类似，语法为：
+
+```
+$(<function> <arguments>)
+```
+
+或者
+
+```
+${<function> <arguments>}
+```
+
+是函数名，是函数参数，参数间用逗号分割。函数的参数也可以是变量。
+
+我们来看一个例子：
+
+```makefile
+PLATFORM = linux_amd64
+GOOS := $(word 1, $(subst _, ,$(PLATFORM)))
+```
+
+上面的例子用到了两个函数：word 和 subst。word 函数有两个参数，1 和 subst 函数的输出。subst 函数将 PLATFORM 变量值中的 \_ 替换成空格（替换后的 PLATFORM 值为 linux amd64）。word 函数取 linux amd64 字符串中的第一个单词。所以最后 GOOS 的值为 linux。
+
+Makefile 预定义函数能够帮助我们实现很多强大的功能，在编写 Makefile 的过程中，如果有功能需求，可以优先使用这些函数。如果你想使用这些函数，那就需要知道有哪些函数，以及它们实现的功能。
+
+常用的函数包括下面这些，你需要先有个印象，以后用到时再来查看。
+
+![](https://static001.geekbang.org/resource/image/29/8e/29956e1cfb4dea1b0yy25af561d4168e.jpg?wh=1755x3719)
+
+### 引入其他 Makefile
+
+除了 Makefile 规则、Makefile 语法之外，Makefile 还有很多特性，比如可以引入其他 Makefile、自动生成依赖关系、文件搜索等等。这里我再介绍一个 IAM 项目的 Makefile 用到的重点特性：引入其他 Makefile。
+
+在 14 讲 中，我们介绍过 Makefile 要结构化、层次化，这一点可以通过在项目根目录下的 Makefile 中引入其他 Makefile 来实现。
+
+在 Makefile 中，我们可以通过关键字 include，把别的 makefile 包含进来，类似于 C 语言的#include，被包含的文件会插入在当前的位置。include 用法为 include ，示例如下：
+
+```makefile
+include scripts/make-rules/common.mk
+include scripts/make-rules/golang.mk
+```
+
+include 也可以包含通配符 include scripts/make-rules/\*。make 命令会按下面的顺序查找 makefile 文件：
+
+1. 如果是绝对或相对路径，就直接根据路径 include 进来。
+2. 如果 make 执行时，有-I 或--include-dir 参数，那么 make 就会在这个参数所指定的目录下去找。
+3. 如果目录/include（一般是/usr/local/bin 或/usr/include）存在的话，make 也会去找。
+
+如果有文件没有找到，make 会生成一条警告信息，但不会马上出现致命错误，而是继续载入其他的文件。一旦完成 makefile 的读取，make 会再重试这些没有找到或是不能读取的文件。如果还是不行，make 才会出现一条致命错误信息。如果你想让 make 忽略那些无法读取的文件继续执行，可以在 include 前加一个减号-，如-include 。
+
+### 总结
+
+在这一讲里，为了帮助你编写一个高质量的 Makefile，我重点介绍了 Makefile 规则和 Makefile 语法里的一些核心语法知识。
+
+在讲 Makefile 规则时，我们主要学习了规则语法、伪目标和 order-only 依赖。掌握了这些 Makefile 规则，你就掌握了 Makefile 中最核心的内容。
+
+在介绍 Makefile 的语法时，我只介绍了 Makefile 的核心语法，以及 IAM 项目的 Makefile 用到的语法，包括命令、变量、条件语句和函数。你可能会觉得这些语法学习起来比较枯燥，但还是那句话，工欲善其事，必先利其器。希望你能熟练掌握 Makefile 的核心语法，为编写高质量的 Makefile 打好基础。
+
+今天的内容就到这里啦，欢迎你在下面的留言区谈谈自己的看法，我们下一讲见。
