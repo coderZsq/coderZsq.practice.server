@@ -1,2 +1,0 @@
-io.joyrpc.cluster.distribution.loadbalance.adaptive.arbiter.OverallArbiter
-io.joyrpc.cluster.distribution.loadbalance.adaptive.arbiter.WeightArbiter

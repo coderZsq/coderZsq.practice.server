@@ -1,2 +1,0 @@
-io.joyrpc.cluster.discovery.registry.zk.ZKRegistryFactory
-io.joyrpc.cluster.discovery.registry.zk.ZookeeperRegistryFactory

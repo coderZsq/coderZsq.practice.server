@@ -1,3 +1,0 @@
-io.joyrpc.codec.serialization.protostuff.ProtostuffSerialization
-io.joyrpc.codec.serialization.protostuff.ProtobufSerialization
-io.joyrpc.codec.serialization.protostuff.ProtoSerialization

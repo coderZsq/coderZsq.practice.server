@@ -1,3 +1,0 @@
-127.0.0.1 - - [12/Aug/2021:16:05:19 +0800] GET /hello/world HTTP/1.1 401 951 http-bio-8080-exec-1 20
-127.0.0.1 - tomcat [12/Aug/2021:16:05:26 +0800] GET /hello/world HTTP/1.1 200 801 http-bio-8080-exec-3 1372
-127.0.0.1 - - [12/Aug/2021:16:05:26 +0800] GET /favicon.ico HTTP/1.1 200 - http-bio-8080-exec-4 2
