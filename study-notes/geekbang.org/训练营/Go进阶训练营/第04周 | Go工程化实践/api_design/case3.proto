@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+// proto3
+message Account {
+  // 可选, 默认值为空字符串, 无 hasName()
+  string name = 1;
+  // 可选, 默认值为0.0, 无 hasProfitRate()
+  double profit_rate = 2;
+}

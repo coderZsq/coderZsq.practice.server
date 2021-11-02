@@ -1,0 +1,9 @@
+syntax = "proto2";
+
+// proto2
+message Account {
+  // 必须
+  required string name = 1;
+  // 可选, 默认值修改成 -1.0, 有 hasProfitRate()
+  optional double profit_rate = 2 [default=-1.0]
+}

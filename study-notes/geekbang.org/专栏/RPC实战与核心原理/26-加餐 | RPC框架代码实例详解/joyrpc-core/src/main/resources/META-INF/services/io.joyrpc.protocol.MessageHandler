@@ -1,0 +1,8 @@
+io.joyrpc.protocol.handler.AuthenticationReceiver
+io.joyrpc.protocol.handler.CallbackReceiver
+io.joyrpc.protocol.handler.HeartbeatReceiver
+io.joyrpc.protocol.handler.NegotiationReceiver
+io.joyrpc.protocol.handler.ShakeHandReceiver
+io.joyrpc.protocol.handler.BizReceiver
+io.joyrpc.protocol.handler.SessionbeatReceiver
+io.joyrpc.protocol.handler.OfflineReceiver

@@ -1,0 +1,34 @@
+正在执行...
+2021-06-01T14:44:36.075-0800: [GC (Allocation Failure) 2021-06-01T14:44:36.076-0800: [DefNew: 34944K->4352K(39296K), 0.0124007 secs] 34944K->14713K(126720K), 0.0124661 secs] [Times: user=0.01 sys=0.00, real=0.01 secs]
+2021-06-01T14:44:36.101-0800: [GC (Allocation Failure) 2021-06-01T14:44:36.101-0800: [DefNew: 38686K->4342K(39296K), 0.0108832 secs] 49047K->24717K(126720K), 0.0109302 secs] [Times: user=0.01 sys=0.00, real=0.01 secs]
+2021-06-01T14:44:36.124-0800: [GC (Allocation Failure) 2021-06-01T14:44:36.124-0800: [DefNew: 39167K->4349K(39296K), 0.0118108 secs] 59542K->38987K(126720K), 0.0118687 secs] [Times: user=0.01 sys=0.01, real=0.01 secs]
+2021-06-01T14:44:36.144-0800: [GC (Allocation Failure) 2021-06-01T14:44:36.144-0800: [DefNew: 38989K->4348K(39296K), 0.0105290 secs] 73628K->49832K(126720K), 0.0105755 secs] [Times: user=0.01 sys=0.00, real=0.01 secs]
+2021-06-01T14:44:36.161-0800: [GC (Allocation Failure) 2021-06-01T14:44:36.161-0800: [DefNew: 39113K->4351K(39296K), 0.0131272 secs] 84597K->64836K(126720K), 0.0131765 secs] [Times: user=0.00 sys=0.01, real=0.01 secs]
+2021-06-01T14:44:36.185-0800: [GC (Allocation Failure) 2021-06-01T14:44:36.185-0800: [DefNew: 39268K->4342K(39296K), 0.0080045 secs] 99753K->73544K(126720K), 0.0080529 secs] [Times: user=0.01 sys=0.00, real=0.01 secs]
+2021-06-01T14:44:36.203-0800: [GC (Allocation Failure) 2021-06-01T14:44:36.203-0800: [DefNew: 38840K->4351K(39296K), 0.0115026 secs] 108042K->85500K(126720K), 0.0115714 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]
+2021-06-01T14:44:36.224-0800: [GC (Allocation Failure) 2021-06-01T14:44:36.224-0800: [DefNew: 39287K->39287K(39296K), 0.0000213 secs]2021-06-01T14:44:36.224-0800: [Tenured: 81148K->87225K(87424K), 0.0169472 secs] 120436K->96759K(126720K), [Metaspace: 2578K->2578K(1056768K)], 0.0170368 secs] [Times: user=0.02 sys=0.00, real=0.02 secs]
+2021-06-01T14:44:36.251-0800: [Full GC (Allocation Failure) 2021-06-01T14:44:36.251-0800: [Tenured: 87225K->87343K(87424K), 0.0251989 secs] 126389K->103316K(126720K), [Metaspace: 2578K->2578K(1056768K)], 0.0252621 secs] [Times: user=0.02 sys=0.00, real=0.02 secs]
+2021-06-01T14:44:36.284-0800: [Full GC (Allocation Failure) 2021-06-01T14:44:36.284-0800: [Tenured: 87343K->87025K(87424K), 0.0156718 secs] 126535K->112111K(126720K), [Metaspace: 2578K->2578K(1056768K)], 0.0157581 secs] [Times: user=0.01 sys=0.00, real=0.01 secs]
+2021-06-01T14:44:36.303-0800: [Full GC (Allocation Failure) 2021-06-01T14:44:36.303-0800: [Tenured: 87025K->87361K(87424K), 0.0262910 secs] 125990K->112310K(126720K), [Metaspace: 2578K->2578K(1056768K)], 0.0263721 secs] [Times: user=0.02 sys=0.00, real=0.02 secs]
+2021-06-01T14:44:36.333-0800: [Full GC (Allocation Failure) 2021-06-01T14:44:36.333-0800: [Tenured: 87361K->87361K(87424K), 0.0047392 secs] 126654K->118193K(126720K), [Metaspace: 2578K->2578K(1056768K)], 0.0048150 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-06-01T14:44:36.341-0800: [Full GC (Allocation Failure) 2021-06-01T14:44:36.341-0800: [Tenured: 87361K->87361K(87424K), 0.0049416 secs] 126551K->121294K(126720K), [Metaspace: 2578K->2578K(1056768K)], 0.0050150 secs] [Times: user=0.01 sys=0.00, real=0.00 secs]
+2021-06-01T14:44:36.347-0800: [Full GC (Allocation Failure) 2021-06-01T14:44:36.347-0800: [Tenured: 87361K->87361K(87424K), 0.0031961 secs] 126541K->123808K(126720K), [Metaspace: 2578K->2578K(1056768K)], 0.0032468 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]
+2021-06-01T14:44:36.351-0800: [Full GC (Allocation Failure) 2021-06-01T14:44:36.351-0800: [Tenured: 87397K->87361K(87424K), 0.0318076 secs] 126659K->122811K(126720K), [Metaspace: 2578K->2578K(1056768K)], 0.0318959 secs] [Times: user=0.03 sys=0.00, real=0.03 secs]
+2021-06-01T14:44:36.385-0800: [Full GC (Allocation Failure) 2021-06-01T14:44:36.385-0800: [Tenured: 87361K->87361K(87424K), 0.0097428 secs] 126319K->124017K(126720K), [Metaspace: 2578K->2578K(1056768K)], 0.0099147 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]
+2021-06-01T14:44:36.396-0800: [Full GC (Allocation Failure) 2021-06-01T14:44:36.396-0800: [Tenured: 87361K->87361K(87424K), 0.0033148 secs] 126131K->124766K(126720K), [Metaspace: 2578K->2578K(1056768K)], 0.0034222 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-06-01T14:44:36.400-0800: [Full GC (Allocation Failure) 2021-06-01T14:44:36.400-0800: [Tenured: 87361K->87361K(87424K), 0.0035587 secs] 126612K->126178K(126720K), [Metaspace: 2578K->2578K(1056768K)], 0.0036563 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-06-01T14:44:36.404-0800: [Full GC (Allocation Failure) 2021-06-01T14:44:36.404-0800: [Tenured: 87361K->87081K(87424K), 0.0191934 secs] 126394K->126006K(126720K), [Metaspace: 2578K->2578K(1056768K)], 0.0192731 secs] [Times: user=0.02 sys=0.00, real=0.02 secs]
+2021-06-01T14:44:36.424-0800: [Full GC (Allocation Failure) 2021-06-01T14:44:36.424-0800: [Tenured: 87269K->87269K(87424K), 0.0033025 secs] 126483K->126050K(126720K), [Metaspace: 2578K->2578K(1056768K)], 0.0033785 secs] [Times: user=0.01 sys=0.00, real=0.00 secs]
+2021-06-01T14:44:36.427-0800: [Full GC (Allocation Failure) 2021-06-01T14:44:36.427-0800: [Tenured: 87269K->87062K(87424K), 0.0187233 secs] 126050K->125843K(126720K), [Metaspace: 2578K->2578K(1056768K)], 0.0187832 secs] [Times: user=0.01 sys=0.00, real=0.02 secs]
+Exception in thread "main" java.lang.OutOfMemoryError: Java heap space
+	at GCLogAnalysis.generateGarbage(GCLogAnalysis.java:47)
+	at GCLogAnalysis.main(GCLogAnalysis.java:24)
+Heap
+ def new generation   total 39296K, used 38786K [0x00000007b8000000, 0x00000007baaa0000, 0x00000007baaa0000)
+  eden space 34944K, 100% used [0x00000007b8000000, 0x00000007ba220000, 0x00000007ba220000)
+  from space 4352K,  88% used [0x00000007ba660000, 0x00000007baa20b10, 0x00000007baaa0000)
+  to   space 4352K,   0% used [0x00000007ba220000, 0x00000007ba220000, 0x00000007ba660000)
+ tenured generation   total 87424K, used 87062K [0x00000007baaa0000, 0x00000007c0000000, 0x00000007c0000000)
+   the space 87424K,  99% used [0x00000007baaa0000, 0x00000007bffa59a8, 0x00000007bffa5a00, 0x00000007c0000000)
+ Metaspace       used 2609K, capacity 4486K, committed 4864K, reserved 1056768K
+  class space    used 281K, capacity 386K, committed 512K, reserved 1048576K
