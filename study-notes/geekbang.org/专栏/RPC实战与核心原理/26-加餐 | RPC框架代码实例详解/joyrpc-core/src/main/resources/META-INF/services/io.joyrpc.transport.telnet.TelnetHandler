@@ -1,4 +1,0 @@
-io.joyrpc.protocol.telnet.handler.ClearTelnetHandler
-io.joyrpc.protocol.telnet.handler.EchoTelnetHandler
-io.joyrpc.protocol.telnet.handler.ExitTelnetHandler
-io.joyrpc.protocol.telnet.handler.HelpTelnetHandler

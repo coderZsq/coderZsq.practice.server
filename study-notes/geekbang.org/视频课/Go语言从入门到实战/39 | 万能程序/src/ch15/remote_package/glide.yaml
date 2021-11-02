@@ -1,5 +1,0 @@
-package: .
-import: []
-testImport:
-- package: github.com/easierway/concurrent_map
-  version: v1.0.0

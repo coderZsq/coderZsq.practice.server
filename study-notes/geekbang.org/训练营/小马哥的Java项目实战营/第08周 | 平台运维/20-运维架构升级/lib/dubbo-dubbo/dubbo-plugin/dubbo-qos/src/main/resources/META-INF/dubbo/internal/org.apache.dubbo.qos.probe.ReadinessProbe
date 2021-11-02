@@ -1,2 +1,0 @@
-bootstrap = org.apache.dubbo.qos.probe.impl.BootstrapReadinessProbe
-provider = org.apache.dubbo.qos.probe.impl.ProviderReadinessProbe

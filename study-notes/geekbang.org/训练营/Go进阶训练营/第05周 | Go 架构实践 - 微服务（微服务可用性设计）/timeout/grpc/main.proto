@@ -1,8 +1,0 @@
-package google.example.library.v1;
-
-service LibraryService {
-  // Lagency SLO:95th in 100th, 99th in 150ms.
-  rpc CreateBook (CreateBookRequest) returns (Book);
-  rpc GetBook (GetBookRequest) returns (Book);
-  rpc ListBooks (ListBooksRequest) returns (ListBooksResponse);
-}

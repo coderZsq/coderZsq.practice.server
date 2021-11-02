@@ -1,2 +1,0 @@
-io.joyrpc.codec.compression.zlib.ZlibCompression
-io.joyrpc.codec.compression.gzip.GzipCompression

@@ -1,2 +1,0 @@
-io.joyrpc.transport.channel.SharedChannelManagerFactory
-io.joyrpc.transport.channel.UnsharedChannelManagerFactory
